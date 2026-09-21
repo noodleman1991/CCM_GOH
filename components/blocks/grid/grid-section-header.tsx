@@ -75,7 +75,7 @@ export function GridSectionHeader({
           )}
         >
           <Image
-            src={imageUrl(headerImage)}
+            src={imageUrl(headerImage, { width: 600, height: 400 })}
             alt={headerImage.alt || title || "Section header image"}
             fill
             className="object-cover"

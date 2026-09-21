@@ -556,7 +556,7 @@ export async function getFreshContentRowsForType(type: string, cap: number): Pro
         type,
         title: text(localized(row.title)?.en) ?? "",
         slug: text(row.slug),
-        image: imageUrl(image) || null,
+        image: imageUrl(image, { width: 800 }) || null,
         imageLqip: blurDataURL(image) ?? null,
         excerpt: firstExcerpt(row, shape),
         place: firstPlace(row, shape),

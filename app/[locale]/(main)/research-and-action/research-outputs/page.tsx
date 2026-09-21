@@ -5,6 +5,7 @@ import { TypedCard } from "@/components/cards/typed-card";
 import type { TypedCardItem } from "@/lib/cards/type-style";
 import { getResearchOutputs } from "@/lib/content/outputs";
 import { getLocalizedValue } from "@/i18n/i18n-helpers";
+import { imageUrl } from "@/lib/content/images"
 
 /**
  * Research-outputs listing — the code route the Research & Action hub and the
@@ -49,7 +50,7 @@ export default async function ResearchOutputsPage({
       title: getLocalizedValue(o.title, locale) ?? "",
       href: `/research-and-action/research-outputs/${o.slug}`,
       excerpt: getLocalizedValue(o.excerpt, locale) ?? null,
-      image: o.image?.asset?.url ?? null,
+      image: imageUrl(o.image, { width: 800, height: 450, crop: true }) || null,
       date: o.publishDate ?? null,
       docs: (o.versions ?? [])
         .slice(0, 3)

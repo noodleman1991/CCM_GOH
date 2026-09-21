@@ -175,7 +175,7 @@ function toAuthor(row: AuthorRow): Author {
     id: row.id,
     name: row.name,
     slug: text(row.slug),
-    imageUrl: text(imageUrl(row.image)),
+    imageUrl: text(imageUrl(row.image, { width: 800 })),
     organizationalAffiliation: text(row.organizationalAffiliation),
     userId: text(row.userId),
   };
@@ -252,7 +252,7 @@ export async function getOrganizations(): Promise<Organization[]> {
     acronym: text(row.acronym),
     type: text(row.type),
     description: localized(row.description),
-    logoUrl: text(imageUrl(row.logo)),
+    logoUrl: text(imageUrl(row.logo, { width: 400, height: 225 })),
     website: text(row.website),
   }));
 }

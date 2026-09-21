@@ -53,7 +53,9 @@ const createPortableTextComponents = (
       image: ({ value }) => {
         if (!value?.asset) return null;
 
-        const imageUrl = value.asset.url || getImageUrl(value);
+        // The content-column derivative first; the raw asset URL only when the
+        // seam cannot resolve the image (a legacy shape).
+        const imageUrl = getImageUrl(value, { width: 1100 }) || value.asset.url;
         const alt = getLocalizedValue(value.alt, locale) || ptLabels(locale).image;
         const caption = getLocalizedValue(value.caption, locale);
         const { metadata } = value.asset;

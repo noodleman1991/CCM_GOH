@@ -40,7 +40,7 @@ export default function PostHero({
       {image && image.asset?._id && (
         <div className="my-4 @content-md/page:my-6 rounded-2xl overflow-hidden">
           <Image
-            src={imageUrl(image)}
+            src={imageUrl(image, { width: 1200, height: 675 })}
             alt={image.alt || ""}
             placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
             blurDataURL={image.asset?.metadata?.lqip || undefined}
@@ -55,7 +55,7 @@ export default function PostHero({
             {author?.image && author.image.asset?._id && (
               <div className="relative w-6 h-6 @content-md/page:w-10 @content-md/page:h-10">
                 <Image
-                  src={imageUrl(author.image)}
+                  src={imageUrl(author.image, { width: 80, height: 80, crop: true })}
                   alt={author.image.alt ? author.image.alt : ""}
                   fill
                   style={{

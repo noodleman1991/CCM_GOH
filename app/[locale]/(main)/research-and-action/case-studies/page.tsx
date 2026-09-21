@@ -20,6 +20,7 @@ import { assignGalleryVariant, spanForVariant } from '@/lib/case-studies/gallery
 import { REGION_CODES, REGION_I18N_KEY, slugToShortCode, type RegionCode } from '@/lib/maps/region-codes'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import { cn } from '@/lib/utils'
+import { imageUrl } from '@/lib/content/images'
 
 type Filters = CaseStudyListFilters
 
@@ -253,7 +254,7 @@ async function CaseStudiesContent({
       communityName: cs.relatedCommunity
         ? getLocalizedText(cs.relatedCommunity as Record<string, string>, locale, '')
         : null,
-      image: (cs.image as { asset?: { url?: string | null } } | null)?.asset?.url ?? null,
+      image: imageUrl(cs.image, { width: 800, height: 450, crop: true }) || null,
       date: (cs.publishedAt as string | null) ?? null,
     }))
 

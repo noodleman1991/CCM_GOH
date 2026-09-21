@@ -127,7 +127,7 @@ export default function Carousel1({
                   >
                     <Image
                       className="object-cover"
-                      src={imageUrl(image)}
+                      src={imageUrl(image, { width: 1200, height: 675 })}
                       alt={image.alt || ""}
                       fill
                       placeholder={

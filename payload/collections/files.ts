@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { editorOrStaticFile, isEditor } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
+import { setUploadCacheControl } from "@/payload/hooks/upload-cache-control";
 import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
 
 /**
@@ -55,6 +56,8 @@ export const Files: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [randomizeUploadFilename],
+    // One-year immutable Cache-Control on the stored objects, after commit.
+    afterChange: [setUploadCacheControl],
   },
   upload: {
     // All 48 real assets are PDFs. The office/text types are the rest of what

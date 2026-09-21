@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import NewsPostCard from "./news-post-card";
+import { imageUrl } from "@/lib/content/images"
 
 interface NewsCardProps {
   post: {
@@ -43,7 +44,7 @@ export function NewsCard({ post, locale, variant = "default" }: NewsCardProps) {
           {post.image && (
             <div className="aspect-video bg-muted rounded-md overflow-hidden">
               <img
-                src={post.image.asset?.url}
+                src={imageUrl(post.image, { width: 800 })}
                 alt={post.image.alt || ""}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />

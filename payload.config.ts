@@ -31,6 +31,7 @@ import { withContentRevalidation, withGlobalRevalidation } from "./payload/hooks
 import { withAnonymousReadCap } from "./payload/hooks/anonymous-read-cap";
 import { richTextEditor } from "./payload/blocks/rich-text-embeds";
 import { payloadR2BucketName, payloadR2ClientConfig } from "./payload/storage/r2";
+import { directUploadOptions } from "./payload/storage/public-url";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { migrations } from "./migrations";
 
@@ -186,9 +187,12 @@ export default buildConfig({
     s3Storage({
       bucket: payloadR2BucketName(),
       config: payloadR2ClientConfig(),
+      // With NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL set, both collections are served
+      // straight from the bucket's public hostname instead of the static
+      // handler above (payload/storage/public-url.ts).
       collections: {
-        media: { prefix: "cms/media" },
-        files: { prefix: "cms/files" },
+        media: { prefix: "cms/media", ...directUploadOptions() },
+        files: { prefix: "cms/files", ...directUploadOptions() },
       },
     }),
   ],

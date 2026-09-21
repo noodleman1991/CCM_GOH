@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
 import type { SupportedLocale } from '@/types/prisma'
+import { imageUrl } from '@/lib/content/images'
 
 interface DashboardUser {
   id: string
@@ -497,7 +498,7 @@ export function DashboardClient({
                         {news.image?.asset?.url && (
                           <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
                             <Image
-                              src={news.image.asset.url}
+                              src={imageUrl(news.image, { width: 800 })}
                               alt={news.image.alt || news.title}
                               fill
                               className="object-cover group-hover:scale-105 transition-transform duration-300"

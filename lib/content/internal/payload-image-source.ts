@@ -38,6 +38,12 @@
  * every image on the site is WebP on the wire today, and a stored PNG served
  * in its place would be a transfer-size regression, not a storage detail.
  *
+ * (2026-09-21: the paragraph below predates lib/images/next-image-loader.ts.
+ * A generated size now bypasses the optimizer and is served as stored, so the
+ * thirteen call sites it lists were given explicit sizes, and an original
+ * still goes through the optimizer. Tier 3 remains the rule for a call site
+ * that asks for nothing.)
+ *
  * That worry turns out to be bounded, and the measurement is why tier 3 is
  * acceptable. Twelve of the thirteen dimension-less call sites
  * (`components/blocks/post-hero.tsx:43,58`, `split/split-info-item.tsx:67`,

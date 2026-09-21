@@ -110,10 +110,13 @@ describe("upload filename randomisation", () => {
     expect((args.req.file as { name: string }).name).toBe("oceania.jpg");
   });
 
-  it("does nothing on update, or when no file is attached", async () => {
+  it("renames a file swapped on update too, so a URL never repeats under an immutable cache", async () => {
     const update = hookArgs({ operation: "update", filename: "logo.png" });
     await randomizeUploadFilename(update);
-    expect((update.req.file as { name: string }).name).toBe("logo.png");
+    expect((update.req.file as { name: string }).name).toMatch(/^logo-[0-9a-f]{16}\.png$/);
+  });
+
+  it("does nothing when no file is attached", async () => {
 
     const noFile = hookArgs({ operation: "create" });
     await expect(randomizeUploadFilename(noFile)).resolves.toBeUndefined();

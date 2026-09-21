@@ -36,6 +36,8 @@
     "import:documents": "tsx scripts/payload-import/documents.ts",
     "import:drafts": "tsx scripts/payload-import/drafts.ts",
     "verify:import": "tsx scripts/payload-import/verify.ts",
+    "r2:cache-control": "tsx scripts/r2/set-upload-cache-control.ts",
+    "r2:copy-cms": "tsx scripts/r2/copy-cms-objects.ts",
     "prepare": "husky",
     "knip": "knip --no-exit-code"
   },

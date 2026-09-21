@@ -82,7 +82,7 @@ export default function NewsPostCard({
             <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", CARD_ASPECT.wide)}>
                 {image?.asset?._id && (
                     <Image
-                        src={imageUrl(image)}
+                        src={imageUrl(image, { width: 800 })}
                         alt={localizedImageAlt || localizedTitle || ""}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -153,7 +153,7 @@ export default function NewsPostCard({
                             <span className="inline-flex min-w-0 items-center gap-1.5">
                                 {author.image?.asset?._id && (
                                     <Image
-                                        src={imageUrl(author.image)}
+                                        src={imageUrl(author.image, { width: 80, height: 80, crop: true })}
                                         alt={author.name}
                                         width={20}
                                         height={20}

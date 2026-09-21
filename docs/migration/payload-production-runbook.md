@@ -104,6 +104,35 @@ Run these locally with the production URL in the environment for the command onl
 
 **Rollback:** set both `CONTENT_BACKEND` variables back to `sanity` (or remove them) and `vercel --prod` again. Keep Sanity read-only for one release for exactly this reason.
 
+## 7b. Media direct from R2 (optional, saves Vercel image and function cost)
+
+Today every CMS image and PDF is fetched through Payload's handler at `/payload-api/<slug>/file/<name>` (a Vercel function streaming the object out of R2) and, for images, Vercel's image optimizer on top. Both bill. With a public hostname on the bucket, the browser fetches objects from Cloudflare directly: free egress, edge-cached, and `next/image` leaves them alone (lib/images/next-image-loader.ts). One variable switches it and unsetting it switches back.
+
+CMS uploads currently live in the shared `ccm-collab` bucket under `cms/` (verified 2026-09-21: the bucket holds nothing else yet, but its `members/` prefix is designed to stay private). Public access on R2 is per bucket, so give the CMS its own bucket first.
+
+- [ ] Cloudflare dashboard, R2: create bucket `ccm-cms` in the same account (EU jurisdiction like the existing one).
+- [ ] On `ccm-cms`, Settings, add a **custom domain** on a hostname that is not the hub's own (for example `cdn.connectingclimateminds.org`; the zone has to be on Cloudflare DNS). The `r2.dev` hostname works for a preview but is rate-limited and not for production.
+- [ ] Extend the R2 API token used by `R2_ACCESS_KEY_ID` to cover `ccm-cms` (object read and write).
+- [ ] Copy the objects across (server-side, re-runnable, nothing deleted):
+  ```
+  pnpm r2:copy-cms -- --to=ccm-cms
+  pnpm r2:copy-cms -- --to=ccm-cms --execute
+  ```
+- [ ] Point Payload at the new bucket and switch on direct serving, in Vercel production (and preview):
+  ```
+  PAYLOAD_R2_BUCKET=ccm-cms
+  NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL=https://cdn.connectingclimateminds.org
+  ```
+- [ ] Deploy. Open a content page: image `src` attributes now start with the public hostname and the network panel shows no `/_next/image` or `/payload-api/media` requests for CMS images.
+- [ ] Stamp the cache policy on the copied objects (new uploads get it automatically):
+  ```
+  PAYLOAD_R2_BUCKET=ccm-cms pnpm r2:cache-control
+  PAYLOAD_R2_BUCKET=ccm-cms pnpm r2:cache-control -- --execute
+  ```
+- [ ] After a week with no missing images, delete the `cms/` prefix from `ccm-collab` by hand.
+
+SVG note: on the hub's origin, SVGs were served with a sandboxing header. On the bucket's hostname a script inside an SVG would run on that hostname instead, which holds no session; Payload's own SVG validation still runs on upload. Keep the public hostname off the hub's cookie domain if that ever changes.
+
 ## 8. After the first week
 
 - [ ] Phase 4: remove the backend switch and the Sanity readers, decommission the Studio.

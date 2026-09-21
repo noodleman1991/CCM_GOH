@@ -61,6 +61,7 @@ const OPTIONAL_FEATURES: Record<string, readonly FeatureKey[]> = {
     ["R2_ACCESS_KEY_ID", "CLOUDFLARE_R2_ACCESS_KEY_ID"],
     ["R2_SECRET_ACCESS_KEY", "CLOUDFLARE_R2_SECRET_ACCESS_KEY"],
   ],
+  "Direct media from R2 (public bucket host)": ["NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL"],
   "Anonymous comments (Turnstile)": ["TURNSTILE_SECRET_KEY"],
   "Rate limiting (Upstash)": ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
   "Error monitoring (Sentry)": ["NEXT_PUBLIC_SENTRY_DSN"],

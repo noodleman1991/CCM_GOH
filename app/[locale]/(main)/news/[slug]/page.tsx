@@ -40,6 +40,9 @@ export async function generateMetadata({
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar'
   const title = getLocalizedValue(newsPost.title, supportedLocale) || t('title')
   const description = getLocalizedValue(newsPost.excerpt, supportedLocale) || ''
+  // Crawlers fetch this directly, so it is the 1200x675 derivative made absolute,
+  // never the multi-megabyte original.
+  const ogImageUrl = absoluteUrl(imageUrl(newsPost.ogImage ?? newsPost.image, { width: 1200, height: 675 }))
 
   return {
     title: newsPost.meta_title || title,
@@ -52,9 +55,7 @@ export async function generateMetadata({
       modifiedTime: newsPost._updatedAt,
       images: [
         `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}/og.png`,
-        ...(newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url
-          ? [(newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url) as string]
-          : []),
+        ...(ogImageUrl ? [ogImageUrl] : []),
       ],
     },
   }

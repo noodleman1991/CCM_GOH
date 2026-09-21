@@ -192,7 +192,16 @@ const nextConfig = {
     ]
   },
   images: {
+    // CMS uploads bypass the optimizer; everything else keeps the default
+    // path (lib/images/next-image-loader.ts).
+    loader: 'custom',
+    loaderFile: './lib/images/next-image-loader.ts',
     remotePatterns: [
+      // The bucket's public hostname, when uploads are served from it
+      // (payload/storage/public-url.ts): the optimizer still resizes originals.
+      ...(process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL
+        ? [{ protocol: new URL(process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL).protocol.replace(":", ""), hostname: new URL(process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL).hostname }]
+        : []),
       {
         protocol: "https",
         hostname: "cdn.sanity.io",

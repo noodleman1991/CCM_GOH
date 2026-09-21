@@ -165,7 +165,7 @@ export default function CaseStudyCardComponent({
             {image?.asset?._id && (
                 <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden bg-muted">
                     <Image
-                        src={imageUrl(image)}
+                        src={imageUrl(image, { width: 800 })}
                         alt={localizedImageAlt || localizedTitle || ""}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"

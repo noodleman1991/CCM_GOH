@@ -267,7 +267,7 @@ export async function getRegionArt(): Promise<Partial<Record<RegionCode, RegionA
     if (!code) continue;
     for (const locale of LOCALES) {
       const image = row.welcomeHero?.[locale]?.image;
-      const url = imageUrl(image);
+      const url = imageUrl(image, { width: 1200, height: 675 });
       if (!url) continue;
       art[code] = { url, lqip: blurDataURL(image) ?? null };
       break;
@@ -595,7 +595,7 @@ function toItemRow(row: Record<string, unknown>, type: string, shape: TypeShape)
     type,
     title: titleOf(row),
     slug: text(row.slug),
-    image: shape.image ? (text(imageUrl(image)) ?? null) : null,
+    image: shape.image ? (text(imageUrl(image, { width: 800 })) ?? null) : null,
     imageLqip: shape.image ? (blurDataURL(image) ?? null) : null,
     ...cardPlace(row, shape),
     date: effectiveDate(row, shape),

@@ -43,7 +43,7 @@ function LogoTile({ image, label }: { image: LogoImage; label?: string }) {
     <figure className="flex flex-col items-center justify-center gap-2 text-center">
       <div className="flex h-20 w-full items-center justify-center">
         <Image
-          src={imageUrl(image)}
+          src={imageUrl(image, { width: 400, height: 225 })}
           alt={image.alt || label || ""}
           className="max-h-20 w-auto object-contain"
           placeholder={
@@ -149,7 +149,7 @@ export default function LogoCloud1({
                   className="flex h-24 w-24 shrink-0 items-center justify-center"
                 >
                   <Image
-                    src={imageUrl(image)}
+                    src={imageUrl(image, { width: 400, height: 225 })}
                     alt={image.alt || image.label || ""}
                     className="max-h-24 w-auto object-contain"
                     priority={arrayIndex === 0 && index < 3}

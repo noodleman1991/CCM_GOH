@@ -1,6 +1,7 @@
 import type { CollectionConfig, ImageSize } from "payload";
 import { editorOrStaticFile, isEditor } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
+import { setUploadCacheControl } from "@/payload/hooks/upload-cache-control";
 import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
 
 /**
@@ -221,6 +222,8 @@ export const Media: CollectionConfig = {
     // Runs before generateFileData reads req.file.name, so the derived
     // imageSizes carry the randomised stem too.
     beforeOperation: [randomizeUploadFilename],
+    // One-year immutable Cache-Control on the stored objects, after commit.
+    afterChange: [setUploadCacheControl],
   },
   upload: {
     // Images only. `image/*` admits `image/svg+xml` (and the one `image/heif`

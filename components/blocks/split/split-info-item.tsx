@@ -64,7 +64,7 @@ export default function SplitCardsItem({
           {image && image.asset?._id && (
             <div className="shrink-0 w-10 h-10 flex items-center justify-center">
               <Image
-                src={imageUrl(image)}
+                src={imageUrl(image, { width: 400, height: 225 })}
                 alt={image.alt || ""}
                 placeholder={
                   image?.asset?.metadata?.lqip &&

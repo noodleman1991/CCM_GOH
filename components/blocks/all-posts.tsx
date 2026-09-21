@@ -85,9 +85,7 @@ export default async function AllPosts({
           const excerpt = typeof post.excerpt === 'string'
             ? post.excerpt
             : getLocalizedField(post.excerpt, supportedLocale, '');
-          const imageUrl = post.image?.asset?._id
-            ? getImageUrl(post.image, { width: 800 })
-            : post.image?.asset?.url || null;
+          const imageUrl = getImageUrl(post.image, { width: 800 }) || null;
 
           return (
             <Link key={post._id} href={`/news/${post.slug}`} className="group">

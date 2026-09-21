@@ -70,7 +70,7 @@ export default function ExternalSourceCard({
             <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/30 to-ccm-water/20", CARD_ASPECT.wide)}>
                 {image?.asset?._id && (
                     <Image
-                        src={imageUrl(image)}
+                        src={imageUrl(image, { width: 800 })}
                         alt={localizedImageAlt || localizedTitle || ""}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"

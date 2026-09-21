@@ -26,7 +26,10 @@ import type { CollectionBeforeOperationHook } from "payload";
  * the discriminator.
  */
 export const randomizeUploadFilename: CollectionBeforeOperationHook = async ({ args, operation, req }) => {
-  if (operation !== "create") return;
+  // A file swapped on an existing row (update with req.file) gets a fresh
+  // name for the same reason a new one does, and so its URL never repeats:
+  // objects carry a one-year immutable Cache-Control (upload-cache-control.ts).
+  if (operation !== "create" && operation !== "update") return;
   const file = req.file;
   if (!file?.name) return;
   const data = (args as { data?: Record<string, unknown> } | undefined)?.data;
