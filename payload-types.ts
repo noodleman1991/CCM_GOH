@@ -67,29 +67,29 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
-    files: File;
-    tags: Tag;
-    workTypes: WorkType;
-    expertiseAreas: ExpertiseArea;
-    authors: Author;
-    organizations: Organization;
-    regionalCommunities: RegionalCommunity;
     caseStudies: CaseStudy;
     livedExperiences: LivedExperience;
     researchOutputs: ResearchOutput;
-    agendas: Agenda;
+    events: Event;
     newsPosts: NewsPost;
-    docsChapters: DocsChapter;
-    testimonials: Testimonial;
-    profilePrompts: ProfilePrompt;
-    externalSources: ExternalSource;
-    caseStudyDrafts: CaseStudyDraft;
+    agendas: Agenda;
     pages: Page;
     regionalCommunityPages: RegionalCommunityPage;
-    events: Event;
+    docsChapters: DocsChapter;
+    testimonials: Testimonial;
+    authors: Author;
+    organizations: Organization;
+    regionalCommunities: RegionalCommunity;
     projects: Project;
+    externalSources: ExternalSource;
+    tags: Tag;
+    workTypes: WorkType;
+    expertiseAreas: ExpertiseArea;
+    profilePrompts: ProfilePrompt;
+    media: Media;
+    files: File;
+    users: User;
+    caseStudyDrafts: CaseStudyDraft;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -97,29 +97,29 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    files: FilesSelect<false> | FilesSelect<true>;
-    tags: TagsSelect<false> | TagsSelect<true>;
-    workTypes: WorkTypesSelect<false> | WorkTypesSelect<true>;
-    expertiseAreas: ExpertiseAreasSelect<false> | ExpertiseAreasSelect<true>;
-    authors: AuthorsSelect<false> | AuthorsSelect<true>;
-    organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
-    regionalCommunities: RegionalCommunitiesSelect<false> | RegionalCommunitiesSelect<true>;
     caseStudies: CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     livedExperiences: LivedExperiencesSelect<false> | LivedExperiencesSelect<true>;
     researchOutputs: ResearchOutputsSelect<false> | ResearchOutputsSelect<true>;
-    agendas: AgendasSelect<false> | AgendasSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
     newsPosts: NewsPostsSelect<false> | NewsPostsSelect<true>;
-    docsChapters: DocsChaptersSelect<false> | DocsChaptersSelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
-    profilePrompts: ProfilePromptsSelect<false> | ProfilePromptsSelect<true>;
-    externalSources: ExternalSourcesSelect<false> | ExternalSourcesSelect<true>;
-    caseStudyDrafts: CaseStudyDraftsSelect<false> | CaseStudyDraftsSelect<true>;
+    agendas: AgendasSelect<false> | AgendasSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     regionalCommunityPages: RegionalCommunityPagesSelect<false> | RegionalCommunityPagesSelect<true>;
-    events: EventsSelect<false> | EventsSelect<true>;
+    docsChapters: DocsChaptersSelect<false> | DocsChaptersSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
+    regionalCommunities: RegionalCommunitiesSelect<false> | RegionalCommunitiesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    externalSources: ExternalSourcesSelect<false> | ExternalSourcesSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    workTypes: WorkTypesSelect<false> | WorkTypesSelect<true>;
+    expertiseAreas: ExpertiseAreasSelect<false> | ExpertiseAreasSelect<true>;
+    profilePrompts: ProfilePromptsSelect<false> | ProfilePromptsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    files: FilesSelect<false> | FilesSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    caseStudyDrafts: CaseStudyDraftsSelect<false> | CaseStudyDraftsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -137,7 +137,6 @@ export interface Config {
   globals: {
     homepage: Homepage;
     siteAnnouncement: SiteAnnouncement;
-    moderationSettings: ModerationSetting;
     hubIllustrations: HubIllustration;
     onboardingContent: OnboardingContent;
     onboardingBasicInfo: OnboardingBasicInfo;
@@ -145,11 +144,11 @@ export interface Config {
     onboardingRecentWork: OnboardingRecentWork;
     onboardingPrivacy: OnboardingPrivacy;
     onboardingReview: OnboardingReview;
+    moderationSettings: ModerationSetting;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     siteAnnouncement: SiteAnnouncementSelect<false> | SiteAnnouncementSelect<true>;
-    moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
     hubIllustrations: HubIllustrationsSelect<false> | HubIllustrationsSelect<true>;
     onboardingContent: OnboardingContentSelect<false> | OnboardingContentSelect<true>;
     onboardingBasicInfo: OnboardingBasicInfoSelect<false> | OnboardingBasicInfoSelect<true>;
@@ -157,6 +156,7 @@ export interface Config {
     onboardingRecentWork: OnboardingRecentWorkSelect<false> | OnboardingRecentWorkSelect<true>;
     onboardingPrivacy: OnboardingPrivacySelect<false> | OnboardingPrivacySelect<true>;
     onboardingReview: OnboardingReviewSelect<false> | OnboardingReviewSelect<true>;
+    moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
   };
   locale: 'en' | 'es' | 'fr' | 'ar';
   widgets: {
@@ -185,460 +185,6 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  /**
-   * Mirrored from Prisma's User.email (or a placeholder); the Clerk auth strategy rewrites it whenever Prisma's differs.
-   */
-  email: string;
-  /**
-   * Clerk user id (also the Prisma User.id). Set by the Clerk auth strategy.
-   */
-  clerkId: string;
-  /**
-   * Mirrored from Prisma's User.role; the Clerk auth strategy rewrites it whenever Prisma's differs. Prisma stays the source of truth for authz — not editable here.
-   */
-  role: 'community_member' | 'community_editor' | 'team_editor' | 'admin';
-  updatedAt: string;
-  createdAt: string;
-  collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  /**
-   * The originating sanity.imageAsset _id. Unique, so Task 11 can re-run its import without creating a second copy of an asset.
-   */
-  sanityAssetId?: string | null;
-  /**
-   * Sanity's metadata.lqip base64 data URI, copied at import. Live, load-bearing data: 347/347 assets have one and 25 components pass it to next/image as blurDataURL. Payload generates no equivalent, so it has to be carried.
-   */
-  lqip?: string | null;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    crop80x80?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    crop320x320?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    crop800x450?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    crop800x533?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    crop800x600?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    max400x225?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    max600x400?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    max800x450?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    max800?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    max1100?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    max1200x675?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "files".
- */
-export interface File {
-  id: string;
-  /**
-   * The originating sanity.fileAsset _id. Unique, so Task 11 can re-run its import without creating a second copy of an asset.
-   */
-  sanityAssetId?: string | null;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  label: string;
-  /**
-   * The tag's slug (Sanity's value.current). Used as its stable reference value.
-   */
-  value: string;
-  description?: string | null;
-  category?: ('topic' | 'location' | 'method' | 'audience' | 'impact' | 'other') | null;
-  /**
-   * Hex color. The Studio curates a 6-value palette, but 60% of real tags store a legacy hex value outside it — kept as free text, not a constrained select, so import doesn't reject real data.
-   */
-  color?: string | null;
-  /**
-   * Show this tag as a Theme filter on the Atlas and other discovery surfaces.
-   */
-  useAsTheme?: boolean | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workTypes".
- */
-export interface WorkType {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  /**
-   * Uppercase with underscores (e.g. RESEARCH, NGO). Must match Prisma's WorkType enum values exactly.
-   */
-  key: string;
-  label: string;
-  description?: string | null;
-  /**
-   * Display order in forms (lower numbers first).
-   */
-  order?: number | null;
-  /**
-   * Whether this work type is available for selection.
-   */
-  isActive?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "expertiseAreas".
- */
-export interface ExpertiseArea {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  /**
-   * Uppercase with underscores (e.g. CLIMATE_CHANGE, MENTAL_HEALTH). Must match Prisma's ExpertiseArea enum values exactly.
-   */
-  key: string;
-  label: string;
-  description?: string | null;
-  /**
-   * Display order in forms (lower numbers first).
-   */
-  order?: number | null;
-  /**
-   * Whether this expertise area is available for selection.
-   */
-  isActive?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
- */
-export interface Author {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  name: string;
-  slug: string;
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  /**
-   * The organization this person is affiliated with.
-   */
-  organizationalAffiliation?: string | null;
-  /**
-   * Optional reverse link to a hub member (Clerk/Prisma User id). 0/99 real authors populate this today — the live tie runs the other way, via Prisma's User.sanityPersonId.
-   */
-  userId?: string | null;
-  /**
-   * Communities this person is a member of, and their role in each.
-   */
-  communityMemberships?:
-    | {
-        community: string | RegionalCommunity;
-        /**
-         * Their role or position within this community.
-         */
-        role?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "regionalCommunities".
- */
-export interface RegionalCommunity {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  name: string;
-  slug: string;
-  /**
-   * Fixed-7 region short code.
-   */
-  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
-  coverImage?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  /**
-   * Geographic boundary points.
-   */
-  boundaries?:
-    | {
-        /**
-         * @minItems 2
-         * @maxItems 2
-         */
-        point?: [number, number] | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Members and authors associated with this community.
-   */
-  members?:
-    | {
-        person: string | Author;
-        /**
-         * Their role or position within this community.
-         */
-        role?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  contact?: {
-    name?: string | null;
-    email?: string | null;
-    phone?: string | null;
-    organization?: (string | null) | Organization;
-  };
-  featured?: boolean | null;
-  active?: boolean | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "organizations".
- */
-export interface Organization {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  name: string;
-  slug: string;
-  /**
-   * e.g. WHO, UN.
-   */
-  acronym?: string | null;
-  type:
-    | 'ngo'
-    | 'research'
-    | 'university'
-    | 'government'
-    | 'international'
-    | 'company'
-    | 'community'
-    | 'foundation'
-    | 'other';
-  description?: string | null;
-  logo?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  /**
-   * Full URL, e.g. https://example.org.
-   */
-  website?: string | null;
-  email?: string | null;
-  /**
-   * Headquarters location.
-   *
-   * @minItems 2
-   * @maxItems 2
-   */
-  headquarters?: [number, number] | null;
-  /**
-   * The reusable geotag (spec A2).
-   */
-  place?: {
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    point?: [number, number] | null;
-    /**
-     * Human-readable place, e.g. "Nakuru, Kenya".
-     */
-    text?: string | null;
-    precision?: ('exact' | 'city' | 'country' | 'region') | null;
-    /**
-     * ISO alpha-3, e.g. KEN.
-     */
-    countryCode?: string | null;
-  };
-  offices?:
-    | {
-        /**
-         * @minItems 2
-         * @maxItems 2
-         */
-        location?: [number, number] | null;
-        name?: string | null;
-        address?: string | null;
-        isPrimary?: boolean | null;
-        id?: string | null;
-      }[]
-    | null;
-  locationDetails?: {
-    country?: string | null;
-    city?: string | null;
-    region?: string | null;
-  };
-  /**
-   * Which regional community does this organization belong to?
-   */
-  regionalCommunity?: (string | null) | RegionalCommunity;
-  socialMedia?: {
-    twitter?: string | null;
-    linkedin?: string | null;
-    facebook?: string | null;
-    instagram?: string | null;
-  };
-  tags?: (string | Tag)[] | null;
-  verified?: boolean | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -790,6 +336,361 @@ export interface CaseStudy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  /**
+   * The originating sanity.imageAsset _id. Unique, so Task 11 can re-run its import without creating a second copy of an asset.
+   */
+  sanityAssetId?: string | null;
+  /**
+   * Sanity's metadata.lqip base64 data URI, copied at import. Live, load-bearing data: 347/347 assets have one and 25 components pass it to next/image as blurDataURL. Payload generates no equivalent, so it has to be carried.
+   */
+  lqip?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    crop80x80?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop320x320?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop800x450?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop800x533?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop800x600?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max400x225?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max600x400?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max800x450?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max800?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max1100?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max1200x675?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  label: string;
+  /**
+   * The tag's slug (Sanity's value.current). Used as its stable reference value.
+   */
+  value: string;
+  description?: string | null;
+  category?: ('topic' | 'location' | 'method' | 'audience' | 'impact' | 'other') | null;
+  /**
+   * Hex color. The Studio curates a 6-value palette, but 60% of real tags store a legacy hex value outside it — kept as free text, not a constrained select, so import doesn't reject real data.
+   */
+  color?: string | null;
+  /**
+   * Show this tag as a Theme filter on the Atlas and other discovery surfaces.
+   */
+  useAsTheme?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  name: string;
+  slug: string;
+  /**
+   * e.g. WHO, UN.
+   */
+  acronym?: string | null;
+  type:
+    | 'ngo'
+    | 'research'
+    | 'university'
+    | 'government'
+    | 'international'
+    | 'company'
+    | 'community'
+    | 'foundation'
+    | 'other';
+  description?: string | null;
+  logo?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Full URL, e.g. https://example.org.
+   */
+  website?: string | null;
+  email?: string | null;
+  /**
+   * Headquarters location.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  headquarters?: [number, number] | null;
+  /**
+   * The reusable geotag (spec A2).
+   */
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    /**
+     * Human-readable place, e.g. "Nakuru, Kenya".
+     */
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    /**
+     * ISO alpha-3, e.g. KEN.
+     */
+    countryCode?: string | null;
+  };
+  offices?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location?: [number, number] | null;
+        name?: string | null;
+        address?: string | null;
+        isPrimary?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  locationDetails?: {
+    country?: string | null;
+    city?: string | null;
+    region?: string | null;
+  };
+  /**
+   * Which regional community does this organization belong to?
+   */
+  regionalCommunity?: (string | null) | RegionalCommunity;
+  socialMedia?: {
+    twitter?: string | null;
+    linkedin?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  verified?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regionalCommunities".
+ */
+export interface RegionalCommunity {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  name: string;
+  slug: string;
+  /**
+   * Fixed-7 region short code.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  coverImage?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Geographic boundary points.
+   */
+  boundaries?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        point?: [number, number] | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Members and authors associated with this community.
+   */
+  members?:
+    | {
+        person: string | Author;
+        /**
+         * Their role or position within this community.
+         */
+        role?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  contact?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    organization?: (string | null) | Organization;
+  };
+  featured?: boolean | null;
+  active?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  name: string;
+  slug: string;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * The organization this person is affiliated with.
+   */
+  organizationalAffiliation?: string | null;
+  /**
+   * Optional reverse link to a hub member (Clerk/Prisma User id). 0/99 real authors populate this today — the live tie runs the other way, via Prisma's User.sanityPersonId.
+   */
+  userId?: string | null;
+  /**
+   * Communities this person is a member of, and their role in each.
+   */
+  communityMemberships?:
+    | {
+        community: string | RegionalCommunity;
+        /**
+         * Their role or position within this community.
+         */
+        role?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "livedExperiences".
  */
 export interface LivedExperience {
@@ -900,6 +801,29 @@ export interface LivedExperience {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "files".
+ */
+export interface File {
+  id: string;
+  /**
+   * The originating sanity.fileAsset _id. Unique, so Task 11 can re-run its import without creating a second copy of an asset.
+   */
+  sanityAssetId?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1014,52 +938,85 @@ export interface ResearchOutput {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agendas".
+ * via the `definition` "events".
  */
-export interface Agenda {
+export interface Event {
   id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
   title: string;
   slug: string;
-  subtitle?: string | null;
   description?: string | null;
+  scope?: ('community' | 'project') | null;
+  startAt: string;
+  endAt?: string | null;
+  mode?: ('online' | 'in_person' | 'hybrid') | null;
+  /**
+   * Venue name or city (for in-person/hybrid). Not localized — venue names are proper nouns.
+   */
+  locationName?: string | null;
+  /**
+   * The reusable geotag (spec A2).
+   */
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    /**
+     * Human-readable place, e.g. "Nakuru, Kenya".
+     */
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    /**
+     * ISO alpha-3, e.g. KEN.
+     */
+    countryCode?: string | null;
+  };
+  url?: string | null;
   coverImage?: {
     asset?: (string | null) | Media;
     alt?: string | null;
   };
-  files: {
-    language: 'en' | 'es' | 'fr' | 'ar';
-    file: string | File;
-    downloadCount?: number | null;
-    lastDownloaded?: string | null;
-    id?: string | null;
-  }[];
-  agendaType:
-    | 'annual'
-    | 'research'
-    | 'policy'
-    | 'technical'
-    | 'case-study'
-    | 'whitepaper'
-    | 'guidelines'
-    | 'agenda'
-    | 'minutes'
-    | 'other';
-  publishDate: string;
-  year: number;
-  organizations?: (string | Organization)[] | null;
-  regionalCommunities?: (string | RegionalCommunity)[] | null;
-  tags?: (string | Tag)[] | null;
-  totalDownloadCount?: number | null;
-  featured?: boolean | null;
-  accessLevel?: ('public' | 'registered' | 'members') | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   * Posted after the event — flips the public page into recap mode.
    */
-  orderRank?: string | null;
+  recordingUrl?: string | null;
+  /**
+   * Prisma Collaboration id of the organising workspace, set by the app.
+   */
+  relatedCollaboration?: string | null;
+  /**
+   * If scope = project: the Collaboration id this event belongs to.
+   */
+  linkedProject?: string | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Only 'Approved' events are public. Member/project submissions start as 'Pending Review'. Sanity's `status`.
+   */
+  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
+  /**
+   * Clerk User ID of the submitter (set on in-app submission).
+   */
+  submittedBy?: string | null;
+  /**
+   * Internal notes / feedback to the submitter.
+   */
+  reviewNotes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1150,336 +1107,52 @@ export interface NewsPost {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docsChapters".
+ * via the `definition` "agendas".
  */
-export interface DocsChapter {
+export interface Agenda {
   id: string;
   /**
    * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
   sanityUpdatedAt?: string | null;
-  /**
-   * Which long-form document this chapter belongs to (e.g. 'global-agenda').
-   */
-  collection: string;
   title: string;
   slug: string;
-  /**
-   * Position in the chapter list (Cover = 1).
-   */
-  order: number;
-  /**
-   * The chapter content — headings, figures, links, callouts.
-   */
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  name: string;
-  /**
-   * Role/title, in each language.
-   */
-  jobTitle?: string | null;
-  /**
-   * Deprecated — use the localized Job Title field above.
-   */
-  title?: string | null;
-  image?: {
+  subtitle?: string | null;
+  description?: string | null;
+  coverImage?: {
     asset?: (string | null) | Media;
     alt?: string | null;
   };
-  /**
-   * The testimonial quote (rich text), in each language.
-   */
-  quote?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Deprecated — use the localized Testimonial field above.
-   */
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Rating from 1 to 5 stars.
-   */
-  rating?: number | null;
-  relatedCommunity?: (string | null) | RegionalCommunity;
-  organization?: (string | null) | Organization;
-  featured?: boolean | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "profilePrompts".
- */
-export interface ProfilePrompt {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  /**
-   * A conversational prompt members answer, e.g. 'Climate change feels personal to me because…'. Keep it open and inviting.
-   */
-  prompt: string;
-  category?: ('about' | 'collaboration' | 'lived-experience' | 'research') | null;
-  /**
-   * Only active prompts are offered to members. Turn off to retire a prompt without losing existing answers.
-   */
-  active?: boolean | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "externalSources".
- */
-export interface ExternalSource {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  /**
-   * Title of the external article (translate if needed).
-   */
-  title: string;
-  sourceUrl: string;
-  publisher: string;
-  publishedAt?: string | null;
-  excerpt?: string | null;
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
+  files: {
+    language: 'en' | 'es' | 'fr' | 'ar';
+    file: string | File;
+    downloadCount?: number | null;
+    lastDownloaded?: string | null;
+    id?: string | null;
+  }[];
+  agendaType:
+    | 'annual'
+    | 'research'
+    | 'policy'
+    | 'technical'
+    | 'case-study'
+    | 'whitepaper'
+    | 'guidelines'
+    | 'agenda'
+    | 'minutes'
+    | 'other';
+  publishDate: string;
+  year: number;
+  organizations?: (string | Organization)[] | null;
+  regionalCommunities?: (string | RegionalCommunity)[] | null;
   tags?: (string | Tag)[] | null;
-  organizations?: (string | Organization)[] | null;
-  relatedCommunity?: (string | null) | RegionalCommunity;
-  /**
-   * Authors of the original article.
-   */
-  authors?:
-    | {
-        name?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  language?: ('en' | 'es' | 'fr' | 'ar' | 'multi' | 'other') | null;
-  sourceType?: ('news' | 'research' | 'blog' | 'report' | 'press' | 'policy' | 'other') | null;
+  totalDownloadCount?: number | null;
   featured?: boolean | null;
+  accessLevel?: ('public' | 'registered' | 'members') | null;
   /**
-   * Whether this external source has been approved for display.
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
    */
-  approved?: boolean | null;
-  /**
-   * Editor who added this external source.
-   */
-  addedBy?: (string | null) | Author;
-  addedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "caseStudyDrafts".
- */
-export interface CaseStudyDraft {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  /**
-   * Clerk User ID of the draft owner.
-   */
-  userId: string;
-  lastSaved: string;
-  title?: string | null;
-  excerpt?: string | null;
-  topic?:
-    | (
-        | 'climate-environment'
-        | 'mental-health'
-        | 'community-health'
-        | 'youth-education'
-        | 'policy-governance'
-        | 'technology-innovation'
-        | 'economic-development'
-        | 'cultural-arts'
-        | 'food-agriculture'
-        | 'urban-planning'
-        | 'human-rights'
-        | 'migration'
-        | 'gender-equality'
-        | 'disaster-resilience'
-        | 'digital-inclusion'
-        | 'other'
-      )
-    | null;
-  /**
-   * Not in the Sanity schema — real data (the one draft sets 'en').
-   */
-  contentLanguage?: string | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-    caption?: string | null;
-  };
-  /**
-   * Plain tag id strings, not references — matches what the form actually saves. See collection header note.
-   */
-  tags?:
-    | {
-        value?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Not in the Sanity schema — a real duplicate of 'tags' the form also saves.
-   */
-  selectedTags?:
-    | {
-        value?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  authors?:
-    | {
-        userId?: string | null;
-        name?: string | null;
-        email?: string | null;
-        role?: ('lead' | 'coauthor' | 'contributor' | 'advisor') | null;
-        affiliation?: (string | null) | Organization;
-        id?: string | null;
-      }[]
-    | null;
-  studyPeriod?: {
-    startDate?: string | null;
-    endDate?: string | null;
-  };
-  /**
-   * Not in the Sanity schema — real data (the one draft has both fields).
-   */
-  locationText?: {
-    country?: string | null;
-    city?: string | null;
-  };
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  studyLocation?: [number, number] | null;
-  studyAreas?:
-    | {
-        /**
-         * @minItems 2
-         * @maxItems 2
-         */
-        location?: [number, number] | null;
-        name?: string | null;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  organizations?: (string | Organization)[] | null;
-  /**
-   * A plain regionalCommunity id string, not a relationship — matches what the form actually saves. See collection header note.
-   */
-  relatedCommunity?: string | null;
-  /**
-   * Additional form state information.
-   */
-  formMetadata?: {
-    currentStep?: string | null;
-    completedSections?:
-      | {
-          value?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * 0/1 populated here — see the top-level organizationName field.
-     */
-    organizationName?: string | null;
-  };
-  /**
-   * Not in the Sanity schema at this location — the real document stores it top-level, not nested under formMetadata.
-   */
-  organizationName?: string | null;
+  orderRank?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1933,6 +1606,80 @@ export interface Carousel2Block {
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel2';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  name: string;
+  /**
+   * Role/title, in each language.
+   */
+  jobTitle?: string | null;
+  /**
+   * Deprecated — use the localized Job Title field above.
+   */
+  title?: string | null;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * The testimonial quote (rich text), in each language.
+   */
+  quote?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Deprecated — use the localized Testimonial field above.
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Rating from 1 to 5 stars.
+   */
+  rating?: number | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  organization?: (string | null) | Organization;
+  featured?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2447,45 +2194,27 @@ export interface GridCaseStudyBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
+ * via the `definition` "docsChapters".
  */
-export interface Event {
+export interface DocsChapter {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
+   * Which long-form document this chapter belongs to (e.g. 'global-agenda').
+   */
+  collection: string;
   title: string;
   slug: string;
-  description?: string | null;
-  scope?: ('community' | 'project') | null;
-  startAt: string;
-  endAt?: string | null;
-  mode?: ('online' | 'in_person' | 'hybrid') | null;
   /**
-   * Venue name or city (for in-person/hybrid). Not localized — venue names are proper nouns.
+   * Position in the chapter list (Cover = 1).
    */
-  locationName?: string | null;
+  order: number;
   /**
-   * The reusable geotag (spec A2).
+   * The chapter content — headings, figures, links, callouts.
    */
-  place?: {
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    point?: [number, number] | null;
-    /**
-     * Human-readable place, e.g. "Nakuru, Kenya".
-     */
-    text?: string | null;
-    precision?: ('exact' | 'city' | 'country' | 'region') | null;
-    /**
-     * ISO alpha-3, e.g. KEN.
-     */
-    countryCode?: string | null;
-  };
-  url?: string | null;
-  coverImage?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
   body?: {
     root: {
       type: string;
@@ -2501,31 +2230,6 @@ export interface Event {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Posted after the event — flips the public page into recap mode.
-   */
-  recordingUrl?: string | null;
-  /**
-   * Prisma Collaboration id of the organising workspace, set by the app.
-   */
-  relatedCollaboration?: string | null;
-  /**
-   * If scope = project: the Collaboration id this event belongs to.
-   */
-  linkedProject?: string | null;
-  relatedCommunity?: (string | null) | RegionalCommunity;
-  /**
-   * Only 'Approved' events are public. Member/project submissions start as 'Pending Review'. Sanity's `status`.
-   */
-  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
-  /**
-   * Clerk User ID of the submitter (set on in-app submission).
-   */
-  submittedBy?: string | null;
-  /**
-   * Internal notes / feedback to the submitter.
-   */
-  reviewNotes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2591,6 +2295,302 @@ export interface Project {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalSources".
+ */
+export interface ExternalSource {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
+   * Title of the external article (translate if needed).
+   */
+  title: string;
+  sourceUrl: string;
+  publisher: string;
+  publishedAt?: string | null;
+  excerpt?: string | null;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  organizations?: (string | Organization)[] | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Authors of the original article.
+   */
+  authors?:
+    | {
+        name?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  language?: ('en' | 'es' | 'fr' | 'ar' | 'multi' | 'other') | null;
+  sourceType?: ('news' | 'research' | 'blog' | 'report' | 'press' | 'policy' | 'other') | null;
+  featured?: boolean | null;
+  /**
+   * Whether this external source has been approved for display.
+   */
+  approved?: boolean | null;
+  /**
+   * Editor who added this external source.
+   */
+  addedBy?: (string | null) | Author;
+  addedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workTypes".
+ */
+export interface WorkType {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
+   * Uppercase with underscores (e.g. RESEARCH, NGO). Must match Prisma's WorkType enum values exactly.
+   */
+  key: string;
+  label: string;
+  description?: string | null;
+  /**
+   * Display order in forms (lower numbers first).
+   */
+  order?: number | null;
+  /**
+   * Whether this work type is available for selection.
+   */
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expertiseAreas".
+ */
+export interface ExpertiseArea {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
+   * Uppercase with underscores (e.g. CLIMATE_CHANGE, MENTAL_HEALTH). Must match Prisma's ExpertiseArea enum values exactly.
+   */
+  key: string;
+  label: string;
+  description?: string | null;
+  /**
+   * Display order in forms (lower numbers first).
+   */
+  order?: number | null;
+  /**
+   * Whether this expertise area is available for selection.
+   */
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profilePrompts".
+ */
+export interface ProfilePrompt {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
+   * A conversational prompt members answer, e.g. 'Climate change feels personal to me because…'. Keep it open and inviting.
+   */
+  prompt: string;
+  category?: ('about' | 'collaboration' | 'lived-experience' | 'research') | null;
+  /**
+   * Only active prompts are offered to members. Turn off to retire a prompt without losing existing answers.
+   */
+  active?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  /**
+   * Mirrored from Prisma's User.email (or a placeholder); the Clerk auth strategy rewrites it whenever Prisma's differs.
+   */
+  email: string;
+  /**
+   * Clerk user id (also the Prisma User.id). Set by the Clerk auth strategy.
+   */
+  clerkId: string;
+  /**
+   * Mirrored from Prisma's User.role; the Clerk auth strategy rewrites it whenever Prisma's differs. Prisma stays the source of truth for authz — not editable here.
+   */
+  role: 'community_member' | 'community_editor' | 'team_editor' | 'admin';
+  updatedAt: string;
+  createdAt: string;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "caseStudyDrafts".
+ */
+export interface CaseStudyDraft {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
+   * Clerk User ID of the draft owner.
+   */
+  userId: string;
+  lastSaved: string;
+  title?: string | null;
+  excerpt?: string | null;
+  topic?:
+    | (
+        | 'climate-environment'
+        | 'mental-health'
+        | 'community-health'
+        | 'youth-education'
+        | 'policy-governance'
+        | 'technology-innovation'
+        | 'economic-development'
+        | 'cultural-arts'
+        | 'food-agriculture'
+        | 'urban-planning'
+        | 'human-rights'
+        | 'migration'
+        | 'gender-equality'
+        | 'disaster-resilience'
+        | 'digital-inclusion'
+        | 'other'
+      )
+    | null;
+  /**
+   * Not in the Sanity schema — real data (the one draft sets 'en').
+   */
+  contentLanguage?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+    caption?: string | null;
+  };
+  /**
+   * Plain tag id strings, not references — matches what the form actually saves. See collection header note.
+   */
+  tags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Not in the Sanity schema — a real duplicate of 'tags' the form also saves.
+   */
+  selectedTags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  authors?:
+    | {
+        userId?: string | null;
+        name?: string | null;
+        email?: string | null;
+        role?: ('lead' | 'coauthor' | 'contributor' | 'advisor') | null;
+        affiliation?: (string | null) | Organization;
+        id?: string | null;
+      }[]
+    | null;
+  studyPeriod?: {
+    startDate?: string | null;
+    endDate?: string | null;
+  };
+  /**
+   * Not in the Sanity schema — real data (the one draft has both fields).
+   */
+  locationText?: {
+    country?: string | null;
+    city?: string | null;
+  };
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  studyLocation?: [number, number] | null;
+  studyAreas?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location?: [number, number] | null;
+        name?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  organizations?: (string | Organization)[] | null;
+  /**
+   * A plain regionalCommunity id string, not a relationship — matches what the form actually saves. See collection header note.
+   */
+  relatedCommunity?: string | null;
+  /**
+   * Additional form state information.
+   */
+  formMetadata?: {
+    currentStep?: string | null;
+    completedSections?:
+      | {
+          value?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * 0/1 populated here — see the top-level organizationName field.
+     */
+    organizationName?: string | null;
+  };
+  /**
+   * Not in the Sanity schema at this location — the real document stores it top-level, not nested under formMetadata.
+   */
+  organizationName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -2614,28 +2614,44 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'caseStudies';
+        value: string | CaseStudy;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'livedExperiences';
+        value: string | LivedExperience;
       } | null)
     | ({
-        relationTo: 'files';
-        value: string | File;
+        relationTo: 'researchOutputs';
+        value: string | ResearchOutput;
       } | null)
     | ({
-        relationTo: 'tags';
-        value: string | Tag;
+        relationTo: 'events';
+        value: string | Event;
       } | null)
     | ({
-        relationTo: 'workTypes';
-        value: string | WorkType;
+        relationTo: 'newsPosts';
+        value: string | NewsPost;
       } | null)
     | ({
-        relationTo: 'expertiseAreas';
-        value: string | ExpertiseArea;
+        relationTo: 'agendas';
+        value: string | Agenda;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'regionalCommunityPages';
+        value: string | RegionalCommunityPage;
+      } | null)
+    | ({
+        relationTo: 'docsChapters';
+        value: string | DocsChapter;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: string | Testimonial;
       } | null)
     | ({
         relationTo: 'authors';
@@ -2650,60 +2666,44 @@ export interface PayloadLockedDocument {
         value: string | RegionalCommunity;
       } | null)
     | ({
-        relationTo: 'caseStudies';
-        value: string | CaseStudy;
-      } | null)
-    | ({
-        relationTo: 'livedExperiences';
-        value: string | LivedExperience;
-      } | null)
-    | ({
-        relationTo: 'researchOutputs';
-        value: string | ResearchOutput;
-      } | null)
-    | ({
-        relationTo: 'agendas';
-        value: string | Agenda;
-      } | null)
-    | ({
-        relationTo: 'newsPosts';
-        value: string | NewsPost;
-      } | null)
-    | ({
-        relationTo: 'docsChapters';
-        value: string | DocsChapter;
-      } | null)
-    | ({
-        relationTo: 'testimonials';
-        value: string | Testimonial;
-      } | null)
-    | ({
-        relationTo: 'profilePrompts';
-        value: string | ProfilePrompt;
+        relationTo: 'projects';
+        value: string | Project;
       } | null)
     | ({
         relationTo: 'externalSources';
         value: string | ExternalSource;
       } | null)
     | ({
+        relationTo: 'tags';
+        value: string | Tag;
+      } | null)
+    | ({
+        relationTo: 'workTypes';
+        value: string | WorkType;
+      } | null)
+    | ({
+        relationTo: 'expertiseAreas';
+        value: string | ExpertiseArea;
+      } | null)
+    | ({
+        relationTo: 'profilePrompts';
+        value: string | ProfilePrompt;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'files';
+        value: string | File;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
         relationTo: 'caseStudyDrafts';
         value: string | CaseStudyDraft;
-      } | null)
-    | ({
-        relationTo: 'pages';
-        value: string | Page;
-      } | null)
-    | ({
-        relationTo: 'regionalCommunityPages';
-        value: string | RegionalCommunityPage;
-      } | null)
-    | ({
-        relationTo: 'events';
-        value: string | Event;
-      } | null)
-    | ({
-        relationTo: 'projects';
-        value: string | Project;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2746,352 +2746,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  email?: T;
-  clerkId?: T;
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  id?: T;
-  sanityAssetId?: T;
-  lqip?: T;
-  prefix?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?:
-    | T
-    | {
-        crop80x80?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        crop320x320?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        crop800x450?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        crop800x533?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        crop800x600?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        max400x225?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        max600x400?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        max800x450?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        max800?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        max1100?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        max1200x675?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "files_select".
- */
-export interface FilesSelect<T extends boolean = true> {
-  id?: T;
-  sanityAssetId?: T;
-  prefix?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
- */
-export interface TagsSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  label?: T;
-  value?: T;
-  description?: T;
-  category?: T;
-  color?: T;
-  useAsTheme?: T;
-  orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workTypes_select".
- */
-export interface WorkTypesSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  key?: T;
-  label?: T;
-  description?: T;
-  order?: T;
-  isActive?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "expertiseAreas_select".
- */
-export interface ExpertiseAreasSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  key?: T;
-  label?: T;
-  description?: T;
-  order?: T;
-  isActive?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors_select".
- */
-export interface AuthorsSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  name?: T;
-  slug?: T;
-  image?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-      };
-  organizationalAffiliation?: T;
-  userId?: T;
-  communityMemberships?:
-    | T
-    | {
-        community?: T;
-        role?: T;
-        id?: T;
-      };
-  orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "organizations_select".
- */
-export interface OrganizationsSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  name?: T;
-  slug?: T;
-  acronym?: T;
-  type?: T;
-  description?: T;
-  logo?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-      };
-  website?: T;
-  email?: T;
-  headquarters?: T;
-  place?:
-    | T
-    | {
-        point?: T;
-        text?: T;
-        precision?: T;
-        countryCode?: T;
-      };
-  offices?:
-    | T
-    | {
-        location?: T;
-        name?: T;
-        address?: T;
-        isPrimary?: T;
-        id?: T;
-      };
-  locationDetails?:
-    | T
-    | {
-        country?: T;
-        city?: T;
-        region?: T;
-      };
-  regionalCommunity?: T;
-  socialMedia?:
-    | T
-    | {
-        twitter?: T;
-        linkedin?: T;
-        facebook?: T;
-        instagram?: T;
-      };
-  tags?: T;
-  verified?: T;
-  orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "regionalCommunities_select".
- */
-export interface RegionalCommunitiesSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  name?: T;
-  slug?: T;
-  region?: T;
-  coverImage?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-      };
-  boundaries?:
-    | T
-    | {
-        point?: T;
-        id?: T;
-      };
-  members?:
-    | T
-    | {
-        person?: T;
-        role?: T;
-        id?: T;
-      };
-  contact?:
-    | T
-    | {
-        name?: T;
-        email?: T;
-        phone?: T;
-        organization?: T;
-      };
-  featured?: T;
-  active?: T;
-  orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3295,40 +2949,41 @@ export interface ResearchOutputsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agendas_select".
+ * via the `definition` "events_select".
  */
-export interface AgendasSelect<T extends boolean = true> {
+export interface EventsSelect<T extends boolean = true> {
   id?: T;
-  sanityUpdatedAt?: T;
   title?: T;
   slug?: T;
-  subtitle?: T;
   description?: T;
+  scope?: T;
+  startAt?: T;
+  endAt?: T;
+  mode?: T;
+  locationName?: T;
+  place?:
+    | T
+    | {
+        point?: T;
+        text?: T;
+        precision?: T;
+        countryCode?: T;
+      };
+  url?: T;
   coverImage?:
     | T
     | {
         asset?: T;
         alt?: T;
       };
-  files?:
-    | T
-    | {
-        language?: T;
-        file?: T;
-        downloadCount?: T;
-        lastDownloaded?: T;
-        id?: T;
-      };
-  agendaType?: T;
-  publishDate?: T;
-  year?: T;
-  organizations?: T;
-  regionalCommunities?: T;
-  tags?: T;
-  totalDownloadCount?: T;
-  featured?: T;
-  accessLevel?: T;
-  orderRank?: T;
+  body?: T;
+  recordingUrl?: T;
+  relatedCollaboration?: T;
+  linkedProject?: T;
+  relatedCommunity?: T;
+  moderationStatus?: T;
+  submittedBy?: T;
+  reviewNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3399,175 +3054,40 @@ export interface NewsPostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docsChapters_select".
+ * via the `definition` "agendas_select".
  */
-export interface DocsChaptersSelect<T extends boolean = true> {
+export interface AgendasSelect<T extends boolean = true> {
   id?: T;
   sanityUpdatedAt?: T;
-  collection?: T;
   title?: T;
   slug?: T;
-  order?: T;
-  body?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  name?: T;
-  jobTitle?: T;
-  title?: T;
-  image?:
+  subtitle?: T;
+  description?: T;
+  coverImage?:
     | T
     | {
         asset?: T;
         alt?: T;
       };
-  quote?: T;
-  body?: T;
-  rating?: T;
-  relatedCommunity?: T;
-  organization?: T;
-  featured?: T;
-  orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "profilePrompts_select".
- */
-export interface ProfilePromptsSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  prompt?: T;
-  category?: T;
-  active?: T;
-  orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "externalSources_select".
- */
-export interface ExternalSourcesSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  title?: T;
-  sourceUrl?: T;
-  publisher?: T;
-  publishedAt?: T;
-  excerpt?: T;
-  image?:
+  files?:
     | T
     | {
-        asset?: T;
-        alt?: T;
+        language?: T;
+        file?: T;
+        downloadCount?: T;
+        lastDownloaded?: T;
+        id?: T;
       };
+  agendaType?: T;
+  publishDate?: T;
+  year?: T;
+  organizations?: T;
+  regionalCommunities?: T;
   tags?: T;
-  organizations?: T;
-  relatedCommunity?: T;
-  authors?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
-  language?: T;
-  sourceType?: T;
+  totalDownloadCount?: T;
   featured?: T;
-  approved?: T;
-  addedBy?: T;
-  addedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "caseStudyDrafts_select".
- */
-export interface CaseStudyDraftsSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  userId?: T;
-  lastSaved?: T;
-  title?: T;
-  excerpt?: T;
-  topic?: T;
-  contentLanguage?: T;
-  content?: T;
-  image?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-        caption?: T;
-      };
-  tags?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  selectedTags?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  authors?:
-    | T
-    | {
-        userId?: T;
-        name?: T;
-        email?: T;
-        role?: T;
-        affiliation?: T;
-        id?: T;
-      };
-  studyPeriod?:
-    | T
-    | {
-        startDate?: T;
-        endDate?: T;
-      };
-  locationText?:
-    | T
-    | {
-        country?: T;
-        city?: T;
-      };
-  studyLocation?: T;
-  studyAreas?:
-    | T
-    | {
-        location?: T;
-        name?: T;
-        description?: T;
-        id?: T;
-      };
-  organizations?: T;
-  relatedCommunity?: T;
-  formMetadata?:
-    | T
-    | {
-        currentStep?: T;
-        completedSections?:
-          | T
-          | {
-              value?: T;
-              id?: T;
-            };
-        organizationName?: T;
-      };
-  organizationName?: T;
+  accessLevel?: T;
+  orderRank?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4195,18 +3715,96 @@ export interface GridCaseStudyBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events_select".
+ * via the `definition` "docsChapters_select".
  */
-export interface EventsSelect<T extends boolean = true> {
+export interface DocsChaptersSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
+  collection?: T;
   title?: T;
   slug?: T;
+  order?: T;
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  name?: T;
+  jobTitle?: T;
+  title?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  quote?: T;
+  body?: T;
+  rating?: T;
+  relatedCommunity?: T;
+  organization?: T;
+  featured?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  name?: T;
+  slug?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  organizationalAffiliation?: T;
+  userId?: T;
+  communityMemberships?:
+    | T
+    | {
+        community?: T;
+        role?: T;
+        id?: T;
+      };
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations_select".
+ */
+export interface OrganizationsSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  name?: T;
+  slug?: T;
+  acronym?: T;
+  type?: T;
   description?: T;
-  scope?: T;
-  startAt?: T;
-  endAt?: T;
-  mode?: T;
-  locationName?: T;
+  logo?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  website?: T;
+  email?: T;
+  headquarters?: T;
   place?:
     | T
     | {
@@ -4215,21 +3813,77 @@ export interface EventsSelect<T extends boolean = true> {
         precision?: T;
         countryCode?: T;
       };
-  url?: T;
+  offices?:
+    | T
+    | {
+        location?: T;
+        name?: T;
+        address?: T;
+        isPrimary?: T;
+        id?: T;
+      };
+  locationDetails?:
+    | T
+    | {
+        country?: T;
+        city?: T;
+        region?: T;
+      };
+  regionalCommunity?: T;
+  socialMedia?:
+    | T
+    | {
+        twitter?: T;
+        linkedin?: T;
+        facebook?: T;
+        instagram?: T;
+      };
+  tags?: T;
+  verified?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regionalCommunities_select".
+ */
+export interface RegionalCommunitiesSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  name?: T;
+  slug?: T;
+  region?: T;
   coverImage?:
     | T
     | {
         asset?: T;
         alt?: T;
       };
-  body?: T;
-  recordingUrl?: T;
-  relatedCollaboration?: T;
-  linkedProject?: T;
-  relatedCommunity?: T;
-  moderationStatus?: T;
-  submittedBy?: T;
-  reviewNotes?: T;
+  boundaries?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  members?:
+    | T
+    | {
+        person?: T;
+        role?: T;
+        id?: T;
+      };
+  contact?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        phone?: T;
+        organization?: T;
+      };
+  featured?: T;
+  active?: T;
+  orderRank?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4267,6 +3921,352 @@ export interface ProjectsSelect<T extends boolean = true> {
       };
   tags?: T;
   orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalSources_select".
+ */
+export interface ExternalSourcesSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  title?: T;
+  sourceUrl?: T;
+  publisher?: T;
+  publishedAt?: T;
+  excerpt?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  tags?: T;
+  organizations?: T;
+  relatedCommunity?: T;
+  authors?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  language?: T;
+  sourceType?: T;
+  featured?: T;
+  approved?: T;
+  addedBy?: T;
+  addedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  label?: T;
+  value?: T;
+  description?: T;
+  category?: T;
+  color?: T;
+  useAsTheme?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workTypes_select".
+ */
+export interface WorkTypesSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  key?: T;
+  label?: T;
+  description?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expertiseAreas_select".
+ */
+export interface ExpertiseAreasSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  key?: T;
+  label?: T;
+  description?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profilePrompts_select".
+ */
+export interface ProfilePromptsSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  prompt?: T;
+  category?: T;
+  active?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  id?: T;
+  sanityAssetId?: T;
+  lqip?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        crop80x80?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop320x320?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop800x450?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop800x533?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop800x600?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max400x225?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max600x400?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max800x450?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max800?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max1100?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max1200x675?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "files_select".
+ */
+export interface FilesSelect<T extends boolean = true> {
+  id?: T;
+  sanityAssetId?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  email?: T;
+  clerkId?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "caseStudyDrafts_select".
+ */
+export interface CaseStudyDraftsSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  userId?: T;
+  lastSaved?: T;
+  title?: T;
+  excerpt?: T;
+  topic?: T;
+  contentLanguage?: T;
+  content?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+      };
+  tags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  selectedTags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  authors?:
+    | T
+    | {
+        userId?: T;
+        name?: T;
+        email?: T;
+        role?: T;
+        affiliation?: T;
+        id?: T;
+      };
+  studyPeriod?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+      };
+  locationText?:
+    | T
+    | {
+        country?: T;
+        city?: T;
+      };
+  studyLocation?: T;
+  studyAreas?:
+    | T
+    | {
+        location?: T;
+        name?: T;
+        description?: T;
+        id?: T;
+      };
+  organizations?: T;
+  relatedCommunity?: T;
+  formMetadata?:
+    | T
+    | {
+        currentStep?: T;
+        completedSections?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+        organizationName?: T;
+      };
+  organizationName?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4887,37 +4887,6 @@ export interface SiteAnnouncement {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "moderationSettings".
- */
-export interface ModerationSetting {
-  id: number;
-  /**
-   * Master switch. Off = no wordlist filtering (anonymous comments are still held for review).
-   */
-  enabled?: boolean | null;
-  /**
-   * Clearly harmful terms (slurs, threats). A comment containing one is rejected and never appears.
-   */
-  blockTerms?:
-    | {
-        term: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Borderline terms. A comment containing one is held PENDING for review rather than blocked.
-   */
-  reviewTerms?:
-    | {
-        term: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hubIllustrations".
  */
 export interface HubIllustration {
@@ -5279,6 +5248,37 @@ export interface OnboardingReview {
       submissionError?: string | null;
     };
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "moderationSettings".
+ */
+export interface ModerationSetting {
+  id: number;
+  /**
+   * Master switch. Off = no wordlist filtering (anonymous comments are still held for review).
+   */
+  enabled?: boolean | null;
+  /**
+   * Clearly harmful terms (slurs, threats). A comment containing one is rejected and never appears.
+   */
+  blockTerms?:
+    | {
+        term: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Borderline terms. A comment containing one is held PENDING for review rather than blocked.
+   */
+  reviewTerms?:
+    | {
+        term: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -5701,28 +5701,6 @@ export interface SiteAnnouncementSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "moderationSettings_select".
- */
-export interface ModerationSettingsSelect<T extends boolean = true> {
-  enabled?: T;
-  blockTerms?:
-    | T
-    | {
-        term?: T;
-        id?: T;
-      };
-  reviewTerms?:
-    | T
-    | {
-        term?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hubIllustrations_select".
  */
 export interface HubIllustrationsSelect<T extends boolean = true> {
@@ -6110,6 +6088,28 @@ export interface OnboardingReviewSelect<T extends boolean = true> {
               validationError?: T;
               submissionError?: T;
             };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "moderationSettings_select".
+ */
+export interface ModerationSettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  blockTerms?:
+    | T
+    | {
+        term?: T;
+        id?: T;
+      };
+  reviewTerms?:
+    | T
+    | {
+        term?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
