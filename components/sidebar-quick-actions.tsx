@@ -5,6 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { FolderPlus, Search, UsersRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSearchStore } from "@/stores/search-store";
+import { FEATURES } from "@/lib/features";
 import { useSidebar } from "@/components/ui/sidebar";
 
 /**
@@ -46,10 +47,14 @@ export function SidebarQuickActions() {
         <UsersRound className="size-4" aria-hidden />
         {t("quickFindPeople")}
       </Link>
-      <Link href={gate("/collaborations")} className={item} onClick={close}>
-        <FolderPlus className="size-4" aria-hidden />
-        {t("quickStartProject")}
-      </Link>
+      {/* Projects live behind the engagement programme flag; with it off the
+          page bounces to the homepage, so the button is not offered at all. */}
+      {FEATURES.engagement && (
+        <Link href={gate("/collaborations")} className={item} onClick={close}>
+          <FolderPlus className="size-4" aria-hidden />
+          {t("quickStartProject")}
+        </Link>
+      )}
     </div>
   );
 }
