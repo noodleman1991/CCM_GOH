@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T09:57:29.429Z",
+  "generatedAt": "2026-09-21T22:35:41.602Z",
   "dataset": "production_2",
   "totals": {
     "documents": 477,
@@ -98,7 +98,7 @@
   },
   "archive": {
     "file": "sanity-production_2-2026-09-21.tar.gz",
-    "bytes": 634094715,
-    "sha256": "fb6d36bccf78956769d4886c56a9926f19fc5b0f6c979f28b8be1a2235d38bed"
+    "bytes": 634094970,
+    "sha256": "ecf0a9bc98270f93b07b7bf195d142c118ebb6d1cb061ee3ecbef4dabec79874"
   }
 }
