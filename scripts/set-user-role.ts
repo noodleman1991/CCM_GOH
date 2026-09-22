@@ -14,6 +14,8 @@
  *   pnpm user:role -- --email=someone@example.org                        # dry-run, shows current role
  *   pnpm user:role -- --email=someone@example.org --role=team_editor --execute
  *   pnpm user:role -- --list                                             # show current staff
+ *   pnpm user:role -- --email=new@example.org --role=team_editor --invite --execute
+ *                       # not signed in yet: reserve the role, applied on first sign-in
  *
  * Env: DATABASE_URL from .env.local (ep-lucky-waterfall — the database the app
  * actually runs against). Override the file with --env=.env.
@@ -33,6 +35,7 @@ const EMAIL = arg("email");
 const ROLE = (arg("role") || "team_editor") as Role;
 const EXECUTE = args.includes("--execute");
 const LIST = args.includes("--list");
+const INVITE = args.includes("--invite");
 
 dotenv.config({ path: join(__dirname, "..", ENV_FILE), override: true });
 
@@ -57,6 +60,11 @@ const showStaff = async () => {
   });
   console.log(`\nStaff (${staff.length}) — these are the accounts that see the report-a-problem bubble:`);
   for (const s of staff) console.log(`  ${String(s.role).padEnd(12)} ${s.email}`);
+  const invites = await prisma.staffRoleInvite.findMany({ orderBy: { email: "asc" } });
+  if (invites.length) {
+    console.log(`Reserved for first sign-in (${invites.length}):`);
+    for (const i of invites) console.log(`  ${String(i.role).padEnd(12)} ${i.email}`);
+  }
 };
 
 console.log(`${ENV_FILE} | ${host} | ${EXECUTE ? "EXECUTE" : "dry-run"}`);
@@ -73,9 +81,27 @@ const user = await prisma.user.findUnique({
 });
 
 if (!user) {
+  const key = EMAIL!.trim().toLowerCase();
+  if (INVITE) {
+    console.log(`\n${key} has not signed in yet.`);
+    console.log(`  reserving role: ${ROLE} (applied automatically on their first sign-in)`);
+    if (EXECUTE) {
+      await prisma.staffRoleInvite.upsert({
+        where: { email: key },
+        create: { email: key, role: ROLE, createdBy: process.env.USER ?? null },
+        update: { role: ROLE },
+      });
+      console.log("  ✅ reserved");
+    } else {
+      console.log("\nRe-run with --execute to apply.");
+    }
+    await showStaff();
+    await prisma.$disconnect();
+    process.exit(0);
+  }
   console.error(`\n✗ No user with email ${EMAIL}.`);
   console.error("  A row is only created once that person signs in (Clerk sync).");
-  console.error("  Have them sign in at least once, then re-run this command.");
+  console.error("  Re-run with --invite to reserve the role for their first sign-in.");
   await showStaff();
   await prisma.$disconnect();
   process.exit(1);

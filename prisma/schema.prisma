@@ -283,6 +283,16 @@ enum ExpertiseArea {
   SOCIAL_JUSTICE
 }
 
+/// A staff role reserved for an email address before that person has ever
+/// signed in (2026-09-22). Consumed on first sign-in by the Clerk sync paths,
+/// which set User.role and delete the row. Written by `pnpm user:role`.
+model StaffRoleInvite {
+  email     String   @id
+  role      Role
+  createdAt DateTime @default(now())
+  createdBy String?
+}
+
 enum Role {
   community_member
   community_editor

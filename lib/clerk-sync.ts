@@ -1,6 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import type { User } from "@/generated/prisma"
+import { applyStaffRoleInvite } from "@/lib/staff-role-invite"
 
 /**
  * What this service (and every other writer in the codebase — the onboarding
@@ -128,6 +129,9 @@ export class ClerkSyncService {
           updatedAt: new Date(),
         }
       })
+
+      // A role reserved for this email before the first sign-in (pnpm user:role --invite).
+      await applyStaffRoleInvite(userId, identity.email)
       
       console.log(`✅ Successfully synced user ${userId} from Clerk`)
       return true

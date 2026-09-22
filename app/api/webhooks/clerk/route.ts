@@ -5,6 +5,7 @@ import { NextResponse, after } from 'next/server'
 import { deleteUserData } from '@/lib/account-deletion'
 import { syncUserSearchRecord } from '@/lib/algolia-user-sync'
 import { captureAfterResponse } from '@/lib/analytics/server'
+import { applyStaffRoleInvite } from '@/lib/staff-role-invite'
 
 /**
  * Update the user's search record after the response has been sent, and log
@@ -181,6 +182,9 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<WebhookHandle
         })
 
         console.log(`✅ Created user: ${user.id}`)
+
+        // A role reserved for this email before the first sign-in (pnpm user:role --invite).
+        await applyStaffRoleInvite(user.id, user.email)
 
         scheduleSearchIndexUpdate(user.id)
         captureAfterResponse({
