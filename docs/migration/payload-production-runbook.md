@@ -95,15 +95,15 @@ Run these locally with the production URL in the environment for the command onl
 ## 7. Cutover
 
 - [ ] Editorial freeze begins. If the export in step 0 is older than an hour, redo steps 0 and 3.
-- [ ] Give the editors their roles in the **production** hub database. Verified 2026-09-21: production has **zero** `team_editor` or `admin` accounts, so until this runs nobody can open `/admin`. Two admins, everyone else team editor:
+- [x] (done 2026-09-22: admins amit2@pm.me + hello@spiro-spero.zone, team editors e.lawrance@imperial.ac.uk + nikita.nalawade@kcl.ac.uk) Give the editors their roles in the **production** hub database. Verified 2026-09-21: production has **zero** `team_editor` or `admin` accounts, so until this runs nobody can open `/admin`. Two admins, everyone else team editor:
   ```
   pnpm user:role -- --email=<you> --role=admin --execute --env=.env
   pnpm user:role -- --email=<second admin> --role=admin --execute --env=.env
   pnpm user:role -- --email=<editor> --role=team_editor --execute --env=.env
   pnpm user:role -- --list --env=.env
   ```
-- [ ] Set `CONTENT_BACKEND=payload` and `NEXT_PUBLIC_CONTENT_BACKEND=payload` in the Vercel **production** environment.
-- [ ] `vercel --prod` (production deploys are manual by repo rule).
+- [x] (done 2026-09-22; takes effect on the next production deploy) Set `CONTENT_BACKEND=payload` and `NEXT_PUBLIC_CONTENT_BACKEND=payload` in the Vercel **production** environment.
+- [ ] `vercel deploy --prod --yes --archive=tgz` (production deploys are manual by repo rule; the tarball upload is the one that works from this machine). 2026-09-22: refused with "Not authorized" for the CLI; team is active Pro, role OWNER, project not paused, so check Deployment Protection / Spend Management, or deploy from the dashboard. Content was re-imported from a fresh export the same hour, so no re-export is needed unless Sanity is edited before the deploy.
 - [ ] Repeat the step 5 walk on the production URL; run step 6's rebuild; open `/admin` as an editor and save one document, confirm it appears on the site.
 - [ ] Redeploy the Studio once so editors see the read-only "Suggested tags" field while Sanity is retained.
 
