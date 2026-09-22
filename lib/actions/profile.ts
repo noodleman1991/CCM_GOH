@@ -28,6 +28,11 @@ export interface ProfileData {
     otherSocialLinks: Array<{platform: string, url: string}>
     role: string
     profileCompleteness: number
+    /** The owner's own setting; shown back to them on their profile so "who can
+     *  see this" is never a guess (2026-09-22). Visitors get it too, but it is
+     *  not secret: it only ever says PUBLIC on a page a visitor can open. */
+    profileVisibility?: 'PUBLIC' | 'MEMBERS' | 'PRIVATE' | null
+    isSearchable?: boolean | null
     createdAt: Date
     updatedAt: Date
     // Domain-rich fields (K4)
@@ -141,6 +146,8 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             linkedinProfile: user.linkedinProfile, // Already redacted if showSocialLinks=false
             otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
+            profileVisibility: user.profileVisibility ?? null,
+            isSearchable: user.isSearchable ?? null,
             profileCompleteness: calculateProfileCompleteness(user as unknown as Parameters<typeof calculateProfileCompleteness>[0]),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,

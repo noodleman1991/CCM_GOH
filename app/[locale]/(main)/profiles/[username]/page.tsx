@@ -13,6 +13,7 @@ import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { cn } from "@/lib/utils"
 import { RecentWorkOwnerControls } from "@/components/profile/recent-work-owner-controls"
 import { heading } from "@/lib/design-tokens"
+import { ProfileVisibilityNotice } from "@/components/profile/visibility-notice"
 import { MessageCircle } from "lucide-react"
 import { MessageUserButton } from "@/components/messaging/message-user-button"
 import { FollowButton } from "@/components/follow/follow-button"
@@ -251,6 +252,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         </div>
                     </div>
                 </div>
+
+                {/* Who can see this profile - visible only to the profile owner */}
+                {isOwnProfile && (
+                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-3">
+                        <ProfileVisibilityNotice
+                            visibility={user.profileVisibility}
+                            searchable={user.isSearchable}
+                            className="max-w-2xl"
+                        />
+                    </BlurFade>
+                )}
 
                 {/* Profile Completeness - visible only to the profile owner */}
                 {isOwnProfile && (
