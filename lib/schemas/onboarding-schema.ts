@@ -10,6 +10,8 @@ const defaultMessages = {
     usernameMax: "Username must be less than 30 characters",
     usernamePattern: "Username can only contain letters, numbers and underscores",
     bio: "Bio must be less than 500 characters",
+    headline: "Keep your headline under 120 characters",
+    motivation: "Keep this under 600 characters",
     country: "Country is required",
     city: "City is required",
     preferredLanguage: "Please choose your preferred language"
@@ -56,9 +58,9 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
         .min(3, messages.basicInfo?.username || defaultMessages.basicInfo.username)
         .max(LIMITS.profile.username, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
         .regex(/^[a-zA-Z0-9_]+$/, messages.basicInfo?.usernamePattern || defaultMessages.basicInfo.usernamePattern),
-      headline: z.string().max(LIMITS.profile.headline).optional(),
+      headline: z.string().max(LIMITS.profile.headline, messages.basicInfo?.headline || defaultMessages.basicInfo.headline).optional(),
       bio: z.string().max(LIMITS.profile.bio, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
-      motivation: z.string().max(LIMITS.profile.motivation).optional(),
+      motivation: z.string().max(LIMITS.profile.motivation, messages.basicInfo?.motivation || defaultMessages.basicInfo.motivation).optional(),
       ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),

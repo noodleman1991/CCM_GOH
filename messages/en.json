@@ -724,7 +724,16 @@
         "workStartDateRequired": "Start date is required",
         "headlineMax": "Headline must be under 120 characters",
         "keepUnder600": "Keep it under 600 characters",
-        "keepUnder1000": "Keep it under 1000 characters"
+        "keepUnder1000": "Keep it under 1000 characters",
+        "firstNameMax": "First name must be 50 characters or fewer",
+        "lastNameMax": "Last name must be 50 characters or fewer",
+        "usernameMax": "Username must be 30 characters or fewer",
+        "socialPlatformRequired": "Name the platform for this link (for example Bluesky or Mastodon)",
+        "socialUrlInvalid": "Enter the full link, starting with https://",
+        "pronounsMax": "Pronouns must be 40 characters or fewer",
+        "orcidMax": "That is longer than an ORCID iD; use the format 0000-0000-0000-0000",
+        "workTitleMax": "Keep the title under 200 characters",
+        "workDescriptionMax": "Keep the description under 1000 characters"
       }
     },
     "account": {

@@ -46,13 +46,22 @@ interface SchemaMessages {
     headlineMax: string
     keepUnder600: string
     keepUnder1000: string
+    firstNameMax: string
+    lastNameMax: string
+    usernameMax: string
+    socialPlatformRequired: string
+    socialUrlInvalid: string
+    pronounsMax: string
+    orcidMax: string
+    workTitleMax: string
+    workDescriptionMax: string
 }
 
 const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Clerk-managed fields (update Clerk directly)
-    firstName: z.string().min(1, m.firstNameRequired).max(LIMITS.profile.firstName),
-    lastName: z.string().min(1, m.lastNameRequired).max(LIMITS.profile.lastName),
-    username: z.string().min(3, m.usernameMin).max(LIMITS.profile.username)
+    firstName: z.string().min(1, m.firstNameRequired).max(LIMITS.profile.firstName, m.firstNameMax),
+    lastName: z.string().min(1, m.lastNameRequired).max(LIMITS.profile.lastName, m.lastNameMax),
+    username: z.string().min(3, m.usernameMin).max(LIMITS.profile.username, m.usernameMax)
         .regex(/^[a-zA-Z0-9_]+$/, m.usernamePattern),
 
     // Profile image
@@ -84,15 +93,15 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
     personalWebsite: z.string().url(m.urlInvalid).optional().or(z.literal("")),
     linkedinProfile: z.string().optional(),
     otherSocialLinks: z.array(z.object({
-        platform: z.string().min(1),
-        url: z.string().url()
+        platform: z.string().min(1, m.socialPlatformRequired),
+        url: z.string().url(m.socialUrlInvalid)
     })).optional(),
 
     // Recent Work
     recentWork: z.array(z.object({
         id: z.string().optional(),
-        title: z.string().min(1, m.workTitleRequired).max(LIMITS.recentWork.title),
-        description: z.string().min(1, m.workDescriptionRequired).max(LIMITS.recentWork.description),
+        title: z.string().min(1, m.workTitleRequired).max(LIMITS.recentWork.title, m.workTitleMax),
+        description: z.string().min(1, m.workDescriptionRequired).max(LIMITS.recentWork.description, m.workDescriptionMax),
         link: z.string().url(m.urlInvalid).optional().or(z.literal("")),
         startDate: z.string().min(1, m.workStartDateRequired),
         endDate: z.string().optional(),
@@ -104,7 +113,7 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
 
     // Domain-rich fields (K4)
     headline: z.string().max(LIMITS.profile.headline, m.headlineMax).optional().or(z.literal("")),
-    pronouns: z.string().max(LIMITS.profile.pronouns).optional().or(z.literal("")),
+    pronouns: z.string().max(LIMITS.profile.pronouns, m.pronounsMax).optional().or(z.literal("")),
     motivation: z.string().max(LIMITS.profile.motivation, m.keepUnder600).optional().or(z.literal("")),
     focusTopics: z.array(z.string()).optional().default([]),
     openToCollaboration: z.boolean().optional().default(false),
@@ -112,7 +121,7 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
     collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests, m.keepUnder600).optional().or(z.literal("")),
     livedExperienceStatement: z.string().max(LIMITS.profile.livedExperienceStatement, m.keepUnder1000).optional().or(z.literal("")),
     showLivedExperience: z.boolean().optional().default(false),
-    orcidId: z.string().max(LIMITS.profile.orcidId).optional().or(z.literal("")),
+    orcidId: z.string().max(LIMITS.profile.orcidId, m.orcidMax).optional().or(z.literal("")),
 
     // Privacy Controls
     isSearchable: z.boolean().default(true),
@@ -216,6 +225,15 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         headlineMax: t('validation.headlineMax'),
         keepUnder600: t('validation.keepUnder600'),
         keepUnder1000: t('validation.keepUnder1000'),
+        firstNameMax: t('validation.firstNameMax'),
+        lastNameMax: t('validation.lastNameMax'),
+        usernameMax: t('validation.usernameMax'),
+        socialPlatformRequired: t('validation.socialPlatformRequired'),
+        socialUrlInvalid: t('validation.socialUrlInvalid'),
+        pronounsMax: t('validation.pronounsMax'),
+        orcidMax: t('validation.orcidMax'),
+        workTitleMax: t('validation.workTitleMax'),
+        workDescriptionMax: t('validation.workDescriptionMax'),
     }), [t])
 
     const form = useForm<ProfileFormInput, unknown, ProfileFormValues>({

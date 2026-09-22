@@ -850,7 +850,16 @@
         "workStartDateRequired": "La fecha de inicio es obligatoria",
         "headlineMax": "El titular debe tener menos de 120 caracteres",
         "keepUnder600": "No debe superar los 600 caracteres",
-        "keepUnder1000": "No debe superar los 1000 caracteres"
+        "keepUnder1000": "No debe superar los 1000 caracteres",
+        "firstNameMax": "El nombre debe tener 50 caracteres o menos",
+        "lastNameMax": "El apellido debe tener 50 caracteres o menos",
+        "usernameMax": "El nombre de usuario debe tener 30 caracteres o menos",
+        "socialPlatformRequired": "Indica la plataforma de este enlace (por ejemplo Bluesky o Mastodon)",
+        "socialUrlInvalid": "Escribe el enlace completo, empezando por https://",
+        "pronounsMax": "Los pronombres deben tener 40 caracteres o menos",
+        "orcidMax": "Es más largo que un ORCID iD; usa el formato 0000-0000-0000-0000",
+        "workTitleMax": "El título debe tener menos de 200 caracteres",
+        "workDescriptionMax": "La descripción debe tener menos de 1000 caracteres"
       }
     },
     "account": {
