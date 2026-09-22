@@ -26,6 +26,7 @@ import { PromptsBlock } from "@/components/blocks/profile/prompts-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 import { Suspense } from "react"
 import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
+import { siteUrl } from '@/lib/seo/site-url'
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -116,7 +117,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             <JsonLd
                 data={personJsonLd({
                     name: user.displayName,
-                    url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/profiles/${user.username}`,
+                    url: `${siteUrl()}/${locale}/profiles/${user.username}`,
                     image: user.image ?? null,
                     jobTitle: user.headline ?? null,
                     affiliation: user.organization ?? null,

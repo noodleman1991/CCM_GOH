@@ -16,6 +16,7 @@ import { RelatedContent } from "@/components/content/related-content";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { JsonLd, articleJsonLd } from "@/lib/seo/json-ld";
 import { FollowButton } from "@/components/follow/follow-button";
+import { siteUrl } from "@/lib/seo/site-url"
 
 export async function generateMetadata({
   params,
@@ -34,7 +35,7 @@ export async function generateMetadata({
       title,
       description,
       type: "article",
-      images: [`${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/lived-experiences/${slug}/og.png`],
+      images: [`${siteUrl()}/${locale}/lived-experiences/${slug}/og.png`],
     },
   };
 }
@@ -77,7 +78,7 @@ export default async function LivedExperiencePage({
         data={articleJsonLd({
           title: title || "Lived experience",
           description: description || issue || undefined,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/lived-experiences/${slug}`,
+          url: `${siteUrl()}/${locale}/lived-experiences/${slug}`,
           datePublished: le.publishedAt ?? null,
           authorName: le.author?.name ?? null,
           inLanguage: locale,

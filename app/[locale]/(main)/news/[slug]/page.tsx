@@ -19,7 +19,7 @@ import { getNewsPostBySlug, getRelatedNews } from '@/lib/content/news'
 import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { FollowButton } from "@/components/follow/follow-button";
-import { absoluteUrl } from "@/lib/seo/site-url"
+import { absoluteUrl, siteUrl } from "@/lib/seo/site-url"
 
 // Generate static params for all news posts
 export async function generateMetadata({
@@ -54,7 +54,7 @@ export async function generateMetadata({
       publishedTime: newsPost.publishedAt,
       modifiedTime: newsPost._updatedAt,
       images: [
-        `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}/og.png`,
+        `${siteUrl()}/${locale}/news/${slug}/og.png`,
         ...(ogImageUrl ? [ogImageUrl] : []),
       ],
     },
@@ -98,7 +98,7 @@ export default async function NewsDetailPage({
         data={articleJsonLd({
           title,
           description: excerpt || subtitle || undefined,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}`,
+          url: `${siteUrl()}/${locale}/news/${slug}`,
           // Absolute: Next absolutises `openGraph.images` but not raw JSON-LD,
           // and under Payload this url is a relative `/payload-api/…` path.
           image: absoluteUrl(newsPost.image?.asset?.url),

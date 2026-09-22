@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
 import { imageUrl } from "@/lib/content/images";
+import { siteUrl } from "@/lib/seo/site-url"
 
 interface PostHeroImage {
   alt?: string | null;
@@ -80,7 +81,7 @@ export default function PostHero({
           <div className="flex gap-2">
             <a
               className="hover:opacity-70"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${siteUrl()}/blog/${slug?.current}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t("shareOnFacebook")}
@@ -101,7 +102,7 @@ export default function PostHero({
             </a>
             <a
               className="hover:opacity-70"
-              href={`mailto:?subject=${title}&body=${title}%0A%0A${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`mailto:?subject=${title}&body=${title}%0A%0A${siteUrl()}/blog/${slug?.current}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t("shareViaEmail")}

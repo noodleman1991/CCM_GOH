@@ -19,6 +19,7 @@ import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { sortedTags, normalizeTagColor } from '@/lib/tags'
+import { siteUrl } from '@/lib/seo/site-url'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       // Branded per-content card first (served by the sibling
       // opengraph-image route handler), the CMS photo as the fallback frame.
       images: [
-        `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/research-and-action/case-studies/${slug}/og.png`,
+        `${siteUrl()}/${locale}/research-and-action/case-studies/${slug}/og.png`,
         ...(caseStudy.image?.asset?.url ? [caseStudy.image.asset.url] : []),
       ]
     }
@@ -84,7 +85,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         data={articleJsonLd({
           title,
           description: excerpt,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/research-and-action/case-studies/${slug}`,
+          url: `${siteUrl()}/${locale}/research-and-action/case-studies/${slug}`,
           image: caseStudy.image?.asset?.url ?? null,
           datePublished: caseStudy.publishedAt ?? null,
           authorName: primaryAuthor?.name ?? null,

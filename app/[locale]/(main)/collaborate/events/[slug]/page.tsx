@@ -14,6 +14,7 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { ShareButton } from "@/components/events/share-button";
 import { CommentIsland } from "@/components/comments/comment-island";
 import { JsonLd, eventJsonLd } from "@/lib/seo/json-ld";
+import { siteUrl } from "@/lib/seo/site-url"
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,7 @@ export default async function EventPage({
         data={eventJsonLd({
           name: event.title,
           description: event.description ?? undefined,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/collaborate/events/${slug}`,
+          url: `${siteUrl()}/${locale}/collaborate/events/${slug}`,
           startDate: event.startAt ?? null,
           endDate: event.endAt ?? null,
           locationName: event.locationName ?? null,
