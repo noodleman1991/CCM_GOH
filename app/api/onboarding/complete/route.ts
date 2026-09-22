@@ -98,7 +98,7 @@ const OnboardingSchema = z.object({
   isSearchable: z.boolean().default(true),
   profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"], {
     errorMap: () => ({ message: "Please choose who can see your profile" })
-  }).default("PUBLIC"),
+  }).default("MEMBERS"),
   showEmail: z.boolean().default(false),
   showPhoneNumber: z.boolean().default(false),
   showWorkDetails: z.boolean().default(true),
@@ -246,7 +246,7 @@ export async function POST(request: NextRequest) {
               workTypes: [],
               expertiseAreas: [],
               isSearchable: true,
-              profileVisibility: 'PUBLIC',
+              profileVisibility: 'MEMBERS',
               showEmail: false,
               showPhoneNumber: false,
               showWorkDetails: true,

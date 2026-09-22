@@ -100,7 +100,7 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
     // Privacy Step (Step 4)
     privacy: z.object({
       isSearchable: z.boolean().default(true),
-      profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+      profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("MEMBERS"),
       showEmail: z.boolean().default(false),
       showPhoneNumber: z.boolean().default(false),
       showWorkDetails: z.boolean().default(true),
@@ -153,7 +153,7 @@ export const defaultOnboardingValues: OnboardingFormData = {
   recentWork: [],
   privacy: {
     isSearchable: true,
-    profileVisibility: "PUBLIC" as const,
+    profileVisibility: "MEMBERS" as const,
     showEmail: false,
     showPhoneNumber: false,
     showWorkDetails: true,

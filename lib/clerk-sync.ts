@@ -115,7 +115,7 @@ export class ClerkSyncService {
           workTypes: [],
           expertiseAreas: [],
           isSearchable: true,
-          profileVisibility: 'PUBLIC',
+          profileVisibility: 'MEMBERS',
           showEmail: false,
           showPhoneNumber: false,
           showWorkDetails: true,

@@ -58,7 +58,7 @@ model User {
   workBio              String?
   workTypes            WorkType[]
   isSearchable         Boolean           @default(true)
-  profileVisibility    ProfileVisibility @default(PUBLIC)
+  profileVisibility    ProfileVisibility @default(MEMBERS)
   showEmail            Boolean           @default(false)
   showLocation         Boolean           @default(true)
   showSocialLinks      Boolean           @default(true)

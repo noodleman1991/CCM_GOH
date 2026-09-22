@@ -116,7 +116,7 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
 
     // Privacy Controls
     isSearchable: z.boolean().default(true),
-    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("MEMBERS"),
     showEmail: z.boolean().default(false),
     showPhoneNumber: z.boolean().default(false),
     showWorkDetails: z.boolean().default(true),
@@ -253,7 +253,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             orcidId: user?.orcidId || "",
             // Privacy Controls
             isSearchable: user?.isSearchable ?? initialData?.isSearchable ?? true,
-            profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "PUBLIC",
+            profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "MEMBERS",
             showEmail: user?.showEmail ?? initialData?.showEmail ?? false,
             showPhoneNumber: user?.showPhoneNumber ?? initialData?.showPhoneNumber ?? false,
             showWorkDetails: user?.showWorkDetails ?? initialData?.showWorkDetails ?? true,
@@ -321,7 +321,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 showLivedExperience: userWithRelations.showLivedExperience ?? false,
                 orcidId: userWithRelations.orcidId || "",
                 isSearchable: user.isSearchable ?? true,
-                profileVisibility: user.profileVisibility || "PUBLIC",
+                profileVisibility: user.profileVisibility || "MEMBERS",
                 showEmail: user.showEmail ?? false,
                 showPhoneNumber: user.showPhoneNumber ?? false,
                 showWorkDetails: user.showWorkDetails ?? true,

@@ -76,7 +76,7 @@ const ProfileUpdateSchema = z.object({
     isSearchable: z.boolean().default(true),
     profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"], {
         errorMap: () => ({ message: "Please choose who can see your profile" })
-    }).default("PUBLIC"),
+    }).default("MEMBERS"),
     showEmail: z.boolean().default(false),
     showPhoneNumber: z.boolean().default(false),
     showWorkDetails: z.boolean().default(true),

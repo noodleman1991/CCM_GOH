@@ -171,7 +171,7 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<WebhookHandle
                 workTypes: [],
                 expertiseAreas: [],
                 isSearchable: true,
-                profileVisibility: 'PUBLIC',
+                profileVisibility: 'MEMBERS',
                 showEmail: false,
                 showPhoneNumber: false,
                 showWorkDetails: true,

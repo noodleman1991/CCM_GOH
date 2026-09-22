@@ -174,7 +174,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             communityMemberships: [],
             recentWork: [],
             isSearchable: true,
-            profileVisibility: 'PUBLIC',
+            profileVisibility: 'MEMBERS',
             showEmail: false,
             showPhoneNumber: false,
             showWorkDetails: true,
