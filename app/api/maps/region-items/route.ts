@@ -3,6 +3,7 @@ import { isRegionCode, RC_SLUG_TO_REGION, REGION_CODES as REGION_CODES_ORDER, RE
 import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
 import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
 import { getRegionFacetItems, getRegionHighlightItems, getRegionRecentItems, type RegionHighlightItemRow } from "@/lib/content/regions";
+import { interleaveByType } from "@/lib/maps/interleave";
 
 // Content for a selected region/facet(s), as cards for the Atlas panel (D2, E1).
 // `?region=<code>&facet=caseStudyCount|livedExpCount|newsCount|agendaCount` —
@@ -115,12 +116,9 @@ export async function GET(req: NextRequest) {
       const perType = await Promise.all(
         recentTypes.map((type) => getRegionRecentItems(type, { theme: recentTheme, q: recentQ, when: recentWhen, limit }))
       );
-      const items = perType
-        .flat()
-        .sort((a: { date: string | null }, b: { date: string | null }) =>
-          (b.date ?? "").localeCompare(a.date ?? "")
-        )
-        .slice(0, limit);
+      // One per type per pass, so a strip of six covers every active layer
+      // instead of six of whichever type happens to be newest.
+      const items = interleaveByType(perType, limit);
       return NextResponse.json({ items }, { headers: PUBLIC_CACHE });
     } catch (e) {
       console.error("[region-items] recent fetch failed:", e);
@@ -161,14 +159,7 @@ export async function GET(req: NextRequest) {
     // Single facet: preserve the original per-type-query order (newest first
     // within that type). Multiple: merge + re-sort by date so the strip reads
     // as one coherent "recent" list across the mixed types, then cap at 12.
-    const items = types.length === 1
-      ? perType[0]
-      : perType
-          .flat()
-          .sort((a: { date: string | null }, b: { date: string | null }) =>
-            (b.date ?? "").localeCompare(a.date ?? "")
-          )
-          .slice(0, 12);
+    const items = types.length === 1 ? perType[0] : interleaveByType(perType, 12);
     return NextResponse.json({ items }, { headers: PUBLIC_CACHE });
   } catch (e) {
     console.error("[region-items] fetch failed:", e);

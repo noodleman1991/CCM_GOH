@@ -85,6 +85,24 @@ const LEGACY_LAYER_ALIAS: Record<string, FacetId> = {
  * param falls back to `DEFAULT_LAYERS`. Caps at `MAX_LAYERS` (defensive — today
  * there are only 6 facets total, so this never actually truncates).
  */
+/**
+ * What tapping a "Show" chip should produce (2026-09-22).
+ *
+ * The Atlas opens with every content layer on. Plain toggling there means the
+ * first tap *removes* the type the reader just pointed at, which is the
+ * opposite of what a filter chip promises. So:
+ *
+ *   - from the default (everything on), a tap focuses that one type;
+ *   - after that, taps add and remove as usual;
+ *   - removing the last one returns to the default rather than an empty map.
+ */
+export function nextLayers(current: FacetId[], id: FacetId, defaults: FacetId[] = DEFAULT_LAYERS): FacetId[] {
+  const isDefault = current.length === defaults.length && defaults.every((d) => current.includes(d));
+  if (isDefault) return [id];
+  const next = current.includes(id) ? current.filter((l) => l !== id) : [...current, id];
+  return next.length > 0 ? next : [...defaults];
+}
+
 export function parseLayers(param: string | null): FacetId[] {
   if (!param) return [...DEFAULT_LAYERS];
   const seen = new Set<FacetId>();

@@ -14,7 +14,7 @@ import { RegionLocator } from '@/components/atlas/region-locator'
 import { regionCrop } from '@/lib/maps/region-crop'
 import type { RegionArt } from '@/lib/maps/region-art'
 import {
-  DEFAULT_LAYERS, FACETS, atlasDestination, parseLayers, facetForContentType, layerColorKeyForFacet,
+  DEFAULT_LAYERS, FACETS, atlasDestination, nextLayers, parseLayers, facetForContentType, layerColorKeyForFacet,
   type FacetId, type RegionDatumWithBreakdown, type ThemeOption,
 } from '@/lib/maps/region-facets'
 import type { PinCluster, PinItem } from '@/lib/maps/cluster-pins'
@@ -167,12 +167,11 @@ export function AtlasExplorer({
   )
 
   const toggleLayer = (id: FacetId) => {
-    if (layerSet.has(id) && layerSet.size === 1) return // last active layer — no-op
-    const next = layerSet.has(id) ? layers.filter((l) => l !== id) : [...layers, id]
-    const isDefault = next.length === 1 && next[0] === 'caseStudyCount'
-    // Drop the legacy `layer` param too so it can't linger and conflict.
+    const next = nextLayers(layers, id)
+    const isDefault = next.length === DEFAULT_LAYERS.length && DEFAULT_LAYERS.every((d) => next.includes(d))
     setParams({ layers: isDefault ? null : next.join(','), layer: null })
   }
+
 
   // ── Data ───────────────────────────────────────────────────────────────────
   const facetsQS = layers.join(',')
