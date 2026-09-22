@@ -34,13 +34,30 @@ describe("next-image-loader", () => {
   it("still resizes a CMS original, which only reaches <Image> when a call site asked for no size", () => {
     const src = "/payload-api/media/file/case-study-11-1762821605622.jpg?prefix=cms%2Fmedia";
     expect(isCmsDerivative(src)).toBe(false);
-    expect(imageLoader({ src, width: 640 })).toBe(`/_next/image?url=${encodeURIComponent(src)}&w=640&q=75`);
+    expect(imageLoader({ src, width: 640 })).toBe(src);
   });
 
-  it("sends everything else through the optimizer with Next's own query shape", () => {
-    const src = "https://cdn.sanity.io/images/p/d/a.jpg?fm=webp";
-    expect(imageLoader({ src, width: 750, quality: 85 })).toBe(`/_next/image?url=${encodeURIComponent(src)}&w=750&q=85`);
-    expect(imageLoader({ src: "/hero.png", width: 640 })).toBe(`/_next/image?url=${encodeURIComponent("/hero.png")}&w=640&q=75`);
+  it("sizes a Sanity image through Sanity's own CDN parameters", () => {
+    const out = imageLoader({ src: "https://cdn.sanity.io/images/p/d/a.jpg?fm=webp", width: 750, quality: 85 });
+    expect(out).toContain("w=750");
+    expect(out).toContain("q=85");
+    expect(out).toContain("auto=format");
+    expect(out).toContain("fm=webp");
+  });
+
+  it("sizes a Clerk avatar through Clerk's parameters", () => {
+    expect(imageLoader({ src: "https://img.clerk.com/abc", width: 96 })).toBe(
+      "https://img.clerk.com/abc?width=96&quality=75",
+    );
+  });
+
+  it("serves everything else as it is — a custom loader means /_next/image no longer exists", () => {
+    expect(imageLoader({ src: "/connecting-climate-minds-logo-white.png", width: 256 })).toBe(
+      "/connecting-climate-minds-logo-white.png",
+    );
+    expect(imageLoader({ src: "https://img.youtube.com/vi/abc/hqdefault.jpg", width: 640 })).toBe(
+      "https://img.youtube.com/vi/abc/hqdefault.jpg",
+    );
   });
 
   it("leaves SVGs alone, as the default loader does without dangerouslyAllowSVG", () => {

@@ -1,31 +1,35 @@
 /**
  * The site's `next/image` loader (next.config.mjs `images.loaderFile`).
  *
- * Two kinds of image reach `<Image>`:
+ * Setting a custom loader turns Vercel's optimizer off for the whole app:
+ * `/_next/image` stops existing, so a loader must return a URL that serves
+ * the image itself. (Measured 2026-09-22: the first version of this file fell
+ * back to `/_next/image?...` for non-CMS images and every one of them 404'd,
+ * including the sidebar logo.) Each source is therefore sized by whatever
+ * transform that source offers:
  *
- *   1. CMS derivatives. `lib/content/images.ts` has already chosen the derivative
- *      that fits the slot (one of the eleven sizes Payload cut at upload,
- *      WebP for the uncropped family), so running it through Vercel's
- *      optimizer again buys nothing and bills a transformation per width. The
- *      loader hands the URL back untouched; the browser fetches it from
- *      Payload's handler or, with `NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL` set,
- *      straight from the bucket's public hostname.
- *   2. Everything else (Sanity's CDN while it is retained, YouTube thumbnails,
- *      Clerk and Gravatar avatars, files under /public). These keep the
- *      default `/_next/image?url=&w=&q=` path, byte for byte what Next's own
- *      loader builds, so `remotePatterns` and the cache TTL still apply.
+ *   1. CMS derivatives. `lib/content/images.ts` already picked the size the
+ *      slot needs, from the eleven Payload cut at upload, so the URL is
+ *      returned untouched — no transformation is billed and, with
+ *      `NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL` set, the bytes come straight
+ *      from the bucket. A CMS *original* (a call site that asked for no size)
+ *      is left alone too; there is no optimizer left to shrink it.
+ *   2. Sanity's CDN, while Sanity is retained: its own query parameters
+ *      (`w`, `q`, `auto=format`, `fit=max`) resize and re-encode at the edge.
+ *   3. Clerk avatars: the same, through `width`/`quality`.
+ *   4. Everything else — files under /public, YouTube thumbnails, Gravatar —
+ *      is served as it is. These are small and already sized.
  *
- * One consequence to know about: for a CMS image Next still emits a `srcset`
- * with one entry per candidate width, all the same URL. Browsers fetch it
- * once; the markup is merely longer.
- *
- * This file is bundled for the browser, so the variable is read by its full
- * literal name (Next inlines NEXT_PUBLIC_ variables referenced that way) and
- * nothing server-side is imported.
+ * Bundled for the browser, so it reads the variable by its full literal name
+ * (Next inlines NEXT_PUBLIC_ variables referenced that way) and imports
+ * nothing server-side.
  */
 const PUBLIC_BASE = process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL;
 
 const HANDLER_PREFIXES = ["/payload-api/media/", "/payload-api/files/"];
+
+const SANITY_HOST = "cdn.sanity.io";
+const CLERK_HOSTS = ["img.clerk.com", "images.clerk.dev"];
 
 export function isCmsUpload(src: string, base: string | undefined = PUBLIC_BASE): boolean {
   if (HANDLER_PREFIXES.some((prefix) => src.startsWith(prefix))) return true;
@@ -35,14 +39,22 @@ export function isCmsUpload(src: string, base: string | undefined = PUBLIC_BASE)
 
 /**
  * Payload names a generated size `<stem>-<width>x<height>.<ext>`; an original
- * has no such suffix. Only a derivative is right-sized for its slot, so only a
- * derivative skips the optimizer. An original reaching `<Image>` means a call
- * site asked `imageUrl()` for no size (payload-image-source.ts, tier 3) and it
- * keeps the optimizer's resizing rather than shipping the full upload.
+ * has no such suffix. Only a derivative is right-sized for its slot.
  */
 export function isCmsDerivative(src: string): boolean {
   const path = src.split(/[?#]/)[0] ?? "";
   return /-\d+x\d+\.[a-z0-9]+$/i.test(path);
+}
+
+/** Adds query parameters to an absolute URL, keeping the ones already there. */
+function withParams(src: string, params: Record<string, string>): string {
+  try {
+    const url = new URL(src);
+    for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
+    return url.toString();
+  } catch {
+    return src;
+  }
 }
 
 interface LoaderArgs {
@@ -52,9 +64,15 @@ interface LoaderArgs {
 }
 
 export default function imageLoader({ src, width, quality }: LoaderArgs): string {
-  if (isCmsUpload(src) && isCmsDerivative(src)) return src;
-  // The default loader serves SVGs as-is unless `dangerouslyAllowSVG` is on;
-  // the optimizer would refuse them otherwise.
+  if (isCmsUpload(src)) return src;
   if (/\.svg(?:[?#]|$)/i.test(src)) return src;
-  return `/_next/image?url=${encodeURIComponent(src)}&w=${width}&q=${quality ?? 75}`;
+
+  const host = src.startsWith("http") ? (src.split("/")[2] ?? "") : "";
+  if (host === SANITY_HOST) {
+    return withParams(src, { w: String(width), q: String(quality ?? 75), auto: "format", fit: "max" });
+  }
+  if (CLERK_HOSTS.includes(host)) {
+    return withParams(src, { width: String(width), quality: String(quality ?? 75) });
+  }
+  return src;
 }
