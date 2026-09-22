@@ -47,6 +47,11 @@ export default buildConfig({
     // No local login form (Clerk is the only identity system), so the login
     // view explains itself: a sign-in button, or why this account can't enter.
     components: {
+      // The hub's mark on the login page and in the nav (payload/components/brand-logo.tsx).
+      graphics: {
+        Logo: "@/payload/components/brand-logo#BrandLogo",
+        Icon: "@/payload/components/brand-logo#BrandIcon",
+      },
       beforeLogin: ["@/payload/components/clerk-sign-in#ClerkSignIn"],
       // The review queue above the collection list (payload/components/editor-dashboard.tsx).
       beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],

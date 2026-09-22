@@ -1,18 +1,24 @@
 /**
- * What /admin/login shows (2026-09-20).
+ * What /admin/login shows (2026-09-20, redesigned 2026-09-22).
  *
  * The Users collection has `disableLocalStrategy: true` — nobody has a
  * Payload password; the Clerk strategy maps an existing hub session onto a
  * Payload user (payload/auth/clerk-strategy.ts). Payload's login view then
  * renders no form at all, so a signed-out editor saw a blank page. This
- * server component fills it: a sign-in button when there is no session, and
- * a plain explanation when there is one but the account is not an editor.
+ * server component fills it, in the hub's own language: the welcome
+ * illustration (the open door to a networked globe) beside a plain sign-in
+ * panel. A signed-in visitor without an editor role gets the same frame
+ * with an explanation instead of a button.
+ *
+ * Styling lives in app/(payload)/custom.scss under `.ccm-login`.
  *
  * `@clerk/nextjs/server` is imported lazily for the same reason the strategy
  * does: payload.config.ts is loaded by the CLI outside Next, where that
  * module cannot resolve. Inside the admin it always can.
  */
 import Link from "next/link";
+
+const FEATURES = ["Review what members submit", "Publish stories, research and news", "Edit every page in four languages"];
 
 export async function ClerkSignIn() {
   let signedIn = false;
@@ -23,43 +29,48 @@ export async function ClerkSignIn() {
     signedIn = false;
   }
 
-  const box: React.CSSProperties = { maxWidth: "28rem", margin: "0 auto", textAlign: "center", lineHeight: 1.5 };
-  const button: React.CSSProperties = {
-    display: "inline-block",
-    marginTop: "1rem",
-    padding: "0.75rem 1.25rem",
-    borderRadius: "0.375rem",
-    background: "var(--theme-elevation-900, #1f2937)",
-    color: "var(--theme-elevation-0, #fff)",
-    textDecoration: "none",
-    fontWeight: 600,
-  };
-
-  if (signedIn) {
-    return (
-      <div style={box}>
-        <h2 style={{ marginBottom: "0.5rem" }}>This account can&apos;t open the editor</h2>
-        <p>
-          You are signed in to the hub, but the admin is for accounts with the <strong>team editor</strong> or{" "}
-          <strong>admin</strong> role. Ask an administrator to change your role, then reload this page.
-        </p>
-        <Link href="/en/dashboard" style={button}>
-          Back to the hub
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div style={box}>
-      <h2 style={{ marginBottom: "0.5rem" }}>Sign in with your hub account</h2>
-      <p>
-        The editor uses the same sign-in as the site. Editors and administrators come straight back here after signing
-        in.
-      </p>
-      <Link href="/en/sign-in?redirect_url=/admin" style={button}>
-        Sign in
-      </Link>
+    <div className="ccm-login">
+      <aside className="ccm-login__aside" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element -- /public assets inside the admin; the optimizer is not wanted here */}
+        <img className="ccm-login__logo" src="/connecting-climate-minds-logo.png" alt="" />
+        {/* eslint-disable-next-line @next/next/no-img-element -- same */}
+        <img className="ccm-login__art" src="/illustrations/hubWelcomeToTheHub.webp" alt="" />
+        <ul className="ccm-login__features">
+          {FEATURES.map((f) => (
+            <li key={f}>{f}</li>
+          ))}
+        </ul>
+      </aside>
+
+      <section className="ccm-login__panel">
+        <p className="ccm-login__eyebrow">Connecting Climate Minds · Editor</p>
+        {signedIn ? (
+          <>
+            <h1 className="ccm-login__title">This account can&apos;t open the editor</h1>
+            <p className="ccm-login__lead">
+              You are signed in to the hub, but the editor is for accounts with the <strong>team editor</strong> or{" "}
+              <strong>admin</strong> role. Ask an administrator to change your role, then reload this page.
+            </p>
+            <Link href="/en/dashboard" className="ccm-login__button ccm-login__button--secondary">
+              Back to the hub
+            </Link>
+          </>
+        ) : (
+          <>
+            <h1 className="ccm-login__title">Sign in to the editor</h1>
+            <p className="ccm-login__lead">
+              Use your hub account. Editors and administrators come straight back here after signing in.
+            </p>
+            <Link href="/en/sign-in?redirect_url=/admin" className="ccm-login__button">
+              Sign in with your hub account
+            </Link>
+            <p className="ccm-login__foot">
+              Not an editor? <Link href="/en">Go to the hub</Link>
+            </p>
+          </>
+        )}
+      </section>
     </div>
   );
 }
