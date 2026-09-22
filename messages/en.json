@@ -408,6 +408,29 @@
     "unnamed": "Unnamed User",
     "editProfile": "Edit Profile",
     "contact": "Contact",
+    "visibilityNotice": {
+      "change": "Change",
+      "public": {
+        "title": "Visible to everyone",
+        "detail": "Anyone can open this page, including visitors who are not signed in. Fields you switched off stay hidden."
+      },
+      "publicHidden": {
+        "title": "Visible to everyone, not in search",
+        "detail": "Anyone with the link can open this page; it does not appear in member search."
+      },
+      "members": {
+        "title": "Members only",
+        "detail": "Only signed-in hub members can open this page."
+      },
+      "membersHidden": {
+        "title": "Members only, not in search",
+        "detail": "Only signed-in members with the link can open this page."
+      },
+      "private": {
+        "title": "Only you",
+        "detail": "Nobody else can open this page or find you in search."
+      }
+    },
     "basicInfo": "About",
     "about": "About",
     "skills": "Skills",
@@ -2022,6 +2045,7 @@
   },
   "map": {
     "title": "Explore by region",
+    "allContent": "All content",
     "facetCaseStudies": "Case studies",
     "facetMembers": "Members",
     "facetNews": "News",

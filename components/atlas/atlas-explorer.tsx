@@ -14,7 +14,7 @@ import { RegionLocator } from '@/components/atlas/region-locator'
 import { regionCrop } from '@/lib/maps/region-crop'
 import type { RegionArt } from '@/lib/maps/region-art'
 import {
-  FACETS, atlasDestination, parseLayers, facetForContentType, layerColorKeyForFacet,
+  DEFAULT_LAYERS, FACETS, atlasDestination, parseLayers, facetForContentType, layerColorKeyForFacet,
   type FacetId, type RegionDatumWithBreakdown, type ThemeOption,
 } from '@/lib/maps/region-facets'
 import type { PinCluster, PinItem } from '@/lib/maps/cluster-pins'
@@ -238,7 +238,10 @@ export function AtlasExplorer({
   }
   const activeFacetDefs = useMemo(() => FACETS.filter((f) => layerSet.has(f.id)), [layerSet])
   // Multiple active layers: join their labels ("Case studies + Lived experiences").
-  const facetLabel = activeFacetDefs.map((f) => t(f.labelKey)).join(' + ')
+  // The default (every content type) reads as one phrase rather than four names.
+  const allContentActive =
+    DEFAULT_LAYERS.length === activeFacetDefs.length && DEFAULT_LAYERS.every((id) => layerSet.has(id))
+  const facetLabel = allContentActive ? t('allContent') : activeFacetDefs.map((f) => t(f.labelKey)).join(' + ')
   const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'ar'] as const
   const localeKey = (SUPPORTED_LOCALES as readonly string[]).includes(locale)
     ? (locale as (typeof SUPPORTED_LOCALES)[number])

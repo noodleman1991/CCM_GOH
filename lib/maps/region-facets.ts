@@ -58,7 +58,13 @@ export function aggregateRegionData(
 }
 
 /** Default/never-empty layer selection: case studies alone. */
-export const DEFAULT_LAYERS: FacetId[] = ["caseStudyCount"];
+/**
+ * What the Atlas shows before anyone touches a chip: every content type that
+ * can sit on the map. Until 2026-09-22 this was case studies alone, which
+ * read as "the atlas only has case studies" (or only whichever single chip
+ * was tapped next). Members stay off by default: they have no pins.
+ */
+export const DEFAULT_LAYERS: FacetId[] = ["caseStudyCount", "livedExpCount", "newsCount", "researchOutputCount"];
 
 /** Max number of simultaneously selected layers (URL + API guard). */
 export const MAX_LAYERS = 6;

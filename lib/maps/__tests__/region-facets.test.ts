@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aggregateRegionData, atlasDestination, FACETS, FALLBACK_THEMES, parseLayers, type FacetId } from "../region-facets";
+import { aggregateRegionData, atlasDestination, DEFAULT_LAYERS, FACETS, FALLBACK_THEMES, parseLayers, type FacetId } from "../region-facets";
 import { REGION_CODES } from "../region-codes";
 
 const zero = () =>
@@ -65,12 +65,12 @@ describe("themes + destinations", () => {
 });
 
 describe("parseLayers", () => {
-  it("defaults to caseStudyCount when null", () => {
-    expect(parseLayers(null)).toEqual(["caseStudyCount"]);
+  it("defaults to every content type when null", () => {
+    expect(parseLayers(null)).toEqual(DEFAULT_LAYERS);
   });
 
-  it("defaults to caseStudyCount when empty string", () => {
-    expect(parseLayers("")).toEqual(["caseStudyCount"]);
+  it("defaults to every content type when empty string", () => {
+    expect(parseLayers("")).toEqual(DEFAULT_LAYERS);
   });
 
   it("parses a comma list of valid facet ids", () => {
@@ -89,11 +89,11 @@ describe("parseLayers", () => {
   });
 
   it("falls back to the default when every id is invalid", () => {
-    expect(parseLayers("nope,alsoNope")).toEqual(["caseStudyCount"]);
+    expect(parseLayers("nope,alsoNope")).toEqual(DEFAULT_LAYERS);
   });
 
   it("never returns an empty array", () => {
-    expect(parseLayers(",,,")).toEqual(["caseStudyCount"]);
+    expect(parseLayers(",,,")).toEqual(DEFAULT_LAYERS);
   });
 
   it("caps at 6 facets (all defined facets fit)", () => {

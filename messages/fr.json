@@ -534,6 +534,29 @@
     "unnamed": "Utilisateur sans nom",
     "editProfile": "Modifier le Profil",
     "contact": "Contact",
+    "visibilityNotice": {
+      "change": "Modifier",
+      "public": {
+        "title": "Visible par tout le monde",
+        "detail": "Tout le monde peut ouvrir cette page, y compris les visiteurs non connectés. Les champs que vous avez désactivés restent masqués."
+      },
+      "publicHidden": {
+        "title": "Visible par tout le monde, hors recherche",
+        "detail": "Toute personne ayant le lien peut ouvrir cette page ; elle n’apparaît pas dans la recherche de membres."
+      },
+      "members": {
+        "title": "Membres uniquement",
+        "detail": "Seuls les membres connectés du hub peuvent ouvrir cette page."
+      },
+      "membersHidden": {
+        "title": "Membres uniquement, hors recherche",
+        "detail": "Seuls les membres connectés disposant du lien peuvent ouvrir cette page."
+      },
+      "private": {
+        "title": "Vous seulement",
+        "detail": "Personne d’autre ne peut ouvrir cette page ni vous trouver dans la recherche."
+      }
+    },
     "basicInfo": "À propos",
     "about": "À propos",
     "skills": "Compétences",
@@ -2022,6 +2045,7 @@
   },
   "map": {
     "title": "Explorer par région",
+    "allContent": "Tout le contenu",
     "facetCaseStudies": "Études de cas",
     "facetMembers": "Membres",
     "facetNews": "Actualités",
