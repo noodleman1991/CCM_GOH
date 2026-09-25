@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { localizedText } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Mirrors sanity/schemas/documents/profile-prompt.ts. Verified against
@@ -27,12 +28,7 @@ export const ProfilePrompts: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("prompt", {
       required: true,

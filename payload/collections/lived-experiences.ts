@@ -4,6 +4,8 @@ import { moderationAfterChange } from "@/payload/hooks/moderation";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/lived-experience.ts. Verified against
@@ -88,13 +90,8 @@ export const LivedExperiences: CollectionConfig = {
   // the same call stack. See payload/hooks/moderation.ts.
   hooks: { afterChange: [moderationAfterChange("livedExperiences")] },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id, preserved verbatim so the import is idempotent.
-    },
+    // Sanity's _id, preserved verbatim so the import is idempotent.
+    documentIdField,
     sanityUpdatedAt,
     {
       name: "format",
@@ -108,7 +105,7 @@ export const LivedExperiences: CollectionConfig = {
       admin: { description: "0/56 real documents have this set — every existing document is a video by default." },
     },
     localizedText("title", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     localizedTextarea("description"),
     localizedTextarea("issue", { label: "The issue / theme" }),
     localizedTextarea("personContext", { label: "About the person sharing" }),

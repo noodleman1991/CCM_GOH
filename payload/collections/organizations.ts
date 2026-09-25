@@ -3,6 +3,8 @@ import { isAnyone, isEditor } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/organization.ts. Verified against
@@ -37,17 +39,12 @@ export const Organizations: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id, preserved verbatim so the import is idempotent and the
-      // handful of Prisma rows referencing content ids keep working.
-    },
+    // Sanity's _id, preserved verbatim so the import is idempotent and the
+    // handful of Prisma rows referencing content ids keep working.
+    documentIdField,
     sanityUpdatedAt,
     { name: "name", type: "text", required: true },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("name"),
     { name: "acronym", type: "text", admin: { description: "e.g. WHO, UN." } },
     {
       name: "type",

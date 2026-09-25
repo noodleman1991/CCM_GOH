@@ -9,6 +9,8 @@ import {
   endAfterStartValidate,
   urlValidate,
 } from "@/payload/fields/validation";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/event.ts.
@@ -74,9 +76,9 @@ export const Events: CollectionConfig = {
   // the same call stack. See payload/hooks/moderation.ts.
   hooks: { afterChange: [moderationAfterChange("events")] },
   fields: [
-    { name: "id", type: "text", required: true, admin: { hidden: true } },
+    documentIdField,
     localizedText("title", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true, maxLength: SLUG_MAX_LENGTH },
+    slugField("title", { maxLength: SLUG_MAX_LENGTH }),
     localizedTextarea("description"),
     {
       name: "scope",

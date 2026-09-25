@@ -4,6 +4,8 @@ import { moderationAfterChange } from "@/payload/hooks/moderation";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/research-output.ts. Verified against
@@ -69,15 +71,10 @@ export const ResearchOutputs: CollectionConfig = {
   // the same call stack. See payload/hooks/moderation.ts.
   hooks: { afterChange: [moderationAfterChange("researchOutputs")] },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     localizedTextarea("excerpt"),
     {
       name: "outputType",

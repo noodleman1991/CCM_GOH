@@ -2,6 +2,8 @@ import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, publishedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/author.ts. **The only cross-system tie in
@@ -52,22 +54,12 @@ export const Authors: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id, preserved verbatim — the cross-system tie Prisma's
-      // User.sanityPersonId depends on. Do not regenerate this on import.
-    },
+    // Sanity's _id, preserved verbatim — the cross-system tie Prisma's
+    // User.sanityPersonId depends on. Do not regenerate this on import.
+    documentIdField,
     sanityUpdatedAt,
     { name: "name", type: "text", required: true },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-    },
+    slugField("name"),
     imageField("image"),
     {
       name: "organizationalAffiliation",

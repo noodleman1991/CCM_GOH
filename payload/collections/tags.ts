@@ -4,6 +4,7 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { SKIP_SEARCH_SYNC, scheduleTagReindex } from "@/payload/hooks/search-sync";
 import { tagSearchTextChanged, tagSlug } from "@/lib/tags/slug";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Mirrors sanity/schemas/documents/tag.ts. Verified against production_2
@@ -80,14 +81,9 @@ export const Tags: CollectionConfig = {
     ],
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id, preserved verbatim so the import is idempotent and the
-      // handful of Prisma rows referencing content ids keep working.
-    },
+    // Sanity's _id, preserved verbatim so the import is idempotent and the
+    // handful of Prisma rows referencing content ids keep working.
+    documentIdField,
     sanityUpdatedAt,
     localizedText("label", { required: true }),
     {

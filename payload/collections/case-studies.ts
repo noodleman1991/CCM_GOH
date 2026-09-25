@@ -5,6 +5,8 @@ import { searchSyncAfterChange, searchSyncAfterDelete } from "@/payload/hooks/se
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/case-study.ts. Verified against
@@ -105,17 +107,12 @@ export const CaseStudies: CollectionConfig = {
     afterDelete: [searchSyncAfterDelete("caseStudies")],
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id, preserved verbatim so the import is idempotent and the
-      // handful of Prisma rows referencing content ids keep working.
-    },
+    // Sanity's _id, preserved verbatim so the import is idempotent and the
+    // handful of Prisma rows referencing content ids keep working.
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     localizedTextarea("excerpt"),
     localizedRichText("content", { required: true }),
     {

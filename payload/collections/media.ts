@@ -3,6 +3,7 @@ import { editorOrStaticFile, isEditor } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
 import { setUploadCacheControl } from "@/payload/hooks/upload-cache-control";
 import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Images. Mirrors Sanity's `sanity.imageAsset` — 347 of them in production_2
@@ -238,14 +239,9 @@ export const Media: CollectionConfig = {
     imageSizes: MEDIA_IMAGE_SIZES,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id (`image-<hash>-<dims>-<ext>`), preserved verbatim so the
-      // import is idempotent and every document's asset reference resolves.
-    },
+    // Sanity's _id (`image-<hash>-<dims>-<ext>`), preserved verbatim so the
+    // import is idempotent and every document's asset reference resolves.
+    documentIdField,
     {
       name: "sanityAssetId",
       type: "text",

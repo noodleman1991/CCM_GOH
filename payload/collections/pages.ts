@@ -4,6 +4,8 @@ import { imageField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { carousel2, cta1, gridRow, hero1, logoCloud1, sectionHeader, splitRow } from "@/payload/blocks";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/page.ts. Verified against production_2
@@ -75,21 +77,10 @@ export const Pages: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title"),
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      admin: { description: "Shared by all four languages of this page — it is what groups them into one document." },
-    },
+    slugField("title", { description: "Shared by all four languages of this page — it is what groups them into one document." }),
     {
       name: "blocks",
       type: "blocks",

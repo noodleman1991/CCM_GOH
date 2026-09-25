@@ -3,6 +3,7 @@ import { approvedOnly, isEditor, isEditorField } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Mirrors sanity/schemas/documents/external-source.ts. Verified against
@@ -41,12 +42,7 @@ export const ExternalSources: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title", { required: true, admin: { description: "Title of the external article (translate if needed)." } }),
     { name: "sourceUrl", type: "text", required: true, label: "Source URL" },

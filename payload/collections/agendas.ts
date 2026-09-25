@@ -4,6 +4,8 @@ import { imageField, relationshipField, uploadField } from "@/payload/blocks/sha
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { searchSyncAfterChange, searchSyncAfterDelete } from "@/payload/hooks/search-sync";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/agenda.ts. Verified against production_2
@@ -45,15 +47,10 @@ export const Agendas: CollectionConfig = {
     afterDelete: [searchSyncAfterDelete("agendas")],
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     localizedText("subtitle"),
     localizedTextarea("description"),
     imageField("coverImage"),

@@ -3,6 +3,7 @@ import { ownerOrEditor } from "@/payload/access";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Mirrors sanity/schemas/documents/case-study-draft.ts. Verified against
@@ -91,12 +92,7 @@ export const CaseStudyDrafts: CollectionConfig = {
     delete: ownerOrEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     { name: "userId", type: "text", required: true, admin: { description: "Clerk User ID of the draft owner." } },
     { name: "lastSaved", type: "date", required: true },

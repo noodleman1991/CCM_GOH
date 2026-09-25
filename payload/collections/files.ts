@@ -3,6 +3,7 @@ import { editorOrStaticFile, isEditor } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
 import { setUploadCacheControl } from "@/payload/hooks/upload-cache-control";
 import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Non-image uploads. Mirrors Sanity's `sanity.fileAsset` — 48 of them in
@@ -81,14 +82,9 @@ export const Files: CollectionConfig = {
     ],
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id (`file-<hash>-<ext>`), preserved verbatim so the import is
-      // idempotent and every document's file reference resolves.
-    },
+    // Sanity's _id (`file-<hash>-<ext>`), preserved verbatim so the import is
+    // idempotent and every document's file reference resolves.
+    documentIdField,
     {
       name: "sanityAssetId",
       type: "text",

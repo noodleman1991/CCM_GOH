@@ -197,6 +197,9 @@ export interface CaseStudy {
    */
   sanityUpdatedAt?: string | null;
   title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   excerpt?: string | null;
   content: {
@@ -495,6 +498,9 @@ export interface Organization {
    */
   sanityUpdatedAt?: string | null;
   name: string;
+  /**
+   * Leave empty and it is made from the name when you save.
+   */
   slug: string;
   /**
    * e.g. WHO, UN.
@@ -594,6 +600,9 @@ export interface RegionalCommunity {
    */
   sanityUpdatedAt?: string | null;
   name: string;
+  /**
+   * Leave empty and it is made from the name when you save.
+   */
   slug: string;
   /**
    * Fixed-7 region short code.
@@ -655,6 +664,9 @@ export interface Author {
    */
   sanityUpdatedAt?: string | null;
   name: string;
+  /**
+   * Leave empty and it is made from the name when you save.
+   */
   slug: string;
   image?: {
     asset?: (string | null) | Media;
@@ -704,6 +716,9 @@ export interface LivedExperience {
    */
   format?: ('video' | 'audio' | 'written') | null;
   title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   description?: string | null;
   issue?: string | null;
@@ -836,6 +851,9 @@ export interface ResearchOutput {
    */
   sanityUpdatedAt?: string | null;
   title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   excerpt?: string | null;
   outputType: 'report' | 'toolkit' | 'dataset-brief' | 'guideline';
@@ -943,6 +961,9 @@ export interface ResearchOutput {
 export interface Event {
   id: string;
   title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   description?: string | null;
   scope?: ('community' | 'project') | null;
@@ -1032,6 +1053,9 @@ export interface NewsPost {
   sanityUpdatedAt?: string | null;
   title: string;
   subtitle?: string | null;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   excerpt?: string | null;
   content: {
@@ -1116,6 +1140,9 @@ export interface Agenda {
    */
   sanityUpdatedAt?: string | null;
   title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   subtitle?: string | null;
   description?: string | null;
@@ -1168,7 +1195,7 @@ export interface Page {
   sanityUpdatedAt?: string | null;
   title?: string | null;
   /**
-   * Shared by all four languages of this page — it is what groups them into one document.
+   * Shared by all four languages of this page — it is what groups them into one document. Leave empty and it is made from the title when you save.
    */
   slug: string;
   /**
@@ -1832,7 +1859,7 @@ export interface RegionalCommunityPage {
   sanityUpdatedAt?: string | null;
   title: string;
   /**
-   * Shared by all four languages of this page — it is what groups them into one document.
+   * Shared by all four languages of this page — it is what groups them into one document. Leave empty and it is made from the title when you save.
    */
   slug: string;
   /**
@@ -2207,6 +2234,9 @@ export interface DocsChapter {
    */
   collection: string;
   title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
   slug: string;
   /**
    * Position in the chapter list (Cover = 1).
@@ -2240,6 +2270,9 @@ export interface DocsChapter {
 export interface Project {
   id: string;
   name: string;
+  /**
+   * Leave empty and it is made from the name when you save.
+   */
   slug: string;
   /**
    * Short form or acronym of the project name.

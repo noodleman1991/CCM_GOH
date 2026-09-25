@@ -3,6 +3,8 @@ import { isAnyone, isEditor } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { SLUG_MAX_LENGTH, urlValidate } from "@/payload/fields/validation";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/project.ts.
@@ -62,9 +64,9 @@ export const Projects: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    { name: "id", type: "text", required: true, admin: { hidden: true } },
+    documentIdField,
     localizedText("name", { required: true, label: "Project Name" }),
-    { name: "slug", type: "text", required: true, unique: true, maxLength: SLUG_MAX_LENGTH },
+    slugField("name", { maxLength: SLUG_MAX_LENGTH }),
     { name: "acronym", type: "text", admin: { description: "Short form or acronym of the project name." } },
     localizedTextarea("description"),
     {

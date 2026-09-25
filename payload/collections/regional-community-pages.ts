@@ -6,6 +6,8 @@ import { blockSlot } from "@/payload/fields/block-slot";
 import { hero1, logoCloud1 } from "@/payload/blocks";
 import { contentGrid } from "@/payload/blocks/content-grid";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/regional-community-page.ts — **the one
@@ -95,21 +97,10 @@ export const RegionalCommunityPages: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title", { required: true }),
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      admin: { description: "Shared by all four languages of this page — it is what groups them into one document." },
-    },
+    slugField("title", { description: "Shared by all four languages of this page — it is what groups them into one document." }),
     relationshipField("regionalCommunity", "regionalCommunities", {
       required: true,
       label: "Regional Community",

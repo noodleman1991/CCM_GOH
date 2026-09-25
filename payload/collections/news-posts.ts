@@ -4,6 +4,8 @@ import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { searchSyncAfterChange, searchSyncAfterDelete } from "@/payload/hooks/search-sync";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/news-post.ts. Verified against
@@ -56,16 +58,11 @@ export const NewsPosts: CollectionConfig = {
     afterDelete: [searchSyncAfterDelete("newsPosts")],
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     localizedText("title", { required: true }),
     localizedText("subtitle"),
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     localizedTextarea("excerpt"),
     localizedRichText("content", { required: true }),
     relationshipField("author", "authors", { required: true }),

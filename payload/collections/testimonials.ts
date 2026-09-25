@@ -3,6 +3,7 @@ import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
 
 /**
  * Mirrors sanity/schemas/documents/testimonial.ts. Verified against
@@ -45,12 +46,7 @@ export const Testimonials: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     { name: "name", type: "text", required: true },
     localizedText("jobTitle", { label: "Job Title", admin: { description: "Role/title, in each language." } }),

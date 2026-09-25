@@ -3,6 +3,8 @@ import { isAnyone, isEditor } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/regional-community.ts. Verified against
@@ -50,17 +52,12 @@ export const RegionalCommunities: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-      // Sanity's _id, preserved verbatim so the import is idempotent and the
-      // handful of Prisma rows referencing content ids keep working.
-    },
+    // Sanity's _id, preserved verbatim so the import is idempotent and the
+    // handful of Prisma rows referencing content ids keep working.
+    documentIdField,
     sanityUpdatedAt,
     localizedText("name", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("name"),
     {
       name: "region",
       type: "select",

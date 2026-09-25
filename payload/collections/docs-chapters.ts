@@ -1,6 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { documentIdField } from "@/payload/fields/document-id";
+import { slugField } from "@/payload/fields/slug";
 
 /**
  * Mirrors sanity/schemas/documents/docs-chapter.ts. Verified against
@@ -35,12 +37,7 @@ export const DocsChapters: CollectionConfig = {
     delete: isEditor,
   },
   fields: [
-    {
-      name: "id",
-      type: "text",
-      required: true,
-      admin: { hidden: true },
-    },
+    documentIdField,
     sanityUpdatedAt,
     {
       name: "collection",
@@ -50,7 +47,7 @@ export const DocsChapters: CollectionConfig = {
       admin: { description: "Which long-form document this chapter belongs to (e.g. 'global-agenda')." },
     },
     { name: "title", type: "text", required: true, label: "Chapter title" },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     { name: "order", type: "number", required: true, admin: { description: "Position in the chapter list (Cover = 1)." } },
     {
       name: "body",
