@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Bug, ImagePlus, Loader2, X } from "lucide-react";
+import { Bug, Camera, ImagePlus, Loader2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,16 +35,8 @@ import {
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import {
-  ACCEPTED_SCREENSHOT_TYPES,
-  AREA_VALUES,
-  MAX_SCREENSHOT_BYTES,
-  URGENCY_VALUES,
-  deriveAreaFromPath,
-  describeBrowser,
-  describeDevice,
-  describeOs,
-} from "@/lib/issue-report";
+import { ACCEPTED_SCREENSHOT_TYPES, AREA_VALUES, URGENCY_VALUES } from "@/lib/issue-report";
+import { useIssueReport, type Translate } from "@/components/issue-report/use-issue-report";
 
 /**
  * Editor-only "Report a problem" widget. Rendered by the (main) layout solely
@@ -55,35 +47,7 @@ import {
  * spreadsheet: the reporter writes two sentences and nothing else.
  */
 
-type Screenshot = { filename: string; contentType: string; dataBase64: string; previewUrl: string };
-
-type CapturedContext = {
-  url: string;
-  pageTitle: string;
-  locale: string;
-  browser: string;
-  device: string;
-  os: string;
-  viewport: string;
-  userAgent: string;
-};
-
-function captureContext(locale: string): CapturedContext {
-  const ua = typeof navigator === "undefined" ? "" : navigator.userAgent;
-  const width = typeof window === "undefined" ? 0 : window.innerWidth;
-  const height = typeof window === "undefined" ? 0 : window.innerHeight;
-  return {
-    url: typeof window === "undefined" ? "" : window.location.href,
-    pageTitle: typeof document === "undefined" ? "" : document.title,
-    locale,
-    browser: describeBrowser(ua),
-    device: describeDevice(ua, width),
-    os: describeOs(ua),
-    viewport: width && height ? `${width}×${height}` : "",
-    // Trimmed to the schema's cap; the parsed fields above carry the meaning.
-    userAgent: ua.slice(0, 500),
-  };
-}
+const noSubscription = () => () => {};
 
 export function ReportIssueWidget() {
   const t = useTranslations("issueReport");
@@ -96,156 +60,35 @@ export function ReportIssueWidget() {
   // blocks) make the server's id sequence vary per request → intermittent
   // hydration mismatch. Skipping SSR removes the server id entirely; a floating
   // button that needs JS to do anything loses nothing by appearing post-mount.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const [open, setOpen] = useState(false);
-  const [summary, setSummary] = useState("");
-  const [whatHappened, setWhatHappened] = useState("");
-  const [whatShouldHappen, setWhatShouldHappen] = useState("");
-  const [urgency, setUrgency] = useState<string>("annoying");
-  const [area, setArea] = useState<string>("other");
-  const [wasSignedIn, setWasSignedIn] = useState(true);
-  const [screenshot, setScreenshot] = useState<Screenshot | null>(null);
-  const [context, setContext] = useState<CapturedContext | null>(null);
-  const [sending, setSending] = useState(false);
+  const mounted = useSyncExternalStore(noSubscription, () => true, () => false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Snapshot the page the moment the panel opens, before any of it can change.
-  useEffect(() => {
-    if (!open) return;
-    setContext(captureContext(locale));
-    setArea(deriveAreaFromPath(pathname || "/"));
-  }, [open, locale, pathname]);
-
-  // Object URLs for the preview thumbnail must be released by hand.
-  useEffect(() => {
-    return () => {
-      if (screenshot?.previewUrl) URL.revokeObjectURL(screenshot.previewUrl);
-    };
-  }, [screenshot?.previewUrl]);
-
-  const reset = useCallback(() => {
-    setSummary("");
-    setWhatHappened("");
-    setWhatShouldHappen("");
-    setUrgency("annoying");
-    setWasSignedIn(true);
-    setScreenshot((previous) => {
-      if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
-      return null;
-    });
-  }, []);
-
-  const acceptImage = useCallback(
-    (file: File) => {
-      if (!(ACCEPTED_SCREENSHOT_TYPES as readonly string[]).includes(file.type)) {
-        toast.error(t("screenshotWrongType"));
-        return;
-      }
-      if (file.size > MAX_SCREENSHOT_BYTES) {
-        toast.error(t("screenshotTooBig", { mb: Math.round(MAX_SCREENSHOT_BYTES / 1024 / 1024) }));
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = String(reader.result || "");
-        const dataBase64 = result.slice(result.indexOf(",") + 1);
-        // Created outside the updater: React may run updaters twice in dev, and
-        // a second createObjectURL would leak the first blob URL.
-        const previewUrl = URL.createObjectURL(file);
-        setScreenshot((previous) => {
-          if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
-          return {
-            filename: file.name || "screenshot.png",
-            contentType: file.type,
-            dataBase64,
-            previewUrl,
-          };
-        });
-      };
-      reader.onerror = () => toast.error(t("screenshotFailed"));
-      reader.readAsDataURL(file);
-    },
-    [t]
-  );
-
-  // Paste straight from the OS screenshot shortcut — the whole point.
-  const onPaste = useCallback(
-    (event: React.ClipboardEvent) => {
-      const file = Array.from(event.clipboardData?.files || [])[0];
-      if (file && file.type.startsWith("image/")) {
-        event.preventDefault();
-        acceptImage(file);
-      }
-    },
-    [acceptImage]
-  );
-
-  const onDrop = useCallback(
-    (event: React.DragEvent) => {
-      const file = Array.from(event.dataTransfer?.files || [])[0];
-      if (file && file.type.startsWith("image/")) {
-        event.preventDefault();
-        acceptImage(file);
-      }
-    },
-    [acceptImage]
-  );
-
-  const canSubmit = summary.trim().length >= 3 && whatHappened.trim().length >= 3 && !sending;
-
-  const submit = useCallback(async () => {
-    if (!canSubmit) return;
-    setSending(true);
-    try {
-      const response = await fetch("/api/issue-reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          summary,
-          whatHappened,
-          whatShouldHappen,
-          urgency,
-          area,
-          wasSignedIn,
-          context: context ?? captureContext(locale),
-          screenshot: screenshot
-            ? {
-                filename: screenshot.filename,
-                contentType: screenshot.contentType,
-                dataBase64: screenshot.dataBase64,
-              }
-            : null,
-        }),
-      });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        toast.error(payload?.error || t("errorGeneric"));
-        return;
-      }
-      toast.success(t("successTitle"), { description: t("successBody") });
-      reset();
-      setOpen(false);
-    } catch {
-      toast.error(t("errorGeneric"));
-    } finally {
-      setSending(false);
-    }
-  }, [
-    canSubmit,
+  const report = useIssueReport({ t: t as Translate, notify: toast, locale, pathname: pathname || "/" });
+  const {
+    open,
+    setOpen,
     summary,
+    setSummary,
     whatHappened,
+    setWhatHappened,
     whatShouldHappen,
+    setWhatShouldHappen,
     urgency,
+    setUrgency,
     area,
+    setArea,
     wasSignedIn,
-    context,
-    locale,
+    setWasSignedIn,
     screenshot,
-    reset,
-    t,
-  ]);
+    removeScreenshot,
+    acceptImage,
+    onPaste,
+    onDrop,
+    context,
+    canSubmit,
+    sending,
+    submit,
+  } = report;
 
   const trigger = (
     <Button
@@ -374,30 +217,42 @@ export function ReportIssueWidget() {
               size="icon"
               variant="ghost"
               className="size-8"
-              onClick={() =>
-                setScreenshot((previous) => {
-                  if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
-                  return null;
-                })
-              }
+              onClick={removeScreenshot}
               aria-label={t("screenshotRemove")}
             >
               <X className="size-4" aria-hidden />
             </Button>
           </div>
         ) : (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="justify-start gap-2"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <ImagePlus className="size-4" aria-hidden />
-            {t("screenshotAdd")}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {report.canCapture && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={report.capture}
+                disabled={report.capturing}
+              >
+                <Camera className="size-4" aria-hidden />
+                {t("screenshotCapture")}
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <ImagePlus className="size-4" aria-hidden />
+              {t("screenshotAdd")}
+            </Button>
+          </div>
         )}
-        <p className="text-xs text-muted-foreground">{t("screenshotHint")}</p>
+        <p className="text-xs text-muted-foreground">
+          {report.canCapture ? t("screenshotHintCapture") : t("screenshotHint")}
+        </p>
         <input
           ref={fileInputRef}
           type="file"

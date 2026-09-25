@@ -186,3 +186,149 @@
 .template-default h3 {
   font-family: var(--ccm-font-heading);
 }
+
+/* ------------------------------------------------------- report a problem */
+/* payload/components/report-issue-bubble.tsx. Surfaces use Payload's theme
+   tokens so the panel follows the admin's light/dark setting; the site's sea
+   blue marks the actions, as on the login page. */
+
+.ccm-report__trigger {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 999px;
+  background: var(--theme-elevation-0);
+  color: var(--theme-text);
+  font: 700 0.85rem/1 var(--ccm-font-body);
+  box-shadow: 0 10px 30px -12px rgba(11, 49, 96, 0.35);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+  &:hover { border-color: var(--ccm-water); color: var(--ccm-sea); }
+  &:focus-visible { outline: 3px solid var(--ccm-water); outline-offset: 2px; }
+  @media (max-width: 40rem) {
+    padding: 0.65rem;
+    .ccm-report__trigger-label { display: none; }
+  }
+}
+
+.ccm-report {
+  width: min(36rem, calc(100vw - 2rem));
+  max-height: 88dvh;
+  padding: 0;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 1rem;
+  background: var(--theme-elevation-0);
+  color: var(--theme-text);
+  box-shadow: 0 24px 60px -24px rgba(11, 49, 96, 0.45);
+  &::backdrop { background: rgba(11, 49, 96, 0.35); }
+
+  &__panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    font-family: var(--ccm-font-body);
+  }
+  &__header {
+    position: relative;
+    padding-inline-end: 2rem;
+    h2 { margin: 0 0 0.35rem; font-size: 1.25rem; }
+    p { margin: 0; color: var(--theme-elevation-600); font-size: 0.9rem; line-height: 1.5; }
+  }
+  &__close {
+    position: absolute;
+    inset-block-start: -0.25rem;
+    inset-inline-end: -0.25rem;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--theme-elevation-600);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    &:hover { background: var(--theme-elevation-100); }
+  }
+  &__field {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+    > span, legend { font-weight: 700; font-size: 0.85rem; padding: 0; }
+    small { color: var(--theme-elevation-600); font-size: 0.78rem; line-height: 1.45; }
+    input:not([type="file"]), textarea, select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--theme-elevation-150);
+      border-radius: var(--ccm-radius);
+      background: var(--theme-input-bg, var(--theme-elevation-0));
+      color: var(--theme-text);
+      font: inherit;
+      font-size: 0.95rem;
+      &:focus { outline: 2px solid var(--ccm-water); outline-offset: 0; border-color: transparent; }
+    }
+    textarea { resize: vertical; }
+  }
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  &__chip {
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--theme-text);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    &:hover { border-color: var(--ccm-water); }
+    &[aria-pressed="true"] { background: var(--ccm-sea); border-color: var(--ccm-sea); color: #fff; }
+    &:disabled { opacity: 0.55; cursor: progress; }
+  }
+  &__shot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--ccm-radius);
+    img { width: 6rem; height: 4rem; object-fit: cover; border-radius: 0.4rem; }
+    span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem; color: var(--theme-elevation-600); }
+    button { border: 0; background: transparent; color: var(--theme-elevation-600); font-size: 1.3rem; cursor: pointer; }
+  }
+  &__context {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--ccm-radius);
+    background: var(--theme-elevation-50);
+    color: var(--theme-elevation-600);
+    font-size: 0.78rem;
+  }
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    @media (max-width: 40rem) { flex-direction: column-reverse; }
+  }
+  &__primary, &__secondary {
+    padding: 0.7rem 1.2rem;
+    border: 0;
+    border-radius: var(--ccm-radius);
+    font: 700 0.9rem/1 var(--ccm-font-body);
+    cursor: pointer;
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    &:focus-visible { outline: 3px solid var(--ccm-water); outline-offset: 2px; }
+  }
+  &__primary { background: var(--ccm-sea); color: #fff; &:hover:not(:disabled) { background: var(--ccm-midnight); } }
+  &__secondary { background: transparent; color: var(--theme-text); &:hover:not(:disabled) { background: var(--theme-elevation-100); } }
+}

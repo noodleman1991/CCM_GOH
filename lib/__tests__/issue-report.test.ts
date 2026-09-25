@@ -47,6 +47,11 @@ describe("deriveAreaFromPath", () => {
     expect(deriveAreaFromPath("/en/collaborations/abc")).toBe("collaborations");
   });
 
+  it("files reports from the Payload admin under the CMS", () => {
+    expect(deriveAreaFromPath("/admin")).toBe("cms");
+    expect(deriveAreaFromPath("/admin/collections/newsPosts/create")).toBe("cms");
+  });
+
   it("falls back to 'other' rather than guessing", () => {
     expect(deriveAreaFromPath("/en/some-cms-page")).toBe("other");
     expect(deriveAreaFromPath("")).toBe("other");

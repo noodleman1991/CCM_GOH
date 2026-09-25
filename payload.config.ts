@@ -55,6 +55,8 @@ export default buildConfig({
       beforeLogin: ["@/payload/components/clerk-sign-in#ClerkSignIn"],
       // The review queue above the collection list (payload/components/editor-dashboard.tsx).
       beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],
+      // The hub's "Report a problem" bubble, on every signed-in admin page.
+      header: ["@/payload/components/report-issue#ReportIssue"],
     },
   },
   // The REST API must not mount at /api — this app already has 71 route

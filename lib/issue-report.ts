@@ -37,13 +37,17 @@ export const AREA_VALUES = [
   "auth",
   "onboarding",
   "studio",
+  "cms",
   "navigation",
   "whole-site",
   "other",
 ] as const;
 
-/** Screenshots ride along as an email attachment, so keep them modest. */
-export const MAX_SCREENSHOT_BYTES = 4 * 1024 * 1024;
+/**
+ * Screenshots ride along as an email attachment, and the report travels as
+ * base64 JSON: 3MB becomes ~4MB, inside Vercel's 4.5MB request body limit.
+ */
+export const MAX_SCREENSHOT_BYTES = 3 * 1024 * 1024;
 /** base64 inflates by ~4/3; allow headroom over MAX_SCREENSHOT_BYTES. */
 const MAX_SCREENSHOT_BASE64 = Math.ceil((MAX_SCREENSHOT_BYTES * 4) / 3) + 1024;
 
@@ -80,6 +84,7 @@ const AREA_BY_PATH: ReadonlyArray<readonly [RegExp, string]> = [
   [/^\/(sign-in|sign-up)/, "auth"],
   [/^\/onboarding/, "onboarding"],
   [/^\/studio/, "studio"],
+  [/^\/admin/, "cms"],
 ];
 
 /**

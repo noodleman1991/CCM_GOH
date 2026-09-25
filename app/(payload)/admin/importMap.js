@@ -23,6 +23,7 @@ import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997e
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ModerationActions as ModerationActions_57f9ce9aedc9389a0e52a58f32510b64 } from '@/payload/components/moderation-actions'
+import { ReportIssue as ReportIssue_7563ac9ec89234b97cf5859415a7095d } from '@/payload/components/report-issue'
 import { BrandIcon as BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { BrandLogo as BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { EditorDashboard as EditorDashboard_5df917fba379ec882678fdcecffedd2d } from '@/payload/components/editor-dashboard'
@@ -57,6 +58,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/payload/components/moderation-actions#ModerationActions": ModerationActions_57f9ce9aedc9389a0e52a58f32510b64,
+  "@/payload/components/report-issue#ReportIssue": ReportIssue_7563ac9ec89234b97cf5859415a7095d,
   "@/payload/components/brand-logo#BrandIcon": BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/brand-logo#BrandLogo": BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/editor-dashboard#EditorDashboard": EditorDashboard_5df917fba379ec882678fdcecffedd2d,
