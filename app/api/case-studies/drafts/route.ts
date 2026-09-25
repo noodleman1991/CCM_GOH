@@ -22,7 +22,8 @@ const MAX_DRAFT_BODY_BYTES = 200 * 1024
 const draftIdSchema = z.string().min(1).max(200)
 
 const saveBodySchema = z.object({
-    draftId: draftIdSchema.optional(),
+    // The form holds "no draft yet" as null, so its first autosave sends null.
+    draftId: draftIdSchema.nullish(),
     draftData: caseStudyDraftSchema,
 })
 
@@ -96,7 +97,7 @@ export async function POST(request: NextRequest) {
         }
 
         const draftData = stripServerOwnedDraftKeys(parsed.data.draftData)
-        const result = await saveCaseStudyDraft(userId, parsed.data.draftId, draftData)
+        const result = await saveCaseStudyDraft(userId, parsed.data.draftId ?? undefined, draftData)
 
         return NextResponse.json({ id: result.id })
     } catch (error) {

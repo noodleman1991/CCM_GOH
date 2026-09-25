@@ -64,6 +64,12 @@ describe("POST /api/case-studies/drafts", () => {
     expect(saveDraft).toHaveBeenCalledTimes(1);
   });
 
+  it("accepts the form's first autosave, which sends draftId: null", async () => {
+    const res = await POST(post({ draftId: null, draftData: GOOD_DRAFT }));
+    expect(res.status).toBe(200);
+    expect(saveDraft).toHaveBeenCalledWith("user_drafts", undefined, expect.any(Object));
+  });
+
   it("strips the keys the server owns before the CMS write", async () => {
     const res = await POST(
       post({

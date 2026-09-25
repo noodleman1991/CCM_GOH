@@ -1558,6 +1558,13 @@ function toPoint(value: { lat: number; lng: number } | undefined): number[] | un
  * difference Task 9 recorded, and the same reason it is unobservable: the
  * submission form writes every locale it holds on every save.
  */
+/** The form starts both dates as "", which Postgres refuses as a timestamp. */
+function studyPeriodData(value: unknown): { startDate: string | null; endDate: string | null } | undefined {
+  if (!isRow(value)) return undefined;
+  const date = (entry: unknown) => (typeof entry === "string" && entry.trim() ? entry : null);
+  return { startDate: date(value.startDate), endDate: date(value.endDate) };
+}
+
 function payloadData(draft: CaseStudyDraft): Record<string, unknown> {
   const data: Record<string, unknown> = {
     title: draft.title.en ?? "",
@@ -1579,7 +1586,8 @@ function payloadData(draft: CaseStudyDraft): Record<string, unknown> {
   };
   if (draft.excerpt?.en) data.excerpt = draft.excerpt.en;
   if (draft.suggestedTags && draft.suggestedTags.length > 0) data.suggestedTags = draft.suggestedTags;
-  if (draft.studyPeriod) data.studyPeriod = draft.studyPeriod;
+  const studyPeriod = studyPeriodData(draft.studyPeriod);
+  if (studyPeriod) data.studyPeriod = studyPeriod;
   if (draft.locationText) data.locationText = draft.locationText;
   const point = toPoint(draft.studyLocation);
   if (point) data.studyLocation = point;
@@ -1707,6 +1715,10 @@ function draftPayloadData(draftData: Record<string, unknown>): Record<string, un
     const value = draftData[field];
     if (value === undefined) continue;
     switch (field) {
+      case "title":
+      case "excerpt":
+        data[field] = isRow(value) ? (text(value.en) ?? null) : value;
+        break;
       case "content":
         data.content = value ? portableTextToLexical(value as RichText) : null;
         break;
@@ -1714,6 +1726,11 @@ function draftPayloadData(draftData: Record<string, unknown>): Record<string, un
       case "selectedTags":
         data[field] = toValueRows(value) ?? [];
         break;
+      case "studyPeriod": {
+        const studyPeriod = studyPeriodData(value);
+        if (studyPeriod) data.studyPeriod = studyPeriod;
+        break;
+      }
       case "studyLocation": {
         const point = isRow(value) ? toPoint(value as { lat: number; lng: number }) : undefined;
         if (point) data.studyLocation = point;
@@ -1832,17 +1849,35 @@ export async function findOwnedDraftId(userId: string, draftId: string): Promise
   return row ? String(row.id ?? "") : null;
 }
 
+/** The form sends `title`/`excerpt` as `{en, es, fr, ar}`; Payload writes one
+ *  locale per call. On an update a blanked language is cleared, not kept. */
+async function writeDraftLocales(id: string, draftData: Record<string, unknown>, clearEmpty: boolean): Promise<void> {
+  for (const locale of ["es", "fr", "ar"] as const) {
+    const data: Record<string, unknown> = {};
+    for (const field of ["title", "excerpt"] as const) {
+      const value = draftData[field];
+      if (!isRow(value) || !(locale in value)) continue;
+      const translated = text(value[locale]);
+      if (translated) data[field] = translated;
+      else if (clearEmpty) data[field] = null;
+    }
+    if (Object.keys(data).length > 0) await updateDocument({ collection: "caseStudyDrafts", id, locale, data });
+  }
+}
+
 export async function createCaseStudyDraft(
   userId: string,
   id: string,
   draftData: Record<string, unknown>,
   lastSaved: string,
 ): Promise<{ id: string }> {
-  return createDocument({
+  const created = await createDocument({
     collection: "caseStudyDrafts",
     locale: "en",
     data: { ...draftPayloadData(draftData), id, userId, lastSaved },
   });
+  await writeDraftLocales(created.id, draftData, false);
+  return created;
 }
 
 export async function updateCaseStudyDraft(
@@ -1856,6 +1891,7 @@ export async function updateCaseStudyDraft(
     locale: "en",
     data: { ...draftPayloadData(draftData), lastSaved },
   });
+  await writeDraftLocales(draftId, draftData, true);
 }
 
 export async function deleteCaseStudyDraft(draftId: string): Promise<void> {

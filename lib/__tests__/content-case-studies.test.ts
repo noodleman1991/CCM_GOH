@@ -23,6 +23,7 @@ vi.mock("@/lib/content/internal/payload-source", () => ({
   queryRaw: vi.fn(),
   queryLive: vi.fn(),
   uploadFileAsset: vi.fn(),
+  uploadImageAsset: vi.fn(),
   createDocument: vi.fn(),
   updateDocument: vi.fn(),
   deleteDocument: vi.fn(),
@@ -58,6 +59,7 @@ import {
   queryRaw as payloadQueryRaw,
   queryLive as payloadQueryLive,
   uploadFileAsset as payloadUploadFileAsset,
+  uploadImageAsset as payloadUploadImageAsset,
   createDocument as payloadCreateDocument,
   updateDocument as payloadUpdateDocument,
   deleteDocument as payloadDeleteDocument,
@@ -112,6 +114,7 @@ const mockPayloadQueryPreviewable = vi.mocked(payloadQueryPreviewable);
 const mockPayloadQueryRaw = vi.mocked(payloadQueryRaw);
 const mockPayloadQueryLive = vi.mocked(payloadQueryLive);
 const mockPayloadUpload = vi.mocked(payloadUploadFileAsset);
+const mockPayloadImageUpload = vi.mocked(payloadUploadImageAsset);
 const mockPayloadCreate = vi.mocked(payloadCreateDocument);
 const mockPayloadUpdate = vi.mocked(payloadUpdateDocument);
 const mockPayloadDelete = vi.mocked(payloadDeleteDocument);
@@ -130,6 +133,7 @@ beforeEach(() => {
   mockPayloadQueryRaw.mockReset();
   mockPayloadQueryLive.mockReset();
   mockPayloadUpload.mockReset();
+  mockPayloadImageUpload.mockReset();
   mockPayloadCreate.mockReset();
   mockPayloadUpdate.mockReset();
   mockPayloadDelete.mockReset();
@@ -1185,6 +1189,20 @@ describe("case studies, answered by Payload", () => {
       );
     });
 
+    it("a submission with blank study dates writes no date, not an empty string Postgres rejects", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "new-id" } as never);
+      await submitCaseStudy({
+        userId: "u1",
+        title: { en: "Dates left blank" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: ["tag-1"],
+        studyPeriod: { startDate: "", endDate: "2024-11-21" },
+      });
+      const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.studyPeriod).toEqual({ startDate: null, endDate: "2024-11-21" });
+    });
+
     it("updateCaseStudy renames a `status` patch key rather than writing a column Payload lacks", async () => {
       await updateCaseStudy("cs1", { notifiedStatus: "approved" } as never);
       expect(mockPayloadUpdate).toHaveBeenCalledWith(
@@ -1418,6 +1436,40 @@ describe("case studies, answered by Payload", () => {
       );
     });
 
+    it("stores a draft's title and excerpt per language, not the whole object in English", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "d-new" } as never);
+      await saveCaseStudyDraft("u1", undefined, {
+        title: { en: "Draft", es: "Borrador", fr: "", ar: "" },
+        excerpt: { en: "Short", es: "", fr: "Court", ar: "" },
+      });
+      const [{ data, locale }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown>; locale: string }];
+      expect(locale).toBe("en");
+      expect(data.title).toBe("Draft");
+      expect(data.excerpt).toBe("Short");
+      expect(mockPayloadUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({ collection: "caseStudyDrafts", id: "d-new", locale: "es", data: { title: "Borrador" } }),
+      );
+      expect(mockPayloadUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({ collection: "caseStudyDrafts", id: "d-new", locale: "fr", data: { excerpt: "Court" } }),
+      );
+      expect(mockPayloadUpdate).toHaveBeenCalledTimes(2);
+    });
+
+    it("an autosave over an existing draft writes each language too", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "d1" }] } as never);
+      await saveCaseStudyDraft("u1", "d1", { title: { en: "Updated", ar: "محدث" } });
+      const calls = mockPayloadUpdate.mock.calls.map(([arg]) => arg as { locale: string; data: Record<string, unknown> });
+      expect(calls.find((c) => c.locale === "en")?.data.title).toBe("Updated");
+      expect(calls.find((c) => c.locale === "ar")?.data).toEqual({ title: "محدث" });
+    });
+
+    it("stores the form's blank study dates as no date, not an empty string Postgres rejects", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "d-new" } as never);
+      await saveCaseStudyDraft("u1", undefined, { studyPeriod: { startDate: "", endDate: "" } });
+      const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.studyPeriod).toEqual({ startDate: null, endDate: null });
+    });
+
     it("returns the newest draft with the shape the submission form reads", async () => {
       mockPayloadQueryRaw.mockResolvedValue({
         docs: [
@@ -1437,8 +1489,8 @@ describe("case studies, answered by Payload", () => {
   // The remaining writes
   // -------------------------------------------------------------------------
   describe("the submission's other writes", () => {
-    it("uploads a featured image through the Payload asset store, not Sanity's", async () => {
-      mockPayloadUpload.mockResolvedValue({ id: "media-1" } as never);
+    it("uploads a featured image to Payload's media, not the documents-only files collection", async () => {
+      mockPayloadImageUpload.mockResolvedValue({ id: "media-1", url: "/m.jpg" } as never);
       mockPayloadCreate.mockResolvedValue({ id: "cs-new" } as never);
       await submitCaseStudy({
         userId: "u1",
@@ -1448,7 +1500,8 @@ describe("case studies, answered by Payload", () => {
         tags: [],
         image: { buffer: Buffer.from("x"), filename: "a.jpg", contentType: "image/jpeg" },
       });
-      expect(mockPayloadUpload).toHaveBeenCalledTimes(1);
+      expect(mockPayloadImageUpload).toHaveBeenCalledTimes(1);
+      expect(mockPayloadUpload).not.toHaveBeenCalled();
       expect(mockUploadFileAsset).not.toHaveBeenCalled();
       const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
       expect(data.image).toEqual({ asset: "media-1", alt: "Featured image for T" });

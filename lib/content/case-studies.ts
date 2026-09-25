@@ -2,7 +2,7 @@ import "server-only";
 import { v4 as uuidv4 } from "uuid";
 import { activeBackend } from "@/lib/content/internal/backend";
 import * as payloadCaseStudies from "@/lib/content/internal/payload/case-studies";
-import { uploadFileAsset as uploadPayloadFileAsset } from "@/lib/content/internal/payload-source";
+import { uploadImageAsset as uploadPayloadImageAsset } from "@/lib/content/internal/payload-source";
 import { safe } from "@/lib/content/internal/safe";
 import {
   createDocument,
@@ -1323,13 +1323,13 @@ export async function submitCaseStudy(
     }
   }
 
-  // Handle image upload if provided (size/type validated by the route). The
-  // upload is the one primitive whose two implementations agree on a signature,
-  // so only the asset store differs.
+  // Handle image upload if provided (size/type validated by the route). On
+  // Payload the image field points at `media`; `files` is documents-only and
+  // refuses an image.
   let imageAssetId: string | undefined;
   const imageAlt = `Featured image for ${input.title.en}`;
   if (input.image) {
-    const upload = onPayload() ? uploadPayloadFileAsset : uploadFileAsset;
+    const upload = onPayload() ? uploadPayloadImageAsset : uploadFileAsset;
     const asset = await upload(input.image.buffer, {
       filename: input.image.filename,
       contentType: input.image.contentType,
