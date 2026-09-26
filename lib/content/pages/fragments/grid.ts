@@ -81,7 +81,8 @@ export const CASE_STUDY_CARD_FIELDS = `
     _id,
     label,
     value,
-    color
+    color,
+    category
   },
   studyPeriod,
   studyLocation,

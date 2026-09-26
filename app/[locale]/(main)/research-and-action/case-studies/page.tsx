@@ -16,7 +16,7 @@ import {
   getFilteredCaseStudies,
   type CaseStudyListFilters,
 } from '@/lib/content/case-studies'
-import { LEGACY_TOPIC_TO_TAG } from '@/lib/case-studies/topic-tag-map'
+import { legacyTopicsToTagSlugs } from '@/lib/case-studies/topic-tag-map'
 import { assignGalleryVariant, spanForVariant } from '@/lib/case-studies/gallery-layout'
 import { REGION_CODES, REGION_I18N_KEY, slugToShortCode, type RegionCode } from '@/lib/maps/region-codes'
 import type { RegionDatum } from '@/lib/maps/region-facets'
@@ -93,16 +93,14 @@ export default async function CaseStudiesPage({
   }
 
   // The retired fixed Topic list has no facet of its own any more — an old
-  // `?topics=` link is mapped to its theme-tag replacement (once Task 16 fills
-  // in LEGACY_TOPIC_TO_TAG) and folded into `tags`. An unmapped/unknown topic
-  // value is dropped rather than erroring.
-  const legacyTagIds = (toArray(topics) ?? [])
-    .map((value) => LEGACY_TOPIC_TO_TAG[value])
-    .filter((id): id is string => Boolean(id))
-  const tagIds = Array.from(new Set([...(toArray(tags) ?? []), ...legacyTagIds]))
+  // `?topics=` link is mapped to its theme-tag replacement's SLUG (once Task 16
+  // fills in LEGACY_TOPIC_TO_TAG) and folded into the same slug-based `tags`
+  // filter. An unmapped/unknown topic value is dropped rather than erroring.
+  const legacyTagSlugs = legacyTopicsToTagSlugs(toArray(topics) ?? [])
+  const tagSlugs = Array.from(new Set([...(toArray(tags) ?? []), ...legacyTagSlugs]))
 
   const parsed: Filters = {
-    tags: tagIds.length ? tagIds : undefined,
+    tags: tagSlugs.length ? tagSlugs : undefined,
     communities: toArray(communities),
     search: typeof search === 'string' ? search : undefined,
   }

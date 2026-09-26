@@ -30,14 +30,23 @@ import * as rc from "@/lib/content/pages/regional-community";
  * changing the GROQ changes what the live site renders.
  */
 const PINNED: Record<string, [string, string]> = {
-  PAGE_QUERY: [page.PAGE_QUERY, "17456e1e50d444b4ae982f15ceacfa657a522be4166315175f918e8d5c142fb0"],
+  // Re-pinned by Task 13's fix round 1, same reason as HOMEPAGE_QUERY /
+  // INDEX_HOMEPAGE_QUERY below: both interpolate the shared block projections
+  // (GRID_CASE_STUDY_PROJECTION -> CASE_STUDY_CARD_FIELDS), which gained
+  // `category` on `tags[]->`.
+  PAGE_QUERY: [page.PAGE_QUERY, "a5d115345e8b3641f553d105dba05ee97b52d1ce67bc042a9a1e57c3df49e8ff"],
   PAGE_SLUGS_QUERY: [page.PAGE_SLUGS_QUERY, "a9b41f4d33a4c0cb82d1a99f7db1592db25d2d5ff1d7d6bf6f643cac282d408f"],
   PAGE_TRANSLATIONS_QUERY: [page.PAGE_TRANSLATIONS_QUERY, "304053cd071ed5a52fcd4107ab60c6aade536a875867a630c0e99945f3cfedf3"],
-  REGIONAL_COMMUNITY_PAGE_QUERY: [rc.REGIONAL_COMMUNITY_PAGE_QUERY, "af3ec1b4575a440bc57ad68ff79e8447a831cb48ac52ca824d7b74b96169bf80"],
+  REGIONAL_COMMUNITY_PAGE_QUERY: [rc.REGIONAL_COMMUNITY_PAGE_QUERY, "f068d2ea789d9732f90de1d162730d2d8be9e6dde7f35595626ef463ea20032b"],
   RC_PAGE_SLUGS_QUERY: [rc.RC_PAGE_SLUGS_QUERY, "956b01e427f54a5155230e228136e03f245dc69faecd6b6220f8e5e4886ba20f"],
   REGION_STATS_QUERY: [rc.REGION_STATS_QUERY, "b2d58ac2c9b88ed2d5fbe1e8ae5957030577b2a455c0fc23e5f322c2d431c1da"],
-  HOMEPAGE_QUERY: [home.HOMEPAGE_QUERY, "60326b448801c14e6265e167ee2cf0334771e893908ea681c384c5fcf663bcc8"],
-  INDEX_HOMEPAGE_QUERY: [home.INDEX_HOMEPAGE_QUERY, "38344bcc23465dc793b61005607f8984b025d23467d505f2f7a154731356b812"],
+  // Re-pinned by Task 13's fix round 1: CASE_STUDY_CARD_FIELDS (interpolated
+  // into both queries below) gained `category` on its `tags[]->` projection,
+  // so the case-study grid card can show the main theme on the Sanity arm too
+  // — a deliberate content change, not drift. Read the diff before re-pinning
+  // again.
+  HOMEPAGE_QUERY: [home.HOMEPAGE_QUERY, "e9752e05eb3c32b31238f8d259e4405e788dbc6e7e041d47e7806ed524a3a073"],
+  INDEX_HOMEPAGE_QUERY: [home.INDEX_HOMEPAGE_QUERY, "24846185b8231e2d43d96ae539786cf3a9d3670e38d26bc66d73e1671de549b8"],
   HOMEPAGE_TRANSLATIONS_QUERY: [home.HOMEPAGE_TRANSLATIONS_QUERY, "2d9732d9e7a581fd9e8aa7cb3bb615913bd7d5c8b875534980b99fda117222d6"],
   HOMEPAGE_SLUGS_QUERY: [home.HOMEPAGE_SLUGS_QUERY, "0902327979d69fc8cd67b940064bec2cb1c9cc2ab8e82a72c8efe841dd29d2b5"],
   REGIONAL_COMMUNITY_TEAM_QUERY: [feeds.REGIONAL_COMMUNITY_TEAM_QUERY, "647cf4951ceca734e12768eef237c1cf9aafa72cf064ba467213d1568a69ffd4"],

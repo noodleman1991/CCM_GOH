@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FocusEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Star, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -42,8 +42,17 @@ export function TagPicker({
       .sort((a, b) => label(a).localeCompare(label(b), locale)),
   })).filter((g) => g.items.length > 0);
 
+  // The wrapper `onBlur` bubbles from every descendant (the search box, each
+  // tag button, each remove button), so a plain `onBlur={onBlur}` would fire
+  // — and the error system would mark the field "left" — on every focus move
+  // *within* the picker, not just when focus actually leaves it. Only fire
+  // when the next focus target is outside this wrapper (or there is none).
+  const handleBlur = (e: FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) onBlur?.();
+  };
+
   return (
-    <div className="space-y-4" onBlur={onBlur}>
+    <div className="space-y-4" onBlur={handleBlur}>
       <p className="text-sm text-muted-foreground">{t("hint")}</p>
 
       {selected.length > 0 && (
@@ -55,7 +64,14 @@ export function TagPicker({
               <li key={id} className="flex min-h-9 items-center gap-1.5 rounded-full bg-ccm-midnight px-3 text-sm text-white">
                 {id === firstTheme && <Star className="size-3.5 fill-current" aria-label={t("main")} />}
                 <span>{label(tag)}</span>
-                <button type="button" className="-me-1 grid size-7 place-items-center rounded-full hover:bg-white/15" onClick={() => toggle(id)} aria-label={t("remove", { tag: label(tag) })}>
+                <button
+                  type="button"
+                  // A 44px (min-h/w-11) hit area — the chip itself stays visually
+                  // small via negative margins so the row doesn't grow.
+                  className="-me-2 -my-1 grid size-11 min-h-11 min-w-11 place-items-center rounded-full hover:bg-white/15"
+                  onClick={() => toggle(id)}
+                  aria-label={t("remove", { tag: label(tag) })}
+                >
                   <X className="size-3.5" aria-hidden />
                 </button>
               </li>

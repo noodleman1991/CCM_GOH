@@ -853,7 +853,8 @@ export async function getFilteredCaseStudies(filters: CaseStudyListFilters): Pro
       _id,
       label,
       value,
-      color
+      color,
+      category
     },
     authors,
     organizations[]->{

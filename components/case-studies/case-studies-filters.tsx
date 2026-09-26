@@ -83,7 +83,9 @@ export default function CaseStudiesFilters({ currentFilters, tags = [], communit
     ...(tagOptions.length
       ? [{
           id: 'tags',
-          label: t('themes'),
+          // Every CMS tag lives in this group, not just theme tags, so the
+          // existing "Tags" wording (not "Themes") is the honest label.
+          label: t('tags'),
           options: tagOptions,
           selected: selectedTags,
           onToggle: (v: string) => toggleInArray('tags', selectedTags, v),
