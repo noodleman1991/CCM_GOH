@@ -99,9 +99,10 @@ describe("POST /api/case-studies/submit", () => {
   });
 
   it("answers a rate limit in plain words", async () => {
-    rateLimit.mockResolvedValue(new Response("slow down", { status: 429 }));
+    rateLimit.mockResolvedValue(new Response("slow down", { status: 429, headers: { "Retry-After": "120" } }));
     const res = await POST(request(complete));
     expect(res.status).toBe(429);
+    expect(res.headers.get("Retry-After")).toBe("120");
     expect((await res.json()).error.message).toBe("T(form.rateLimited)");
   });
 

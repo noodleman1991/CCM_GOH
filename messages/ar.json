@@ -567,7 +567,8 @@
       },
       "upload": {
         "tooBig": "حجم هذه الصورة {size} ميغابايت والحد {max} ميغابايت. جرّب صورة أصغر أو لقطة شاشة.",
-        "wrongType": "استخدم صورة بصيغة JPEG أو PNG أو WebP."
+        "wrongType": "استخدم صورة بصيغة JPEG أو PNG أو WebP.",
+        "wrongTypeImage": "استخدم صورة بصيغة JPEG أو PNG أو WebP أو GIF."
       },
       "form": {
         "fixBelow": "بعض التفاصيل تحتاج إلى تصحيح، وهي موضّحة أدناه.",

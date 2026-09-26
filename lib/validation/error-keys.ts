@@ -16,6 +16,8 @@ export const ERROR_KEYS = {
   tooLong: "generic.tooLong",
   uploadTooBig: "upload.tooBig",
   uploadWrongType: "upload.wrongType",
+  /** The shared image upload route, which also takes GIF (stories, workspace docs). */
+  uploadWrongTypeImage: "upload.wrongTypeImage",
   formFixBelow: "form.fixBelow",
   formGeneric: "form.generic",
   formRateLimited: "form.rateLimited",

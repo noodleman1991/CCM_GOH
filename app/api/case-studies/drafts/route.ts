@@ -11,7 +11,7 @@ import {
     saveSubmissionEdits,
 } from "@/lib/content/case-studies"
 import { rateLimitRequest } from "@/lib/rate-limit-route"
-import { formErrorResponse } from "@/lib/api/form-error"
+import { formErrorResponse, rateLimitedResponse } from "@/lib/api/form-error"
 import { ERROR_KEYS } from "@/lib/validation/error-keys"
 import { caseStudyDraftSchema, stripServerOwnedDraftKeys } from "@/lib/validation/case-study"
 
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         }
 
         const limited = await rateLimitRequest(request, "case-study:draft-save", { limit: 60, windowSeconds: 600 })
-        if (limited) return formErrorResponse({ request, formKey: ERROR_KEYS.formRateLimited, status: 429 })
+        if (limited) return rateLimitedResponse(request, limited)
 
         const raw = await request.text()
         if (Buffer.byteLength(raw, "utf8") > MAX_DRAFT_BODY_BYTES) {

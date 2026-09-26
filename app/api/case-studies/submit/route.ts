@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { makeCaseStudySubmissionSchema } from "@/lib/validation/case-study";
 import { ERROR_KEYS } from "@/lib/validation/error-keys";
-import { formErrorResponse } from "@/lib/api/form-error";
+import { formErrorResponse, rateLimitedResponse } from "@/lib/api/form-error";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 import { CaseStudyEditNotAllowedError, getAvailableCaseStudyTags, submitCaseStudy } from "@/lib/content/case-studies";
@@ -34,7 +34,7 @@ async function themeTagIds(): Promise<ReadonlySet<string> | null> {
  */
 export async function POST(request: NextRequest) {
   const limited = await rateLimitRequest(request, "case-study:submit", { limit: 5, windowSeconds: 600 });
-  if (limited) return formErrorResponse({ request, formKey: ERROR_KEYS.formRateLimited, status: 429 });
+  if (limited) return rateLimitedResponse(request, limited);
 
   try {
     const { userId } = await auth();

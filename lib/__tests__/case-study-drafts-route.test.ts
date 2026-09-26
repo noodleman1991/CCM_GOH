@@ -132,11 +132,15 @@ describe("POST /api/case-studies/drafts", () => {
   it("returns 429 on the 61st save inside the window for one user", async () => {
     authMock.mockResolvedValue({ userId: "user_autosave_flood" });
     const statuses: number[] = [];
+    let last: Response | undefined;
     for (let i = 0; i < 61; i++) {
-      statuses.push((await POST(post({ draftData: GOOD_DRAFT }))).status);
+      last = await POST(post({ draftData: GOOD_DRAFT }));
+      statuses.push(last.status);
     }
     expect(statuses.slice(0, 60).every((s) => s === 200)).toBe(true);
     expect(statuses[60]).toBe(429);
+    // The limiter's retry time survives the plain-words answer.
+    expect(Number(last!.headers.get("Retry-After"))).toBeGreaterThan(0);
     expect(saveDraft).toHaveBeenCalledTimes(60);
   });
 

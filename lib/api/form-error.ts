@@ -39,3 +39,14 @@ export async function formErrorResponse({
   const fields = translateIssues(list, t as never, input);
   return NextResponse.json({ error: { message: values ? t(formKey, values) : t(formKey), fields } }, { status });
 }
+
+/**
+ * The plain-words 429 for a request `rateLimitRequest` refused, keeping the
+ * limiter's `Retry-After` so clients still know when to try again.
+ */
+export async function rateLimitedResponse(request: Request, limited: Response): Promise<NextResponse<FormErrorBody>> {
+  const res = await formErrorResponse({ request, formKey: ERROR_KEYS.formRateLimited, status: 429 });
+  const retryAfter = limited.headers.get("Retry-After");
+  if (retryAfter) res.headers.set("Retry-After", retryAfter);
+  return res;
+}

@@ -567,7 +567,8 @@
       },
       "upload": {
         "tooBig": "Cette image fait {size} Mo, la limite est de {max} Mo. Essayez une photo plus légère ou une capture d'écran.",
-        "wrongType": "Utilisez une image JPEG, PNG ou WebP."
+        "wrongType": "Utilisez une image JPEG, PNG ou WebP.",
+        "wrongTypeImage": "Utilisez une image JPEG, PNG, WebP ou GIF."
       },
       "form": {
         "fixBelow": "Certains éléments sont à corriger : ils sont signalés ci-dessous.",

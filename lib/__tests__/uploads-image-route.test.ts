@@ -41,6 +41,7 @@ vi.mock("next-intl/server", () => ({
 }));
 
 import { POST } from "@/app/api/uploads/image/route";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const ASSET = {
   id: "media-1",
@@ -160,11 +161,35 @@ describe("POST /api/uploads/image", () => {
     expect(sanityUpload).not.toHaveBeenCalled();
   });
 
-  it("answers a file that is not a JPEG, PNG or WebP in plain words (GIF included)", async () => {
+  it("still accepts a GIF — stories and workspace docs use it", async () => {
     const response = await POST(upload("anim.gif", "image/gif"));
 
+    expect(response.status).toBe(200);
+    expect(sanityUpload).toHaveBeenCalledTimes(1);
+  });
+
+  it("answers a file that is not an image in plain words that name GIF as allowed", async () => {
+    const response = await POST(upload("notes.pdf", "application/pdf"));
+
     expect(response.status).toBe(400);
-    expect((await response.json()).error.message).toBe("T(upload.wrongType)");
+    expect((await response.json()).error.message).toBe("T(upload.wrongTypeImage)");
     expect(sanityUpload).not.toHaveBeenCalled();
+  });
+
+  it("answers a request with no file with the generic message", async () => {
+    const response = await POST(
+      new Request("http://localhost/api/uploads/image", { method: "POST", body: new FormData() }) as unknown as NextRequest,
+    );
+
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.message).toBe("T(form.generic)");
+  });
+
+  it("keeps the limiter's Retry-After on a 429", async () => {
+    vi.mocked(rateLimitRequest).mockResolvedValueOnce(new Response("{}", { status: 429, headers: { "Retry-After": "30" } }) as never);
+    const response = await POST(upload());
+
+    expect(response.status).toBe(429);
+    expect(response.headers.get("Retry-After")).toBe("30");
   });
 });

@@ -5,7 +5,7 @@ import { uploadImageAsset } from "@/lib/content/internal/sanity-source";
 import { uploadImageAsset as uploadPayloadImageAsset } from "@/lib/content/internal/payload-source";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
-import { formErrorResponse } from "@/lib/api/form-error";
+import { formErrorResponse, rateLimitedResponse } from "@/lib/api/form-error";
 import { ERROR_KEYS } from "@/lib/validation/error-keys";
 
 /** `CONTENT_BACKEND_UPLOADS` (or the process-wide `CONTENT_BACKEND`). */
@@ -13,7 +13,7 @@ const UPLOADS_DOMAIN = "uploads";
 
 const MAX_MB = 5;
 const MAX_FILE_SIZE = MAX_MB * 1024 * 1024; // same cap as the case-study featured image.
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 /**
  * POST /api/uploads/image
@@ -48,7 +48,7 @@ const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
  */
 export async function POST(request: NextRequest) {
   const limited = await rateLimitRequest(request, "upload:image", { limit: 30, windowSeconds: 600 });
-  if (limited) return formErrorResponse({ request, formKey: ERROR_KEYS.formRateLimited, status: 429 });
+  if (limited) return rateLimitedResponse(request, limited);
 
   const { userId } = await auth();
   if (!userId) {
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
   const collaborationId = formData.get("collaborationId") as string | null;
 
   if (!file) {
-    return formErrorResponse({ request, formKey: ERROR_KEYS.uploadWrongType });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric });
   }
 
   if (collaborationId) {
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
   // Upload problems answer in the shared `{ error: { message, fields } }` shape, in plain words.
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return formErrorResponse({ request, formKey: ERROR_KEYS.uploadWrongType });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.uploadWrongTypeImage });
   }
 
   if (file.size > MAX_FILE_SIZE) {

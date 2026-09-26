@@ -8,7 +8,7 @@ vi.mock("next-intl/server", () => ({
     }),
 }));
 
-import { formErrorResponse, requestLocale } from "@/lib/api/form-error";
+import { formErrorResponse, rateLimitedResponse, requestLocale } from "@/lib/api/form-error";
 import { readFormError } from "@/lib/forms/read-form-error";
 import { ERROR_KEYS } from "@/lib/validation/error-keys";
 
@@ -54,5 +54,21 @@ describe("readFormError", () => {
 
   it("survives a body that is not JSON", async () => {
     expect(await readFormError(new Response("<html>", { status: 502 }), "Try again")).toEqual({ message: "Try again", fields: {} });
+  });
+});
+
+describe("rateLimitedResponse", () => {
+  it("answers 429 in plain words and keeps the limiter's Retry-After", async () => {
+    const limited = new Response("{}", { status: 429, headers: { "Retry-After": "42" } });
+    const res = await rateLimitedResponse(req({ "x-locale": "fr" }), limited);
+    expect(res.status).toBe(429);
+    expect(res.headers.get("Retry-After")).toBe("42");
+    expect((await res.json()).error.message).toBe("fr:form.rateLimited");
+  });
+
+  it("is fine when the limiter gave no Retry-After", async () => {
+    const res = await rateLimitedResponse(req(), new Response("{}", { status: 429 }));
+    expect(res.status).toBe(429);
+    expect(res.headers.get("Retry-After")).toBeNull();
   });
 });
