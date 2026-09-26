@@ -132,7 +132,9 @@ export default function PortableTextEditor({
             // Plain-text markdown (from a notes app, a chat, a README) becomes
             // real headings/lists/quotes/code blocks. Rich HTML pastes keep
             // tiptap's own handling, and ordinary prose is left alone.
-            handlePaste: (_view, event) => {
+            handlePaste: (view, event) => {
+                // Inside a code block the paste IS code (`# comment`, `- item`): leave it verbatim.
+                if (view.state.selection.$from.parent.type.spec.code) return false;
                 const text = event.clipboardData?.getData('text/plain') ?? '';
                 const hasHtml = Boolean(event.clipboardData?.getData('text/html'));
                 if (hasHtml) return false;

@@ -5,13 +5,17 @@ type Inline = { type: "text"; text: string; marks?: Mark[] };
 type Block = { type: string; attrs?: Record<string, unknown>; content?: unknown[] };
 
 const BLOCK_START = /^(#{1,4}\s|[-*+]\s|\d+\.\s|>\s?|```)/;
-const INLINE = /\*\*[^*\n]+\*\*|__[^_\n]+__|\[[^\]\n]+\]\(https?:\/\/[^)\s]+\)/;
+const INLINE = /\*\*(?!\s)[^*\n]+?(?<!\s)\*\*|(?<!\w)__[^_\n]+__(?!\w)|\[[^\]\n]+\]\(https?:\/\/[^)\s]+\)/;
 
 export function looksLikeMarkdown(text: string): boolean {
   return text.split(/\r?\n/).some((line) => BLOCK_START.test(line.trimStart())) || INLINE.test(text);
 }
 
-const TOKEN = /(\*\*([^*\n]+)\*\*|__([^_\n]+)__|~~([^~\n]+)~~|`([^`\n]+)`|\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)|\*([^*\n]+)\*|_([^_\n]+)_)/g;
+// Emphasis never fires inside a word or around bare spaces: `_` / `__` need a
+// non-word character (or an edge) on both outer sides, and `*` / `**` need
+// non-space text just inside the markers, so `file_name_here`, URL paths and
+// `5 * 3 * 2` keep every character.
+const TOKEN = /(\*\*(?!\s)([^*\n]+?)(?<!\s)\*\*|(?<!\w)__([^_\n]+)__(?!\w)|~~([^~\n]+)~~|`([^`\n]+)`|\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)|\*(?!\s)([^*\n]+?)(?<!\s)\*|(?<!\w)_([^_\n]+)_(?!\w))/g;
 
 function inline(text: string): Inline[] {
   const out: Inline[] = [];
