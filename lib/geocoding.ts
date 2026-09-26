@@ -169,6 +169,43 @@ export interface GeocodeSuggestion {
     countryCode3: string | null;
     /** Nominatim result type: city / administrative / country / … */
     kind: string;
+    country: string | null;
+    city: string | null;
+    /** How finely the map should show it, read from what was found. */
+    precision: 'exact' | 'city' | 'country' | 'region';
+}
+
+export type NominatimRow = {
+    display_name: string; lat: string; lon: string; type: string; addresstype?: string;
+    address?: { country_code?: string; country?: string; city?: string; town?: string; village?: string; municipality?: string; county?: string };
+};
+
+const CITY_TYPES = new Set(['city', 'town', 'village', 'municipality', 'hamlet', 'suburb']);
+const REGION_TYPES = new Set(['state', 'province', 'region', 'county', 'state_district']);
+
+/** Pure: turns one Nominatim row into a suggestion, or null when it has no
+ *  usable coordinates. Precision is read from the row's own type, not chosen
+ *  by the caller. */
+export function toSuggestion(r: NominatimRow): GeocodeSuggestion | null {
+    const lat = Number(r.lat);
+    const lng = Number(r.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    const a2 = r.address?.country_code?.toUpperCase();
+    const kindOf = r.addresstype ?? r.type;
+    const precision: GeocodeSuggestion['precision'] =
+        kindOf === 'country' ? 'country' : REGION_TYPES.has(kindOf) ? 'region' : CITY_TYPES.has(kindOf) ? 'city' : 'exact';
+    const a = r.address ?? {};
+    const city = precision === 'country' || precision === 'region' ? null : (a.city ?? a.town ?? a.village ?? a.municipality ?? null);
+    return {
+        label: r.display_name,
+        lat,
+        lng,
+        countryCode3: a2 ? (countriesLib.alpha2ToAlpha3(a2) ?? null) : null,
+        kind: r.type,
+        country: a.country ?? null,
+        city,
+        precision,
+    };
 }
 
 /** Free-text place search (Nominatim), max 5 suggestions. */
@@ -190,21 +227,8 @@ export async function geocodeQuery(query: string): Promise<GeocodeSuggestion[]> 
             }
         );
         if (!response.ok) return [];
-        const rows = (await response.json()) as Array<{
-            display_name: string; lat: string; lon: string; type: string;
-            address?: { country_code?: string };
-        }>;
-        return rows.map((r) => {
-            const a2 = r.address?.country_code?.toUpperCase();
-            const a3 = a2 ? (countriesLib.alpha2ToAlpha3(a2) ?? null) : null;
-            return {
-                label: r.display_name,
-                lat: Number(r.lat),
-                lng: Number(r.lon),
-                countryCode3: a3,
-                kind: r.type,
-            };
-        }).filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
+        const rows = (await response.json()) as NominatimRow[];
+        return rows.map(toSuggestion).filter((s): s is GeocodeSuggestion => s !== null);
     } catch (error) {
         // The picker degrades to "no suggestions" — but a dead or slow
         // Nominatim used to be invisible from here. Report, then degrade.
