@@ -16,7 +16,7 @@ import {
 import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/types";
 import { localize } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
-import { generateCaseStudySlug } from "@/lib/validation/case-study";
+import { generateCaseStudySlug, hasStoryText } from "@/lib/validation/case-study";
 import { cleanSuggestions } from "@/lib/tags/fuzzy";
 import { getTags } from "@/lib/content/taxonomy";
 import { LIMITS } from "@/lib/validation/limits";
@@ -1425,10 +1425,6 @@ export async function submitCaseStudy(
     placeCountry: input.place?.country ?? undefined,
     placeCity: input.place?.city ?? undefined,
     originalLanguage: input.originalLanguage ?? "en",
-    region: await regionFor(
-      input.relatedCommunity && input.relatedCommunity !== "" ? input.relatedCommunity : undefined,
-      input.place?.countryCode3,
-    ),
     imageAssetId,
     imageAlt: imageAssetId ? imageAlt : undefined,
     authors: input.authors.map((author, index) => ({
@@ -1465,6 +1461,8 @@ export async function submitCaseStudy(
     );
 
     if (onPayload()) {
+      // Only after the gate: nobody who may not edit this triggers a lookup.
+      draft.region = await regionFor(draft.relatedCommunity, input.place?.countryCode3);
       // The write direction of the status mapping: `{...updatable, status:
       // "pending"}` below becomes `moderationStatus: "pending"`, set inside the
       // reader. Slug and submittedBy are preserved on this arm too — neither is
@@ -1484,6 +1482,7 @@ export async function submitCaseStudy(
   }
 
   if (onPayload()) {
+    draft.region = await regionFor(draft.relatedCommunity, input.place?.countryCode3);
     const created = await payloadCaseStudies.createCaseStudy(draft, {
       // Sanity mints its own `_id`; Payload's `id` is a text column carrying
       // Sanity's, so a new document needs one.
@@ -1560,12 +1559,16 @@ function editsFrom(
   if (title) edits.title = title;
   const excerpt = localizedFrom(data.excerpt);
   if (excerpt) edits.excerpt = excerpt;
-  if (Array.isArray(data.content)) edits.content = data.content as RichText;
+  // A story, tag list or author list emptied mid-edit is "not sent", like a
+  // blank title: an autosave never wipes them off a live in-review case study.
+  // Deliberately clearing one is a resubmission's job.
+  if (Array.isArray(data.content) && hasStoryText(data.content)) edits.content = data.content as RichText;
   if (data.layout === "story" || data.layout === "feature" || data.layout === "report") edits.layout = data.layout;
   const tags = Array.isArray(data.tags) ? data.tags : Array.isArray(data.selectedTags) ? data.selectedTags : undefined;
-  if (tags) edits.tagIds = tags.filter((tag): tag is string => typeof tag === "string" && tag.length > 0);
+  const tagIds = tags?.filter((tag): tag is string => typeof tag === "string" && tag.length > 0);
+  if (tagIds && tagIds.length > 0) edits.tagIds = tagIds;
   if (Array.isArray(data.authors)) {
-    edits.authors = data.authors
+    const authors = data.authors
       .filter(isRecord)
       .filter((author) => nonEmpty(author.name))
       .map((author, index) => {
@@ -1583,6 +1586,7 @@ function editsFrom(
           clerkImageUrl: match?.clerkImageUrl,
         };
       });
+    if (authors.length > 0) edits.authors = authors;
   }
   const community = nonEmpty(data.relatedCommunity);
   if (community) edits.relatedCommunity = community;
@@ -1616,8 +1620,12 @@ export async function saveSubmissionEdits(userId: string, id: string, data: Reco
   if (onPayload()) {
     const existing = await assertCanEdit(await payloadCaseStudies.loadExistingCaseStudy(id), userId);
     const edits = editsFrom(data, userId, existing.authors);
+    // Not naming a language means "the one it is written in", never English:
+    // otherwise an Arabic story would be written over the English locale.
+    edits.originalLanguage ??= existing.originalLanguage;
     if (edits.relatedCommunity !== undefined || edits.locationCountryCode !== undefined) {
-      edits.region = await regionFor(edits.relatedCommunity, edits.locationCountryCode);
+      // A stored community still decides the region when only the place moved.
+      edits.region = await regionFor(edits.relatedCommunity ?? existing.relatedCommunity, edits.locationCountryCode);
     }
     await payloadCaseStudies.updateCaseStudySubmission(existing._id, edits, { keepStatus: true });
     return;

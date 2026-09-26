@@ -1491,6 +1491,12 @@ export interface ExistingCaseStudy {
     clerkUsername?: string;
     clerkImageUrl?: string;
   }>;
+  /** The stored writing language, so an autosave that does not name one keeps
+   *  writing into the story's own locale rather than into English. */
+  originalLanguage?: string;
+  /** The stored community, so an autosave that moves only the place keeps the
+   *  community's region. */
+  relatedCommunity?: string;
 }
 
 /** The narrower gate `submitCaseStudy` runs before a resubmission —
@@ -1508,6 +1514,8 @@ export async function loadExistingCaseStudy(id: string): Promise<ExistingCaseStu
     submittedBy: text(row.submittedBy),
     status: row.moderationStatus ?? null,
     slug: slugObject(row.slug),
+    originalLanguage: text(row.originalLanguage),
+    relatedCommunity: relationId(row.relatedCommunity),
     authors: Array.isArray(row.authors)
       ? row.authors.filter(isRow).map((raw) => {
           const author = raw as AuthorRow;
@@ -1715,7 +1723,7 @@ async function writeOtherLocales(
   if (lang !== "en") {
     const english: Record<string, unknown> = {};
     if (draft.title !== undefined && !(keepTitle && !draft.title.en)) english.title = draft.title.en ?? "";
-    if (draft.excerpt !== undefined) english.excerpt = draft.excerpt.en ?? "";
+    if (draft.excerpt?.en) english.excerpt = draft.excerpt.en;
     if (Object.keys(english).length > 0) {
       await updateDocument({ collection: "caseStudies", id, locale: "en", data: english });
     }
@@ -1788,14 +1796,21 @@ export async function updateCaseStudySubmission(
 /** A regional community's fixed-7 region code — `queryRaw`, because the answer
  *  is written onto the submission. */
 export async function findCommunityRegion(id: string): Promise<string | null> {
-  const result = await queryRaw<Paginated<{ id?: unknown; region?: unknown }>>({
-    type: "find",
-    collection: "regionalCommunities",
-    where: { id: { equals: id } },
-    limit: 1,
-    depth: 0,
-  });
-  return text(result?.docs?.[0]?.region) ?? null;
+  // Fail soft: a missing region is an editor's one-click fix, a failed
+  // submission is lost work.
+  try {
+    const result = await queryRaw<Paginated<{ id?: unknown; region?: unknown }>>({
+      type: "find",
+      collection: "regionalCommunities",
+      where: { id: { equals: id } },
+      limit: 1,
+      depth: 0,
+    });
+    return text(result?.docs?.[0]?.region) ?? null;
+  } catch (error) {
+    console.warn(`Could not read the region of community ${id}; saving without one.`, error);
+    return null;
+  }
 }
 
 /** The generic patch primitive behind `updateCaseStudy` — used by
@@ -1941,7 +1956,11 @@ export async function getLatestCaseStudyDraft(userId: string): Promise<Record<st
     where: { userId: { equals: userId } },
     pagination: false,
     locale: "all",
-    depth: 0,
+    // Depth 1 populates `image.asset`, so a cover uploaded while drafting comes
+    // back with its URL for the preview (the same depth the edit gate reads
+    // at). The other relationships are read back through `relationId`, which
+    // takes a populated row or a bare id alike.
+    depth: 1,
   });
   const row = [...result.docs].sort((a, b) =>
     byDateThenId(
@@ -1967,7 +1986,11 @@ export async function getCaseStudyDraftById(
     where: { and: [{ id: { equals: draftId } }, { userId: { equals: userId } }] },
     limit: 1,
     locale: "all",
-    depth: 0,
+    // Depth 1 populates `image.asset`, so a cover uploaded while drafting comes
+    // back with its URL for the preview (the same depth the edit gate reads
+    // at). The other relationships are read back through `relationId`, which
+    // takes a populated row or a bare id alike.
+    depth: 1,
   });
   const row = result.docs[0];
   return row ? draftDocument(row) : null;

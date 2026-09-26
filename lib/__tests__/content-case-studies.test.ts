@@ -1484,9 +1484,25 @@ describe("case studies, answered by Payload", () => {
         locationText: { country: "Nigeria", city: "Lagos" },
         image: { asset: "media-9" },
       });
+      // What was written is the id alone…
+      expect(data.image).toEqual({ asset: "media-9" });
+      // …and what a depth-1 read hands back is the populated media row.
       mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "d-1", userId: "u1", ...data, studyLocation: [3.39, 6.45], image: { asset: { id: "media-9", url: "/m.jpg" } } }] } as never);
       const reopened = await getCaseStudyDraftById("u1", "d-1");
+      expect(mockPayloadQueryRaw).toHaveBeenLastCalledWith(expect.objectContaining({ collection: "caseStudyDrafts", depth: 1 }));
       expect(reopened).toMatchObject({ originalLanguage: "ar", place: { text: "Lagos, Nigeria", precision: "city", countryCode3: "NGA", country: "Nigeria", city: "Lagos" }, imageAssetId: "media-9", imageUrl: "/m.jpg" });
+    });
+
+    it("reads drafts at depth 1 so a drafted cover's preview URL comes back", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        docs: [{ id: "d-1", userId: "u1", lastSaved: "2026-08-11T10:54:47.530Z", image: { asset: { id: "media-9", url: "/payload-api/media/file/c.jpg" }, alt: null, caption: null } }],
+      } as never);
+      const latest = await getLatestCaseStudyDraft("u1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(expect.objectContaining({ collection: "caseStudyDrafts", depth: 1 }));
+      expect(latest).toMatchObject({ imageAssetId: "media-9", imageUrl: "/payload-api/media/file/c.jpg" });
+      // A bare id (an unpopulated read) still gives the id, just no preview.
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "d-1", userId: "u1", image: { asset: "media-9" } }] } as never);
+      await expect(getCaseStudyDraftById("u1", "d-1")).resolves.toMatchObject({ imageAssetId: "media-9", imageUrl: null });
     });
 
     it("returns the newest draft with the shape the submission form reads", async () => {
@@ -1663,6 +1679,108 @@ describe("case studies, answered by Payload", () => {
         CaseStudyEditNotAllowedError,
       );
       expect(mockPayloadUpdate).not.toHaveBeenCalled();
+    });
+
+    it("an autosave that names no language writes into the story's stored language, not English", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "pending", originalLanguage: "ar" } as never);
+      await saveSubmissionEdits("u1", "cs1", {
+        title: { ar: "عنوان", en: "Title" },
+        excerpt: { ar: "ب".repeat(60), en: "" },
+        content: [{ _type: "block", children: [{ _type: "span", text: "قصة" }] }],
+      });
+      const calls = mockPayloadUpdate.mock.calls.map(([arg]) => arg as { locale: string; data: Record<string, unknown> });
+      expect(calls[0].locale).toBe("ar");
+      expect(calls[0].data).toMatchObject({ title: "عنوان", excerpt: "ب".repeat(60) });
+      expect(calls[0].data).toHaveProperty("content");
+      const english = calls.filter((c) => c.locale === "en");
+      expect(english).toHaveLength(1);
+      expect(english[0].data).toEqual({ title: "Title" });
+      expect(english[0].data).not.toHaveProperty("content");
+    });
+
+    it("an autosave never writes a blank English summary over a non-English story", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "pending", originalLanguage: "fr" } as never);
+      await saveSubmissionEdits("u1", "cs1", { originalLanguage: "fr", title: { fr: "Titre", en: "" }, excerpt: { fr: "f".repeat(60), en: "" } });
+      const calls = mockPayloadUpdate.mock.calls.map(([arg]) => arg as { locale: string; data: Record<string, unknown> });
+      expect(calls[0]).toMatchObject({ locale: "fr", data: { title: "Titre", excerpt: "f".repeat(60) } });
+      const english = calls.filter((c) => c.locale === "en");
+      for (const call of english) {
+        expect(call.data).not.toHaveProperty("excerpt");
+        expect(call.data).not.toHaveProperty("title");
+      }
+    });
+
+    it("an autosave treats an emptied author list, tag list or story as not sent", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        id: "cs1",
+        submittedBy: "u1",
+        moderationStatus: "revision",
+        authors: [{ id: "a1", name: "A", clerkUserId: "u1", clerkImageUrl: "https://img" }],
+      } as never);
+      await saveSubmissionEdits("u1", "cs1", {
+        title: { en: "Still here" },
+        authors: [{ name: "" }],
+        tags: [],
+        content: [{ _type: "block", children: [{ _type: "span", text: "  " }] }],
+      });
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.title).toBe("Still here");
+      expect(data).not.toHaveProperty("authors");
+      expect(data).not.toHaveProperty("tags");
+      expect(data).not.toHaveProperty("content");
+    });
+
+    it("an autosave keeps an author's stored Clerk details", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        id: "cs1",
+        submittedBy: "u1",
+        moderationStatus: "pending",
+        authors: [{ id: "a1", userId: "u1", name: "A", clerkUserId: "u1", clerkUsername: "a", clerkImageUrl: "https://img" }],
+      } as never);
+      await saveSubmissionEdits("u1", "cs1", { authors: [{ name: "A", userId: "u1" }] });
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.authors).toEqual([
+        expect.objectContaining({ name: "A", userId: "u1", clerkUserId: "u1", clerkUsername: "a", clerkImageUrl: "https://img" }),
+      ]);
+    });
+
+    it("an autosave that moves only the place keeps the stored community's region", async () => {
+      mockPayloadQueryRaw.mockImplementation(async (d) => {
+        const descriptor = d as { collection?: string; type?: string };
+        if (descriptor.collection === "regionalCommunities") return { docs: [{ id: "c-oce", region: "oce" }] } as never;
+        return { id: "cs1", submittedBy: "u1", moderationStatus: "pending", relatedCommunity: "c-oce" } as never;
+      });
+      await saveSubmissionEdits("u1", "cs1", {
+        place: { lat: 6.45, lng: 3.39, text: "Lagos, Nigeria", precision: "city", countryCode3: "NGA" },
+      });
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.region).toBe("oce");
+      expect(data.locationCountryCode).toBe("NGA");
+    });
+
+    it("a submission still goes through when the community's region cannot be read", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      mockPayloadQueryRaw.mockImplementation(async (d) => {
+        if ((d as { collection?: string }).collection === "regionalCommunities") throw new Error("db down");
+        return { docs: [] } as never;
+      });
+      mockPayloadCreate.mockResolvedValue({ id: "cs-r" } as never);
+      await expect(
+        submitCaseStudy({ userId: "u1", title: { en: "Region lookup fails" }, content: [], authors: [{ name: "A" }], tags: [], relatedCommunity: "c1" }),
+      ).resolves.toMatchObject({ id: "cs-r", status: "pending" });
+      const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data).not.toHaveProperty("region");
+      expect(warn).toHaveBeenCalled();
+    });
+
+    it("a resubmission looks the region up only after the edit gate", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "someone-else", moderationStatus: "pending" } as never);
+      mockFindFirst.mockResolvedValue(null as never);
+      await expect(
+        submitCaseStudy({ userId: "u2", title: { en: "T" }, content: [], authors: [{ name: "A" }], tags: [], relatedCommunity: "c1", editId: "cs1" }),
+      ).rejects.toBeInstanceOf(CaseStudyEditNotAllowedError);
+      const collections = mockPayloadQueryRaw.mock.calls.map(([d]) => (d as { collection?: string }).collection);
+      expect(collections).not.toContain("regionalCommunities");
     });
 
     it("reopens a pending document for its own submitter", async () => {
