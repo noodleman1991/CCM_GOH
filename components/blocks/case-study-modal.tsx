@@ -38,6 +38,7 @@ export interface CaseStudyModalData {
     _id?: string;
     label?: LocalizedString;
     color?: string | null;
+    category?: string | null;
   } | null> | null;
   image?: {
     asset?: { _id?: string; url?: string | null } | null;

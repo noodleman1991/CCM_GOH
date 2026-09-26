@@ -1193,6 +1193,21 @@
     "submittingScreen": {
       "heading": "Enviando su estudio de caso",
       "body": "Espere mientras procesamos su envío…"
+    },
+    "tags": {
+      "heading": "Etiquetas",
+      "hint": "Elige al menos un tema. El primero que elijas será el principal.",
+      "search": "Buscar etiquetas…",
+      "noMatch": "Ninguna etiqueta coincide. Sugiere una nueva abajo.",
+      "groups": {
+        "topic": "Temas",
+        "audience": "A quién afecta",
+        "impact": "Impacto",
+        "method": "Enfoque",
+        "other": "Otras"
+      },
+      "main": "Tema principal",
+      "remove": "Quitar {tag}"
     }
   },
   "caseStudy": {
@@ -1906,7 +1921,8 @@
       "featured": "Destacados",
       "recent": "Publicados Recientemente",
       "topic": "Tema",
-      "tags": "Etiquetas"
+      "tags": "Etiquetas",
+      "themes": "Temas"
     },
     "topics": {
       "climate-environment": "Cambio Climático y Medio Ambiente",

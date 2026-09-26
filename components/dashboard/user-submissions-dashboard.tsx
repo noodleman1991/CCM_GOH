@@ -23,6 +23,15 @@ import {
   Calendar,
   Users
 } from 'lucide-react'
+import { getLocalizedText } from '@/lib/localization-utils'
+import { mainTheme } from '@/lib/case-studies/main-theme'
+
+interface DashboardTag {
+  _id: string
+  label?: Record<string, string> | null
+  value?: string
+  category?: string | null
+}
 
 interface Submission {
   _id: string
@@ -37,11 +46,7 @@ interface Submission {
   reviewNotes?: string
   image?: string
   authors?: Array<{ name: string; role: string }> | null
-  tags?: Array<{
-    _id: string
-    title?: Record<string, string> | null
-    value?: string
-  }> | null
+  tags?: Array<DashboardTag> | null
 }
 
 interface Draft {
@@ -49,6 +54,7 @@ interface Draft {
   title?: Record<string, string> | null
   excerpt?: Record<string, string> | null
   topic?: string
+  tags?: Array<DashboardTag> | null
   lastSaved?: string | null
   formMetadata?: {
     currentStep?: string
@@ -89,14 +95,15 @@ export default function UserSubmissionsDashboard({
   locale
 }: UserSubmissionsDashboardProps) {
   const t = useTranslations('dashboard.submissions')
-  // Topics are a fixed CMS-schema vocabulary (lib/content/taxonomy-options.ts);
-  // their display labels live in the shared `caseStudies.topics` i18n namespace,
-  // the same source the case-study filters use — no hardcoded vocabulary here.
-  const tTopics = useTranslations('caseStudies.topics')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
 
-  const topicLabel = (topic: string) =>
-    tTopics.has(topic) ? tTopics(topic) : topic
+  // The retired fixed Topic list is gone — the small line under the title now
+  // shows the main theme (the first `topic`-category CMS tag), same as the
+  // card badge on the public gallery.
+  const themeLabel = (item: Submission | Draft) => {
+    const theme = mainTheme(item.tags ?? [])
+    return theme ? getLocalizedText(theme.label, locale) : null
+  }
 
   const statusLabel = (status: SubmissionStatus) => t(`status.${status}`)
 
@@ -123,6 +130,7 @@ export default function UserSubmissionsDashboard({
 
   const SubmissionCard = ({ submission }: { submission: Submission }) => {
     const StatusIcon = statusConfig[submission.status].icon
+    const theme = themeLabel(submission)
 
     return (
       <Card className="group hover:shadow-lg transition-shadow">
@@ -135,9 +143,9 @@ export default function UserSubmissionsDashboard({
               >
                 {getTitle(submission)}
               </h3>
-              {submission.topic && (
+              {theme && (
                 <p className="text-sm text-muted-foreground mt-1">
-                  <bdi>{topicLabel(submission.topic)}</bdi>
+                  <bdi>{theme}</bdi>
                 </p>
               )}
             </div>
@@ -196,7 +204,7 @@ export default function UserSubmissionsDashboard({
               <div className="flex flex-wrap gap-1">
                 {submission.tags.slice(0, 3).map((tag) => (
                   <Badge key={tag._id} variant="secondary" className="text-xs">
-                    <bdi>{tag.title?.[locale] || tag.title?.en || tag.value || t('tagFallback')}</bdi>
+                    <bdi>{getLocalizedText(tag.label, locale) || t('tagFallback')}</bdi>
                   </Badge>
                 ))}
                 {submission.tags.length > 3 && (
@@ -253,7 +261,9 @@ export default function UserSubmissionsDashboard({
     )
   }
 
-  const DraftCard = ({ draft }: { draft: Draft }) => (
+  const DraftCard = ({ draft }: { draft: Draft }) => {
+    const theme = themeLabel(draft)
+    return (
     <Card className="group hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
@@ -264,9 +274,9 @@ export default function UserSubmissionsDashboard({
             >
               {getTitle(draft, t('untitledDraft'))}
             </h3>
-            {draft.topic && (
+            {theme && (
               <p className="text-sm text-muted-foreground mt-1">
-                <bdi>{topicLabel(draft.topic)}</bdi>
+                <bdi>{theme}</bdi>
               </p>
             )}
           </div>
@@ -305,7 +315,8 @@ export default function UserSubmissionsDashboard({
         </Button>
       </CardContent>
     </Card>
-  )
+    )
+  }
 
   return (
     <div className="space-y-8">

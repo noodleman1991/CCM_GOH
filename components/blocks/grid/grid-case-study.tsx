@@ -26,15 +26,8 @@ import {
 } from '@/lib/case-study-utils';
 import { cn } from '@/lib/utils';
 import { CaseStudyModal, type CaseStudyModalData } from '@/components/blocks/case-study-modal';
-import { topicOptions } from '@/lib/content/taxonomy-options';
+import { mainTheme } from '@/lib/case-studies/main-theme';
 import type { CaseStudy, LocalizedString } from '@/types/case-study';
-
-// Map a stored topic value to its human label so the card badge reflects the
-// study's actual type (e.g. "Mental Health & Wellbeing") instead of a generic
-// "Case Study". Falls back to the generic label when no topic is set.
-const TOPIC_LABELS: Record<string, string> = Object.fromEntries(
-    topicOptions.map((o) => [o.value, o.title])
-);
 
 interface GridCaseStudyComponentProps {
     _type: 'grid-case-study';
@@ -104,8 +97,10 @@ export default function GridCaseStudyComponent({
 
     const getMoreText = (count: number) => tCommon('moreCount', { count });
 
-    // The badge reflects the study's topic when set; otherwise the generic label.
-    const typeLabel = (caseStudy.topic && TOPIC_LABELS[caseStudy.topic]) || t('caseStudy');
+    // The badge reflects the study's main theme (the first `topic`-category
+    // tag) when set; otherwise the generic label.
+    const theme = mainTheme((caseStudy.tags ?? []).filter((tag): tag is NonNullable<typeof tag> => tag != null));
+    const typeLabel = (theme && getLocalizedText(theme.label, supportedLocale)) || t('caseStudy');
 
     // ---- Shared building blocks (reused across variants) -------------------
 

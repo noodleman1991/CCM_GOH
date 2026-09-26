@@ -400,6 +400,7 @@ function tagProjection(rows: unknown): Row[] | null {
     const tag = raw as TagRow;
     return groqObject({
       _id: String(tag.id ?? ""),
+      category: orNull(text(tag.category)),
       color: orNull(text(tag.color)),
       label: orNull(localized(tag.label)),
       value: orNull(slugObject(tag.value)),
@@ -538,6 +539,7 @@ interface CommunityRow {
   slug?: string | null;
   active?: boolean | null;
   orderRank?: string | null;
+  region?: string | null;
 }
 
 /** `studyAreas[]{ location, name, description }` — 0/27 populated in both
@@ -1217,6 +1219,7 @@ export async function getAvailableCaseStudyTags(): Promise<CaseStudyTagOption[]>
     .map((tag) =>
       groqObject({
         _id: String(tag.id ?? ""),
+        category: orNull(text(tag.category)),
         label: orNull(localized(tag.label)),
         // A BARE `value` here too — `*[_type == "tag"] … { _id, label, value }`.
         value: orNull(slugObject(tag.value)),
@@ -1239,6 +1242,7 @@ export async function getActiveCaseStudyCommunities(): Promise<CaseStudyCommunit
       groqObject({
         _id: String(community.id ?? ""),
         name: orNull(localized(community.name)),
+        region: orNull(text(community.region)),
         slug: orNull(slugObject(community.slug)),
       }),
     ) as unknown as CaseStudyCommunityOption[];
@@ -1304,7 +1308,9 @@ export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserS
       where: { userId: { equals: userId } },
       pagination: false,
       locale: "all",
-      depth: 0,
+      // depth 1 (was 0): Task 13 dereferences `tags` here too, so a draft
+      // card can show a main theme — everything else this reads is scalar.
+      depth: 1,
     }),
   ]);
 
@@ -1336,19 +1342,9 @@ export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserS
         slug: text(row.slug) ?? null,
         status: orNull(text(row.moderationStatus)),
         submittedAt: orNull(isoDate(row.submittedAt)),
-        tags: Array.isArray(row.tags)
-          ? listOrNull(
-              row.tags.filter(isRow).map((raw) =>
-                groqObject({
-                  _id: String((raw as TagRow).id ?? ""),
-                  // `tag` has no `title` field in either store; the GROQ
-                  // projects one anyway, so GROQ emits null and so does this.
-                  title: null,
-                  value: orNull(text((raw as TagRow).value)),
-                }),
-              ),
-            )
-          : null,
+        // Task 13: real `label`/`category` (was `{ _id, title: null, value }` —
+        // `tag` has no `title` field in either store, so that was always null).
+        tags: tagProjection(row.tags),
         title: orNull(localized(row.title)),
         topic: orNull(text(row.topic)),
       });
@@ -1359,6 +1355,8 @@ export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserS
         excerpt: orNull(localized(row.excerpt)),
         formMetadata: formMetadata(row.formMetadata),
         lastSaved: orNull(isoDate(row.lastSaved)),
+        // Task 13: same theme tags as a submission, so a draft card can show a main theme too.
+        tags: tagProjection(row.tags),
         title: orNull(localized(row.title)),
         topic: orNull(text(row.topic)),
       }),

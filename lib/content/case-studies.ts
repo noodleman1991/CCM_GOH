@@ -87,6 +87,7 @@ export interface CaseStudyTagRef {
   label?: Localized;
   value?: unknown;
   color?: string;
+  category?: string | null;
 }
 
 /**
@@ -256,7 +257,8 @@ const CASE_STUDY_PROJECTION_FRAGMENT = `
     _id,
     label,
     value,
-    color
+    color,
+    category
   },
   studyPeriod,
   studyLocation,
@@ -929,12 +931,14 @@ export interface CaseStudyTagOption {
   _id: string;
   label?: Localized;
   value?: string;
+  category?: string | null;
 }
 
 export interface CaseStudyCommunityOption {
   _id: string;
   name?: Localized | string;
   slug?: { current: string };
+  region?: string | null;
 }
 
 export async function getAvailableCaseStudyTags(): Promise<CaseStudyTagOption[]> {
@@ -943,7 +947,8 @@ export async function getAvailableCaseStudyTags(): Promise<CaseStudyTagOption[]>
     *[_type == "tag"] | order(label.en asc) {
       _id,
       label,
-      value
+      value,
+      category
     }
   `);
 }
@@ -954,7 +959,8 @@ export async function getActiveCaseStudyCommunities(): Promise<CaseStudyCommunit
     *[_type == "regionalCommunity" && active == true] | order(name.en asc) {
       _id,
       name,
-      slug
+      slug,
+      region
     }
   `);
 }
@@ -980,11 +986,13 @@ export interface CaseStudySubmissionSummary {
   reviewNotes?: string;
   image?: string;
   authors?: Array<{ name?: string; role?: string }>;
-  // `title` here mirrors the original GROQ verbatim, which dereferences the
-  // tag as `{ _id, title, "value": value.current }` — tag documents don't
-  // actually have a `title` field (that's `label` everywhere else in this
-  // module), so this has always resolved to `undefined`. Preserved as-is.
-  tags?: Array<{ _id: string; title?: unknown; value?: string }>;
+  /**
+   * Task 13: the dashboard's "topic" line reads `mainTheme(tags)`, so this now
+   * dereferences the real `label`/`category` (was `{ _id, title, "value":
+   * value.current }` — tag documents don't actually have a `title` field,
+   * so that had always resolved to `undefined`).
+   */
+  tags?: CaseStudyTagRef[];
 }
 
 export interface CaseStudyDraftSummary {
@@ -992,6 +1000,8 @@ export interface CaseStudyDraftSummary {
   title?: Localized;
   excerpt?: Localized;
   topic?: string;
+  /** Task 13: same theme tags as a submission, so a draft card can show a main theme too. */
+  tags?: CaseStudyTagRef[];
   lastSaved?: string;
   formMetadata?: { currentStep?: string; completedSections?: string[] };
 }
@@ -1018,10 +1028,11 @@ export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserS
           "slug": slug.current, submittedAt, publishedAt, reviewNotes,
           "image": image.asset->url,
           authors[]{ name, role },
-          tags[]-> { _id, title, "value": value.current }
+          tags[]-> { _id, label, value, color, category }
         },
         "drafts": *[_type == "caseStudyDraft" && userId == $userId] | order(lastSaved desc) {
-          _id, title, excerpt, topic, lastSaved, formMetadata
+          _id, title, excerpt, topic, lastSaved, formMetadata,
+          tags[]-> { _id, label, value, color, category }
         }
       }`,
       { userId },

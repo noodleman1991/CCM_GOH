@@ -4,8 +4,6 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { useState, useEffect, useTransition, useMemo } from 'react'
 import { ContentFilters, type FilterGroup } from '@/components/ui/content-filters'
-import { topicOptions } from '@/lib/content/taxonomy-options'
-import { enumLabel } from '@/lib/i18n/labels'
 
 interface Filters {
   topics?: string[]
@@ -16,19 +14,21 @@ interface Filters {
 
 interface CaseStudiesFiltersProps {
   currentFilters: Filters
-  tags?: Array<{ _id: string; label: Record<string, string> | string; value: string; color?: string; caseStudyCount?: number }>
+  tags?: Array<{ _id: string; label: Record<string, string> | string; value: string; color?: string; category?: string | null; caseStudyCount?: number }>
   communities?: Array<{ _id: string; name: Record<string, string> | string; slug: string; caseStudyCount?: number }>
 }
 
 /**
  * Case-studies filters — the shared collapsed multi-select ContentFilters
- * (Region · Topic · Tags), consistent with news + lived experiences. State lives
- * in the URL (comma-separated `communities`/`topics`/`tags`, `search`).
+ * (Region · Themes), consistent with news + lived experiences. State lives
+ * in the URL (comma-separated `communities`/`tags`, `search`). The fixed
+ * Topic list is retired — `?topic=` links are mapped to theme tags server-side
+ * (see the list page's `LEGACY_TOPIC_TO_TAG`), so this component only ever
+ * sees `tags`.
  */
 export default function CaseStudiesFilters({ currentFilters, tags = [], communities = [] }: CaseStudiesFiltersProps) {
   const locale = useLocale()
   const t = useTranslations('caseStudies.filters')
-  const tCS = useTranslations('caseStudies')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -55,7 +55,6 @@ export default function CaseStudiesFilters({ currentFilters, tags = [], communit
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue])
 
-  const selectedTopics = currentFilters.topics || []
   const selectedTags = currentFilters.tags || []
   const selectedCommunities = currentFilters.communities || []
 
@@ -67,11 +66,6 @@ export default function CaseStudiesFilters({ currentFilters, tags = [], communit
   const communityOptions = useMemo(
     () => communities.map((c) => ({ value: c.slug, label: localized(c.name) })),
     [communities, locale]
-  )
-  // 'Other' topic de-surfaced from the chips (sporadic fallback only).
-  const topicGroupOptions = useMemo(
-    () => topicOptions.filter((o) => o.value !== 'other').map((o) => ({ value: o.value, label: enumLabel(tCS, o.value, 'topics') })),
-    [tCS]
   )
   const tagOptions = useMemo(
     () => tags.filter((tag) => tag.value !== 'other').map((tag) => ({ value: tag.value, label: localized(tag.label) })),
@@ -86,17 +80,10 @@ export default function CaseStudiesFilters({ currentFilters, tags = [], communit
       selected: selectedCommunities,
       onToggle: (v) => toggleInArray('communities', selectedCommunities, v),
     },
-    {
-      id: 'topics',
-      label: t('topic'),
-      options: topicGroupOptions,
-      selected: selectedTopics,
-      onToggle: (v) => toggleInArray('topics', selectedTopics, v),
-    },
     ...(tagOptions.length
       ? [{
           id: 'tags',
-          label: t('tags'),
+          label: t('themes'),
           options: tagOptions,
           selected: selectedTags,
           onToggle: (v: string) => toggleInArray('tags', selectedTags, v),

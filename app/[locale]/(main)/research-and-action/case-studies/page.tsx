@@ -16,6 +16,7 @@ import {
   getFilteredCaseStudies,
   type CaseStudyListFilters,
 } from '@/lib/content/case-studies'
+import { LEGACY_TOPIC_TO_TAG } from '@/lib/case-studies/topic-tag-map'
 import { assignGalleryVariant, spanForVariant } from '@/lib/case-studies/gallery-layout'
 import { REGION_CODES, REGION_I18N_KEY, slugToShortCode, type RegionCode } from '@/lib/maps/region-codes'
 import type { RegionDatum } from '@/lib/maps/region-facets'
@@ -91,9 +92,17 @@ export default async function CaseStudiesPage({
     return cleaned.length ? cleaned : undefined
   }
 
+  // The retired fixed Topic list has no facet of its own any more — an old
+  // `?topics=` link is mapped to its theme-tag replacement (once Task 16 fills
+  // in LEGACY_TOPIC_TO_TAG) and folded into `tags`. An unmapped/unknown topic
+  // value is dropped rather than erroring.
+  const legacyTagIds = (toArray(topics) ?? [])
+    .map((value) => LEGACY_TOPIC_TO_TAG[value])
+    .filter((id): id is string => Boolean(id))
+  const tagIds = Array.from(new Set([...(toArray(tags) ?? []), ...legacyTagIds]))
+
   const parsed: Filters = {
-    topics: toArray(topics),
-    tags: toArray(tags),
+    tags: tagIds.length ? tagIds : undefined,
     communities: toArray(communities),
     search: typeof search === 'string' ? search : undefined,
   }
@@ -204,7 +213,7 @@ async function CaseStudiesContent({
   const caseStudies = await getFilteredCaseStudies(filters)
 
   const hasFilters = Boolean(
-    filters.topics?.length || filters.tags?.length || filters.communities?.length || filters.search
+    filters.tags?.length || filters.communities?.length || filters.search
   )
 
   const emptyState = (

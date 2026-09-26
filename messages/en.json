@@ -1067,6 +1067,21 @@
     "submittingScreen": {
       "heading": "Submitting Your Case Study",
       "body": "Please wait while we process your submission…"
+    },
+    "tags": {
+      "heading": "Tags",
+      "hint": "Pick at least one theme. Your first theme is the main one.",
+      "search": "Search tags…",
+      "noMatch": "No tags match. Suggest a new one below.",
+      "groups": {
+        "topic": "Themes",
+        "audience": "Who it affects",
+        "impact": "Impact",
+        "method": "Approach",
+        "other": "Other"
+      },
+      "main": "Main theme",
+      "remove": "Remove {tag}"
     }
   },
   "caseStudy": {
@@ -1346,7 +1361,8 @@
       "featured": "Featured",
       "recent": "Recently Published",
       "topic": "Topic",
-      "tags": "Tags"
+      "tags": "Tags",
+      "themes": "Themes"
     },
     "topics": {
       "climate-environment": "Climate Change & Environment",

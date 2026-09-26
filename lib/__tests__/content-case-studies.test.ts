@@ -1308,11 +1308,12 @@ describe("case studies, answered by Payload", () => {
       );
     });
 
-    it("binds a BARE tag `value` as the slug object, matching what Sanity returns", async () => {
+    it("binds a BARE tag `value` as the slug object, matching what Sanity returns, and projects its category (Task 13)", async () => {
       mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
       const doc = await getCaseStudyBySlug("x");
       expect(doc?.tags?.[0]).toEqual({
         _id: "tag-connection-to-nature",
+        category: "topic",
         color: "#8b5cf6",
         label: { en: "Connection to Nature" },
         value: { _type: "slug", current: "connection-to-nature" },
