@@ -27,104 +27,6 @@ export function generateCaseStudySlug(title: string): string {
 
 const optionalString = z.string().optional()
 
-/**
- * Server-side schema for the `data` JSON blob posted by
- * components/forms/case-study-form.tsx to /api/case-studies/submit.
- *
- * Strict on the fields whose absence crashes the route
- * (title.en, content, authors, tags); permissive elsewhere so the
- * client form can evolve without breaking submissions.
- */
-const legacyCaseStudySubmissionSchema = z
-    .object({
-        title: z
-            .object({
-                en: z.string().min(1, 'English title is required').max(LIMITS.caseStudy.title),
-                es: optionalString,
-                fr: optionalString,
-                ar: optionalString,
-            })
-            .passthrough(),
-        excerpt: z
-            .object({
-                en: z.string().max(LIMITS.caseStudy.excerpt).optional(),
-                es: optionalString,
-                fr: optionalString,
-                ar: optionalString,
-            })
-            .passthrough()
-            .optional(),
-        // Portable Text from the editor — must be a non-empty array of blocks
-        content: z.array(z.record(z.unknown())).min(1, 'Content is required'),
-        topic: optionalString,
-        // Detail-page layout archetype (Task E3 editor shell). Optional so older
-        // clients/drafts without it still submit; the route defaults to "story".
-        layout: z.enum(['story', 'feature', 'report']).optional(),
-        // Present when submitting from a workspace (?workspace=) — the route
-        // links the created doc back as a workspace output. Authz enforced there.
-        collaborationId: optionalString,
-        // X7 edit mode: the Sanity _id being resubmitted. The route verifies
-        // the author may edit it and patches instead of creating.
-        editId: optionalString,
-        authors: z
-            .array(
-                z
-                    .object({
-                        name: z.string().min(1, 'Author name is required').max(LIMITS.caseStudy.authorName),
-                        email: optionalString,
-                        role: optionalString,
-                        userId: optionalString,
-                    })
-                    .passthrough()
-            )
-            .min(1, 'At least one author is required'),
-        tags: z.array(z.string().min(1)).min(1, 'At least one tag is required'),
-        // Free-text tag suggestions; the route de-duplicates them against existing tags.
-        suggestedTags: z.array(z.string().trim().min(1).max(LIMITS.tags.suggestion)).max(LIMITS.tags.suggestions).optional().default([]),
-        organizationName: z.string().max(LIMITS.caseStudy.organizationName).optional(),
-        relatedCommunity: optionalString,
-        studyPeriod: z
-            .object({
-                startDate: optionalString,
-                endDate: optionalString,
-            })
-            .passthrough()
-            .optional(),
-        locationText: z
-            .object({
-                country: optionalString,
-                city: optionalString,
-            })
-            .passthrough()
-            .optional(),
-        studyLocation: z
-            .object({
-                lat: z.number().optional(),
-                lng: z.number().optional(),
-            })
-            .passthrough()
-            .optional(),
-        // PlacePicker value (Task 4) — takes precedence over the legacy
-        // locationText/studyLocation geocode pair when present.
-        place: z
-            .object({
-                lat: z.number().gte(-90).lte(90),
-                lng: z.number().gte(-180).lte(180),
-                text: z.string().min(1).max(LIMITS.caseStudy.placeText),
-                precision: z.enum(['exact', 'city', 'country', 'region']),
-                countryCode3: z
-                    .string()
-                    .regex(/^[A-Z]{3}$/)
-                    .nullable(),
-            })
-            .optional(),
-    })
-    .passthrough()
-
-// Legacy: still used by the submit route until it moves to makeCaseStudySubmissionSchema.
-export const caseStudySubmissionSchema = legacyCaseStudySubmissionSchema
-export type LegacyCaseStudySubmission = z.infer<typeof legacyCaseStudySubmissionSchema>
-
 export const WRITING_LANGUAGES = ['en', 'es', 'fr', 'ar'] as const
 export type WritingLanguage = (typeof WRITING_LANGUAGES)[number]
 
@@ -190,8 +92,11 @@ const blank = (value: string | undefined) => !value || value.trim().length === 0
  * The one case study rule set, shared by the browser form and the submit
  * route. Messages are ERROR_KEYS (translated by the form), and every problem
  * is reported at once.
+ *
+ * `themeTagIds: null` means the theme rule is not enforced: the CMS has no
+ * theme tags, so the rule could never be met and would block every submission.
  */
-export function makeCaseStudySubmissionSchema({ themeTagIds }: { themeTagIds: ReadonlySet<string> }) {
+export function makeCaseStudySubmissionSchema({ themeTagIds }: { themeTagIds: ReadonlySet<string> | null }) {
     return caseStudyBase.superRefine((data, ctx) => {
         const lang = data.originalLanguage
         const title = data.title[lang]
@@ -212,7 +117,7 @@ export function makeCaseStudySubmissionSchema({ themeTagIds }: { themeTagIds: Re
         }
 
         if (!hasStoryText(data.content)) add(['content'], K.storyRequired)
-        if (!data.tags.some((id) => themeTagIds.has(id))) add(['tags'], K.themeRequired)
+        if (themeTagIds && !data.tags.some((id) => themeTagIds.has(id))) add(['tags'], K.themeRequired)
         if (!data.place && blank(data.relatedCommunity)) add(['location'], K.locationRequired)
 
         const { startDate, endDate } = data.studyPeriod ?? {}

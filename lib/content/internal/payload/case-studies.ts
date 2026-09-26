@@ -1584,7 +1584,8 @@ export interface CaseStudyDraft {
   /** The place's own country and city names, stored as `locationText`. */
   placeCountry?: string;
   placeCity?: string;
-  imageAssetId?: string;
+  /** `null` clears the cover; absent leaves it as it is. */
+  imageAssetId?: string | null;
   imageAlt?: string;
   authors: Array<{
     userId?: string;
@@ -1672,6 +1673,7 @@ function payloadData(draft: Partial<CaseStudyDraft>, options: { keepStatus?: boo
   if (draft.relatedCommunity) data.relatedCommunity = draft.relatedCommunity;
   if (draft.organizationIds && draft.organizationIds.length > 0) data.organizations = draft.organizationIds;
   if (draft.imageAssetId) data.image = { asset: draft.imageAssetId, alt: draft.imageAlt ?? null };
+  else if (draft.imageAssetId === null) data.image = { asset: null, alt: null };
   return data;
 }
 

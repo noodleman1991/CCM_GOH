@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { LIMITS } from "@/lib/validation/limits";
-import { caseStudySubmissionSchema } from "@/lib/validation/case-study";
+import { makeCaseStudySubmissionSchema } from "@/lib/validation/case-study";
 import { livedExperienceSubmissionSchema } from "@/lib/validation/lived-experience";
 import { researchOutputSubmissionSchema } from "@/lib/validation/research-output";
 import { eventSubmissionSchema } from "@/lib/validation/event";
@@ -29,11 +29,19 @@ function acceptsExactly(parse: (text: string) => boolean, max: number, label: st
 
 describe("server schemas follow LIMITS", () => {
   it("case study", () => {
-    const base = { title: { en: "t" }, content: [{ _type: "block" }], authors: [{ name: "A" }], tags: ["t1"] };
-    acceptsExactly((t) => caseStudySubmissionSchema.safeParse({ ...base, title: { en: t } }).success, LIMITS.caseStudy.title, "title");
-    acceptsExactly((t) => caseStudySubmissionSchema.safeParse({ ...base, excerpt: { en: t } }).success, LIMITS.caseStudy.excerpt, "excerpt");
-    acceptsExactly((t) => caseStudySubmissionSchema.safeParse({ ...base, authors: [{ name: t }] }).success, LIMITS.caseStudy.authorName, "author name");
-    acceptsExactly((t) => caseStudySubmissionSchema.safeParse({ ...base, organizationName: t }).success, LIMITS.caseStudy.organizationName, "organisation");
+    const caseStudySchema = makeCaseStudySubmissionSchema({ themeTagIds: new Set(["t1"]) });
+    const base = {
+      title: { en: "A title" },
+      excerpt: { en: "e".repeat(50) },
+      content: [{ _type: "block", children: [{ _type: "span", text: "Story." }] }],
+      authors: [{ name: "A" }],
+      tags: ["t1"],
+      relatedCommunity: "c1",
+    };
+    acceptsExactly((t) => caseStudySchema.safeParse({ ...base, title: { en: t } }).success, LIMITS.caseStudy.title, "title");
+    acceptsExactly((t) => caseStudySchema.safeParse({ ...base, excerpt: { en: t } }).success, LIMITS.caseStudy.excerpt, "excerpt");
+    acceptsExactly((t) => caseStudySchema.safeParse({ ...base, authors: [{ name: t }] }).success, LIMITS.caseStudy.authorName, "author name");
+    acceptsExactly((t) => caseStudySchema.safeParse({ ...base, organizationName: t }).success, LIMITS.caseStudy.organizationName, "organisation");
   });
 
   it("lived experience", () => {

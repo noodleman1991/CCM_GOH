@@ -34,7 +34,9 @@ export async function uploadEditorImage(
     let message = "Upload failed. Please try again.";
     try {
       const body = await response.json();
-      if (body?.error) message = body.error;
+      // The shared `{ error: { message } }` shape; older answers were a bare string.
+      const answer = body?.error?.message ?? body?.error;
+      if (typeof answer === "string" && answer) message = answer;
     } catch {
       // response wasn't JSON — keep the generic message
     }

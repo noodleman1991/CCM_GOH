@@ -242,7 +242,7 @@ export default function PortableTextEditor({
             <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
+                accept="image/jpeg,image/png,image/webp"
                 className="hidden"
                 onChange={onFileChange}
                 aria-hidden="true"

@@ -581,6 +581,19 @@ describe("submitCaseStudy", () => {
     expect(mockCreateDocument).not.toHaveBeenCalled();
   });
 
+  it("a resubmission with imageAssetId: null unsets the cover", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "cs1", submittedBy: "user1", status: "pending", slug: { current: "s" } });
+    await submitCaseStudy({ ...minimalInput, editId: "cs1", imageAssetId: null });
+    const [, patch] = mockUpdateDocument.mock.calls[0];
+    expect(patch).toHaveProperty("image", null);
+  });
+
+  it("an in-review autosave with imageAssetId: null unsets the cover", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "cs1", submittedBy: "user1", status: "pending", slug: { current: "s" } });
+    await saveSubmissionEdits("user1", "cs1", { imageAssetId: null });
+    expect(mockUpdateDocument).toHaveBeenCalledWith("cs1", { image: null });
+  });
+
   it("allows a workspace member (not the submitter) to edit", async () => {
     mockQueryRaw.mockResolvedValue({ _id: "cs1", submittedBy: "someone-else", status: "pending", slug: { current: "s" } });
     mockFindFirst.mockResolvedValue({ id: "wo1" } as never);
@@ -1662,6 +1675,31 @@ describe("case studies, answered by Payload", () => {
       const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
       expect(data.image).toMatchObject({ asset: "media-9" });
       expect(mockPayloadImageUpload).not.toHaveBeenCalled();
+    });
+
+    it("a resubmission with imageAssetId: null removes the cover; undefined leaves it alone", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "pending" } as never);
+      const base = { userId: "u1", title: { en: "No cover now" }, content: [], authors: [{ name: "A" }], tags: [], editId: "cs1" };
+      await submitCaseStudy({ ...base, imageAssetId: null });
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.image).toEqual({ asset: null, alt: null });
+
+      mockPayloadUpdate.mockClear();
+      await submitCaseStudy(base);
+      const [{ data: untouched }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(untouched).not.toHaveProperty("image");
+    });
+
+    it("saveSubmissionEdits with imageAssetId: null removes the cover; undefined leaves it alone", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "pending" } as never);
+      await saveSubmissionEdits("u1", "cs1", { imageAssetId: null });
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.image).toEqual({ asset: null, alt: null });
+
+      mockPayloadUpdate.mockClear();
+      await saveSubmissionEdits("u1", "cs1", { title: { en: "Still has a cover" } });
+      const [{ data: untouched }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(untouched).not.toHaveProperty("image");
     });
 
     it("saveSubmissionEdits autosaves an in-review case study without touching its moderation status", async () => {

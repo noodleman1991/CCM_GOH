@@ -49,6 +49,11 @@ describe("case study rules", () => {
     expect(problems({ ...valid, tags: ["audience-tag"] })).toEqual({ tags: "tags.themeRequired" });
   });
 
+  it("does not enforce the theme rule when there are no theme tags to choose from (themeTagIds: null)", () => {
+    const unenforced = makeCaseStudySubmissionSchema({ themeTagIds: null });
+    expect(unenforced.safeParse({ ...valid, tags: ["audience-tag"] }).success).toBe(true);
+  });
+
   it("a place alone satisfies location", () => {
     const place = { lat: 6.5, lng: 3.4, text: "Lagos, Nigeria", precision: "city", countryCode3: "NGA" };
     const { relatedCommunity: _drop, ...rest } = valid;

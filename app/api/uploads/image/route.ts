@@ -5,12 +5,15 @@ import { uploadImageAsset } from "@/lib/content/internal/sanity-source";
 import { uploadImageAsset as uploadPayloadImageAsset } from "@/lib/content/internal/payload-source";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { formErrorResponse } from "@/lib/api/form-error";
+import { ERROR_KEYS } from "@/lib/validation/error-keys";
 
 /** `CONTENT_BACKEND_UPLOADS` (or the process-wide `CONTENT_BACKEND`). */
 const UPLOADS_DOMAIN = "uploads";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB — same cap as the case-study featured image.
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_MB = 5;
+const MAX_FILE_SIZE = MAX_MB * 1024 * 1024; // same cap as the case-study featured image.
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 /**
  * POST /api/uploads/image
@@ -45,44 +48,46 @@ const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif
  */
 export async function POST(request: NextRequest) {
   const limited = await rateLimitRequest(request, "upload:image", { limit: 30, windowSeconds: 600 });
-  if (limited) return limited;
+  if (limited) return formErrorResponse({ request, formKey: ERROR_KEYS.formRateLimited, status: 429 });
 
   const { userId } = await auth();
   if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.formSignIn, status: 401 });
   }
 
   let formData: FormData;
   try {
     formData = await request.formData();
   } catch {
-    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric });
   }
 
   const file = formData.get("file") as File | null;
   const collaborationId = formData.get("collaborationId") as string | null;
 
   if (!file) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.uploadWrongType });
   }
 
   if (collaborationId) {
     try {
       await authorizeCollab(collaborationId, "collab:upload");
     } catch {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return formErrorResponse({ request, formKey: ERROR_KEYS.formNotAllowed, status: 403 });
     }
   }
 
-  if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json({ error: "File too large. Maximum size is 5MB." }, { status: 400 });
+  // Upload problems answer in the shared `{ error: { message, fields } }` shape, in plain words.
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return formErrorResponse({ request, formKey: ERROR_KEYS.uploadWrongType });
   }
 
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return NextResponse.json(
-      { error: "Invalid file type. Allowed: JPEG, PNG, WebP, GIF." },
-      { status: 400 }
-    );
+  if (file.size > MAX_FILE_SIZE) {
+    return formErrorResponse({
+      request,
+      formKey: ERROR_KEYS.uploadTooBig,
+      values: { size: (file.size / 1048576).toFixed(1), max: MAX_MB },
+    });
   }
 
   const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").substring(0, 255);
@@ -108,6 +113,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("[uploads/image] Asset upload failed:", error);
-    return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 502 });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric, status: 502 });
   }
 }

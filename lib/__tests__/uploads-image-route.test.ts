@@ -35,6 +35,10 @@ vi.mock("@/lib/collaboration/service", () => ({
 vi.mock("@/lib/rate-limit-route", () => ({
   rateLimitRequest: vi.fn(async () => null),
 }));
+vi.mock("next-intl/server", () => ({
+  getTranslations: async () =>
+    Object.assign((key: string, values?: Record<string, unknown>) => (values ? `T(${key} ${JSON.stringify(values)})` : `T(${key})`), { has: () => true }),
+}));
 
 import { POST } from "@/app/api/uploads/image/route";
 
@@ -46,9 +50,9 @@ const ASSET = {
   lqip: "data:image/webp;base64,AAAA",
 };
 
-function upload(filename = "photo.jpg", type = "image/jpeg"): NextRequest {
+function upload(filename = "photo.jpg", type = "image/jpeg", bytes: Uint8Array<ArrayBuffer> = new Uint8Array([1, 2, 3])): NextRequest {
   const form = new FormData();
-  form.set("file", new File([new Uint8Array([1, 2, 3])], filename, { type }));
+  form.set("file", new File([bytes], filename, { type }));
   return new Request("http://localhost/api/uploads/image", {
     method: "POST",
     body: form,
@@ -144,6 +148,23 @@ describe("POST /api/uploads/image", () => {
 
     expect(response.status).toBe(400);
     expect(payloadUpload).not.toHaveBeenCalled();
+    expect(sanityUpload).not.toHaveBeenCalled();
+  });
+
+  it("answers a file over 5 MB in plain words, naming its size", async () => {
+    const response = await POST(upload("big.jpg", "image/jpeg", new Uint8Array(6 * 1048576)));
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error.message).toBe('T(upload.tooBig {"size":"6.0","max":5})');
+    expect(sanityUpload).not.toHaveBeenCalled();
+  });
+
+  it("answers a file that is not a JPEG, PNG or WebP in plain words (GIF included)", async () => {
+    const response = await POST(upload("anim.gif", "image/gif"));
+
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.message).toBe("T(upload.wrongType)");
     expect(sanityUpload).not.toHaveBeenCalled();
   });
 });

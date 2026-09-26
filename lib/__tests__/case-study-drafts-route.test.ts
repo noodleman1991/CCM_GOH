@@ -12,11 +12,19 @@ const authMock = vi.fn<() => Promise<{ userId: string | null }>>();
 vi.mock("@clerk/nextjs/server", () => ({ auth: () => authMock() }));
 
 const saveDraft = vi.fn(async () => ({ id: "draft-1" }));
+const saveEdits = vi.fn<(...a: unknown[]) => Promise<void>>(async () => undefined);
+const { EditNotAllowed } = vi.hoisted(() => ({ EditNotAllowed: class CaseStudyEditNotAllowedError extends Error {} }));
 vi.mock("@/lib/content/case-studies", () => ({
   CaseStudyDraftNotFoundError: class CaseStudyDraftNotFoundError extends Error {},
+  CaseStudyEditNotAllowedError: EditNotAllowed,
   saveCaseStudyDraft: (...a: unknown[]) => saveDraft(...(a as [])),
+  saveSubmissionEdits: (...a: unknown[]) => saveEdits(...a),
   getLatestCaseStudyDraft: vi.fn(),
   deleteCaseStudyDraft: vi.fn(),
+}));
+
+vi.mock("next-intl/server", () => ({
+  getTranslations: async () => Object.assign((key: string) => `T(${key})`, { has: () => true }),
 }));
 
 vi.mock("@/lib/prisma", () => ({
@@ -137,5 +145,33 @@ describe("POST /api/case-studies/drafts", () => {
     const res = await POST(post({ draftData: GOOD_DRAFT }, "203.0.113.50"));
     expect(res.status).toBe(401);
     expect(saveDraft).not.toHaveBeenCalled();
+  });
+
+  it("autosaves edits to a submission in review without resubmitting it", async () => {
+    const res = await POST(post({ editId: "cs1", draftData: GOOD_DRAFT }));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ id: "cs1" });
+    expect(saveEdits).toHaveBeenCalledWith("user_drafts", "cs1", expect.any(Object));
+    expect(saveDraft).not.toHaveBeenCalled();
+  });
+
+  it("strips the server-owned keys from an in-review autosave too", async () => {
+    await POST(post({ editId: "cs1", draftData: { ...GOOD_DRAFT, status: "approved", userId: "user_victim" } }));
+    const [, , data] = saveEdits.mock.calls[0] as [string, string, Record<string, unknown>];
+    expect(data).not.toHaveProperty("status");
+    expect(data).not.toHaveProperty("userId");
+  });
+
+  it("answers an in-review autosave that is no longer allowed with 403 in plain words", async () => {
+    saveEdits.mockRejectedValueOnce(new EditNotAllowed());
+    const res = await POST(post({ editId: "cs1", draftData: GOOD_DRAFT }));
+    expect(res.status).toBe(403);
+    expect((await res.json()).error.message).toBe("T(form.notAllowed)");
+  });
+
+  it("answers errors in the shared shape", async () => {
+    const res = await POST(post({ draftData: { title: 5 } }));
+    expect(res.status).toBe(400);
+    expect((await res.json()).error.message).toBe("T(form.generic)");
   });
 });

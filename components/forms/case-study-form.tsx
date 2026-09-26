@@ -80,7 +80,8 @@ export default function ImprovedCaseStudyForm({
 
   // --- Rules and errors ------------------------------------------------------
   const themeIds = useMemo(() => new Set(availableTags.filter((tag) => tag.category === "topic").map((tag) => tag._id)), [availableTags]);
-  const schema = useMemo(() => makeCaseStudySubmissionSchema({ themeTagIds: themeIds }), [themeIds]);
+  // No theme tags at all (or none loaded): the rule can't be met, so it isn't enforced — the server does the same.
+  const schema = useMemo(() => makeCaseStudySubmissionSchema({ themeTagIds: themeIds.size > 0 ? themeIds : null }), [themeIds]);
   const validate = useCallback((v: CaseStudyValues) => {
     const result = schema.safeParse(v);
     return result.success ? [] : toFieldIssues(result.error);

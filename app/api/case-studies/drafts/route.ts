@@ -3,12 +3,16 @@ import { auth } from "@clerk/nextjs/server"
 import { z } from "zod"
 import {
     CaseStudyDraftNotFoundError,
+    CaseStudyEditNotAllowedError,
     deleteCaseStudyDraft,
     getCaseStudyDraftById,
     getLatestCaseStudyDraft,
     saveCaseStudyDraft,
+    saveSubmissionEdits,
 } from "@/lib/content/case-studies"
 import { rateLimitRequest } from "@/lib/rate-limit-route"
+import { formErrorResponse } from "@/lib/api/form-error"
+import { ERROR_KEYS } from "@/lib/validation/error-keys"
 import { caseStudyDraftSchema, stripServerOwnedDraftKeys } from "@/lib/validation/case-study"
 
 /**
@@ -24,6 +28,9 @@ const draftIdSchema = z.string().min(1).max(200)
 const saveBodySchema = z.object({
     // The form holds "no draft yet" as null, so its first autosave sends null.
     draftId: draftIdSchema.nullish(),
+    // A case study still in review, reopened for editing: its autosave writes
+    // onto the case study itself (without resubmitting it), not onto a draft.
+    editId: draftIdSchema.optional(),
     draftData: caseStudyDraftSchema,
 })
 
@@ -70,45 +77,49 @@ export async function POST(request: NextRequest) {
     try {
         const { userId } = await auth()
         if (!userId) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+            return formErrorResponse({ request, formKey: ERROR_KEYS.formSignIn, status: 401 })
         }
 
         const limited = await rateLimitRequest(request, "case-study:draft-save", { limit: 60, windowSeconds: 600 })
-        if (limited) return limited
+        if (limited) return formErrorResponse({ request, formKey: ERROR_KEYS.formRateLimited, status: 429 })
 
         const raw = await request.text()
         if (Buffer.byteLength(raw, "utf8") > MAX_DRAFT_BODY_BYTES) {
-            return NextResponse.json({ error: "Draft too large" }, { status: 413 })
+            return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric, status: 413 })
         }
 
         let json: unknown
         try {
             json = JSON.parse(raw)
         } catch {
-            return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
+            return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric, status: 400 })
         }
 
         const parsed = saveBodySchema.safeParse(json)
         if (!parsed.success) {
-            return NextResponse.json(
-                { error: "Invalid draft", details: parsed.error.flatten() },
-                { status: 400 }
-            )
+            return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric, status: 400 })
         }
 
         const draftData = stripServerOwnedDraftKeys(parsed.data.draftData)
+
+        const { editId } = parsed.data
+        if (editId) {
+            await saveSubmissionEdits(userId, editId, draftData)
+            return NextResponse.json({ id: editId })
+        }
+
         const result = await saveCaseStudyDraft(userId, parsed.data.draftId ?? undefined, draftData)
 
         return NextResponse.json({ id: result.id })
     } catch (error) {
+        if (error instanceof CaseStudyEditNotAllowedError) {
+            return formErrorResponse({ request, formKey: ERROR_KEYS.formNotAllowed, status: 403 })
+        }
         if (error instanceof CaseStudyDraftNotFoundError) {
-            return NextResponse.json({ error: "Draft not found" }, { status: 404 })
+            return formErrorResponse({ request, formKey: ERROR_KEYS.formNotAllowed, status: 404 })
         }
         console.error("Failed to save draft:", error)
-        return NextResponse.json(
-            { error: "Failed to save draft" },
-            { status: 500 }
-        )
+        return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric, status: 500 })
     }
 }
 

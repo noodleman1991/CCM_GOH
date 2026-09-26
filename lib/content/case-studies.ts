@@ -1187,8 +1187,9 @@ export interface CaseStudyInput {
    *  and summary are stored in that language; the English title and summary
    *  are stored in English. */
   originalLanguage?: "en" | "es" | "fr" | "ar";
-  /** A cover image already uploaded while drafting — reused, not re-uploaded. */
-  imageAssetId?: string;
+  /** A cover image already uploaded while drafting — reused, not re-uploaded.
+   *  `null` = the cover was removed (a resubmission clears it); absent = not sent. */
+  imageAssetId?: string | null;
   layout?: "story" | "feature" | "report";
   authors: Array<{ userId?: string; name: string; email?: string; role?: string }>;
   tags: string[];
@@ -1386,7 +1387,7 @@ export async function submitCaseStudy(
   // Handle image upload if provided (size/type validated by the route). On
   // Payload the image field points at `media`; `files` is documents-only and
   // refuses an image.
-  let imageAssetId: string | undefined;
+  let imageAssetId: string | null | undefined;
   const imageAlt = `Featured image for ${input.title.en}`;
   if (input.imageAssetId) {
     // Uploaded while drafting: point at it rather than uploading it twice.
@@ -1408,6 +1409,10 @@ export async function submitCaseStudy(
       asset: { _type: "reference", _ref: asset.id },
       alt: imageAlt,
     };
+  } else if (input.imageAssetId === null && input.editId) {
+    // The cover was removed while editing: clear it (the seam unsets on null).
+    imageAssetId = null;
+    doc.image = null;
   }
 
   // The field values, in neither store's vocabulary. Computed once so the two
@@ -1614,6 +1619,8 @@ function editsFrom(
   }
   const language = nonEmpty(data.originalLanguage);
   if (language && (WRITING_LOCALES as readonly string[]).includes(language)) edits.originalLanguage = language;
+  // null = the cover was removed, and is cleared; absent = not sent, left alone.
+  if (data.imageAssetId === null) edits.imageAssetId = null;
   const imageAssetId = nonEmpty(data.imageAssetId);
   if (imageAssetId) {
     edits.imageAssetId = imageAssetId;
@@ -1657,6 +1664,10 @@ export async function saveSubmissionEdits(userId: string, id: string, data: Reco
   if (edits.layout) patch.layout = edits.layout;
   if (edits.studyPeriod) patch.studyPeriod = edits.studyPeriod;
   if (edits.relatedCommunity) patch.relatedCommunity = { _type: "reference", _ref: edits.relatedCommunity };
+  if (edits.imageAssetId === null) patch.image = null;
+  else if (edits.imageAssetId) {
+    patch.image = { _type: "image", asset: { _type: "reference", _ref: edits.imageAssetId }, alt: edits.imageAlt };
+  }
   if (edits.studyLocation) {
     patch.studyLocation = { _type: "geopoint", ...edits.studyLocation };
     patch.locationDisplayText = edits.locationDisplayText;
