@@ -62,7 +62,7 @@ export function TagPicker({
             if (!tag) return null;
             return (
               <li key={id} className="flex min-h-9 items-center gap-1.5 rounded-full bg-ccm-midnight px-3 text-sm text-white">
-                {id === firstTheme && <Star className="size-3.5 fill-current" aria-label={t("main")} />}
+                {id === firstTheme && <Star className="size-3.5 fill-current" aria-hidden />}
                 <span>{label(tag)}</span>
                 <button
                   type="button"
@@ -81,7 +81,7 @@ export function TagPicker({
       )}
       {firstTheme && (
         <p className="text-xs text-muted-foreground">
-          ★ <span>{t("main")}</span>: {label(byId.get(firstTheme)!)}
+          <span aria-hidden>★ </span><span>{t("main")}</span>: {label(byId.get(firstTheme)!)}
         </p>
       )}
 

@@ -40,6 +40,9 @@ describe("TagPicker", () => {
   it("adds in pick order and marks the main theme", () => {
     const onChange = mount(["t2", "t4"]);
     expect(screen.getByText("Main theme")).toBeTruthy();
+    // The stars are decoration: the words "Main theme: …" carry the meaning.
+    for (const svg of document.querySelectorAll("li svg")) expect(svg.getAttribute("aria-hidden")).toBe("true");
+    expect(screen.getByText("★", { exact: false }).getAttribute("aria-hidden")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Water Access" }));
     expect(onChange).toHaveBeenCalledWith(["t2", "t4", "t1"]);
   });
