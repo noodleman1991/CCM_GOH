@@ -19,6 +19,8 @@ export const LIMITS = {
     organizationName: 200,
     /** The free-text label of a picked place (`place.text`). */
     placeText: 200,
+    /** The country or city name carried alongside a picked place. */
+    placeName: 120,
   },
   livedExperience: {
     title: 160,
