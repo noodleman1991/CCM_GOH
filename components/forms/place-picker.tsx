@@ -86,9 +86,11 @@ export function PlacePicker({
               aria-expanded={open}
               aria-controls={listId}
               aria-autocomplete="list"
+              aria-activedescendant={open ? `${listId}-option-${active}` : undefined}
               value={query}
               autoComplete="off"
               placeholder={t('searchPlaceholder')}
+              className="min-h-11"
               onChange={(e) => setQuery(e.target.value)}
               onBlur={onBlur}
               onKeyDown={(e) => {
@@ -106,6 +108,7 @@ export function PlacePicker({
                 {suggestions.map((s, i) => (
                   <li
                     key={`${s.lat}-${s.lng}-${i}`}
+                    id={`${listId}-option-${i}`}
                     role="option"
                     aria-selected={i === active}
                     onMouseDown={(e) => e.preventDefault()}
@@ -137,7 +140,12 @@ export function PlacePicker({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor={`${inputId}-name`}>{t('displayLabel')}</Label>
-              <Input id={`${inputId}-name`} value={value.text} onChange={(e) => onChange({ ...value, text: e.target.value })} />
+              <Input
+                id={`${inputId}-name`}
+                className="min-h-11"
+                value={value.text}
+                onChange={(e) => onChange({ ...value, text: e.target.value })}
+              />
             </div>
           </div>
         )}

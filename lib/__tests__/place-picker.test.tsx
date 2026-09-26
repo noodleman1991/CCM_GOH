@@ -44,4 +44,18 @@ describe("PlacePicker", () => {
     mount();
     expect(screen.getByRole("combobox").id).toBe("field-location");
   });
+
+  it("arrowing to the second suggestion announces it via aria-activedescendant", async () => {
+    const nairobi = { label: "Nairobi, Kenya", lat: -1.29, lng: 36.82, countryCode3: "KEN", kind: "city", country: "Kenya", city: "Nairobi", precision: "city", vx: 520, vy: 260 };
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ results: [lagos, nairobi] }))));
+    mount();
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: "na" } });
+    await vi.advanceTimersByTimeAsync(400);
+    const options = await screen.findAllByRole("option");
+    expect(options).toHaveLength(2);
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input.getAttribute("aria-activedescendant")).toBe(options[1].id);
+    expect(options[1].getAttribute("aria-selected")).toBe("true");
+  });
 });
