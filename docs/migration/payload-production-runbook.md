@@ -177,15 +177,21 @@ The editing routine, in five steps: clear the review queue on the dashboard firs
 
 Task 18's gates (full test suite, `tsc`, lint of the changed files, a real-library run against the dev database, and signed-out rendered checks) all passed on `feat/payload-migration`; see the task report for numbers. This work adds two additive Payload migrations, not yet on production: `20260926_155648_human_friendly_forms` and `20260926_175525_draft_layout_and_suggestions`.
 
-1. Before deploy — optional pre-check, not a required manual step. `payload.config.ts` sets `prodMigrations`, so production applies any pending migration automatically on the first boot after the deploy in step 3; this only confirms what is pending:
+1. Before deploy — optional pre-check, not a required manual step. `payload.config.ts` sets `prodMigrations`, so production applies any pending migration automatically on the first boot after the deploy in step 2; this only confirms what is pending:
    ```
    PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status
    ```
-   Expect both migrations above listed as not yet run. After step 3's deploy, run the same command again and confirm both show as applied.
+   Expect both migrations above listed as not yet run. After step 2's deploy, run the same command again and confirm both show as applied.
 
    A manual `pnpm exec payload migrate` can hit an interactive "dev mode … data loss" prompt when a stale dev marker is present on the target database; production carried no such marker as of 2026-09-26, so the automatic apply on deploy is expected to go through cleanly without it. If the prompt appears anyway, read what the marker is warning about before answering it — don't answer blind.
 
-2. Topic → tag conversion. Dry run first, against production (read-only; needs `--production` — or the repo-wide `--allow-production` — to pass `scripts/case-studies/topic-to-tags.ts`'s own dev-database guard; either flag works for both the dry run and the execute):
+2. Deploy first (manual, by the user — never run by the agent). The conversion in step 3 reads the `original_language` column, which only exists once the migrations have run on the first boot after this deploy — so it must come after it:
+   ```
+   vercel --prod
+   ```
+   Then re-run step 1's `migrate:status` and confirm both migrations now show as applied. Don't start step 3 until they do.
+
+3. Topic → tag conversion, after the deploy and the `migrate:status` check above. Dry run first, against production (read-only; needs `--production` — or the repo-wide `--allow-production` — to pass `scripts/case-studies/topic-to-tags.ts`'s own dev-database guard; either flag works for both the dry run and the execute):
    ```
    PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/case-studies/topic-to-tags.ts --production
    ```
@@ -200,12 +206,6 @@ Task 18's gates (full test suite, `tsc`, lint of the changed files, a real-libra
    ```
 
    Separately: check the tag with slug `access-to-education` in the production CMS (**Tags & vocabularies** → Tags). On dev it was found with no label in any language (2026-09-26). If it's still nameless in production, name it — English "Access to Education", Spanish "Acceso a la educación", French "Accès à l'éducation", Arabic "الوصول إلى التعليم" — before or right after the conversion.
-
-3. Deploy (manual, by the user — never run by the agent):
-   ```
-   vercel --prod
-   ```
-   Then re-run step 1's `migrate:status` and confirm both migrations now show as applied.
 
 4. Re-index case studies — the conversion above changes `tags` on every affected document:
    ```
