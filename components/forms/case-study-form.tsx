@@ -189,7 +189,6 @@ export default function ImprovedCaseStudyForm({
     setFormMessage(null);
     try {
       const body = new FormData();
-      // A missing place is left out rather than sent as null: the submit route's older rules refuse null.
       const { place, ...rest } = values;
       body.append("data", JSON.stringify({ ...rest, ...(place ? { place } : {}), ...(workspaceId ? { collaborationId: workspaceId } : {}), ...(editId ? { editId } : {}) }));
       const res = await fetch("/api/case-studies/submit", { method: "POST", headers: localeHeaders(locale), body });

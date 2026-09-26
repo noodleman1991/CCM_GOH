@@ -42,8 +42,9 @@ export const placeSchema = z.object({
     text: z.string().min(1).max(LIMITS.caseStudy.placeText),
     precision: z.enum(['exact', 'city', 'country', 'region']),
     countryCode3: z.string().regex(/^[A-Z]{3}$/).nullable(),
-    country: z.string().max(LIMITS.caseStudy.placeName).optional(),
-    city: z.string().max(LIMITS.caseStudy.placeName).optional(),
+    // The place search sends null for a pick without one (a country or region has no city).
+    country: z.string().max(LIMITS.caseStudy.placeName).nullish(),
+    city: z.string().max(LIMITS.caseStudy.placeName).nullish(),
 })
 
 /** True when a Portable Text body has at least one span with real text. */

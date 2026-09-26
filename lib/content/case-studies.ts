@@ -1206,8 +1206,8 @@ export interface CaseStudyInput {
     text: string;
     precision: "exact" | "city" | "country" | "region";
     countryCode3: string | null;
-    country?: string;
-    city?: string;
+    country?: string | null;
+    city?: string | null;
   };
   /** X7 edit mode: resubmit an existing draft/pending/revision doc. */
   editId?: string;

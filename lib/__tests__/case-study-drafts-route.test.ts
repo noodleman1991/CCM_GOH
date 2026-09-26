@@ -159,6 +159,14 @@ describe("POST /api/case-studies/drafts", () => {
     expect(saveDraft).not.toHaveBeenCalled();
   });
 
+  it("saves a draft whose place is a country with no city (city: null)", async () => {
+    const place = { lat: 9.1, lng: 8.7, text: "Nigeria", precision: "country", countryCode3: "NGA", country: "Nigeria", city: null };
+    const res = await POST(post({ draftId: null, draftData: { ...GOOD_DRAFT, place } }));
+    expect(res.status).toBe(200);
+    const edit = await POST(post({ editId: "cs1", draftData: { ...GOOD_DRAFT, place: { ...place, country: null } } }));
+    expect(edit.status).toBe(200);
+  });
+
   it("strips the server-owned keys from an in-review autosave too", async () => {
     await POST(post({ editId: "cs1", draftData: { ...GOOD_DRAFT, status: "approved", userId: "user_victim" } }));
     const [, , data] = saveEdits.mock.calls[0] as [string, string, Record<string, unknown>];

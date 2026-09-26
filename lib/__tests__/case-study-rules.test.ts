@@ -54,6 +54,16 @@ describe("case study rules", () => {
     expect(unenforced.safeParse({ ...valid, tags: ["audience-tag"] }).success).toBe(true);
   });
 
+  it("a country or region pick (no city, sent as null) passes", () => {
+    const { relatedCommunity: _drop, ...rest } = valid;
+    void _drop;
+    const country = { lat: 9.1, lng: 8.7, text: "Nigeria", precision: "country", countryCode3: "NGA", country: "Nigeria", city: null };
+    expect(problems({ ...rest, place: country })).toEqual({});
+    const hamlet = { lat: 9.1, lng: 8.7, text: "Somewhere", precision: "exact", countryCode3: null, country: null, city: null };
+    expect(problems({ ...rest, place: hamlet })).toEqual({});
+    expect(caseStudyDraftSchema.safeParse({ place: country }).success).toBe(true);
+  });
+
   it("a place alone satisfies location", () => {
     const place = { lat: 6.5, lng: 3.4, text: "Lagos, Nigeria", precision: "city", countryCode3: "NGA" };
     const { relatedCommunity: _drop, ...rest } = valid;
