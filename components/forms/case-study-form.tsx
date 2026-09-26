@@ -24,7 +24,7 @@ import { FieldError } from "@/components/forms/errors/field-error";
 import { fieldId } from "@/components/forms/errors/field-id";
 import { WhatsLeft, type WhatsLeftItem } from "@/components/forms/errors/whats-left";
 import { toFieldIssues } from "@/lib/validation/messages";
-import { CASE_STUDY_MINIMUMS, caseStudyFieldOrder, hasStoryText, makeCaseStudySubmissionSchema } from "@/lib/validation/case-study";
+import { CASE_STUDY_MINIMUMS, WRITING_LANGUAGES, caseStudyFieldOrder, hasStoryText, makeCaseStudySubmissionSchema } from "@/lib/validation/case-study";
 import { localeHeaders, readFormError } from "@/lib/forms/read-form-error";
 
 type TagOption = { _id: string; label: Record<string, string>; value: { current: string }; category?: string | null };
@@ -67,6 +67,8 @@ export default function ImprovedCaseStudyForm({
   const [editorKey, setEditorKey] = useState(0);
   const [restoreOffer, setRestoreOffer] = useState<LocalDraft<CaseStudyValues> | null>(null);
   const [formMessage, setFormMessage] = useState<string | null>(null);
+  // True when the form-level message only points at field problems ("they're marked below").
+  const [messageIsAboutFields, setMessageIsAboutFields] = useState(false);
   const [step, setStep] = useState<"form" | "review" | "success">("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cover, setCover] = useState<{ uploading: boolean; error: string | null }>({ uploading: false, error: null });
@@ -88,16 +90,25 @@ export default function ImprovedCaseStudyForm({
   }, [schema]);
   // "location" is not a real field: it's the place, or failing that the community.
   const checked = useMemo(() => ({ ...values, location: values.place ?? (values.relatedCommunity || null) }), [values]);
+  const order = caseStudyFieldOrder(lang, values.authors.length);
   const { errors, leave, validateAll, setServerErrors, focusFirstError, describedBy } = useFormErrors({
-    values: checked, validate, t: tErrors, order: caseStudyFieldOrder(lang, values.authors.length),
+    values: checked, validate, t: tErrors, order,
   });
+  // Every path the page shows a message under. A problem anywhere else (the
+  // place's parts, a suggested tag, the layout…) has no field to sit under, so
+  // it is told in the form-level message instead of being lost.
+  const shownUnderFields = new Set([...order, ...WRITING_LANGUAGES.flatMap((l) => [`title.${l}`, `excerpt.${l}`])]);
+  const unseen = Object.entries(errors).filter(([path]) => !shownUnderFields.has(path)).map(([, message]) => message);
+  const anyMarked = Object.keys(errors).some((path) => shownUnderFields.has(path));
+  // "They're marked below" is only true when something is.
+  const headline = messageIsAboutFields && !anyMarked && unseen.length > 0 ? null : formMessage;
   // Focus once the messages (and any author editor they open) are on the page.
   const focusFirstProblem = () => { focusPending.current = "problem"; };
   useEffect(() => {
     const target = focusPending.current;
     if (!target) return;
     focusPending.current = null;
-    if (target === "problem") return focusFirstError();
+    if (target === "problem" && anyMarked) return focusFirstError();
     messageRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
     messageRef.current?.focus({ preventScroll: true });
   });
@@ -187,6 +198,7 @@ export default function ImprovedCaseStudyForm({
     if (isSubmitting || !ready()) return;
     setIsSubmitting(true);
     setFormMessage(null);
+    setMessageIsAboutFields(false);
     try {
       const body = new FormData();
       const { place, ...rest } = values;
@@ -196,6 +208,7 @@ export default function ImprovedCaseStudyForm({
         const { message, fields } = await readFormError(res, tErrors("form.generic"));
         setServerErrors(fields);
         setFormMessage(message);
+        setMessageIsAboutFields(Object.keys(fields).length > 0);
         setStep("form");
         focusPending.current = Object.keys(fields).length > 0 ? "problem" : "message";
         return;
@@ -294,9 +307,14 @@ export default function ImprovedCaseStudyForm({
           <FieldError path="image" message={cover.error ?? undefined} />
         </div>
 
-        {formMessage && (
-          <div ref={messageRef} tabIndex={-1} role="alert" className="mt-8 outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
-            {formMessage}
+        {(headline || unseen.length > 0) && (
+          <div ref={messageRef} tabIndex={-1} role="alert" className="mt-8 space-y-2 outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
+            {headline && <p>{headline}</p>}
+            {unseen.length > 0 && (
+              <ul className="list-disc space-y-1 ps-5">
+                {unseen.map((message) => <li key={message}>{message}</li>)}
+              </ul>
+            )}
           </div>
         )}
 

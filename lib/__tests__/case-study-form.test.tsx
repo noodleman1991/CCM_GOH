@@ -102,6 +102,22 @@ describe("case study form", () => {
     expect(alert.scrollIntoView).toHaveBeenCalled();
   });
 
+  it("a server problem on a field the form doesn't show is told in the message, never lost", async () => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url === "/api/case-studies/submit"
+        ? new Response(JSON.stringify({ error: { message: "Some details need fixing — they're marked below.", fields: { "place.city": "That town name is too long" } } }), { status: 400 })
+        : new Response(JSON.stringify({ draft: null, id: "d1" })),
+    );
+    mount();
+    await fillEverything();
+    await act(async () => { fireEvent.click(screen.getAllByRole("button", { name: /Submit for review/ })[0]); });
+    const alert = await screen.findByRole("alert");
+    expect(alert.textContent).toContain("That town name is too long");
+    // Nothing is marked below, so the message doesn't say it is.
+    expect(alert.textContent).not.toContain("marked below");
+    await waitFor(() => expect(document.activeElement).toBe(alert));
+  });
+
   it("'Add who wrote this' stays open while any author has no name", async () => {
     mount();
     await fillEverything();
