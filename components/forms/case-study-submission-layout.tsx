@@ -1,9 +1,7 @@
 "use client"
 
-import { useCaseStudyStore } from "@/stores/case-study-store"
 import CaseStudyForm from "./case-study-form"
 import { ReviewContext } from "./review-context"
-import CaseStudyReview from "./case-study-review"
 
 interface CaseStudySubmissionLayoutProps {
     availableTags: Array<{
@@ -37,19 +35,6 @@ export default function CaseStudySubmissionLayout({
                                                       editDoc,
                                                       draftId
                                                   }: CaseStudySubmissionLayoutProps) {
-    const { currentStep } = useCaseStudyStore()
-
-    // Show review component when in review step
-    if (currentStep === 'review') {
-        return (
-            <CaseStudyReview
-                availableTags={availableTags}
-                regionalCommunities={regionalCommunities}
-                userId={userId}
-            />
-        )
-    }
-
     return (
         <div className="min-w-0">
                 {editDoc?._review != null && (
