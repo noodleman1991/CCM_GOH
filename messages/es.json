@@ -1183,7 +1183,8 @@
       "restorePrompt": "¿Recuperar los cambios sin guardar de las {time}?",
       "restore": "Recuperar",
       "discard": "Descartar",
-      "idle": "Tu trabajo se guarda sobre la marcha"
+      "idle": "Tu trabajo se guarda sobre la marcha",
+      "loading": "Cargando tu borrador…"
     }
   },
   "caseStudy": {

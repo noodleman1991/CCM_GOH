@@ -1183,7 +1183,8 @@
       "restorePrompt": "Récupérer vos modifications non enregistrées de {time} ?",
       "restore": "Récupérer",
       "discard": "Ignorer",
-      "idle": "Votre travail s'enregistre au fur et à mesure"
+      "idle": "Votre travail s'enregistre au fur et à mesure",
+      "loading": "Chargement de votre brouillon…"
     }
   },
   "caseStudy": {

@@ -17,8 +17,9 @@ export type CaseStudyValues = {
   tags: string[];
   suggestedTags: string[];
   layout: CaseStudyLayout;
-  imageAssetId?: string;
-  imageUrl?: string;
+  /** null = the cover was removed (saved as such); undefined = none chosen yet. */
+  imageAssetId?: string | null;
+  imageUrl?: string | null;
 };
 
 export type DescribedBy = (path: string) => { "aria-invalid"?: true; "aria-describedby"?: string };

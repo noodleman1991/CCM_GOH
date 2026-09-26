@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { CheckCircle, Plus } from "lucide-react";
+import { CheckCircle, Loader2, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { LayoutChooser } from "@/components/forms/case-study/layout-chooser";
@@ -70,7 +70,9 @@ export default function ImprovedCaseStudyForm({
   const [step, setStep] = useState<"form" | "review" | "success">("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cover, setCover] = useState<{ uploading: boolean; error: string | null }>({ uploading: false, error: null });
-  const focusPending = useRef(false);
+  // What to focus after the next render: the first field with a problem, or the form-level message.
+  const focusPending = useRef<"problem" | "message" | null>(null);
+  const messageRef = useRef<HTMLDivElement>(null);
 
   const lang = values.originalLanguage;
   const set = useCallback((path: string, value: unknown) => setValues((v) => setAt(v, path, value)), []);
@@ -89,11 +91,14 @@ export default function ImprovedCaseStudyForm({
     values: checked, validate, t: tErrors, order: caseStudyFieldOrder(lang, values.authors.length),
   });
   // Focus once the messages (and any author editor they open) are on the page.
-  const focusFirstProblem = () => { focusPending.current = true; };
+  const focusFirstProblem = () => { focusPending.current = "problem"; };
   useEffect(() => {
-    if (!focusPending.current) return;
-    focusPending.current = false;
-    focusFirstError();
+    const target = focusPending.current;
+    if (!target) return;
+    focusPending.current = null;
+    if (target === "problem") return focusFirstError();
+    messageRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+    messageRef.current?.focus({ preventScroll: true });
   });
 
   const items: WhatsLeftItem[] = [
@@ -104,7 +109,7 @@ export default function ImprovedCaseStudyForm({
       { id: "englishTitle", label: t("whatsLeft.englishTitle"), done: len(values.title.en) >= CASE_STUDY_MINIMUMS.title, target: "title.en", severity: "required" as const },
       { id: "englishSummary", label: t("whatsLeft.englishSummary"), done: len(values.excerpt.en) >= CASE_STUDY_MINIMUMS.englishSummary, target: "excerpt.en", severity: "required" as const },
     ]),
-    { id: "authors", label: t("whatsLeft.authors"), done: values.authors.some((a) => a.name.trim()), target: "authors", severity: "required" },
+    { id: "authors", label: t("whatsLeft.authors"), done: values.authors.length > 0 && values.authors.every((a) => a.name.trim()), target: "authors", severity: "required" },
     { id: "theme", label: t("whatsLeft.theme"), done: values.tags.some((id) => themeIds.has(id)), target: "tags", severity: "required" },
     { id: "where", label: t("whatsLeft.where"), done: Boolean(values.place || values.relatedCommunity), target: "location", severity: "required" },
     { id: "pin", label: t("whatsLeft.pin"), done: !(!values.place && values.relatedCommunity), target: "location", severity: "nudge" },
@@ -192,7 +197,7 @@ export default function ImprovedCaseStudyForm({
         setServerErrors(fields);
         setFormMessage(message);
         setStep("form");
-        focusFirstProblem();
+        focusPending.current = Object.keys(fields).length > 0 ? "problem" : "message";
         return;
       }
       const result = (await res.json()) as { id: string };
@@ -207,6 +212,7 @@ export default function ImprovedCaseStudyForm({
       onSuccess?.(result.id);
     } catch {
       setFormMessage(tErrors("form.generic"));
+      focusPending.current = "message";
       setStep("form");
     } finally {
       setIsSubmitting(false);
@@ -271,21 +277,30 @@ export default function ImprovedCaseStudyForm({
           </div>
         )}
 
+        {!hydrated && (
+          <p role="status" className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+            {tDraft("loading")}
+          </p>
+        )}
+
+        {/* Nothing can be typed until the saved draft is in, so it can't overwrite early typing. */}
+        <fieldset disabled={!hydrated} aria-busy={!hydrated} className="m-0 min-w-0 border-0 p-0">
         <WritingLanguage value={lang} onChange={(next) => set("originalLanguage", next)} />
 
         <div className="mt-8">
-          <HeroImageDrop previewUrl={values.imageUrl ?? null} onFile={(file) => void chooseCover(file)} onRemove={() => setValues((v) => ({ ...v, imageAssetId: undefined, imageUrl: undefined }))} />
+          <HeroImageDrop previewUrl={values.imageUrl ?? null} onFile={(file) => void chooseCover(file)} onRemove={() => setValues((v) => ({ ...v, imageAssetId: null, imageUrl: null }))} />
           {cover.uploading && <p className="mt-2 text-sm text-muted-foreground" aria-live="polite">{t("hero.uploading")}</p>}
           <FieldError path="image" message={cover.error ?? undefined} />
         </div>
 
         {formMessage && (
-          <div role="alert" className="mt-8 rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
+          <div ref={messageRef} tabIndex={-1} role="alert" className="mt-8 outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
             {formMessage}
           </div>
         )}
 
-        <StorySection {...sectionProps} lang={lang} editorKey={editorKey} />
+        <StorySection {...sectionProps} lang={lang} editorKey={editorKey} readOnly={!hydrated} />
         <PeopleSection {...sectionProps} />
         <WhereSection {...sectionProps} communities={regionalCommunities} />
 
@@ -312,6 +327,7 @@ export default function ImprovedCaseStudyForm({
             <LayoutChooser value={values.layout} onChange={(layout) => set("layout", layout)} labelledBy="cs-presentation" />
           </div>
         </section>
+        </fieldset>
       </main>
 
       <WhatsLeft
@@ -320,6 +336,7 @@ export default function ImprovedCaseStudyForm({
         actions={
           <SubmitActions
             isSubmitting={isSubmitting}
+            disabled={!hydrated}
             onSaveDraft={() => void draft.saveNow()}
             onPreview={() => { if (ready()) setStep("review"); }}
             onSubmit={() => void submit()}

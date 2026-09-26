@@ -59,6 +59,8 @@ interface PortableTextEditorProps {
     labelledBy?: string;
     /** `aria-invalid` / `aria-describedby` for the editable area, from the form's error system. */
     describedBy?: { 'aria-invalid'?: true; 'aria-describedby'?: string };
+    /** Shown but not editable (e.g. while the form's saved draft is loading). */
+    readOnly?: boolean;
 }
 
 export default function PortableTextEditor({
@@ -72,7 +74,8 @@ export default function PortableTextEditor({
     variant = 'default',
     id,
     labelledBy,
-    describedBy
+    describedBy,
+    readOnly = false
 }: PortableTextEditorProps) {
     const t = useTranslations('editor');
     const isRTL = language === 'ar';
@@ -83,6 +86,7 @@ export default function PortableTextEditor({
 
     const editor = useEditor({
         immediatelyRender: false, // Prevents SSR hydration errors in Next.js
+        editable: !readOnly,
         extensions: [
             StarterKit.configure({
                 // Level 1 is what `# ` produces; it is stored as the page's
@@ -221,6 +225,9 @@ export default function PortableTextEditor({
         if (errorLink) dom.setAttribute('aria-describedby', errorLink);
         else dom.removeAttribute('aria-describedby');
     }, [editor, invalid, errorLink]);
+    useEffect(() => {
+        if (editor && editor.isEditable === readOnly) editor.setEditable(!readOnly);
+    }, [editor, readOnly]);
 
     if (!editor) {
         return null;

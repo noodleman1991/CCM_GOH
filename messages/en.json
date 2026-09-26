@@ -1057,7 +1057,8 @@
       "restorePrompt": "Restore your unsaved changes from {time}?",
       "restore": "Restore",
       "discard": "Discard",
-      "idle": "Your work saves as you go"
+      "idle": "Your work saves as you go",
+      "loading": "Loading your draft…"
     }
   },
   "caseStudy": {

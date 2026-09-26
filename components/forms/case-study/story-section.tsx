@@ -28,7 +28,8 @@ export function StorySection({
   leave,
   describedBy,
   editorKey,
-}: SectionProps & { lang: WritingLanguage; editorKey: number }) {
+  readOnly = false,
+}: SectionProps & { lang: WritingLanguage; editorKey: number; readOnly?: boolean }) {
   const t = useTranslations("caseStudySubmission");
   const titlePath = `title.${lang}`;
   const excerptPath = `excerpt.${lang}`;
@@ -97,6 +98,7 @@ export function StorySection({
           labelledBy="cs-story"
           describedBy={describedBy("content")}
           variant="canvas"
+          readOnly={readOnly}
           value={values.content}
           onChangeAction={(value) => set("content", value)}
           language={lang}

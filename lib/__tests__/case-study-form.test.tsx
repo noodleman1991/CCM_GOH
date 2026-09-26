@@ -87,4 +87,83 @@ describe("case study form", () => {
     expect(await screen.findByText("A case study with this title already exists")).toBeTruthy();
     expect(screen.getByRole("alert").textContent).toContain("Some details need fixing");
   });
+
+  it("a failure with no field to point at scrolls to and focuses the message", async () => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url === "/api/case-studies/submit"
+        ? new Response(JSON.stringify({ error: { message: "Something went wrong on our side." } }), { status: 500 })
+        : new Response(JSON.stringify({ draft: null, id: "d1" })),
+    );
+    mount();
+    await fillEverything();
+    await act(async () => { fireEvent.click(screen.getAllByRole("button", { name: /Submit for review/ })[0]); });
+    const alert = await screen.findByRole("alert");
+    await waitFor(() => expect(document.activeElement).toBe(alert));
+    expect(alert.scrollIntoView).toHaveBeenCalled();
+  });
+
+  it("'Add who wrote this' stays open while any author has no name", async () => {
+    mount();
+    await fillEverything();
+    expect(screen.getAllByText("Everything's ready to send").length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole("button", { name: "Add author" }));
+    expect(screen.getAllByText("1 thing left").length).toBeGreaterThan(0);
+  });
+
+  it("nothing can be typed until the saved draft is in, so it can't be overwritten", async () => {
+    let release: (r: Response) => void = () => {};
+    fetchMock.mockImplementation((url: string) =>
+      url.startsWith("/api/case-studies/drafts") && !fetchMock.mock.calls.some(([, init]) => init?.method === "POST")
+        ? new Promise<Response>((done) => { release = done; })
+        : Promise.resolve(new Response(JSON.stringify({ id: "d9" }))),
+    );
+    mount();
+    expect(screen.getByText("Loading your draft…")).toBeTruthy();
+    expect(screen.getByLabelText("Title").matches(":disabled")).toBe(true);
+    await act(async () => release(new Response(JSON.stringify({ draft: { _id: "d9", title: { en: "Stored title" }, lastSaved: new Date().toISOString() } }))));
+    const title = screen.getByLabelText("Title") as HTMLInputElement;
+    await waitFor(() => expect(title.matches(":disabled")).toBe(false));
+    expect(title.value).toBe("Stored title");
+    expect(screen.queryByText("Loading your draft…")).toBeNull();
+  });
+
+  it("removing the cover is saved with the draft", async () => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url === "/api/uploads/image"
+        ? new Response(JSON.stringify({ assetRef: "m1", url: "/m.png" }))
+        : new Response(JSON.stringify({ draft: null, id: "d1" })),
+    );
+    const { container } = renderForm();
+    await waitFor(() => expect(screen.getByLabelText("Title").matches(":disabled")).toBe(false));
+    // A form holding something (an empty new form has nothing to save).
+    fireEvent.change(screen.getByLabelText("Title"), { target: { value: "Floods in Lagos" } });
+    const file = new File(["x"], "cover.png", { type: "image/png" });
+    await act(async () => { fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [file] } }); });
+    fireEvent.click(await screen.findByRole("button", { name: "Remove image" }));
+    await waitFor(
+      () => {
+        const saves = fetchMock.mock.calls.filter(([url, init]) => url === "/api/case-studies/drafts" && init?.method === "POST");
+        expect(saves.length).toBeGreaterThan(0);
+        expect(JSON.parse(String(saves.at(-1)![1].body)).draftData.imageAssetId).toBeNull();
+      },
+      { timeout: 4000 },
+    );
+  });
 });
+
+function renderForm() {
+  return render(
+    <NextIntlClientProvider locale="en" messages={en}>
+      <ImprovedCaseStudyForm userId="u1" locale="en" availableTags={tags} regionalCommunities={communities} />
+    </NextIntlClientProvider>,
+  );
+}
+
+async function fillEverything() {
+  await waitFor(() => expect(screen.getByLabelText("Title").matches(":disabled")).toBe(false));
+  fireEvent.change(screen.getByLabelText("Title"), { target: { value: "Floods in Lagos" } });
+  fireEvent.change(screen.getByLabelText("Summary"), { target: { value: "x".repeat(60) } });
+  fireEvent.change(screen.getByTestId("story"), { target: { value: "It rained." } });
+  fireEvent.click(screen.getByRole("button", { name: "Water Access" }));
+  fireEvent.change(screen.getByRole("combobox", { name: /regional community/i }), { target: { value: "c1" } });
+}

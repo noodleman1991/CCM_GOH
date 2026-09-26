@@ -39,10 +39,17 @@ function writeLocalDraft<T>(key: string, values: T) {
 
 /**
  * Server autosave plus an on-device copy, so nothing typed is ever lost.
- * The values present when `hydrated` turns on are the starting point and are
- * not saved back; every change after that is mirrored locally at once and
- * sent to the server 1.5 s after typing stops. A failed save retries by
- * itself; a successful one drops the local copy it covered.
+ *
+ * - The values present when `hydrated` turns on are the starting point and
+ *   are not saved back.
+ * - Every later change is mirrored locally at once and sent to the server
+ *   1.5 s after typing stops.
+ * - One request at a time: a change (or Save draft) during a request marks the
+ *   draft pending, and the LATEST values are sent as soon as the request ends.
+ *   So a slow first save can't create two drafts, and an older save can never
+ *   land after a newer one.
+ * - The local copy is dropped only when what the server just saved is still
+ *   the newest state; a failed save retries by itself.
  */
 export function useCaseStudyDraft<T>({
   values,
@@ -65,18 +72,33 @@ export function useCaseStudyDraft<T>({
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [retry, setRetry] = useState(0);
   const baseline = useRef<T | null>(null);
+  const latest = useRef<T>(values);
   const lastSent = useRef<T | null>(null);
   const lastMirrored = useRef<T | null>(null);
   const idRef = useRef<string | null>(draftId);
+  const inFlight = useRef(false);
+  const pending = useRef(false);
+  const debounce = useRef<ReturnType<typeof setTimeout>>(undefined);
   const retryTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const key = localDraftKey(draftId, editId);
 
+  // Declared first, so the autosave effect below always sees this render's values.
+  useEffect(() => {
+    latest.current = values;
+  });
   useEffect(() => {
     idRef.current = draftId;
   }, [draftId]);
-  useEffect(() => () => clearTimeout(retryTimer.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(retryTimer.current);
+      clearTimeout(debounce.current);
+    },
+    [],
+  );
 
-  const post = useCallback(
+  /** One POST of `snapshot`; true when the server kept it. */
+  const postOnce = useCallback(
     async (snapshot: T) => {
       setState("saving");
       try {
@@ -88,23 +110,50 @@ export function useCaseStudyDraft<T>({
         });
         if (!res.ok) throw new Error(String(res.status));
         const { id: saved } = (await res.json()) as { id?: string };
+        const newest = latest.current;
         if (saved && !id && !editId) {
           idRef.current = saved;
           setDraftId(saved);
-          clearLocalDraft(localDraftKey(null)); // the "new" copy now has a home
+          // The "new" copy moves to its draft's key; edits typed during the request go with it.
+          if (newest !== snapshot) writeLocalDraft(localDraftKey(saved), newest);
+          clearLocalDraft(localDraftKey(null));
         }
         lastSent.current = snapshot;
-        if (lastMirrored.current === snapshot) clearLocalDraft(localDraftKey(idRef.current, editId));
+        if (newest === snapshot) clearLocalDraft(localDraftKey(idRef.current, editId));
         setSavedAt(new Date());
         setState("saved");
+        return true;
       } catch {
         setState("error");
         clearTimeout(retryTimer.current);
         retryTimer.current = setTimeout(() => setRetry((n) => n + 1), RETRY_MS);
+        return false;
       }
     },
     [locale, editId, setDraftId],
   );
+
+  /** Sends the latest values now, or right after the request already under way. */
+  const flush = useCallback(async () => {
+    clearTimeout(debounce.current);
+    if (baseline.current === null) return; // the saved draft isn't loaded yet: nothing of ours to save
+    if (inFlight.current) {
+      pending.current = true;
+      return;
+    }
+    inFlight.current = true;
+    try {
+      do {
+        pending.current = false;
+        const snapshot = latest.current;
+        if (snapshot === lastSent.current) continue;
+        if (!(await postOnce(snapshot))) break;
+      } while (pending.current);
+    } finally {
+      pending.current = false;
+      inFlight.current = false;
+    }
+  }, [postOnce]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -118,11 +167,16 @@ export function useCaseStudyDraft<T>({
       writeLocalDraft(key, values);
       lastMirrored.current = values;
     }
-    const timer = setTimeout(() => void post(values), 1500);
-    return () => clearTimeout(timer);
-  }, [hydrated, worthSaving, values, key, post, retry]);
+    if (inFlight.current) {
+      pending.current = true; // sent with the newest values when the current request ends
+      return;
+    }
+    clearTimeout(debounce.current);
+    debounce.current = setTimeout(() => void flush(), 1500);
+    return () => clearTimeout(debounce.current);
+  }, [hydrated, worthSaving, values, key, flush, retry]);
 
-  const saveNow = useCallback(() => post(values), [post, values]);
+  const saveNow = useCallback(() => flush(), [flush]);
 
   return { state, savedAt, saveNow };
 }

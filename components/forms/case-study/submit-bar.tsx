@@ -37,11 +37,14 @@ export function DraftStatusLine({ state, savedAt, locale }: { state: DraftState;
  *  disabled: pressing it shows what's missing instead. */
 export function SubmitActions({
   isSubmitting,
+  disabled = false,
   onSaveDraft,
   onPreview,
   onSubmit,
 }: {
   isSubmitting: boolean;
+  /** While the saved draft is still loading. */
+  disabled?: boolean;
   onSaveDraft: () => void;
   onPreview: () => void;
   onSubmit: () => void;
@@ -49,15 +52,15 @@ export function SubmitActions({
   const t = useTranslations("caseStudySubmission.bar");
   return (
     <>
-      <Button type="button" variant="ghost" className="min-h-11 min-w-11" onClick={onSaveDraft} aria-label={t("saveDraft")}>
+      <Button type="button" variant="ghost" className="min-h-11 min-w-11" onClick={onSaveDraft} disabled={disabled} aria-label={t("saveDraft")}>
         <Save className="size-4 sm:me-2" aria-hidden />
         <span className="hidden sm:inline">{t("saveDraft")}</span>
       </Button>
-      <Button type="button" variant="outline" className="min-h-11 min-w-11" onClick={onPreview} aria-label={t("preview")}>
+      <Button type="button" variant="outline" className="min-h-11 min-w-11" onClick={onPreview} disabled={disabled} aria-label={t("preview")}>
         <Eye className="size-4 sm:me-2" aria-hidden />
         <span className="hidden sm:inline">{t("preview")}</span>
       </Button>
-      <Button type="button" className="min-h-11" onClick={onSubmit} disabled={isSubmitting}>
+      <Button type="button" className="min-h-11" onClick={onSubmit} disabled={disabled || isSubmitting}>
         {isSubmitting ? <Loader2 className="me-2 size-4 animate-spin" aria-hidden /> : <Send className="me-2 size-4" aria-hidden />}
         {isSubmitting ? t("submitting") : t("submit")}
       </Button>
