@@ -401,6 +401,55 @@
       "limitReached": "You've suggested {max} tags, the maximum.",
       "yourSuggestions": "Your suggested tags",
       "remove": "Remove suggestion {tag}"
+    },
+    "errors": {
+      "title": {
+        "required": "Add a title so readers know what this is about",
+        "tooShort": "Make the title a little longer (at least {min} characters)"
+      },
+      "summary": {
+        "required": "Write a short summary of what happened",
+        "tooShort": "Write at least {min} characters so readers know what to expect ({count} so far)"
+      },
+      "englishTitle": {
+        "required": "Add a short English title so the English site can list this"
+      },
+      "englishSummary": {
+        "tooShort": "Add a one-line English summary (at least {min} characters)"
+      },
+      "story": {
+        "required": "Write your story — at least a paragraph"
+      },
+      "authors": {
+        "required": "Add who wrote this"
+      },
+      "author": {
+        "nameRequired": "Add this person's name",
+        "email": "This email doesn't look right — check for typos"
+      },
+      "tags": {
+        "themeRequired": "Choose at least one theme"
+      },
+      "location": {
+        "required": "Add where this took place — search for a place, or choose a regional community"
+      },
+      "dates": {
+        "endBeforeStart": "The end date is before the start date"
+      },
+      "generic": {
+        "tooLong": "Keep this under {max} characters (it's {count} now)"
+      },
+      "upload": {
+        "tooBig": "This image is {size} MB — the limit is {max} MB. Try a smaller photo or a screenshot.",
+        "wrongType": "Use a JPEG, PNG or WebP image."
+      },
+      "form": {
+        "fixBelow": "Some details need fixing — they're marked below.",
+        "generic": "Something went wrong on our side. Your work is saved — try again in a moment.",
+        "rateLimited": "You've sent this a few times in a row. Wait a minute and try again.",
+        "notAllowed": "You can't edit this any more — it may already be published.",
+        "signIn": "Your session has ended. Sign in again to continue — your work is saved."
+      }
     }
   },
   "profile": {

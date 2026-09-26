@@ -527,6 +527,55 @@
       "limitReached": "Vous avez proposé {max} mots-clés, le maximum.",
       "yourSuggestions": "Vos mots-clés proposés",
       "remove": "Retirer la proposition {tag}"
+    },
+    "errors": {
+      "title": {
+        "required": "Ajoutez un titre pour que l'on sache de quoi il s'agit",
+        "tooShort": "Allongez un peu le titre (au moins {min} caractères)"
+      },
+      "summary": {
+        "required": "Écrivez un court résumé de ce qui s'est passé",
+        "tooShort": "Écrivez au moins {min} caractères pour que l'on sache à quoi s'attendre ({count} pour l'instant)"
+      },
+      "englishTitle": {
+        "required": "Ajoutez un court titre en anglais pour que le site anglais puisse l'afficher"
+      },
+      "englishSummary": {
+        "tooShort": "Ajoutez un résumé d'une ligne en anglais (au moins {min} caractères)"
+      },
+      "story": {
+        "required": "Écrivez votre récit : au moins un paragraphe"
+      },
+      "authors": {
+        "required": "Indiquez qui l'a écrit"
+      },
+      "author": {
+        "nameRequired": "Ajoutez le nom de cette personne",
+        "email": "Cette adresse e-mail semble incorrecte : vérifiez les fautes de frappe"
+      },
+      "tags": {
+        "themeRequired": "Choisissez au moins un thème"
+      },
+      "location": {
+        "required": "Indiquez où cela s'est passé : cherchez un lieu ou choisissez une communauté régionale"
+      },
+      "dates": {
+        "endBeforeStart": "La date de fin est antérieure à la date de début"
+      },
+      "generic": {
+        "tooLong": "Restez sous {max} caractères (actuellement {count})"
+      },
+      "upload": {
+        "tooBig": "Cette image fait {size} Mo, la limite est de {max} Mo. Essayez une photo plus légère ou une capture d'écran.",
+        "wrongType": "Utilisez une image JPEG, PNG ou WebP."
+      },
+      "form": {
+        "fixBelow": "Certains éléments sont à corriger : ils sont signalés ci-dessous.",
+        "generic": "Un problème est survenu de notre côté. Votre travail est enregistré : réessayez dans un instant.",
+        "rateLimited": "Vous l'avez envoyé plusieurs fois de suite. Attendez une minute et réessayez.",
+        "notAllowed": "Vous ne pouvez plus modifier ceci : il est peut-être déjà publié.",
+        "signIn": "Votre session a expiré. Reconnectez-vous pour continuer : votre travail est enregistré."
+      }
     }
   },
   "profile": {

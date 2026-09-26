@@ -527,6 +527,55 @@
       "limitReached": "Ya has sugerido {max} etiquetas, el máximo.",
       "yourSuggestions": "Tus etiquetas sugeridas",
       "remove": "Quitar la sugerencia {tag}"
+    },
+    "errors": {
+      "title": {
+        "required": "Añade un título para que se sepa de qué trata",
+        "tooShort": "Alarga un poco el título (al menos {min} caracteres)"
+      },
+      "summary": {
+        "required": "Escribe un breve resumen de lo que pasó",
+        "tooShort": "Escribe al menos {min} caracteres para que se sepa qué esperar ({count} por ahora)"
+      },
+      "englishTitle": {
+        "required": "Añade un título corto en inglés para que el sitio en inglés pueda mostrarlo"
+      },
+      "englishSummary": {
+        "tooShort": "Añade un resumen de una línea en inglés (al menos {min} caracteres)"
+      },
+      "story": {
+        "required": "Escribe tu historia: al menos un párrafo"
+      },
+      "authors": {
+        "required": "Indica quién lo escribió"
+      },
+      "author": {
+        "nameRequired": "Añade el nombre de esta persona",
+        "email": "Este correo no parece correcto: revisa si hay errores"
+      },
+      "tags": {
+        "themeRequired": "Elige al menos un tema"
+      },
+      "location": {
+        "required": "Indica dónde ocurrió: busca un lugar o elige una comunidad regional"
+      },
+      "dates": {
+        "endBeforeStart": "La fecha de fin es anterior a la de inicio"
+      },
+      "generic": {
+        "tooLong": "No pases de {max} caracteres (ahora tiene {count})"
+      },
+      "upload": {
+        "tooBig": "Esta imagen pesa {size} MB y el límite es {max} MB. Prueba con una foto más pequeña o una captura de pantalla.",
+        "wrongType": "Usa una imagen JPEG, PNG o WebP."
+      },
+      "form": {
+        "fixBelow": "Hay que corregir algunos datos: están marcados abajo.",
+        "generic": "Algo falló por nuestra parte. Tu trabajo está guardado: vuelve a intentarlo en un momento.",
+        "rateLimited": "Lo has enviado varias veces seguidas. Espera un minuto y vuelve a intentarlo.",
+        "notAllowed": "Ya no puedes editar esto: puede que ya esté publicado.",
+        "signIn": "Tu sesión ha terminado. Vuelve a iniciar sesión para continuar: tu trabajo está guardado."
+      }
     }
   },
   "profile": {
