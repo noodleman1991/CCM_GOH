@@ -450,6 +450,13 @@
         "notAllowed": "You can't edit this any more — it may already be published.",
         "signIn": "Your session has ended. Sign in again to continue — your work is saved."
       }
+    },
+    "whatsLeft": {
+      "heading": "What's left",
+      "allDone": "Everything's ready to send",
+      "left": "{count, plural, one {# thing left} other {# things left}}",
+      "open": "Show what's left",
+      "suggestion": "Suggestion"
     }
   },
   "profile": {

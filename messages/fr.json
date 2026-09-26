@@ -576,6 +576,13 @@
         "notAllowed": "Vous ne pouvez plus modifier ceci : il est peut-être déjà publié.",
         "signIn": "Votre session a expiré. Reconnectez-vous pour continuer : votre travail est enregistré."
       }
+    },
+    "whatsLeft": {
+      "heading": "Ce qu'il reste",
+      "allDone": "Tout est prêt à être envoyé",
+      "left": "{count, plural, one {# élément restant} other {# éléments restants}}",
+      "open": "Voir ce qu'il reste",
+      "suggestion": "Suggestion"
     }
   },
   "profile": {

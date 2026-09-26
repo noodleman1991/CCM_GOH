@@ -576,6 +576,13 @@
         "notAllowed": "Ya no puedes editar esto: puede que ya esté publicado.",
         "signIn": "Tu sesión ha terminado. Vuelve a iniciar sesión para continuar: tu trabajo está guardado."
       }
+    },
+    "whatsLeft": {
+      "heading": "Qué falta",
+      "allDone": "Todo listo para enviar",
+      "left": "{count, plural, one {Falta # cosa} other {Faltan # cosas}}",
+      "open": "Ver qué falta",
+      "suggestion": "Sugerencia"
     }
   },
   "profile": {
