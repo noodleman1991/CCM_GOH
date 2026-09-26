@@ -1264,6 +1264,9 @@ interface DraftRow {
   studyPeriod?: Row | null;
   locationText?: Row | null;
   studyLocation?: unknown;
+  locationDisplayText?: string | null;
+  locationPrecision?: string | null;
+  locationCountryCode?: string | null;
   studyAreas?: unknown;
   organizations?: unknown;
   relatedCommunity?: string | null;
@@ -1479,6 +1482,15 @@ export interface ExistingCaseStudy {
   submittedBy?: string;
   status?: string | null;
   slug?: { current: string };
+  /** The stored authors' identity columns, so an in-review autosave can carry
+   *  the submitter's Clerk details over instead of blanking them. */
+  authors?: Array<{
+    userId?: string;
+    name?: string;
+    clerkUserId?: string;
+    clerkUsername?: string;
+    clerkImageUrl?: string;
+  }>;
 }
 
 /** The narrower gate `submitCaseStudy` runs before a resubmission —
@@ -1496,6 +1508,18 @@ export async function loadExistingCaseStudy(id: string): Promise<ExistingCaseStu
     submittedBy: text(row.submittedBy),
     status: row.moderationStatus ?? null,
     slug: slugObject(row.slug),
+    authors: Array.isArray(row.authors)
+      ? row.authors.filter(isRow).map((raw) => {
+          const author = raw as AuthorRow;
+          return {
+            userId: text(author.userId),
+            name: text(author.name),
+            clerkUserId: text(author.clerkUserId),
+            clerkUsername: text(author.clerkUsername),
+            clerkImageUrl: text(author.clerkImageUrl),
+          };
+        })
+      : undefined,
   };
 }
 
@@ -1531,7 +1555,8 @@ export interface CaseStudyDraft {
   title: Record<string, string | undefined>;
   excerpt?: Record<string, string | undefined>;
   content: RichText;
-  topic: string;
+  /** Retired: accepted for the Sanity arm's sake, never written to Payload. */
+  topic?: string;
   layout: string;
   tagIds: string[];
   suggestedTags?: string[];
@@ -1543,6 +1568,14 @@ export interface CaseStudyDraft {
   locationDisplayText?: string;
   locationPrecision?: string;
   locationCountryCode?: string;
+  /** The language the story was written in; its title, summary and story are
+   *  stored in that locale. Defaults to English. */
+  originalLanguage?: string;
+  /** Fixed-7 region code, from the community or the place's country. */
+  region?: string;
+  /** The place's own country and city names, stored as `locationText`. */
+  placeCountry?: string;
+  placeCity?: string;
   imageAssetId?: string;
   imageAlt?: string;
   authors: Array<{
@@ -1561,19 +1594,6 @@ function toPoint(value: { lat: number; lng: number } | undefined): number[] | un
   return value ? [value.lng, value.lat] : undefined;
 }
 
-/**
- * The Payload field names for a submission.
- *
- * **`moderationStatus`, never `status`** — the write direction of note 1. It is
- * set here rather than by a caller handing in a field name, so a resubmission
- * cannot write a column Payload does not have.
- *
- * Localized values are written one locale at a time (`mirrorSubmissionLocales`
- * below); this object carries the English arm. Payload's update leaves the
- * other locales alone where Sanity's patch replaces the whole object — the same
- * difference Task 9 recorded, and the same reason it is unobservable: the
- * submission form writes every locale it holds on every save.
- */
 /** The form starts both dates as "", which Postgres refuses as a timestamp. */
 function studyPeriodData(value: unknown): { startDate: string | null; endDate: string | null } | undefined {
   if (!isRow(value)) return undefined;
@@ -1581,13 +1601,33 @@ function studyPeriodData(value: unknown): { startDate: string | null; endDate: s
   return { startDate: date(value.startDate), endDate: date(value.endDate) };
 }
 
-function payloadData(draft: CaseStudyDraft): Record<string, unknown> {
-  const data: Record<string, unknown> = {
-    title: draft.title.en ?? "",
-    content: portableTextToLexical(draft.content),
-    topic: draft.topic,
-    layout: draft.layout,
-    authors: draft.authors.map((author) => ({
+const PAYLOAD_LOCALES = ["en", "es", "fr", "ar"] as const;
+type PayloadLocale = (typeof PAYLOAD_LOCALES)[number];
+
+/** The writer's language as a Payload locale; anything else is English. */
+function writingLocale(value: string | undefined): PayloadLocale {
+  return (PAYLOAD_LOCALES as readonly string[]).includes(value ?? "") ? (value as PayloadLocale) : "en";
+}
+
+/**
+ * The Payload field names for a submission's **unlocalized** fields.
+ *
+ * **`moderationStatus`, never `status`** — the write direction of note 1. It is
+ * set here rather than by a caller handing in a field name, so a resubmission
+ * cannot write a column Payload does not have. `{ keepStatus: true }` (the
+ * in-review autosave) leaves both `moderationStatus` and `featured` alone.
+ *
+ * Title, summary and story are localized and written by the callers, one
+ * locale per call (`writeSubmission` below). A key the draft leaves
+ * `undefined` is not written at all, so a partial autosave never clears what
+ * it did not carry; a full submission defines every required key, so for it
+ * this is the same object it always was. `topic` is retired and never written.
+ */
+function payloadData(draft: Partial<CaseStudyDraft>, options: { keepStatus?: boolean } = {}): Record<string, unknown> {
+  const data: Record<string, unknown> = {};
+  if (draft.layout !== undefined) data.layout = draft.layout;
+  if (draft.authors !== undefined) {
+    data.authors = draft.authors.map((author) => ({
       userId: author.userId ?? null,
       name: author.name,
       email: author.email ?? null,
@@ -1595,19 +1635,30 @@ function payloadData(draft: CaseStudyDraft): Record<string, unknown> {
       clerkUserId: author.clerkUserId ?? null,
       clerkUsername: author.clerkUsername ?? null,
       clerkImageUrl: author.clerkImageUrl ?? null,
-    })),
-    tags: draft.tagIds,
-    moderationStatus: "pending",
-    featured: false,
-  };
-  if (draft.excerpt?.en) data.excerpt = draft.excerpt.en;
+    }));
+  }
+  if (draft.tagIds !== undefined) data.tags = draft.tagIds;
+  if (!options.keepStatus) {
+    data.moderationStatus = "pending";
+    data.featured = false;
+  }
+  if (draft.originalLanguage) data.originalLanguage = writingLocale(draft.originalLanguage);
+  if (draft.region) data.region = draft.region;
   if (draft.suggestedTags && draft.suggestedTags.length > 0) data.suggestedTags = draft.suggestedTags;
   const studyPeriod = studyPeriodData(draft.studyPeriod);
   if (studyPeriod) data.studyPeriod = studyPeriod;
   if (draft.locationText) data.locationText = draft.locationText;
   const point = toPoint(draft.studyLocation);
   if (point) data.studyLocation = point;
-  if (draft.locationDisplayText) data.locationDisplayText = draft.locationDisplayText;
+  if (draft.locationDisplayText) {
+    // A place was chosen: its own country and city names win over the legacy
+    // free-text pair, which only fills in what the place did not name.
+    data.locationDisplayText = draft.locationDisplayText;
+    data.locationText = {
+      country: draft.placeCountry ?? draft.locationText?.country ?? null,
+      city: draft.placeCity ?? draft.locationText?.city ?? null,
+    };
+  }
   if (draft.locationPrecision) data.locationPrecision = draft.locationPrecision;
   if (draft.locationCountryCode) data.locationCountryCode = draft.locationCountryCode;
   if (draft.relatedCommunity) data.relatedCommunity = draft.relatedCommunity;
@@ -1616,13 +1667,34 @@ function payloadData(draft: CaseStudyDraft): Record<string, unknown> {
   return data;
 }
 
+/** The localized half of a submission, in one locale: title and summary, plus
+ *  the story when `withContent` (only ever the original's locale). An autosave
+ *  (`keepTitle`) never writes a blank title — the title is required, and a
+ *  field cleared mid-edit must not make the whole save fail. */
+function localizedData(
+  draft: Partial<CaseStudyDraft>,
+  locale: PayloadLocale,
+  withContent: boolean,
+  keepTitle = false,
+): Record<string, unknown> {
+  const data: Record<string, unknown> = {};
+  if (draft.title !== undefined && !(keepTitle && !draft.title[locale])) data.title = draft.title[locale] ?? "";
+  const excerpt = draft.excerpt?.[locale];
+  if (excerpt) data.excerpt = excerpt;
+  if (withContent && draft.content !== undefined) data.content = portableTextToLexical(draft.content);
+  return data;
+}
+
 /** Payload writes one locale at a time; the Sanity path writes the whole
  *  `{en, es, fr, ar}` object in a single patch. Reproduced with one extra write
  *  per non-empty locale, so the stored document is the same on both backends
- *  rather than merely rendering the same through `fallback: true`. */
-async function mirrorSubmissionLocales(id: string, draft: CaseStudyDraft): Promise<void> {
-  for (const locale of ["es", "fr", "ar"] as const) {
-    const title = draft.title[locale];
+ *  rather than merely rendering the same through `fallback: true`. The
+ *  original's locale (and English, which `writeSubmission` wrote already) is
+ *  skipped: title and summary only, the story lives in the original's locale. */
+async function mirrorSubmissionLocales(id: string, draft: Partial<CaseStudyDraft>, skip: PayloadLocale): Promise<void> {
+  for (const locale of PAYLOAD_LOCALES) {
+    if (locale === skip || locale === "en") continue;
+    const title = draft.title?.[locale];
     const excerpt = draft.excerpt?.[locale];
     if (!title && !excerpt) continue;
     const data: Record<string, unknown> = {};
@@ -1630,6 +1702,25 @@ async function mirrorSubmissionLocales(id: string, draft: CaseStudyDraft): Promi
     if (excerpt) data.excerpt = excerpt;
     await updateDocument({ collection: "caseStudies", id, locale, data });
   }
+}
+
+/** After the original-locale write: the English title and summary (every case
+ *  study has them, whatever it was written in), then the other translations. */
+async function writeOtherLocales(
+  id: string,
+  draft: Partial<CaseStudyDraft>,
+  lang: PayloadLocale,
+  keepTitle = false,
+): Promise<void> {
+  if (lang !== "en") {
+    const english: Record<string, unknown> = {};
+    if (draft.title !== undefined && !(keepTitle && !draft.title.en)) english.title = draft.title.en ?? "";
+    if (draft.excerpt !== undefined) english.excerpt = draft.excerpt.en ?? "";
+    if (Object.keys(english).length > 0) {
+      await updateDocument({ collection: "caseStudies", id, locale: "en", data: english });
+    }
+  }
+  await mirrorSubmissionLocales(id, draft, lang);
 }
 
 /**
@@ -1640,17 +1731,23 @@ async function mirrorSubmissionLocales(id: string, draft: CaseStudyDraft): Promi
  * `status: "pending"` failing the read filter. Creating a Payload draft instead
  * would hide it a second way and put a brand-new submission somewhere the
  * moderation queue does not look — the same judgment Task 9 recorded.
+ *
+ * Created in the writer's language, so the story, title and summary land in
+ * that locale; an English original is exactly the old single `locale: "en"`
+ * create.
  */
 export async function createCaseStudy(
   draft: CaseStudyDraft,
   meta: { id: string; slug: string; submittedBy: string; submittedAt: string },
 ): Promise<{ id: string }> {
+  const lang = writingLocale(draft.originalLanguage);
   const created = await createDocument({
     collection: "caseStudies",
-    locale: "en",
+    locale: lang,
     draft: false,
     data: {
       ...payloadData(draft),
+      ...localizedData(draft, lang, true),
       // Payload's `id` is a text column carrying Sanity's document id; a new
       // document needs one, and the slug is what every route addresses it by.
       id: meta.id,
@@ -1659,20 +1756,46 @@ export async function createCaseStudy(
       submittedAt: meta.submittedAt,
     },
   });
-  await mirrorSubmissionLocales(created.id, draft);
+  await writeOtherLocales(created.id, draft, lang);
   return created;
 }
 
 /**
- * Resubmit an existing submission — `case-studies.ts:1297`'s
+ * Resubmit an existing submission — `case-studies.ts`'s
  * `{...updatable, status: "pending"}`, with the field renamed. `slug` and
  * `submittedBy` are preserved, as the Sanity arm preserves them, and this is a
  * plain set: keys `payloadData` does not name are left untouched, matching the
  * original's own `.set()` rather than lived-experiences' clearing patch.
+ *
+ * `{ keepStatus: true }` is the in-review autosave (`saveSubmissionEdits`): the
+ * same writes, with `moderationStatus` and `featured` left as they are.
  */
-export async function updateCaseStudySubmission(id: string, draft: CaseStudyDraft): Promise<void> {
-  await updateDocument({ collection: "caseStudies", id, locale: "en", data: payloadData(draft) });
-  await mirrorSubmissionLocales(id, draft);
+export async function updateCaseStudySubmission(
+  id: string,
+  draft: Partial<CaseStudyDraft>,
+  options: { keepStatus?: boolean } = {},
+): Promise<void> {
+  const lang = writingLocale(draft.originalLanguage);
+  await updateDocument({
+    collection: "caseStudies",
+    id,
+    locale: lang,
+    data: { ...payloadData(draft, options), ...localizedData(draft, lang, true, options.keepStatus) },
+  });
+  await writeOtherLocales(id, draft, lang, options.keepStatus);
+}
+
+/** A regional community's fixed-7 region code — `queryRaw`, because the answer
+ *  is written onto the submission. */
+export async function findCommunityRegion(id: string): Promise<string | null> {
+  const result = await queryRaw<Paginated<{ id?: unknown; region?: unknown }>>({
+    type: "find",
+    collection: "regionalCommunities",
+    where: { id: { equals: id } },
+    limit: 1,
+    depth: 0,
+  });
+  return text(result?.docs?.[0]?.region) ?? null;
 }
 
 /** The generic patch primitive behind `updateCaseStudy` — used by
@@ -1717,7 +1840,38 @@ const DRAFT_FIELDS = [
   "relatedCommunity",
   "formMetadata",
   "organizationName",
+  // After `locationText`/`studyLocation`, so a chosen place wins over the
+  // legacy pair, and after `image`, so a drafted cover wins too.
+  "place",
+  "originalLanguage",
+  "imageAssetId",
 ] as const;
+
+const PLACE_PRECISIONS = ["exact", "city", "country", "region"];
+
+/** The form's place (possibly half-filled — a draft requires nothing) as the
+ *  draft collection's location columns. `null` clears them all. */
+function draftPlaceData(value: unknown): Record<string, unknown> {
+  if (!isRow(value)) {
+    return {
+      studyLocation: null,
+      locationDisplayText: null,
+      locationPrecision: null,
+      locationCountryCode: null,
+      locationText: { country: null, city: null },
+    };
+  }
+  const data: Record<string, unknown> = {
+    locationDisplayText: text(value.text) ?? null,
+    locationPrecision: PLACE_PRECISIONS.includes(String(value.precision)) ? value.precision : null,
+    locationCountryCode: text(value.countryCode3) ?? null,
+    locationText: { country: text(value.country) ?? null, city: text(value.city) ?? null },
+  };
+  if (typeof value.lat === "number" && typeof value.lng === "number") {
+    data.studyLocation = toPoint({ lat: value.lat, lng: value.lng });
+  }
+  return data;
+}
 
 /** A plain string list, as the `{value}` rows the collection models. */
 function toValueRows(value: unknown): { value: string }[] | undefined {
@@ -1762,6 +1916,15 @@ function draftPayloadData(draftData: Record<string, unknown>): Record<string, un
         };
         break;
       }
+      case "place":
+        if (value === null || isRow(value)) Object.assign(data, draftPlaceData(value));
+        break;
+      case "originalLanguage":
+        data.contentLanguage = text(value) ?? null;
+        break;
+      case "imageAssetId":
+        data.image = { asset: text(value) ?? null };
+        break;
       default:
         data[field] = value;
     }
@@ -1810,9 +1973,30 @@ export async function getCaseStudyDraftById(
   return row ? draftDocument(row) : null;
 }
 
-/** A `caseStudyDraft` row in the whole-document shape the Sanity arm returns. */
+/** The form's place, rebuilt from the draft's location columns — only when a
+ *  place was actually chosen (a point and its display text). */
+function draftPlace(row: DraftRow): Row | null {
+  const point = geopoint(row.studyLocation);
+  const label = text(row.locationDisplayText);
+  if (!point || !label) return null;
+  const country = text(row.locationText?.country);
+  const city = text(row.locationText?.city);
+  return {
+    lat: point.lat,
+    lng: point.lng,
+    text: label,
+    precision: text(row.locationPrecision) ?? "exact",
+    countryCode3: text(row.locationCountryCode) ?? null,
+    ...(country ? { country } : {}),
+    ...(city ? { city } : {}),
+  };
+}
+
+/** A `caseStudyDraft` row in the whole-document shape the Sanity arm returns,
+ *  plus the form's own `place`, `originalLanguage` and drafted cover. */
 function draftDocument(row: DraftRow): Record<string, unknown> {
   const body = row.content;
+  const asset = isRow(row.image) ? row.image.asset : undefined;
   return groqObject({
     // `_rev` is a Sanity mutation id and has no Payload equivalent. See note 7.
     _createdAt: orNull(isoDate(row.sanityUpdatedAt ?? row.createdAt)),
@@ -1825,12 +2009,16 @@ function draftDocument(row: DraftRow): Record<string, unknown> {
     excerpt: orNull(localized(row.excerpt)),
     formMetadata: formMetadata(row.formMetadata),
     image: imageProjection(row.image, "full", ["alt", "caption"]),
+    imageAssetId: orNull(relationId(asset)),
+    imageUrl: orNull(isRow(asset) ? text(asset.url) : undefined),
     lastSaved: orNull(isoDate(row.lastSaved)),
     locationText: groupOrNull({
       city: orNull(text(row.locationText?.city)),
       country: orNull(text(row.locationText?.country)),
     }),
     organizationName: orNull(text(row.organizationName)),
+    originalLanguage: orNull(text(row.contentLanguage)),
+    place: draftPlace(row),
     organizations: orNull(
       Array.isArray(row.organizations)
         ? listOrNull(row.organizations.map(relationId).filter((id): id is string => Boolean(id)))

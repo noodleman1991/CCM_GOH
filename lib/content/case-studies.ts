@@ -20,6 +20,7 @@ import { generateCaseStudySlug } from "@/lib/validation/case-study";
 import { cleanSuggestions } from "@/lib/tags/fuzzy";
 import { getTags } from "@/lib/content/taxonomy";
 import { LIMITS } from "@/lib/validation/limits";
+import { deriveRegion } from "@/lib/case-studies/derive-region";
 
 /**
  * The module's own name, as `CONTENT_BACKEND_CASE_STUDIES` spells it.
@@ -1167,7 +1168,15 @@ export interface CaseStudyInput {
   excerpt?: Localized;
   /** Portable Text from the editor. */
   content: RichText;
+  /** Retired (replaced by theme tags). Still accepted, and still written on the
+   *  Sanity arm, whose schema requires it; never written to Payload. */
   topic?: string;
+  /** The language the story is written in (`en` when absent). The story, title
+   *  and summary are stored in that language; the English title and summary
+   *  are stored in English. */
+  originalLanguage?: "en" | "es" | "fr" | "ar";
+  /** A cover image already uploaded while drafting — reused, not re-uploaded. */
+  imageAssetId?: string;
   layout?: "story" | "feature" | "report";
   authors: Array<{ userId?: string; name: string; email?: string; role?: string }>;
   tags: string[];
@@ -1184,6 +1193,8 @@ export interface CaseStudyInput {
     text: string;
     precision: "exact" | "city" | "country" | "region";
     countryCode3: string | null;
+    country?: string;
+    city?: string;
   };
   /** X7 edit mode: resubmit an existing draft/pending/revision doc. */
   editId?: string;
@@ -1213,6 +1224,40 @@ interface RawExistingCaseStudy {
   submittedBy?: string;
   status?: string | null;
   slug?: { current: string };
+}
+
+/**
+ * The edit gate shared by a resubmission and an in-review autosave: the
+ * document must still be in review (draft/pending/revision), and the caller
+ * must be its submitter or a member of a workspace that lists it as an output.
+ * Throws `CaseStudyEditNotAllowedError` otherwise.
+ */
+async function assertCanEdit<T extends RawExistingCaseStudy>(existing: T | null, userId: string): Promise<T> {
+  const editable = !!existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
+  const isSubmitter = existing?.submittedBy === userId;
+  let isWorkspaceMember = false;
+  if (existing && editable && !isSubmitter) {
+    const row = await prisma.workspaceOutput.findFirst({
+      where: {
+        sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
+        collaboration: { members: { some: { userId } } },
+      },
+      select: { id: true },
+    });
+    isWorkspaceMember = !!row;
+  }
+  if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
+    throw new CaseStudyEditNotAllowedError();
+  }
+  return existing;
+}
+
+/** Fixed-7 region: the community's when one was chosen, else the place's
+ *  country's. */
+async function regionFor(relatedCommunity: string | undefined, countryCode3: string | null | undefined): Promise<string | undefined> {
+  const communityRegion =
+    relatedCommunity && onPayload() ? await payloadCaseStudies.findCommunityRegion(relatedCommunity) : null;
+  return deriveRegion({ communityRegion, countryCode3 }) ?? undefined;
 }
 
 export async function submitCaseStudy(
@@ -1331,7 +1376,15 @@ export async function submitCaseStudy(
   // refuses an image.
   let imageAssetId: string | undefined;
   const imageAlt = `Featured image for ${input.title.en}`;
-  if (input.image) {
+  if (input.imageAssetId) {
+    // Uploaded while drafting: point at it rather than uploading it twice.
+    imageAssetId = input.imageAssetId;
+    doc.image = {
+      _type: "image",
+      asset: { _type: "reference", _ref: input.imageAssetId },
+      alt: imageAlt,
+    };
+  } else if (input.image) {
     const upload = onPayload() ? uploadPayloadImageAsset : uploadFileAsset;
     const asset = await upload(input.image.buffer, {
       filename: input.image.filename,
@@ -1354,7 +1407,6 @@ export async function submitCaseStudy(
     title: input.title,
     excerpt: input.excerpt,
     content: input.content,
-    topic: input.topic || "other",
     layout: input.layout ?? "story",
     tagIds: input.tags,
     suggestedTags,
@@ -1370,6 +1422,13 @@ export async function submitCaseStudy(
     locationDisplayText: input.place?.text,
     locationPrecision: input.place?.precision,
     locationCountryCode: input.place?.countryCode3 ?? undefined,
+    placeCountry: input.place?.country ?? undefined,
+    placeCity: input.place?.city ?? undefined,
+    originalLanguage: input.originalLanguage ?? "en",
+    region: await regionFor(
+      input.relatedCommunity && input.relatedCommunity !== "" ? input.relatedCommunity : undefined,
+      input.place?.countryCode3,
+    ),
     imageAssetId,
     imageAlt: imageAssetId ? imageAlt : undefined,
     authors: input.authors.map((author, index) => ({
@@ -1395,28 +1454,15 @@ export async function submitCaseStudy(
     // about the very document about to be written. `queryLive` returns the same
     // shape and is the wrong answer — that swap is how the Phase-1 bypass
     // happened.
-    const existing = onPayload()
-      ? await payloadCaseStudies.loadExistingCaseStudy(input.editId)
-      : await queryRaw<RawExistingCaseStudy | null>(
-          `*[_id == $id][0]{ _id, submittedBy, status, slug }`,
-          { id: input.editId },
-        );
-    const editable = !!existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
-    const isSubmitter = existing?.submittedBy === input.userId;
-    let isWorkspaceMember = false;
-    if (existing && !isSubmitter) {
-      const row = await prisma.workspaceOutput.findFirst({
-        where: {
-          sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
-          collaboration: { members: { some: { userId: input.userId } } },
-        },
-        select: { id: true },
-      });
-      isWorkspaceMember = !!row;
-    }
-    if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
-      throw new CaseStudyEditNotAllowedError();
-    }
+    const existing = await assertCanEdit(
+      onPayload()
+        ? await payloadCaseStudies.loadExistingCaseStudy(input.editId)
+        : await queryRaw<RawExistingCaseStudy | null>(
+            `*[_id == $id][0]{ _id, submittedBy, status, slug }`,
+            { id: input.editId },
+          ),
+      input.userId,
+    );
 
     if (onPayload()) {
       // The write direction of the status mapping: `{...updatable, status:
@@ -1469,6 +1515,135 @@ export async function updateCaseStudy(id: string, patch: Partial<CaseStudyInput>
     return;
   }
   await updateDocument(id, patch as Record<string, unknown>);
+}
+
+// ---------------------------------------------------------------------------
+// In-review autosave — the submission form, reopened on a case study that is
+// still pending or awaiting revision, saves its edits straight onto that case
+// study without resubmitting it: the moderation status stays where it is.
+// ---------------------------------------------------------------------------
+
+const WRITING_LOCALES = ["en", "es", "fr", "ar"] as const;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function nonEmpty(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value : undefined;
+}
+
+function localizedFrom(value: unknown): Record<string, string | undefined> | undefined {
+  if (!isRecord(value)) return undefined;
+  const out: Record<string, string | undefined> = {};
+  for (const locale of WRITING_LOCALES) {
+    if (typeof value[locale] === "string") out[locale] = value[locale] as string;
+  }
+  return out;
+}
+
+type StoredAuthor = NonNullable<payloadCaseStudies.ExistingCaseStudy["authors"]>[number];
+
+/**
+ * The autosaved form values (the draft shape — see `caseStudyDraftSchema`) as
+ * the partial submission `updateCaseStudySubmission` writes. Only keys the
+ * autosave carried are set, so nothing it left out is cleared. Authors keep the
+ * Clerk details already stored for them, which only a full submission supplies.
+ */
+function editsFrom(
+  data: Record<string, unknown>,
+  userId: string,
+  stored: StoredAuthor[] | undefined,
+): Partial<payloadCaseStudies.CaseStudyDraft> {
+  const edits: Partial<payloadCaseStudies.CaseStudyDraft> = {};
+  const title = localizedFrom(data.title);
+  if (title) edits.title = title;
+  const excerpt = localizedFrom(data.excerpt);
+  if (excerpt) edits.excerpt = excerpt;
+  if (Array.isArray(data.content)) edits.content = data.content as RichText;
+  if (data.layout === "story" || data.layout === "feature" || data.layout === "report") edits.layout = data.layout;
+  const tags = Array.isArray(data.tags) ? data.tags : Array.isArray(data.selectedTags) ? data.selectedTags : undefined;
+  if (tags) edits.tagIds = tags.filter((tag): tag is string => typeof tag === "string" && tag.length > 0);
+  if (Array.isArray(data.authors)) {
+    edits.authors = data.authors
+      .filter(isRecord)
+      .filter((author) => nonEmpty(author.name))
+      .map((author, index) => {
+        const authorUserId = nonEmpty(author.userId) ?? (index === 0 ? userId : undefined);
+        const name = nonEmpty(author.name) as string;
+        const match =
+          stored?.find((s) => authorUserId && s.userId === authorUserId) ?? stored?.find((s) => s.name === name);
+        return {
+          userId: authorUserId,
+          name,
+          email: nonEmpty(author.email),
+          role: nonEmpty(author.role),
+          clerkUserId: match?.clerkUserId,
+          clerkUsername: match?.clerkUsername,
+          clerkImageUrl: match?.clerkImageUrl,
+        };
+      });
+  }
+  const community = nonEmpty(data.relatedCommunity);
+  if (community) edits.relatedCommunity = community;
+  if (isRecord(data.studyPeriod)) edits.studyPeriod = data.studyPeriod as { startDate?: string; endDate?: string };
+  const place = isRecord(data.place) ? data.place : undefined;
+  if (place && typeof place.lat === "number" && typeof place.lng === "number" && nonEmpty(place.text)) {
+    edits.studyLocation = { lat: place.lat, lng: place.lng };
+    edits.locationDisplayText = place.text as string;
+    edits.locationPrecision = nonEmpty(place.precision);
+    edits.locationCountryCode = nonEmpty(place.countryCode3);
+    edits.placeCountry = nonEmpty(place.country);
+    edits.placeCity = nonEmpty(place.city);
+  }
+  const language = nonEmpty(data.originalLanguage);
+  if (language && (WRITING_LOCALES as readonly string[]).includes(language)) edits.originalLanguage = language;
+  const imageAssetId = nonEmpty(data.imageAssetId);
+  if (imageAssetId) {
+    edits.imageAssetId = imageAssetId;
+    edits.imageAlt = `Featured image for ${title?.en ?? ""}`;
+  }
+  return edits;
+}
+
+/**
+ * Autosave onto a case study that is still in review, **without** resubmitting
+ * it: `moderationStatus` and `featured` are never written. The same edit gate
+ * as a resubmission — the submitter or a workspace member, and only while the
+ * case study is draft/pending/revision — else `CaseStudyEditNotAllowedError`.
+ */
+export async function saveSubmissionEdits(userId: string, id: string, data: Record<string, unknown>): Promise<void> {
+  if (onPayload()) {
+    const existing = await assertCanEdit(await payloadCaseStudies.loadExistingCaseStudy(id), userId);
+    const edits = editsFrom(data, userId, existing.authors);
+    if (edits.relatedCommunity !== undefined || edits.locationCountryCode !== undefined) {
+      edits.region = await regionFor(edits.relatedCommunity, edits.locationCountryCode);
+    }
+    await payloadCaseStudies.updateCaseStudySubmission(existing._id, edits, { keepStatus: true });
+    return;
+  }
+
+  // Sanity is being retired; the same gate, and a plain set of the fields the
+  // autosave carried — never `status`.
+  const existing = await assertCanEdit(
+    await queryRaw<RawExistingCaseStudy | null>(`*[_id == $id][0]{ _id, submittedBy, status, slug }`, { id }),
+    userId,
+  );
+  const edits = editsFrom(data, userId, undefined);
+  const patch: Record<string, unknown> = {};
+  if (edits.title) patch.title = edits.title;
+  if (edits.excerpt) patch.excerpt = edits.excerpt;
+  if (edits.content) patch.content = edits.content;
+  if (edits.layout) patch.layout = edits.layout;
+  if (edits.studyPeriod) patch.studyPeriod = edits.studyPeriod;
+  if (edits.relatedCommunity) patch.relatedCommunity = { _type: "reference", _ref: edits.relatedCommunity };
+  if (edits.studyLocation) {
+    patch.studyLocation = { _type: "geopoint", ...edits.studyLocation };
+    patch.locationDisplayText = edits.locationDisplayText;
+    if (edits.locationPrecision) patch.locationPrecision = edits.locationPrecision;
+    if (edits.locationCountryCode) patch.locationCountryCode = edits.locationCountryCode;
+  }
+  if (Object.keys(patch).length > 0) await updateDocument(existing._id, patch);
 }
 
 // ---------------------------------------------------------------------------
