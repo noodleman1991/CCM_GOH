@@ -2566,6 +2566,19 @@ export interface CaseStudyDraft {
         id?: string | null;
       }[]
     | null;
+  /**
+   * New tags the member suggested while drafting (free text, not yet tags). Same {value} rows as 'tags'.
+   */
+  suggestedTags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The presentation the member picked, kept so a reopened draft shows the same choice.
+   */
+  layout?: ('story' | 'feature' | 'report') | null;
   authors?:
     | {
         userId?: string | null;
@@ -4268,6 +4281,13 @@ export interface CaseStudyDraftsSelect<T extends boolean = true> {
         value?: T;
         id?: T;
       };
+  suggestedTags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  layout?: T;
   authors?:
     | T
     | {

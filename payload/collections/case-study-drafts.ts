@@ -145,6 +145,22 @@ export const CaseStudyDrafts: CollectionConfig = {
       fields: [{ name: "value", type: "text" }],
     },
     {
+      name: "suggestedTags",
+      type: "array",
+      admin: { description: "New tags the member suggested while drafting (free text, not yet tags). Same {value} rows as 'tags'." },
+      fields: [{ name: "value", type: "text" }],
+    },
+    {
+      name: "layout",
+      type: "select",
+      options: [
+        { label: "Story (narrative + photography)", value: "story" },
+        { label: "Feature (one bold statement)", value: "feature" },
+        { label: "Report (evidence + data; sticky 'At a glance')", value: "report" },
+      ],
+      admin: { description: "The presentation the member picked, kept so a reopened draft shows the same choice." },
+    },
+    {
       name: "authors",
       type: "array",
       fields: [

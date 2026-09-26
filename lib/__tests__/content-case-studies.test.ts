@@ -1494,6 +1494,25 @@ describe("case studies, answered by Payload", () => {
       expect(reopened).toMatchObject({ originalLanguage: "ar", place: { text: "Lagos, Nigeria", precision: "city", countryCode3: "NGA", country: "Nigeria", city: "Lagos" }, imageAssetId: "media-9", imageUrl: "/m.jpg" });
     });
 
+    it("draft round-trip keeps the chosen layout and the tag suggestions", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "d-2" } as never);
+      await saveCaseStudyDraft("u1", undefined, { layout: "report", suggestedTags: ["Eco-anxiety", "Heat"] });
+      const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data).toMatchObject({ layout: "report", suggestedTags: [{ value: "Eco-anxiety" }, { value: "Heat" }] });
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "d-2", userId: "u1", ...data }] } as never);
+      await expect(getCaseStudyDraftById("u1", "d-2")).resolves.toMatchObject({ layout: "report", suggestedTags: ["Eco-anxiety", "Heat"] });
+    });
+
+    it("a removed cover is saved as no image; a cover that isn't sent is left alone", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "d-3" } as never);
+      await saveCaseStudyDraft("u1", undefined, { imageAssetId: null } as never);
+      const [{ data: removed }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(removed.image).toEqual({ asset: null });
+      await saveCaseStudyDraft("u1", undefined, { title: { en: "No cover change" } });
+      const [{ data: untouched }] = mockPayloadCreate.mock.calls[1] as [{ data: Record<string, unknown> }];
+      expect(untouched).not.toHaveProperty("image");
+    });
+
     it("reads drafts at depth 1 so a drafted cover's preview URL comes back", async () => {
       mockPayloadQueryRaw.mockResolvedValue({
         docs: [{ id: "d-1", userId: "u1", lastSaved: "2026-08-11T10:54:47.530Z", image: { asset: { id: "media-9", url: "/payload-api/media/file/c.jpg" }, alt: null, caption: null } }],

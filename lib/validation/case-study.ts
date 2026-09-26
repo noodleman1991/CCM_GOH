@@ -178,7 +178,8 @@ const baseShape = {
     relatedCommunity: optionalString,
     studyPeriod: z.object({ startDate: optionalString, endDate: optionalString }).passthrough().optional(),
     place: placeSchema.nullable().optional(),
-    imageAssetId: optionalString,
+    // null = the cover was removed (a draft must be able to say so); absent = no change.
+    imageAssetId: z.string().nullable().optional(),
 }
 
 const caseStudyBase = z.object(baseShape).passthrough()

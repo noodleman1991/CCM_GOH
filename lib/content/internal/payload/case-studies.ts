@@ -1264,6 +1264,8 @@ interface DraftRow {
   image?: unknown;
   tags?: unknown;
   selectedTags?: unknown;
+  suggestedTags?: unknown;
+  layout?: string | null;
   authors?: unknown;
   studyPeriod?: Row | null;
   locationText?: Row | null;
@@ -1858,7 +1860,11 @@ const DRAFT_FIELDS = [
   "place",
   "originalLanguage",
   "imageAssetId",
+  "layout",
+  "suggestedTags",
 ] as const;
+
+const DRAFT_LAYOUTS = ["story", "feature", "report"];
 
 const PLACE_PRECISIONS = ["exact", "city", "country", "region"];
 
@@ -1907,6 +1913,7 @@ function draftPayloadData(draftData: Record<string, unknown>): Record<string, un
         break;
       case "tags":
       case "selectedTags":
+      case "suggestedTags":
         data[field] = toValueRows(value) ?? [];
         break;
       case "studyPeriod": {
@@ -1936,7 +1943,11 @@ function draftPayloadData(draftData: Record<string, unknown>): Record<string, un
         data.contentLanguage = text(value) ?? null;
         break;
       case "imageAssetId":
+        // null = the cover was removed; undefined never gets here (not sent = unchanged).
         data.image = { asset: text(value) ?? null };
+        break;
+      case "layout":
+        data.layout = DRAFT_LAYOUTS.includes(String(value)) ? value : null;
         break;
       default:
         data[field] = value;
@@ -2047,6 +2058,8 @@ function draftDocument(row: DraftRow): Record<string, unknown> {
     ),
     relatedCommunity: orNull(text(row.relatedCommunity)),
     selectedTags: orNull(stringList(row.selectedTags)),
+    suggestedTags: orNull(stringList(row.suggestedTags)),
+    layout: orNull(text(row.layout)),
     studyAreas: studyAreas(row.studyAreas),
     studyLocation: geopoint(row.studyLocation),
     studyPeriod: groupOrNull({
