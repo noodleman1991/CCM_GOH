@@ -101,7 +101,8 @@ export default function UserSubmissionsDashboard({
   // shows the main theme (the first `topic`-category CMS tag), same as the
   // card badge on the public gallery.
   const themeLabel = (item: Submission | Draft) => {
-    const theme = mainTheme(item.tags ?? [])
+    // A deleted tag dereferences to null in the drafts query; skip it.
+    const theme = mainTheme((item.tags ?? []).filter((tag): tag is DashboardTag => tag != null))
     return theme ? getLocalizedText(theme.label, locale) : null
   }
 
@@ -202,7 +203,7 @@ export default function UserSubmissionsDashboard({
 
             {submission.tags && submission.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
-                {submission.tags.slice(0, 3).map((tag) => (
+                {submission.tags.filter((tag): tag is DashboardTag => tag != null).slice(0, 3).map((tag) => (
                   <Badge key={tag._id} variant="secondary" className="text-xs">
                     <bdi>{getLocalizedText(tag.label, locale) || t('tagFallback')}</bdi>
                   </Badge>
