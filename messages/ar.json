@@ -1944,7 +1944,8 @@
     "withOrgs": "بالتعاون مع",
     "metaNotFound": "دراسة الحالة غير موجودة",
     "metaFallbackTitle": "دراسة حالة",
-    "resultsCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}"
+    "resultsCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
+    "originallyWrittenIn": "كُتب في الأصل بـ{language}"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",

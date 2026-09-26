@@ -1384,7 +1384,8 @@
     "withOrgs": "With",
     "metaNotFound": "Case Study Not Found",
     "metaFallbackTitle": "Case Study",
-    "resultsCount": "{count, plural, one {# result found} other {# results found}}"
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}",
+    "originallyWrittenIn": "Originally written in {language}"
   },
   "livedExperiences": {
     "relatedContent": "Related",

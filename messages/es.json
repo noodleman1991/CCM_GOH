@@ -1944,7 +1944,8 @@
     "withOrgs": "Con",
     "metaNotFound": "Estudio de caso no encontrado",
     "metaFallbackTitle": "Estudio de caso",
-    "resultsCount": "{count, plural, one {# resultado encontrado} other {# resultados encontrados}}"
+    "resultsCount": "{count, plural, one {# resultado encontrado} other {# resultados encontrados}}",
+    "originallyWrittenIn": "Escrito originalmente en {language}"
   },
   "revisionAlert": {
     "title": "Acción Requerida: Revisión Necesaria",
