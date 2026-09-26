@@ -1,0 +1,79 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Download, FileText } from "lucide-react";
+import { FilterChip } from "@/components/ui/filter-chip";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+type Version = {
+  _key: string;
+  kind: string;
+  lang: string;
+  label?: string;
+  pages?: number;
+  fileUrl?: string;
+  fileName?: string;
+};
+
+const LANG_LABEL: Record<string, string> = { en: "EN", es: "ES", fr: "FR", ar: "AR" };
+
+/**
+ * Version × language switcher for a research output's documents (SANITY_SCHEMA §4).
+ * Chips pick a version; the panel shows its download (file) — the public face of
+ * the Documents tab. Mirrors the EmbedPDF-ready download flow.
+ */
+export function ResearchOutputVersions({ versions }: { versions: Version[] }) {
+  const t = useTranslations("researchOutputs");
+  const usable = (versions || []).filter((v) => v.fileUrl);
+  const [activeKey, setActiveKey] = useState(usable[0]?._key);
+
+  const active = useMemo(() => usable.find((v) => v._key === activeKey) || usable[0], [usable, activeKey]);
+  if (usable.length === 0) return null;
+
+  const labelFor = (v: Version) =>
+    v.label || `${v.kind.charAt(0).toUpperCase() + v.kind.slice(1)} (${LANG_LABEL[v.lang] || v.lang.toUpperCase()})`;
+
+  return (
+    <Card className="space-y-4 p-5">
+      <h3 className="font-heading text-lg font-semibold text-ccm-midnight">{t("documents")}</h3>
+
+      {usable.length > 1 && (
+        <div className="flex flex-wrap gap-2">
+          {usable.map((v) => (
+            <FilterChip key={v._key} label={labelFor(v)} active={active?._key === v._key} onClick={() => setActiveKey(v._key)} />
+          ))}
+        </div>
+      )}
+
+      {active && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-muted/20 p-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <FileText className="size-5 shrink-0 text-ccm-sea" />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-ccm-midnight">{labelFor(active)}</p>
+              <p className="text-xs text-muted-foreground">
+                {active.fileName || active.kind}
+                {active.pages ? ` · ${active.pages} ${t("pages")}` : ""}
+              </p>
+            </div>
+          </div>
+          {/* TODO(downloads): this anchor is untracked. `versions[].downloadCount`
+              is projected by lib/content/outputs.ts but nothing writes it — there
+              is no `trackResearchOutputDownload(outputId, versionKey)` in the
+              content layer (neither arm) and no route for it. When one exists,
+              route this button through hooks/use-download-tracking.ts with a
+              `researchOutput` adapter in lib/download-adapters.ts rather than
+              adding a bespoke fetch here. */}
+          <Button asChild size="sm">
+            <a href={active.fileUrl} target="_blank" rel="noopener noreferrer">
+              <Download className="size-4" />
+              {t("download")}
+            </a>
+          </Button>
+        </div>
+      )}
+    </Card>
+  );
+}

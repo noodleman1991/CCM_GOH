@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord } from '@/lib/algolia'
-import { sanityFetch } from '@/sanity/lib/live'
-
-const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
+import { algoliaClient, ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia'
+import { getAgendaIndexDocsByIds } from '@/lib/content/outputs'
+import { transformAgendaForIndex } from '@/payload/hooks/search-sync'
+import { authorizeSearchWebhook } from '@/app/api/search/_lib/webhook-gate'
 
 // This webhook will be called when agenda data changes in Sanity
 export async function POST(request: NextRequest) {
-  // Verify internal webhook secret
-  const authHeader = request.headers.get('authorization')
-  if (!SEARCH_WEBHOOK_SECRET || authHeader !== `Bearer ${SEARCH_WEBHOOK_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  // Sanity HMAC signature or the internal bearer — app/api/search/_lib/webhook-gate.
+  // This route used to accept the bearer only, while SANITY_WEBHOOK_SETUP.md
+  // configures Sanity to send its signature header, so every documented
+  // delivery 401'd (hub audit 2026-09-16, M20).
+  const authz = await authorizeSearchWebhook(request)
+  if (!authz.ok) return authz.response
 
   try {
-    const body = await request.json()
+    const body = JSON.parse(authz.body)
     const { _id, action = 'update', _type } = body
 
     // Only process agenda documents
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (action === 'delete') {
       // Remove agenda from search index
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.AGENDAS,
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
       console.log(`🗑️ Removed agenda ${_id} from search index`)
@@ -51,41 +52,21 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Get updated agenda data
-    const result = await sanityFetch({
-      query: `*[_type == "agenda" && _id == $id][0] {
-        _id,
-        title,
-        subtitle,
-        description,
-        slug,
-        agendaType,
-        year,
-        publishDate,
-        totalDownloadCount,
-        featured,
-        accessLevel,
-        organizations[]->{name},
-        regionalCommunities[]->{name},
-        tags[]->{name},
-        coverImage {
-          asset->{url}
-        },
-        files[] {
-          language,
-          downloadCount
-        },
-        _updatedAt
-      }`,
-      params: { id: _id },
-      tags: ['agenda']
-    })
-    const agenda = result.data
+    // Get updated agenda data.
+    //
+    // `...ByIds([_id])` rather than `...ById(_id)`: on the Payload arm those two
+    // readers differ — `ByIds` dereferences `files` and `ById` does not — and the
+    // record this route emits must be the one the live index holds, which is the
+    // full sync's (with `files`). Before, this route's own transform dropped
+    // `files` and `saveObjects` replaces the whole object, so every webhook
+    // delivery stripped them off the record until the next full sync put them
+    // back. One shape now: payload/hooks/search-sync.ts.
+    const agenda = (await getAgendaIndexDocsByIds([_id]))[0] ?? null
 
     if (!agenda) {
       // Agenda doesn't exist, remove from index if present
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.AGENDAS,
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
       return NextResponse.json({
@@ -94,50 +75,47 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Transform and index the agenda
+    // Build first, save second, and answer differently: a record that cannot
+    // be built is removed (no stale rows); a save that fails is 5xx with the
+    // index untouched, so Sanity retries. See the case-studies webhook.
+    let record: ReturnType<typeof transformAgendaForIndex>
     try {
-      const record = transformAgendaForIndex(agenda)
-      if (record) {
-        await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.AGENDAS,
-          objects: [record]
-        })
-
-        console.log(`✅ Updated agenda ${_id} in search index`)
-
-        return NextResponse.json({
-          success: true,
-          message: 'Agenda updated in search index',
-          action: 'indexed'
-        })
-      } else {
-        // Remove from index if transformation failed
-        await algoliaClient.deleteObject({
-          indexName: ALGOLIA_INDICES.AGENDAS,
-          objectID: _id
-        })
-
-        return NextResponse.json({
-          success: true,
-          message: 'Agenda removed from search index due to transformation error',
-          action: 'removed'
-        })
-      }
+      record = transformAgendaForIndex(agenda)
     } catch (error) {
-      console.warn(`Failed to index agenda ${_id}: ${error}`)
-      // Remove from index if indexing failed
+      console.warn(`Could not build the search record for agenda ${_id}: ${error}`)
+      record = null
+    }
+    if (!record) {
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.AGENDAS,
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
-
       return NextResponse.json({
         success: true,
-        message: 'Agenda removed from search index due to indexing error',
-        action: 'removed',
-        reason: error instanceof Error ? error.message : 'Unknown error'
+        message: 'Agenda removed from search index: record could not be built',
+        action: 'removed'
       })
     }
+    try {
+      await algoliaClient.saveObjects({
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
+        objects: [record]
+      })
+    } catch (error) {
+      console.error(`Failed to save agenda ${_id} to the search index:`, error)
+      return NextResponse.json(
+        { success: false, message: 'Search index write failed; retry', reason: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 503 }
+      )
+    }
+
+    console.log(`✅ Updated agenda ${_id} in search index`)
+
+    return NextResponse.json({
+      success: true,
+      message: 'Agenda updated in search index',
+      action: 'indexed'
+    })
 
   } catch (error) {
     console.error('Agenda search webhook failed:', error)
@@ -148,29 +126,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Helper function to transform agenda for Algolia indexing
-function transformAgendaForIndex(agenda: any): AgendaSearchRecord | null {
-  try {
-    return {
-      objectID: agenda._id,
-      contentId: agenda._id,
-      title: agenda.title || { en: 'Untitled Agenda' },
-      subtitle: agenda.subtitle || {},
-      description: agenda.description || {},
-      slug: agenda.slug?.current || '',
-      agendaType: agenda.agendaType || 'other',
-      year: agenda.year || new Date().getFullYear(),
-      publishDate: agenda.publishDate ? new Date(agenda.publishDate).getTime() : Date.now(),
-      totalDownloadCount: agenda.totalDownloadCount || 0,
-      featured: agenda.featured || false,
-      organizations: (agenda.organizations || []).map((org: any) => org.name).filter(Boolean),
-      regionalCommunities: (agenda.regionalCommunities || []).map((community: any) => community.name).filter(Boolean),
-      tags: (agenda.tags || []).map((tag: any) => tag.name).filter(Boolean),
-      accessLevel: agenda.accessLevel || 'public',
-      language: 'en' // Default to English, could be enhanced with language detection from files
-    }
-  } catch (error) {
-    console.warn(`Failed to transform agenda ${agenda._id}:`, error)
-    return null
-  }
-}
+

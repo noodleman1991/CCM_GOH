@@ -2,20 +2,35 @@
 // NO "use client" directive - this is a server component
 
 import Image from "next/image";
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { urlFor } from "@/sanity/lib/image";
-import { heading } from "@/lib/design-tokens";
+import { imageUrl } from "@/lib/content/images";
 import Blocks from "@/components/blocks";
+import { SectionHeader } from "@/components/ui/section-header";
+
+type BlocksList = ComponentProps<typeof Blocks>["blocks"];
+
+/** Minimal image shape the header actually reads (Sanity image projection). */
+export interface GridSectionHeaderImage {
+  asset?: { _id?: string; url?: string | null } | null;
+  alt?: string | null;
+}
 
 interface GridSectionHeaderProps {
   title?: string;
   subtitle?: string;
-  description?: any;
-  headerImage?: any;
+  /** Portable-text-ish block array rendered through Blocks; shape varies by caller. */
+  description?: readonly unknown[] | null;
+  headerImage?: GridSectionHeaderImage | null;
   locale: string;
   isRTL?: boolean;
 }
 
+// Section header for page-builder grid rows (toolkits, impact-reports,
+// all-outputs, agendas, community grids). Uses the shared SectionHeader so the
+// vertical colour bar + title type match the rest of the app, while keeping the
+// grid block's two extras: an optional portable-text description and an optional
+// header image floated to the trailing side.
 export function GridSectionHeader({
   title,
   subtitle,
@@ -26,7 +41,6 @@ export function GridSectionHeader({
 }: GridSectionHeaderProps) {
   const hasImage = headerImage?.asset;
 
-  // If no content, don't render
   if (!title && !subtitle && !description && !hasImage) {
     return null;
   }
@@ -34,24 +48,20 @@ export function GridSectionHeader({
   return (
     <div
       className={cn(
-        "mb-8 md:mb-12",
-        hasImage && "grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6",
-        isRTL && hasImage && "md:grid-cols-[auto_1fr]"
+        "mb-6 @content-md/page:mb-8",
+        hasImage && "grid grid-cols-1 gap-6 @content-md/page:grid-cols-[1fr_auto] @content-md/page:items-center",
+        isRTL && hasImage && "@content-md/page:grid-cols-[auto_1fr]"
       )}
     >
       {/* Text Content */}
-      <div className={cn(isRTL && hasImage && "md:order-2")}>
-        {title && (
-          <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance break-words", heading('md'))}>
-            {title}
-          </h2>
-        )}
-        {subtitle && (
-          <p className="mt-2 text-base md:text-lg text-muted-foreground break-words">{subtitle}</p>
+      <div className={cn(isRTL && hasImage && "@content-md/page:order-2")}>
+        {title && <SectionHeader title={title} subtitle={subtitle} />}
+        {!title && subtitle && (
+          <p className="text-base text-muted-foreground @content-md/page:text-lg">{subtitle}</p>
         )}
         {description && (
           <div className="mt-4">
-            <Blocks blocks={description} locale={locale} />
+            <Blocks blocks={description as BlocksList} locale={locale} />
           </div>
         )}
       </div>
@@ -60,12 +70,12 @@ export function GridSectionHeader({
       {hasImage && (
         <div
           className={cn(
-            "relative h-32 w-48 overflow-hidden rounded-lg md:h-40 md:w-56",
-            isRTL && "md:order-1"
+            "relative h-32 w-48 overflow-hidden rounded-lg @content-md/page:h-40 @content-md/page:w-56",
+            isRTL && "@content-md/page:order-1"
           )}
         >
           <Image
-            src={urlFor(headerImage).url()}
+            src={imageUrl(headerImage, { width: 600, height: 400 })}
             alt={headerImage.alt || title || "Section header image"}
             fill
             className="object-cover"

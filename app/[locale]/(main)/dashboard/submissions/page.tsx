@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getTranslations } from 'next-intl/server'
-import { fetchUserSubmissionsAndDrafts } from "@/sanity/lib/fetch"
+import { getUserSubmissionsAndDrafts } from "@/lib/content/case-studies"
 import UserSubmissionsDashboard from "@/components/dashboard/user-submissions-dashboard"
 import { Suspense } from "react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -55,7 +55,7 @@ export default async function UserSubmissionsPage({
   const { userId } = await auth()
 
   if (!userId) {
-    redirect('/sign-in')
+    redirect({ href: '/sign-in', locale })
   }
 
   return (
@@ -68,15 +68,12 @@ export default async function UserSubmissionsPage({
 }
 
 async function UserSubmissionsContent({ locale, userId }: { locale: string; userId: string }) {
-  const [data, t] = await Promise.all([
-    fetchUserSubmissionsAndDrafts({ userId }),
-    getTranslations({ locale, namespace: 'dashboard' })
-  ])
+  const data = await getUserSubmissionsAndDrafts(userId)
 
   return (
     <UserSubmissionsDashboard
-      submissions={data.submissions ?? []}
-      drafts={data.drafts ?? []}
+      submissions={(data.submissions ?? []) as never}
+      drafts={(data.drafts ?? []) as never}
       locale={locale}
     />
   )

@@ -1,4 +1,5 @@
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
+import type { StructureBuilder, StructureResolverContext } from "sanity/structure";
 import {
     Files,
     BookA,
@@ -13,14 +14,22 @@ import {
     FileSearch,
     MapPinned,
     Home,
+    Megaphone,
+    MessageCircleQuestion,
     Heart,
     Globe,
     UserCog,
     Briefcase,
     GraduationCap,
+    ShieldAlert,
+    BookText,
+    Lock,
+    Database,
+    Banknote,
+    Palette,
 } from "lucide-react";
 
-export const structure = (S: any, context: any) =>
+export const structure = (S: StructureBuilder, context: StructureResolverContext) =>
     S.list()
         .title("Content")
         .items([
@@ -36,6 +45,40 @@ export const structure = (S: any, context: any) =>
                                 .documentId(documentId)
                                 .schemaType("homepage")
                         )
+                ),
+
+            // Site Announcement - singleton (one fixed document)
+            S.listItem()
+                .title("Site Announcement")
+                .icon(Megaphone)
+                .child(
+                    S.document()
+                        .schemaType("siteAnnouncement")
+                        .documentId("siteAnnouncement")
+                ),
+            S.listItem()
+                .title("Comment Moderation")
+                .icon(ShieldAlert)
+                .child(
+                    S.document()
+                        .schemaType("moderationSettings")
+                        .documentId("moderationSettings")
+                ),
+            S.listItem()
+                .title("Hub Illustrations")
+                .icon(Palette)
+                .child(
+                    S.document()
+                        .schemaType("hubIllustrations")
+                        .documentId("hubIllustrations")
+                ),
+            S.listItem()
+                .title("Document Reader (Agenda)")
+                .icon(BookText)
+                .child(
+                    S.documentTypeList("docsChapter")
+                        .title("Document Chapters")
+                        .defaultOrdering([{ field: "order", direction: "asc" }])
                 ),
 
             // Website Pages
@@ -122,6 +165,41 @@ export const structure = (S: any, context: any) =>
                                         .title("Lived Experiences")
                                         .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
                                 ),
+                            S.listItem()
+                                .title("Research Outputs")
+                                .icon(BookText)
+                                .child(
+                                    S.list()
+                                        .title("Research Outputs")
+                                        .items([
+                                            S.listItem()
+                                                .title("All Research Outputs")
+                                                .schemaType("researchOutput")
+                                                .child(
+                                                    S.documentTypeList("researchOutput")
+                                                        .title("All Research Outputs")
+                                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                                ),
+                                            S.listItem()
+                                                .title("Pending Review")
+                                                .schemaType("researchOutput")
+                                                .child(
+                                                    S.documentTypeList("researchOutput")
+                                                        .title("Pending Review")
+                                                        .apiVersion('2024-10-31')
+                                                        .filter('_type == "researchOutput" && status == "pending"')
+                                                ),
+                                            S.listItem()
+                                                .title("Approved")
+                                                .schemaType("researchOutput")
+                                                .child(
+                                                    S.documentTypeList("researchOutput")
+                                                        .title("Approved Research Outputs")
+                                                        .apiVersion('2024-10-31')
+                                                        .filter('_type == "researchOutput" && status == "approved"')
+                                                ),
+                                        ])
+                                ),
                         ])
                 ),
 
@@ -152,6 +230,36 @@ export const structure = (S: any, context: any) =>
                                     S.documentTypeList("externalSource")
                                         .title("External Sources")
                                         .defaultOrdering([{ field: "addedAt", direction: "desc" }])
+                                ),
+                        ])
+                ),
+
+            // Internal — never-public working documents (datasets, funding apps).
+            S.divider(),
+            S.listItem()
+                .title("Internal")
+                .icon(Lock)
+                .child(
+                    S.list()
+                        .title("Internal (not public)")
+                        .items([
+                            S.listItem()
+                                .title("Datasets")
+                                .icon(Database)
+                                .schemaType("dataset")
+                                .child(
+                                    S.documentTypeList("dataset")
+                                        .title("Datasets")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                ),
+                            S.listItem()
+                                .title("Funding Applications")
+                                .icon(Banknote)
+                                .schemaType("fundingApplication")
+                                .child(
+                                    S.documentTypeList("fundingApplication")
+                                        .title("Funding Applications")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
                                 ),
                         ])
                 ),
@@ -291,6 +399,13 @@ export const structure = (S: any, context: any) =>
                                 S,
                                 context,
                             }),
+                            orderableDocumentListDeskItem({
+                                type: "profilePrompt",
+                                title: "Profile Prompts",
+                                icon: MessageCircleQuestion,
+                                S,
+                                context,
+                            }),
                         ])
                 ),
 
@@ -334,6 +449,35 @@ export const structure = (S: any, context: any) =>
                                 S,
                                 context,
                             }),
+                        ])
+                ),
+
+            // Geo coverage — published docs missing a place/coordinates, so
+            // editors can find and fix gaps before they show up as holes on
+            // the content map / atlas.
+            S.divider(),
+            S.listItem()
+                .title("🌍 Missing geotags")
+                .icon(MapPinned)
+                .child(
+                    S.list()
+                        .title("Published docs without a place")
+                        .items([
+                            S.listItem().title("Case studies").child(
+                                S.documentList()
+                                    .title("Case studies without coordinates")
+                                    .filter('_type == "caseStudy" && status == "approved" && !defined(studyLocation)')
+                            ),
+                            S.listItem().title("Lived experiences").child(
+                                S.documentList()
+                                    .title("Lived experiences without a place")
+                                    .filter('_type == "livedExperience" && !defined(place.point)')
+                            ),
+                            S.listItem().title("Events").child(
+                                S.documentList()
+                                    .title("Events without a place")
+                                    .filter('_type == "event" && !defined(place.point)')
+                            ),
                         ])
                 ),
         ]);

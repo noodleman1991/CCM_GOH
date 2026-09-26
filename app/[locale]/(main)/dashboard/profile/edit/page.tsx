@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
+import type { ComponentProps } from "react"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getTranslations, getLocale } from 'next-intl/server'
 import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
@@ -21,20 +22,32 @@ async function revalidateDashboard() {
     revalidatePath('/dashboard', 'layout')
 }
 
-export default async function ProfileEditPage() {
+export default async function ProfileEditPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ tab?: string }>
+}) {
+    const locale = await getLocale();
     const t = await getTranslations('profile.edit')
     const { userId } = await auth()
+    // `?tab=recentWork` is how the dashboard and the public profile deep-link
+    // into one section since the separate add-work pages were removed.
+    const { tab } = await searchParams
 
     if (!userId) {
-        redirect('/sign-in')
+        redirect({ href: '/sign-in', locale })
     }
 
     // Fetch user management options from Sanity (with fallback)
-    const locale = await getLocale()
     const userManagementOptions = await fetchUserManagementOptionsWithLocale(locale)
 
     // Fetch communities directly from Prisma (avoid localhost fetch issues in SSR)
-    let communities: any[] = []
+    let communities: Array<{
+        id: string
+        name: string
+        type: string
+        regionalName: string | null
+    }> = []
     try {
         communities = await prisma.community.findMany({
             select: {
@@ -61,8 +74,12 @@ export default async function ProfileEditPage() {
 
             {/* Pass Sanity data to form with fallback support */}
             <ProfileEditForm
+                initialTab={tab}
                 userManagementOptions={userManagementOptions}
-                availableCommunitiesData={communities}
+                // Pre-existing shape gap: the form declares a Sanity-shaped
+                // communities prop while this page has always passed the Prisma
+                // rows (the form handles that shape at runtime).
+                availableCommunitiesData={communities as unknown as NonNullable<ComponentProps<typeof ProfileEditForm>>['availableCommunitiesData']}
                 onImageChangeAction={revalidateDashboard}
             />
         </div>

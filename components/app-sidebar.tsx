@@ -12,23 +12,28 @@ import {
     Newspaper,
     Info,
     Heart,
+    FolderPlus,
+    BookMarked,
+    Compass,
     Search,
-    Handshake,
-    X,
 } from "lucide-react"
 import Logo from "@/components/logo"
-import { useRouter } from "@/i18n/navigation"
+import { Link, usePathname } from "@/i18n/navigation"
+import { SearchTrigger } from "@/components/search-dialog"
+import { useSearchStore } from "@/stores/search-store"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale, useTranslations } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
+import { FEATURES } from "@/lib/features"
 import { NavMain } from "@/components/nav-main"
-// import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
-import { AuthNavUser } from "@/components/auth-nav-user"
+import { StaffNav } from "@/components/staff-nav"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { SidebarQuickActions } from "@/components/sidebar-quick-actions"
+import { UserMenuCard } from "@/components/user-menu-card"
 import {
     Sidebar,
     SidebarContent,
@@ -37,24 +42,33 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarInput
 } from "@/components/ui/sidebar"
+import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-preferences-button"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { userData } = useClerkUser();
     const locale = useLocale()
     const isRTL = rtlLocales.includes(locale)
     const t = useTranslations('navigation')
-    const router = useRouter()
-    const [searchQuery, setSearchQuery] = React.useState("")
+    const tCommon = useTranslations('common')
+    const pathname = usePathname()
     const [openAccordion, setOpenAccordion] = React.useState<string | null>(null)
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (searchQuery.trim()) {
-            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-        }
-    }
+    // A nav link is active when the current route equals it or is nested under it,
+    // so detail pages (e.g. /news/[slug]) highlight their parent nav item. "#"
+    // accordion triggers are never themselves a route, so they never match here.
+    const isLinkActive = React.useCallback(
+        (url: string) =>
+            url !== "#" && (pathname === url || pathname.startsWith(`${url}/`)),
+        [pathname]
+    )
+
+    // On a specific workspace (/collaborations/<id>) the workspace owns the
+    // screen, so the global rail shrinks to an icon rail instead of fully hiding.
+    // Route-derived (recomputed from the live pathname every render) → it can
+    // never leak to other routes; leaving the route flips it back to offcanvas.
+    const isWorkspaceRoute = /^\/collaborations\/[^/]+$/.test(pathname)
+    const collapsible = isWorkspaceRoute ? "icon" : "offcanvas"
 
     // Research & Action items
     const researchActionItems = [
@@ -77,11 +91,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('communityAgendas'),
             url: "/research-and-action/community-agendas",
             icon: Users,
-        },
-        {
-            title: t('caseStudies'),
-            url: "/research-and-action/case-studies",
-            icon: BookOpen,
         },
         {
             title: t('toolkits'),
@@ -161,94 +170,143 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     //     },
     // ];
 
+    // Two-group nav. DISCOVER = find content/knowledge; COLLABORATE = find &
+    // work with people and communities. Workspaces only appears when the
+    // engagement flag is on. (Atlas joins Discover in Phase 3 once its route exists.)
+    // ONE flat menu, no group labels (user direction 2026-07-05) — order:
+    // Regional Communities · Atlas · Research & Action · Lived experiences ·
+    // Case studies · News. Doorway tiles above carry people/project actions.
     const data = React.useMemo(() => ({
-        navMain: [
-            {
-                title: t('researchAction'),
-                url: "#",
-                icon: BookOpen,
-                isActive: openAccordion === 'research',
-                items: researchActionItems,
-                onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
-            },
-            {
-                title: t('livedExperiences'),
-                url: "/lived-experiences",
-                icon: Heart,
-            },
+        main: [
             {
                 title: t('regionalCommunities'),
                 url: "#",
                 icon: Globe,
                 isActive: openAccordion === 'regional',
-                items: regionalCommunities,
+                items: regionalCommunities.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
             {
-                title: t('collaborate'),
-                url: "/collaborate",
-                icon: Handshake,
+                title: t('researchAction'),
+                url: "#",
+                icon: BookOpen,
+                isActive: openAccordion === 'research',
+                items: researchActionItems.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
+                onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
             },
             {
-                title: t('news'),
+                title: t('atlas'),
+                url: "/atlas",
+                icon: Compass,
+                isActive: isLinkActive("/atlas"),
+            },
+            {
+                title: t('livedExperiences'),
+                url: "/lived-experiences",
+                icon: Heart,
+                isActive: isLinkActive("/lived-experiences"),
+            },
+            {
+                title: t('caseStudies'),
+                url: "/research-and-action/case-studies",
+                icon: BookMarked,
+                isActive: isLinkActive("/research-and-action/case-studies"),
+            },
+            {
+                title: t('newsUpdates'),
                 url: "/news",
                 icon: Newspaper,
+                isActive: isLinkActive("/news"),
             },
         ],
         navSecondary,
         user: userData
-    }), [navSecondary, userData, t, openAccordion, researchActionItems, regionalCommunities]);
+    }), [navSecondary, userData, t, openAccordion, researchActionItems, regionalCommunities, isLinkActive]);
 
     return (
         <Sidebar
             variant="inset"
+            collapsible={collapsible}
             {...props}
         >
             <SidebarHeader>
-                <SidebarMenu>
+                {/* Brand lockup (sidebar revision 2026-07-05): compact,
+                    start-aligned wordmark riding a soft sky blob — the same
+                    treatment on desktop and in the mobile sheet. Icon rail
+                    swaps to the round "ccm" mark. */}
+                <Link
+                    href="/"
+                    aria-label={tCommon("goToHomepage")}
+                    className="flex justify-center px-5 pb-6 pt-6 group-data-[collapsible=icon]:p-2"
+                >
+                    <span className="block group-data-[collapsible=icon]:hidden [&_img]:w-auto">
+                        <Logo size="lg" asChild />
+                    </span>
+                    {/* Collapsed rail: the bare mark, no disc/frame (user
+                        direction 2026-08-05) — the wave glyph desaturated and
+                        inverted to white, sitting directly on the midnight
+                        rail. grayscale+invert (not a flat brightness-0
+                        silhouette) keeps the source PNG's tonal layers as a
+                        faint internal wave line, so it still reads as the
+                        wave mark instead of a featureless blob. */}
+                    <span
+                        aria-hidden
+                        className="mx-auto hidden shrink-0 items-center justify-center group-data-[collapsible=icon]:flex"
+                    >
+                        <img
+                            src="/images/icons/ccm-mark.png"
+                            alt=""
+                            className="size-7 shrink-0 object-contain grayscale invert brightness-[1.65] contrast-[1.3]"
+                        />
+                    </span>
+                </Link>
+            </SidebarHeader>
+            <SidebarQuickActions />
+            <SidebarContent>
+                <NavMain
+                    items={data.main}
+                    openAccordion={openAccordion}
+                    setOpenAccordionAction={setOpenAccordion}
+                />
+                <StaffNav />
+                {/* About · Feedback share one quiet horizontal line. */}
+                <div className="mt-auto flex items-center gap-1 px-3 pb-1 group-data-[collapsible=icon]:hidden">
+                    {data.navSecondary.map((item) => (
+                        <Link
+                            key={item.url}
+                            href={item.url}
+                            className="flex min-h-[36px] items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-sidebar-foreground/70 transition-colors hover:bg-white/8 hover:text-sidebar-foreground"
+                        >
+                            <item.icon className="size-3.5 opacity-70" aria-hidden />
+                            {item.title}
+                        </Link>
+                    ))}
+                </div>
+            </SidebarContent>
+            <SidebarFooter>
+                <UserMenuCard />
+                {/* Search moved to the quick-actions row (sidebar revision
+                    2026-07-05) — the footer keeps only the icon-rail variant
+                    for collapsed workspace routes. */}
+                <SidebarMenu className="hidden group-data-[collapsible=icon]:block">
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            size="xl"
-                            asChild
-                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent"
+                            tooltip={t('searchPlaceholder')}
+                            onClick={() => useSearchStore.getState().setOpen(true)}
                         >
-                            <Logo size="xl" />
+                            <Search />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-
-                {/* Search Box */}
-                <div className="p-2">
-                    <form onSubmit={handleSearch} className="relative sidebar-search-input">
-                        <Search className="pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900 start-2" />
-                        <SidebarInput
-                            id="search"
-                            placeholder={t('searchPlaceholder')}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full placeholder:text-slate-500 bg-background border-gray-300 text-slate-900 ps-8 pe-8"
-                        />
-                        {searchQuery && (
-                            <button
-                                type="button"
-                                onClick={() => setSearchQuery("")}
-                                className="absolute top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 end-2"
-                            >
-                                <X className="size-4" />
-                            </button>
-                        )}
-                    </form>
-                </div>
-            </SidebarHeader>
-            <SidebarContent>
-                <NavMain items={data.navMain} openAccordion={openAccordion} setOpenAccordionAction={setOpenAccordion} />
-                {/* <NavProjects projects={data.projects} /> */}
-                <NavSecondary items={data.navSecondary} className="mt-auto" />
-            </SidebarContent>
-            <SidebarFooter>
-                <div className="flex flex-col p-2 gap-2">
-                    <AuthNavUser isRTL={isRTL} />
+                {/* The wide language switcher can't fit the icon rail; hide it
+                    there (it's one click away once the rail is expanded). */}
+                <div className="p-2 pt-0 group-data-[collapsible=icon]:hidden">
                     <LanguageSwitcher />
+                    {/* The footer that used to carry this link is gone (Slice 3a);
+                        consent has to stay re-enterable from every page. */}
+                    <div className="mt-2 px-1">
+                        <CookiePreferencesButton />
+                    </div>
                 </div>
             </SidebarFooter>
         </Sidebar>

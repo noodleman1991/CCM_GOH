@@ -12,8 +12,11 @@ const fullProfile = {
   username: 'ada',
   email: 'ada@example.com',
   image: 'https://example.com/ada.png',
+  headline: 'Researcher on computation & climate',
   bio: 'Mathematician and writer.',
+  pronouns: 'she/her',
   ageGroup: 'ABOVE_18',
+  motivation: 'I care about the planet.',
   country: 'UK',
   city: 'London',
   organization: 'Analytical Engines Ltd',
@@ -21,6 +24,9 @@ const fullProfile = {
   workBio: 'Working on computation.',
   workTypes: ['RESEARCH'],
   expertiseAreas: ['MATH'],
+  focusTopics: ['climate-anxiety'],
+  openToCollaboration: true,
+  collaborationInterests: 'Open to co-authoring.',
   personalWebsite: 'https://ada.example.com',
   linkedinProfile: 'ada-lovelace',
   phoneNumber: '+44 123456',
@@ -34,14 +40,23 @@ describe('FIELD_WEIGHTS', () => {
     expect(total).toBe(100)
   })
 
-  it('includes communityMemberships and recentWork', () => {
+  it('includes the domain-rich K4 fields', () => {
+    expect(FIELD_WEIGHTS.headline).toBe(6)
+    expect(FIELD_WEIGHTS.focusTopics).toBe(6)
+    expect(FIELD_WEIGHTS.openToCollaboration).toBe(3)
+    expect(FIELD_WEIGHTS.collaborationInterests).toBe(3)
+    expect(FIELD_WEIGHTS.pronouns).toBe(1)
+    expect(FIELD_WEIGHTS.motivation).toBe(2)
+  })
+
+  it('keeps community + recent work weighted', () => {
     expect(FIELD_WEIGHTS.communityMemberships).toBe(5)
     expect(FIELD_WEIGHTS.recentWork).toBe(5)
   })
 })
 
 describe('calculateProfileCompleteness', () => {
-  it('returns 100 for a fully populated profile including communityMemberships and recentWork', () => {
+  it('returns 100 for a fully populated profile', () => {
     expect(calculateProfileCompleteness(fullProfile)).toBe(100)
   })
 
@@ -61,12 +76,8 @@ describe('calculateProfileCompleteness', () => {
     ).toBe(0)
   })
 
-  it('maxes out at 90 when communityMemberships and recentWork are omitted (the old call-site bug)', () => {
-    const { communityMemberships, recentWork, ...withoutRelations } = fullProfile
-    expect(calculateProfileCompleteness(withoutRelations)).toBe(90)
-  })
-
-  it('returns the weighted sum for core identity fields only (25%)', () => {
+  it('returns the weighted sum for core identity fields only (20%)', () => {
+    // firstName 3 + lastName 3 + username 3 + email 3 + image 8 = 20
     expect(
       calculateProfileCompleteness({
         firstName: 'Ada',
@@ -75,18 +86,35 @@ describe('calculateProfileCompleteness', () => {
         email: 'ada@example.com',
         image: 'https://example.com/ada.png'
       })
-    ).toBe(25)
+    ).toBe(20)
+  })
+
+  it('counts the domain-rich fields toward completeness', () => {
+    // headline 6 + focusTopics 6 + openToCollaboration 3 + collaborationInterests 3 = 18
+    expect(
+      calculateProfileCompleteness({
+        headline: 'Climate researcher',
+        focusTopics: ['eco-grief'],
+        openToCollaboration: true,
+        collaborationInterests: 'Looking for partners.'
+      })
+    ).toBe(18)
+  })
+
+  it('does not count openToCollaboration when false', () => {
+    expect(calculateProfileCompleteness({ openToCollaboration: false })).toBe(0)
+    expect(calculateProfileCompleteness({ openToCollaboration: true })).toBe(3)
   })
 
   it('returns the weighted sum for a mixed partial profile', () => {
-    // bio (8) + workTypes (6) + recentWork (5) = 19
+    // bio (7) + workTypes (5) + recentWork (5) = 17
     expect(
       calculateProfileCompleteness({
         bio: 'Hello',
         workTypes: ['RESEARCH'],
         recentWork: [{ id: 'w1' }]
       })
-    ).toBe(19)
+    ).toBe(17)
   })
 
   it('treats empty and whitespace-only strings as incomplete', () => {
@@ -98,6 +126,7 @@ describe('calculateProfileCompleteness', () => {
       calculateProfileCompleteness({
         workTypes: [],
         expertiseAreas: [],
+        focusTopics: [],
         communityMemberships: [],
         recentWork: []
       })
@@ -115,12 +144,13 @@ describe('getMissingProfileFields', () => {
     expect(missing.sort()).toEqual(Object.keys(FIELD_WEIGHTS).sort())
   })
 
-  it('reports communityMemberships and recentWork as missing when empty arrays', () => {
+  it('reports domain-rich fields as missing when empty', () => {
     const missing = getMissingProfileFields({
       ...fullProfile,
-      communityMemberships: [],
-      recentWork: []
+      headline: null,
+      focusTopics: [],
+      openToCollaboration: false
     })
-    expect(missing).toEqual(['communityMemberships', 'recentWork'])
+    expect(missing.sort()).toEqual(['focusTopics', 'headline', 'openToCollaboration'])
   })
 })

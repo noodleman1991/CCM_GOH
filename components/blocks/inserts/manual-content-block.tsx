@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
+import type { PortableTextBlock } from "@portabletext/types";
 import { portableTextComponents } from "@/components/portable-text-renderer";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { cn } from "@/lib/utils";
 import { getLocalizedField, getLocalizedPortableText, type SupportedLocale } from "@/lib/localization-utils";
 
@@ -67,7 +68,7 @@ export function ManualContentBlock({
       )}
       {localizedContent && localizedContent.length > 0 && (
         <PortableText
-          value={localizedContent as any}
+          value={localizedContent as PortableTextBlock[]}
           components={portableTextComponents(locale)}
         />
       )}
@@ -87,7 +88,7 @@ export function ManualContentBlock({
     return (
       <div className="relative">
         <Image
-          src={urlForCropped(image, 800, 600).url()}
+          src={imageUrl(image, { width: 800, height: 600, crop: true })}
           alt={image.alt || localizedTitle || ""}
           width={800}
           height={600}
@@ -106,7 +107,7 @@ export function ManualContentBlock({
 
   return (
     <section className={cn("w-full", bgClass, paddingClass)}>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         {layout === "full-width" && (
           <div className="max-w-4xl mx-auto">
             {renderContent()}
@@ -119,18 +120,18 @@ export function ManualContentBlock({
         )}
 
         {layout === "left-image" && (
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
+          <div className="grid @content-md/page:grid-cols-2 gap-12 items-center">
+            <div className="order-2 @content-md/page:order-1">
               {renderImage()}
             </div>
-            <div className="order-1 lg:order-2">
+            <div className="order-1 @content-md/page:order-2">
               {renderContent()}
             </div>
           </div>
         )}
 
         {layout === "right-image" && (
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid @content-md/page:grid-cols-2 gap-12 items-center">
             <div className="order-1">
               {renderContent()}
             </div>

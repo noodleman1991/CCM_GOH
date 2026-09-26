@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import * as React from "react";
 import useEmblaCarousel, {
@@ -177,6 +178,7 @@ function CarouselPrevious({
   size = "icon",
   ...props
 }: React.ComponentProps<typeof Button>) {
+  const t = useTranslations("common");
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
   return (
@@ -196,7 +198,7 @@ function CarouselPrevious({
       {...props}
     >
       <ArrowLeft className="rtl:rotate-180" />
-      <span className="sr-only">Previous slide</span>
+      <span className="sr-only">{t("previousSlide")}</span>
     </Button>
   );
 }
@@ -207,6 +209,7 @@ function CarouselNext({
   size = "icon",
   ...props
 }: React.ComponentProps<typeof Button>) {
+  const t = useTranslations("common");
   const { orientation, scrollNext, canScrollNext } = useCarousel();
 
   return (
@@ -226,7 +229,7 @@ function CarouselNext({
       {...props}
     >
       <ArrowRight className="rtl:rotate-180" />
-      <span className="sr-only">Next slide</span>
+      <span className="sr-only">{t("nextSlide")}</span>
     </Button>
   );
 }
@@ -238,6 +241,7 @@ function CarouselDots({
 }: React.HTMLAttributes<HTMLDivElement> & {
   size?: "sm" | "lg";
 }) {
+  const t = useTranslations("common");
   const { api } = useCarousel();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [slideCount, setSlideCount] = React.useState(0);
@@ -277,7 +281,7 @@ function CarouselDots({
             "hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             "disabled:pointer-events-none disabled:opacity-50"
           )}
-          aria-label={`Go to slide ${index + 1}`}
+          aria-label={t("goToSlide", { index: index + 1 })}
         >
           <span
             className={cn(
@@ -299,6 +303,7 @@ function CarouselCounter({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+  const t = useTranslations("common");
   const { api } = useCarousel();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [slideCount, setSlideCount] = React.useState(0);
@@ -325,7 +330,7 @@ function CarouselCounter({
       )}
       {...props}
     >
-      Slide {selectedIndex + 1} of {slideCount}
+      {t("slideOf", { index: selectedIndex + 1, count: slideCount })}
     </div>
   );
 }

@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations, useLocale } from 'next-intl'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFieldArray } from "react-hook-form"
-import { format } from "date-fns"
 import * as z from "zod"
 import { useUserProfile } from "@/hooks/use-user-profile"
 import type { UserProfileUpdateData, SupportedLocale } from "@/types/prisma"
@@ -13,30 +12,63 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProfilePromptsEditor } from "@/components/profile/profile-prompts-editor"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, Plus, Edit, Trash2, Calendar } from "lucide-react"
+import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, Plus, Edit, Trash2, Calendar, Linkedin } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
-import { CommunitySelector } from "@/components/profile/community-selector"
+import { CommunitySelector, type Community as SelectorCommunity } from "@/components/profile/community-selector"
+import { LIMITS } from "@/lib/validation/limits";
+import { CharCounter } from "@/components/ui/char-counter"
 
-const profileSchema = z.object({
+// Localized validation messages (resolved from t() inside the component so the
+// Zod errors show in the user's language — the proven newsletter pattern).
+interface SchemaMessages {
+    firstNameRequired: string
+    lastNameRequired: string
+    usernameMin: string
+    usernamePattern: string
+    bioMax: string
+    workTypesMin: string
+    expertiseAreasMin: string
+    workBioMax: string
+    urlInvalid: string
+    workTitleRequired: string
+    workDescriptionRequired: string
+    workStartDateRequired: string
+    headlineMax: string
+    keepUnder600: string
+    keepUnder1000: string
+    firstNameMax: string
+    lastNameMax: string
+    usernameMax: string
+    socialPlatformRequired: string
+    socialUrlInvalid: string
+    pronounsMax: string
+    orcidMax: string
+    workTitleMax: string
+    workDescriptionMax: string
+}
+
+const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Clerk-managed fields (update Clerk directly)
-    firstName: z.string().min(1, "First name is required").max(50),
-    lastName: z.string().min(1, "Last name is required").max(50),
-    username: z.string().min(3, "Username must be at least 3 characters").max(30)
-        .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"),
+    firstName: z.string().min(1, m.firstNameRequired).max(LIMITS.profile.firstName, m.firstNameMax),
+    lastName: z.string().min(1, m.lastNameRequired).max(LIMITS.profile.lastName, m.lastNameMax),
+    username: z.string().min(3, m.usernameMin).max(LIMITS.profile.username, m.usernameMax)
+        .regex(/^[a-zA-Z0-9_]+$/, m.usernamePattern),
 
     // Profile image
     image: z.string().optional(),
 
     // App-managed profile fields
-    bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
+    bio: z.string().max(LIMITS.profile.bio, m.bioMax).optional(),
     ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
     country: z.string().optional(),
     city: z.string().optional(),
@@ -47,30 +79,31 @@ const profileSchema = z.object({
         "NGO",
         "COMMUNITY_ORGANIZATION",
         "EDUCATION_TEACHING"
-    ])).min(1, "Please select at least one work type"),
+    ])).min(1, m.workTypesMin),
     expertiseAreas: z.array(z.enum([
         "CLIMATE_CHANGE",
         "MENTAL_HEALTH",
         "HEALTH",
         "EDUCATION",
         "SOCIAL_JUSTICE"
-    ])).min(1, "Please select at least one expertise area"),
+    ])).min(1, m.expertiseAreasMin),
     organization: z.string().optional(),
     position: z.string().optional(),
-    workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional(),
-    personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+    workBio: z.string().max(LIMITS.profile.workBio, m.workBioMax).optional(),
+    personalWebsite: z.string().url(m.urlInvalid).optional().or(z.literal("")),
     linkedinProfile: z.string().optional(),
     otherSocialLinks: z.array(z.object({
-        platform: z.string().min(1),
-        url: z.string().url()
+        platform: z.string().min(1, m.socialPlatformRequired),
+        url: z.string().url(m.socialUrlInvalid)
     })).optional(),
 
     // Recent Work
     recentWork: z.array(z.object({
-        title: z.string().min(1, "Title is required").max(100),
-        description: z.string().min(1, "Description is required").max(500),
-        link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-        startDate: z.string().min(1, "Start date is required"),
+        id: z.string().optional(),
+        title: z.string().min(1, m.workTitleRequired).max(LIMITS.recentWork.title, m.workTitleMax),
+        description: z.string().min(1, m.workDescriptionRequired).max(LIMITS.recentWork.description, m.workDescriptionMax),
+        link: z.string().url(m.urlInvalid).optional().or(z.literal("")),
+        startDate: z.string().min(1, m.workStartDateRequired),
         endDate: z.string().optional(),
         isOngoing: z.boolean().optional()
     })).optional().default([]),
@@ -78,24 +111,42 @@ const profileSchema = z.object({
     // Community memberships
     communityIds: z.array(z.string()).optional().default([]),
 
+    // Domain-rich fields (K4)
+    headline: z.string().max(LIMITS.profile.headline, m.headlineMax).optional().or(z.literal("")),
+    pronouns: z.string().max(LIMITS.profile.pronouns, m.pronounsMax).optional().or(z.literal("")),
+    motivation: z.string().max(LIMITS.profile.motivation, m.keepUnder600).optional().or(z.literal("")),
+    focusTopics: z.array(z.string()).optional().default([]),
+    openToCollaboration: z.boolean().optional().default(false),
+    lookingFor: z.array(z.string()).optional().default([]),
+    collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests, m.keepUnder600).optional().or(z.literal("")),
+    livedExperienceStatement: z.string().max(LIMITS.profile.livedExperienceStatement, m.keepUnder1000).optional().or(z.literal("")),
+    showLivedExperience: z.boolean().optional().default(false),
+    orcidId: z.string().max(LIMITS.profile.orcidId, m.orcidMax).optional().or(z.literal("")),
+
     // Privacy Controls
     isSearchable: z.boolean().default(true),
-    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("MEMBERS"),
     showEmail: z.boolean().default(false),
     showPhoneNumber: z.boolean().default(false),
     showWorkDetails: z.boolean().default(true),
     showSocialLinks: z.boolean().default(true),
     showLocation: z.boolean().default(true)
 }).transform((data) => {
-    // Transform null values to undefined
+    // Transform null values to undefined (shape is unchanged — same keys/values)
     return Object.fromEntries(
         Object.entries(data).map(([key, value]) => [key, value === null ? undefined : value])
-    ) as any
+    ) as typeof data
 })
 
-type ProfileFormValues = z.infer<typeof profileSchema>
+type ProfileSchema = ReturnType<typeof makeProfileSchema>
+type ProfileFormInput = z.input<ProfileSchema>
+type ProfileFormValues = z.infer<ProfileSchema>
+
+const TAB_VALUES = ["basic", "collaboration", "work", "communities", "recentWork", "social", "privacy"] as const
 
 interface ProfileEditFormProps {
+    /** Which tab opens first; unknown values fall back to "basic". */
+    initialTab?: string
     initialData?: Partial<ProfileFormValues> & {
         // Read-only Clerk data for display
         email?: string | null
@@ -138,10 +189,11 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const t = useTranslations('profile.edit')
     const tCommunities = useTranslations('profile.communities')
     const tRecentWork = useTranslations('profile.recentWork')
+    const tPrompts = useTranslations('profile.prompts')
     const locale = useLocale() as SupportedLocale
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [communities, setCommunities] = useState<any[]>([])
+    const [communities, setCommunities] = useState<SelectorCommunity[]>([])
     const [editingWorkIndex, setEditingWorkIndex] = useState<number | null>(null)
     const [workFormData, setWorkFormData] = useState({
         title: "",
@@ -155,7 +207,36 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     // Use the new TypeScript hook with i18n support
     const { user, communities: availableCommunities, recentWork: existingRecentWork, loading, error, updating, updateProfile, refreshProfile, isRTL } = useUserProfile()
 
-    const form = useForm<ProfileFormValues>({
+    // Schema built inside the component so validation messages localize
+    // (newsletter/case-study Zod-closure pattern).
+    const profileSchema = useMemo(() => makeProfileSchema({
+        firstNameRequired: t('validation.firstNameRequired'),
+        lastNameRequired: t('validation.lastNameRequired'),
+        usernameMin: t('validation.usernameMin'),
+        usernamePattern: t('validation.usernamePattern'),
+        bioMax: t('validation.bioMax'),
+        workTypesMin: t('validation.workTypesMin'),
+        expertiseAreasMin: t('validation.expertiseAreasMin'),
+        workBioMax: t('validation.workBioMax'),
+        urlInvalid: t('validation.urlInvalid'),
+        workTitleRequired: t('validation.workTitleRequired'),
+        workDescriptionRequired: t('validation.workDescriptionRequired'),
+        workStartDateRequired: t('validation.workStartDateRequired'),
+        headlineMax: t('validation.headlineMax'),
+        keepUnder600: t('validation.keepUnder600'),
+        keepUnder1000: t('validation.keepUnder1000'),
+        firstNameMax: t('validation.firstNameMax'),
+        lastNameMax: t('validation.lastNameMax'),
+        usernameMax: t('validation.usernameMax'),
+        socialPlatformRequired: t('validation.socialPlatformRequired'),
+        socialUrlInvalid: t('validation.socialUrlInvalid'),
+        pronounsMax: t('validation.pronounsMax'),
+        orcidMax: t('validation.orcidMax'),
+        workTitleMax: t('validation.workTitleMax'),
+        workDescriptionMax: t('validation.workDescriptionMax'),
+    }), [t])
+
+    const form = useForm<ProfileFormInput, unknown, ProfileFormValues>({
         resolver: zodResolver(profileSchema),
         mode: 'onChange',
         defaultValues: {
@@ -164,7 +245,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             username: user?.username || initialData?.username || "",
             image: user?.image || initialData?.image || "",
             bio: user?.bio || initialData?.bio || "",
-            ageGroup: user?.ageGroup || initialData?.ageGroup,
+            ageGroup: (user?.ageGroup || initialData?.ageGroup) as ProfileFormInput["ageGroup"],
             country: user?.country || initialData?.country || "",
             city: user?.city || initialData?.city || "",
             workTypes: user?.workTypes || initialData?.workTypes || [],
@@ -174,12 +255,23 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             workBio: user?.workBio || initialData?.workBio || "",
             personalWebsite: user?.personalWebsite || initialData?.personalWebsite || "",
             linkedinProfile: user?.linkedinProfile || initialData?.linkedinProfile || "",
-            otherSocialLinks: user?.otherSocialLinks || initialData?.otherSocialLinks || [],
+            otherSocialLinks: (user?.otherSocialLinks || initialData?.otherSocialLinks || []) as ProfileFormInput["otherSocialLinks"],
             recentWork: [], // Will be populated by API fetch
             communityIds: [], // Will be populated by API fetch
+            // Domain-rich fields (K4)
+            headline: user?.headline || "",
+            pronouns: user?.pronouns || "",
+            motivation: user?.motivation || "",
+            focusTopics: user?.focusTopics || [],
+            openToCollaboration: user?.openToCollaboration ?? false,
+            lookingFor: user?.lookingFor || [],
+            collaborationInterests: user?.collaborationInterests || "",
+            livedExperienceStatement: user?.livedExperienceStatement || "",
+            showLivedExperience: user?.showLivedExperience ?? false,
+            orcidId: user?.orcidId || "",
             // Privacy Controls
             isSearchable: user?.isSearchable ?? initialData?.isSearchable ?? true,
-            profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "PUBLIC",
+            profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "MEMBERS",
             showEmail: user?.showEmail ?? initialData?.showEmail ?? false,
             showPhoneNumber: user?.showPhoneNumber ?? initialData?.showPhoneNumber ?? false,
             showWorkDetails: user?.showWorkDetails ?? initialData?.showWorkDetails ?? true,
@@ -199,11 +291,14 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         if (user && !loading && availableCommunities.length > 0) {
             // Map community memberships to IDs
             // Type assertion: transformToLocalizedUser includes relations via spread
-            const userWithRelations = user as any
-            const communityIds = userWithRelations.communityMemberships?.map((m: any) => m.communityId) || []
+            const userWithRelations = user as typeof user & {
+                communityMemberships?: Array<{ communityId: string }>
+            }
+            const communityIds = userWithRelations.communityMemberships?.map((m) => m.communityId) || []
 
             // Map recent work to form format
-            const recentWorkFormatted = existingRecentWork.map((work: any) => ({
+            const recentWorkFormatted = existingRecentWork.map((work) => ({
+                id: work.id,
                 title: work.title,
                 description: work.description || "",
                 link: work.link || "",
@@ -218,7 +313,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 username: user.username || "",
                 image: user.image || "",
                 bio: user.bio || "",
-                ageGroup: user.ageGroup,
+                ageGroup: user.ageGroup as ProfileFormInput["ageGroup"],
                 country: user.country || "",
                 city: user.city || "",
                 workTypes: user.workTypes || [],
@@ -228,12 +323,23 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 workBio: user.workBio || "",
                 personalWebsite: user.personalWebsite || "",
                 linkedinProfile: user.linkedinProfile || "",
-                otherSocialLinks: user.otherSocialLinks || [],
+                otherSocialLinks: (user.otherSocialLinks || []) as ProfileFormInput["otherSocialLinks"],
                 // Use data from hook
                 recentWork: recentWorkFormatted,
                 communityIds: communityIds,
+                // Domain-rich fields (K4)
+                headline: userWithRelations.headline || "",
+                pronouns: userWithRelations.pronouns || "",
+                motivation: userWithRelations.motivation || "",
+                focusTopics: userWithRelations.focusTopics || [],
+                openToCollaboration: userWithRelations.openToCollaboration ?? false,
+                lookingFor: userWithRelations.lookingFor || [],
+                collaborationInterests: userWithRelations.collaborationInterests || "",
+                livedExperienceStatement: userWithRelations.livedExperienceStatement || "",
+                showLivedExperience: userWithRelations.showLivedExperience ?? false,
+                orcidId: userWithRelations.orcidId || "",
                 isSearchable: user.isSearchable ?? true,
-                profileVisibility: user.profileVisibility || "PUBLIC",
+                profileVisibility: user.profileVisibility || "MEMBERS",
                 showEmail: user.showEmail ?? false,
                 showPhoneNumber: user.showPhoneNumber ?? false,
                 showWorkDetails: user.showWorkDetails ?? true,
@@ -246,13 +352,85 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     // Set available communities for the selector
     useEffect(() => {
         if (availableCommunities.length > 0) {
-            setCommunities(availableCommunities)
+            // The hook's community shape matches the selector's (name may be a
+            // localized record or plain string) — align the nominal types only.
+            setCommunities(availableCommunities as SelectorCommunity[])
         }
     }, [availableCommunities])
 
     // Handler for community selection changes - now just updates form state
     const handleCommunityChange = (communityIds: string[]) => {
         form.setValue('communityIds', communityIds, { shouldDirty: true })
+    }
+
+    // Prefill recent work + organisation/position from ORCID (+ OpenAlex) by
+    // the entered ORCID iD. Appends works as recent-work entries for review —
+    // never auto-saves; the user trims and submits the form as normal.
+    const [orcidImporting, setOrcidImporting] = useState(false)
+    const handleOrcidImport = async () => {
+        const orcid = form.getValues('orcidId')
+        if (!orcid) {
+            toast.error(t('orcidImport.needId'))
+            return
+        }
+        setOrcidImporting(true)
+        try {
+            const res = await fetch(`/api/profile/import/orcid?orcid=${encodeURIComponent(orcid)}`)
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}))
+                throw new Error(err.error || t('orcidImport.failed'))
+            }
+            const { works, affiliations } = await res.json()
+            // Prefill org/position from the first affiliation if those are empty.
+            if (affiliations?.[0]) {
+                if (!form.getValues('organization')) form.setValue('organization', affiliations[0].organization, { shouldDirty: true })
+                if (!form.getValues('position') && affiliations[0].role) form.setValue('position', affiliations[0].role, { shouldDirty: true })
+            }
+            // Append works (skip ones already listed by title), up to 5 total.
+            const existingTitles = new Set((form.getValues('recentWork') || []).map((w) => (w.title || '').trim().toLowerCase()))
+            let added = 0
+            for (const w of works || []) {
+                if (workFields.length + added >= 5) break
+                const key = (w.title || '').trim().toLowerCase()
+                if (!key || existingTitles.has(key)) continue
+                existingTitles.add(key)
+                appendWork({
+                    title: w.title.slice(0, 100),
+                    description: (w.description || w.title).slice(0, 500),
+                    link: w.link || '',
+                    startDate: w.year ? `${w.year}-01-01` : '',
+                    endDate: '',
+                    isOngoing: false,
+                })
+                added++
+            }
+            toast.success(added > 0 ? t('orcidImport.added', { count: added }) : t('orcidImport.none'))
+        } catch (e) {
+            toast.error(e instanceof Error ? e.message : t('orcidImport.failed'))
+        } finally {
+            setOrcidImporting(false)
+        }
+    }
+
+    // Prefill headline (and avatar if empty) from the user's LinkedIn connection
+    // via Clerk — the user reviews before saving, never a silent overwrite.
+    const [linkedinImporting, setLinkedinImporting] = useState(false)
+    const handleLinkedInImport = async () => {
+        setLinkedinImporting(true)
+        try {
+            const res = await fetch('/api/profile/import/linkedin')
+            if (!res.ok) return
+            const json = await res.json()
+            if (!json.connected || !json.data) return
+            if (json.data.headline) {
+                form.setValue('headline', json.data.headline, { shouldDirty: true })
+            }
+            if (json.data.imageUrl && !form.getValues('image')) {
+                form.setValue('image', json.data.imageUrl, { shouldDirty: true })
+            }
+        } finally {
+            setLinkedinImporting(false)
+        }
     }
 
     // Recent work form handlers
@@ -269,7 +447,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     }
 
     const handleEditWork = (index: number) => {
-        const item = workFields[index] as any
+        // Type-only view: the field-array item carries exactly the work-form fields.
+        const item = workFields[index] as typeof workFormData
         setWorkFormData({
             title: item.title,
             description: item.description,
@@ -306,7 +485,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
     const formatDate = (dateString: string) => {
         try {
-            return format(new Date(dateString), "MMM yyyy")
+            // Locale-aware month + year (e.g. "Mar 2024" / "مارس ٢٠٢٤")
+            return new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(new Date(dateString))
         } catch {
             return dateString
         }
@@ -349,6 +529,27 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     console.log('[ProfileEditForm] Work types source:', userManagementOptions?.workTypes?.length ? 'sanity' : 'fallback')
     console.log('[ProfileEditForm] Expertise areas source:', userManagementOptions?.expertiseAreas?.length ? 'sanity' : 'fallback')
 
+    // Which tab each field belongs to — so the tab strip can flag the step that
+    // still has a validation error (best-practice stepped-form affordance).
+    const FIELD_TAB: Record<string, string> = {
+        firstName: 'basic', lastName: 'basic', username: 'basic', bio: 'basic',
+        headline: 'basic', pronouns: 'basic', ageGroup: 'basic', country: 'basic', city: 'basic',
+        motivation: 'collaboration', collaborationInterests: 'collaboration',
+        livedExperienceStatement: 'collaboration', focusTopics: 'collaboration', lookingFor: 'collaboration',
+        workTypes: 'work', expertiseAreas: 'work', organization: 'work', position: 'work', workBio: 'work', orcidId: 'work',
+        communityIds: 'communities',
+        recentWork: 'recentWork',
+        personalWebsite: 'social', linkedinProfile: 'social', otherSocialLinks: 'social',
+        profileVisibility: 'privacy',
+    }
+    const tabsWithErrors = new Set(
+        Object.keys(form.formState.errors).map((f) => FIELD_TAB[f]).filter(Boolean)
+    )
+    const TabErrorDot = ({ tab }: { tab: string }) =>
+        tabsWithErrors.has(tab) ? (
+            <span className="ms-1.5 inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+        ) : null
+
     async function handleSubmit(values: ProfileFormValues) {
         setIsSubmitting(true)
         try {
@@ -386,7 +587,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
                 const success = await updateProfile(updateData)
                 if (!success) {
-                    throw new Error('Profile update failed')
+                    throw new Error(t('saveError'))
                 }
             }
             
@@ -425,13 +626,29 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         <div className={`${isRTL ? 'rtl' : 'ltr'} text-start`} dir={isRTL ? 'rtl' : 'ltr'}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-                {/* Profile Picture */}
+                {/* Profile Picture — shared identity header above the tabs */}
                 <ProfilePictureUpload
                     firstName={form.watch("firstName")}
                     lastName={form.watch("lastName")}
                     onImageChangeAction={onImageChangeAction}
                 />
 
+                <Tabs
+                    defaultValue={(TAB_VALUES as readonly string[]).includes(props.initialTab ?? "") ? props.initialTab : "basic"}
+                    className="w-full"
+                >
+                    <TabsList className="flex w-full flex-wrap h-auto justify-start gap-1">
+                        <TabsTrigger value="basic">{t('tabs.basic')}<TabErrorDot tab="basic" /></TabsTrigger>
+                        <TabsTrigger value="collaboration">{t('tabs.collaboration')}<TabErrorDot tab="collaboration" /></TabsTrigger>
+                        <TabsTrigger value="work">{t('tabs.work')}<TabErrorDot tab="work" /></TabsTrigger>
+                        <TabsTrigger value="communities">{t('tabs.communities')}<TabErrorDot tab="communities" /></TabsTrigger>
+                        <TabsTrigger value="recentWork">{t('tabs.recentWork')}<TabErrorDot tab="recentWork" /></TabsTrigger>
+                        <TabsTrigger value="social">{t('tabs.social')}<TabErrorDot tab="social" /></TabsTrigger>
+                        <TabsTrigger value="privacy">{t('tabs.privacy')}<TabErrorDot tab="privacy" /></TabsTrigger>
+                    </TabsList>
+
+                    {/* ── Basic ── */}
+                    <TabsContent value="basic" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Clerk-managed Information */}
                 <Card>
                     <CardHeader>
@@ -448,7 +665,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{t('email')}</label>
                             <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
-                                <span className="text-sm">{user?.email || initialData?.email || t('noEmail')}</span>
+                                <span className="text-sm"><bdi>{user?.email || initialData?.email || t('noEmail')}</bdi></span>
                                 {(user?.emailVerified || initialData?.emailVerified) && (
                                     <CheckCircle className="h-4 w-4 text-green-500" />
                                 )}
@@ -465,7 +682,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{t('phoneNumber')}</label>
                             <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
-                                <span className="text-sm">{user?.phoneNumber || initialData?.phoneNumber || t('noPhone')}</span>
+                                <span className="text-sm"><bdi>{user?.phoneNumber || initialData?.phoneNumber || t('noPhone')}</bdi></span>
                                 {(user?.phoneVerified || initialData?.phoneVerified) && (
                                     <CheckCircle className="h-4 w-4 text-green-500" />
                                 )}
@@ -531,6 +748,50 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             )}
                         />
 
+                        <div className="grid grid-cols-1 @content-sm/page:grid-cols-[1fr_auto] gap-4">
+                            <FormField
+                                control={form.control}
+                                name="headline"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('headline.label')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} value={field.value || ""} placeholder={t('headline.placeholder')} maxLength={LIMITS.profile.headline} />
+                                        </FormControl>
+                                            <CharCounter value={field.value} max={LIMITS.profile.headline} />
+                                        <FormDescription>{t('headline.help')}</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="pronouns"
+                                render={({ field }) => (
+                                    <FormItem className="@content-sm/page:w-32">
+                                        <FormLabel>{t('pronouns.label')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} value={field.value || ""} placeholder={t('pronouns.placeholder')} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        {/* Prefill headline (+ avatar) from LinkedIn via Clerk */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleLinkedInImport}
+                            disabled={linkedinImporting}
+                            className="gap-2"
+                        >
+                            <Linkedin className="h-4 w-4 text-[#0A66C2]" />
+                            {linkedinImporting ? t('headline.importing') : t('headline.importLinkedIn')}
+                        </Button>
+
                         <FormField
                             control={form.control}
                             name="bio"
@@ -538,8 +799,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 <FormItem>
                                     <FormLabel>{t('bio')}</FormLabel>
                                     <FormControl>
-                                        <Textarea {...field} rows={4} />
+                                        <Textarea {...field} rows={4} maxLength={LIMITS.profile.bio} />
                                     </FormControl>
+                                    <CharCounter value={field.value} max={LIMITS.profile.bio} />
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -598,6 +860,115 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Collaboration ── */}
+                    <TabsContent value="collaboration" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
+                {/* Motivation & collaboration (K4) */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t('collab.title')}</CardTitle>
+                        <CardDescription>{t('collab.description')}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="motivation"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('collab.motivation.label')}</FormLabel>
+                                    <FormControl>
+                                        <Textarea {...field} value={field.value || ""} rows={3} placeholder={t('collab.motivation.placeholder')} />
+                                    </FormControl>
+                                    <FormDescription>{t('collab.motivation.help')}</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="openToCollaboration"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5 pe-4">
+                                        <FormLabel>{t('collab.openToCollaboration.label')}</FormLabel>
+                                        <FormDescription>{t('collab.openToCollaboration.help')}</FormDescription>
+                                    </div>
+                                    <FormControl>
+                                        <Switch checked={!!field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        {form.watch("openToCollaboration") && (
+                            <FormField
+                                control={form.control}
+                                name="collaborationInterests"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('collab.interests.label')}</FormLabel>
+                                        <FormControl>
+                                            <Textarea {...field} value={field.value || ""} rows={3} placeholder={t('collab.interests.placeholder')} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
+                        {/* Lived experience — sensitive, opt-in to show publicly */}
+                        <FormField
+                            control={form.control}
+                            name="livedExperienceStatement"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('collab.livedExperience.label')}</FormLabel>
+                                    <FormControl>
+                                        <Textarea {...field} value={field.value || ""} rows={3} placeholder={t('collab.livedExperience.placeholder')} />
+                                    </FormControl>
+                                    <FormDescription>{t('collab.livedExperience.help')}</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {form.watch("livedExperienceStatement") && (
+                            <FormField
+                                control={form.control}
+                                name="showLivedExperience"
+                                render={({ field }) => (
+                                    <FormItem className="flex items-center justify-between rounded-lg border border-[var(--color-ccm-sky)] bg-[var(--color-ccm-sky)]/10 p-4">
+                                        <div className="space-y-0.5 pe-4">
+                                            <FormLabel>{t('collab.showLivedExperience.label')}</FormLabel>
+                                            <FormDescription>{t('collab.showLivedExperience.help')}</FormDescription>
+                                        </div>
+                                        <FormControl>
+                                            <Switch checked={!!field.value} onCheckedChange={field.onChange} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Profile prompts (K5) — saved independently via its own API */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{tPrompts('title')}</CardTitle>
+                        <CardDescription>{tPrompts('description')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ProfilePromptsEditor />
+                    </CardContent>
+                </Card>
+
+                    </TabsContent>
+
+                    {/* ── Work ── */}
+                    <TabsContent value="work" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Work Information */}
                 <Card>
                     <CardHeader>
@@ -628,14 +999,14 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
-                                                                    checked={field.value?.includes(option.value as any)}
+                                                                    checked={field.value?.includes(option.value as ProfileFormValues["workTypes"][number])}
                                                                     onCheckedChange={(checked) => {
                                                                         return checked
                                                                             ? field.onChange([...field.value, option.value])
                                                                             : field.onChange(
                                                                                 field.value?.filter(
-                                                                                    (value: any) => value !== option.value
-                                                                                ) //todo: any
+                                                                                    (value) => value !== option.value
+                                                                                )
                                                                             )
                                                                     }}
                                                                 />
@@ -677,14 +1048,14 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
-                                                                    checked={field.value?.includes(option.value as any)}
+                                                                    checked={field.value?.includes(option.value as ProfileFormValues["expertiseAreas"][number])}
                                                                     onCheckedChange={(checked) => {
                                                                         return checked
                                                                             ? field.onChange([...field.value, option.value])
                                                                             : field.onChange(
                                                                                 field.value?.filter(
-                                                                                    (value: any) => value !== option.value
-                                                                                ) //todo: any
+                                                                                    (value) => value !== option.value
+                                                                                )
                                                                             )
                                                                     }}
                                                                 />
@@ -739,8 +1110,37 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 <FormItem>
                                     <FormLabel>{t('workBio')}</FormLabel>
                                     <FormControl>
-                                        <Textarea {...field} rows={4} />
+                                        <Textarea {...field} rows={4} maxLength={LIMITS.profile.workBio} />
                                     </FormControl>
+                                    <CharCounter value={field.value} max={LIMITS.profile.workBio} />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* ORCID iD + import (works → recent work, affiliations → org/position) */}
+                        <FormField
+                            control={form.control}
+                            name="orcidId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('orcidImport.label')}</FormLabel>
+                                    <div className="flex flex-col @content-sm/page:flex-row gap-2">
+                                        <FormControl>
+                                            <Input {...field} value={field.value || ""} placeholder="0000-0002-1825-0097" />
+                                        </FormControl>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={handleOrcidImport}
+                                            disabled={orcidImporting}
+                                            className="gap-2 shrink-0"
+                                        >
+                                            {orcidImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                                            {orcidImporting ? t('orcidImport.importing') : t('orcidImport.button')}
+                                        </Button>
+                                    </div>
+                                    <FormDescription>{t('orcidImport.help')}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -748,12 +1148,16 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Communities ── */}
+                    <TabsContent value="communities" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Regional Communities */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>{tCommunities('title') || 'Regional Communities'}</CardTitle>
+                        <CardTitle>{tCommunities('title')}</CardTitle>
                         <CardDescription>
-                            {tCommunities('description') || 'Select the regional communities you want to join'}
+                            {tCommunities('description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -767,6 +1171,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Recent work ── */}
+                    <TabsContent value="recentWork" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Recent Work */}
                 <Card>
                     <CardHeader>
@@ -777,13 +1185,13 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         {/* Existing Work Items */}
                         {workFields.length > 0 && (
                             <div className="space-y-4">
-                                {workFields.map((item: any, index: number) => (
+                                {workFields.map((item, index: number) => (
                                     <Card key={item.id}>
                                         <CardHeader className="pb-3">
-                                            <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>
+                                            <div className={cn("flex items-start justify-between")}>
                                                 <div className="space-y-1">
-                                                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                                                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                                                    <CardTitle className="text-lg" dir="auto">{item.title}</CardTitle>
+                                                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground")}>
                                                         <Calendar className="h-4 w-4" />
                                                         <span>
                                                             {formatDate(item.startDate)} - {item.isOngoing ? tRecentWork('ongoing') : formatDate(item.endDate || "")}
@@ -793,7 +1201,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <div className={cn("flex gap-2", isRTL && "flex-row-reverse")}>
+                                                <div className={cn("flex gap-2")}>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
@@ -814,13 +1222,13 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                             </div>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="text-gray-700 mb-3">{item.description}</p>
+                                            <p className="text-gray-700 mb-3" dir="auto">{item.description}</p>
                                             {item.link && (
                                                 <a
                                                     href={item.link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                                                    className={cn("inline-flex items-center gap-1 text-primary hover:underline")}
                                                 >
                                                     <ExternalLink className="h-4 w-4" />
                                                     {tRecentWork('viewProject')}
@@ -840,7 +1248,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="grid grid-cols-1 @content-sm/page:grid-cols-2 gap-3 @content-sm/page:gap-4">
                                     <div>
                                         <label htmlFor="work-title" className="text-sm font-medium flex items-center gap-1">
                                             {tRecentWork('workTitle')}
@@ -879,7 +1287,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="grid grid-cols-1 @content-sm/page:grid-cols-2 gap-3 @content-sm/page:gap-4">
                                     <div>
                                         <label htmlFor="work-start-date" className="text-sm font-medium flex items-center gap-1">
                                             {tRecentWork('startDate')}
@@ -907,7 +1315,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     </div>
                                 </div>
 
-                                <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                <div className={cn("flex items-center gap-2")}>
                                     <Checkbox
                                         id="ongoing"
                                         checked={workFormData.isOngoing}
@@ -922,7 +1330,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     </label>
                                 </div>
 
-                                <div className={cn("flex gap-2 pt-4", isRTL && "flex-row-reverse")}>
+                                <div className={cn("flex gap-2 pt-4")}>
                                     <Button
                                         type="button"
                                         onClick={handleSaveWork}
@@ -945,6 +1353,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Social ── */}
+                    <TabsContent value="social" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Social Links */}
                 <Card>
                     <CardHeader>
@@ -987,6 +1399,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Privacy ── */}
+                    <TabsContent value="privacy" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Privacy Settings */}
                 <Card>
                     <CardHeader>
@@ -1159,6 +1575,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         </div>
                     </CardContent>
                 </Card>
+                    </TabsContent>
+                </Tabs>
 
                 <div className="flex gap-4 justify-end">
                     <Button

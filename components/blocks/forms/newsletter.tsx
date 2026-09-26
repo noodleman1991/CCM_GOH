@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,37 +9,37 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
-import { stegaClean } from "next-sanity";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
-type FormNewsletterProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "form-newsletter" }
->;
+interface FormNewsletterProps {
+  padding?: SectionPadding | null;
+  consentText?: string | null;
+  buttonText?: string | null;
+  successMessage?: string | null;
+}
 
 export default function FormNewsletter({
   padding,
-  colorVariant,
   consentText,
   buttonText,
   successMessage,
 }: FormNewsletterProps) {
+  const t = useTranslations("common");
   // form validation schema
   const formSchema = z.object({
     email: z
       .string()
       .min(1, {
-        message: "Please enter your email",
+        message: t("emailRequired"),
       })
       .email({
-        message: "Please enter a valid email",
+        message: t("emailInvalid"),
       }),
   });
 
@@ -72,22 +73,22 @@ export default function FormNewsletter({
         } else {
           toast.error(result.error);
         }
-      } catch (error: any) {
-        toast.error(error.message);
-        throw new Error(error.message);
+      } catch (error) {
+        const message = (error as Error).message;
+        toast.error(message);
+        throw new Error(message);
       }
     },
-    [form]
+    [form, successMessage]
   );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await handleSend(values);
   }
 
-  const color = stegaClean(colorVariant);
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <Form {...form}>
         <form className="pt-8" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex gap-4">
@@ -100,7 +101,7 @@ export default function FormNewsletter({
                     <Input
                       {...field}
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t("enterYourEmail")}
                       autoComplete="off"
                       // ignore 1 Password autofill
                       data-1p-ignore
@@ -117,7 +118,7 @@ export default function FormNewsletter({
               disabled={isSubmitting}
             >
               {isSubmitting && (
-                <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                <Loader2 className="w-6 h-6 me-2 animate-spin" />
               )}
               {buttonText}
             </Button>

@@ -1,0 +1,836 @@
+# Payload Migration — Phase 0: Prerequisites — Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Put the repository and the Sanity dataset into a state where Payload can be installed and content imported without data loss or blocked records.
+
+**Architecture:** Five independent slices, each shippable on its own: a baseline archival export that becomes the rollback floor; the Next.js upgrade that Payload requires; two dataset defect fixes; and removal of a dead content type whose route is linked from primary navigation. No Payload code is written in this phase.
+
+**Tech Stack:** Next.js 16, Sanity CLI v4, pnpm 10, Vitest 4, TypeScript 5.9.
+
+**Spec:** `docs/superpowers/specs/2026-09-02-sanity-to-payload-migration-design.md`
+
+## Global Constraints
+
+- **Payload requires Next.js `15.2.9`–`15.4.x` or `≥16.2.6`.** The repo is on `16.1.1`, which is excluded. This is the phase's central blocker.
+- **Node `>=20.9.0`** (repo `engines` already says `>=20`).
+- **Never run `sanity typegen generate`.** It renames exported types (`PAGE_QUERYResult` vs the committed `PAGE_QUERY_RESULT`) and breaks `tsc`. Add schema fields and hand-edit `sanity.types.ts` instead.
+- **`pnpm lint` is not a usable gate.** It carries roughly 656 pre-existing errors. Lint only the files you changed: `pnpm exec eslint <paths>`.
+- **`pnpm typecheck` and `pnpm test` ARE usable gates** and must be green before every commit.
+- **Never include Claude/AI attribution in commit messages** (`CLAUDE.md`).
+- **Two databases and two datasets exist.** `.env` targets production (`production_2`); `.env.local` targets development. Every script must print which dataset and database it is about to touch, and must refuse `production_2` unless explicitly passed `--prod`.
+- **Locales are `en` (default), `es`, `fr`, `ar` (RTL).**
+
+---
+
+## File Structure
+
+| File | Responsibility |
+|---|---|
+| `scripts/export-sanity-archive.ts` | Create + verify the full dataset export; emit a manifest |
+| `docs/migration/sanity-archive-manifest.json` | Committed record of what the archive contains (the archive itself is gitignored) |
+| `sanity/schemas/documents/regional-community-page.ts` | Warning comment only — the declaration is correct and must not change |
+| `scripts/fix-lived-experience-tags.mjs` | Add the missing production guard; the data defect is already resolved |
+| `app/[locale]/(main)/blog/` | Deleted |
+| `components/header/index.tsx`, `components/footer.tsx` | Nav links repointed to `/news` |
+| `app/sitemap.ts`, `app/api/webhooks/sanity/route.ts`, `lib/algolia.ts` | `post` branches removed |
+| `sanity/schemas/documents/post.ts`, `sanity/schema.ts` | `post` type removed |
+
+---
+
+### Task 1: Baseline archival export
+
+The rollback floor for everything that follows. Must happen before any dataset mutation.
+
+**Files:**
+- Create: `scripts/export-sanity-archive.ts`
+- Create: `docs/migration/sanity-archive-manifest.json` (generated, committed)
+- Test: `lib/__tests__/sanity-archive-manifest.test.ts`
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: `buildManifest(docs: ManifestDoc[], dataset: string): Manifest` where
+  `ManifestDoc = { _id: string; _type: string }` and
+  `Manifest = { generatedAt: string; dataset: string; totals: { documents: number; published: number; drafts: number }; byType: Record<string, { published: number; drafts: number }>; archive?: { file: string; bytes: number; sha256: string } }`.
+  Task 4 re-runs this to prove the tag fix altered no counts.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `lib/__tests__/sanity-archive-manifest.test.ts`:
+
+```ts
+import { describe, expect, it } from "vitest";
+import { buildManifest } from "@/scripts/lib/sanity-archive-manifest";
+
+describe("buildManifest", () => {
+  it("separates drafts from published, per type", () => {
+    const m = buildManifest(
+      [
+        { _id: "a", _type: "caseStudy" },
+        { _id: "drafts.a", _type: "caseStudy" },
+        { _id: "b", _type: "author" },
+      ],
+      "production_2",
+    );
+    expect(m.totals).toEqual({ documents: 3, published: 2, drafts: 1 });
+    expect(m.byType.caseStudy).toEqual({ published: 1, drafts: 1 });
+    expect(m.byType.author).toEqual({ published: 1, drafts: 0 });
+  });
+
+  it("excludes sanity.* and system.* documents from totals", () => {
+    const m = buildManifest(
+      [
+        { _id: "img", _type: "sanity.imageAsset" },
+        { _id: "grp", _type: "system.group" },
+        { _id: "a", _type: "tag" },
+      ],
+      "production_2",
+    );
+    expect(m.totals.documents).toBe(1);
+    expect(m.byType["sanity.imageAsset"]).toBeUndefined();
+  });
+
+  it("records the dataset it was built from", () => {
+    expect(buildManifest([], "production_2").dataset).toBe("production_2");
+  });
+});
+```
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `pnpm exec vitest run lib/__tests__/sanity-archive-manifest.test.ts`
+Expected: FAIL — `Failed to resolve import "@/scripts/lib/sanity-archive-manifest"`.
+
+- [ ] **Step 3: Write the manifest builder**
+
+Create `scripts/lib/sanity-archive-manifest.ts`:
+
+```ts
+export interface ManifestDoc {
+  _id: string;
+  _type: string;
+}
+
+export interface Manifest {
+  generatedAt: string;
+  dataset: string;
+  totals: { documents: number; published: number; drafts: number };
+  byType: Record<string, { published: number; drafts: number }>;
+  /** Filled in by the export runner once the archive exists on disk. */
+  archive?: { file: string; bytes: number; sha256: string };
+}
+
+/** Assets and Sanity's internal bookkeeping are not content and are excluded. */
+const isContent = (type: string) =>
+  !type.startsWith("sanity.") && !type.startsWith("system.");
+
+export function buildManifest(docs: ManifestDoc[], dataset: string): Manifest {
+  const byType: Manifest["byType"] = {};
+  let published = 0;
+  let drafts = 0;
+
+  for (const doc of docs) {
+    if (!isContent(doc._type)) continue;
+    const isDraft = doc._id.startsWith("drafts.");
+    byType[doc._type] ??= { published: 0, drafts: 0 };
+    if (isDraft) {
+      byType[doc._type].drafts++;
+      drafts++;
+    } else {
+      byType[doc._type].published++;
+      published++;
+    }
+  }
+
+  return {
+    generatedAt: new Date().toISOString(),
+    dataset,
+    totals: { documents: published + drafts, published, drafts },
+    byType,
+  };
+}
+```
+
+- [ ] **Step 4: Run the test to verify it passes**
+
+Run: `pnpm exec vitest run lib/__tests__/sanity-archive-manifest.test.ts`
+Expected: PASS, 3 tests.
+
+Note: `vitest.config.ts` excludes `scripts/**` from *test collection*, not from module resolution — importing from `scripts/lib/` is fine.
+
+- [ ] **Step 5: Write the export runner**
+
+> Implementation note (added after execution): the shipped version extracts the dataset
+> resolution and the production refusal into `scripts/lib/resolve-dataset.ts`, so the guard
+> is unit-testable. The code below shows the logic inline for readability. Prefer the
+> extracted form — see `lib/__tests__/resolve-dataset.test.ts`.
+
+Create `scripts/export-sanity-archive.ts` — TypeScript run through `tsx`, matching the
+repo's existing convention (`build:map`, `user:role`, `fix:order-ranks` are all
+`tsx scripts/*.ts`). A `.mjs` file cannot import the `.ts` manifest builder, and the
+`@next/env` path hack in `scripts/migrate-homepage-to-blocks.mjs` is pinned to
+`@next+env@16.1.1` and will break the moment Task 2 upgrades Next:
+
+```ts
+// Full archival export of a Sanity dataset + an integrity manifest.
+// The .tar.gz lands in backups/ (gitignored); the manifest is committed.
+//
+// Usage:
+//   npx tsx scripts/export-sanity-archive.ts            # development dataset
+//   npx tsx scripts/export-sanity-archive.ts --prod     # production_2
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import dotenv from "dotenv";
+import { buildManifest, type Manifest } from "./lib/sanity-archive-manifest";
+
+const prod = process.argv.includes("--prod");
+
+// dotenv is a direct dependency; @next/env is not, and pnpm's strict layout
+// means it is not reliably resolvable from a script.
+//
+// .env holds PRODUCTION credentials, .env.local holds development. Load the file
+// matching the run's intent — hardcoding ".env" would make the development path
+// unreachable and silently point every no-flag run at production.
+dotenv.config({ path: prod ? ".env" : ".env.local" });
+
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const token = process.env.SANITY_API_READ_TOKEN;
+
+if (!dataset || !projectId || !token) {
+  console.error("Missing NEXT_PUBLIC_SANITY_DATASET / _PROJECT_ID / SANITY_API_READ_TOKEN");
+  process.exit(1);
+}
+
+// Production is opt-in, never a default. Mirrors the refusal in
+// scripts/backfill-region-codes.mjs and scripts/localize-hero-ctas.mjs.
+if (dataset === "production_2" && !prod) {
+  console.error(
+    'Refusing: the resolved dataset is "production_2" but --prod was not passed.\n' +
+      "Re-run with --prod to export production deliberately.",
+  );
+  process.exit(1);
+}
+
+console.log(`Exporting project ${projectId}, dataset "${dataset}"`);
+
+const stamp = new Date().toISOString().slice(0, 10);
+const outDir = "backups";
+const archive = path.join(outDir, `sanity-${dataset}-${stamp}.tar.gz`);
+fs.mkdirSync(outDir, { recursive: true });
+
+execFileSync(
+  "pnpm",
+  ["exec", "sanity", "dataset", "export", dataset, archive, "--overwrite"],
+  { stdio: "inherit", env: { ...process.env, SANITY_AUTH_TOKEN: token } },
+);
+
+// Manifest is built from the live dataset, then checked against the archive.
+const res = await fetch(
+  `https://${projectId}.api.sanity.io/v${process.env.NEXT_PUBLIC_SANITY_API_VERSION}` +
+    `/data/query/${dataset}?query=${encodeURIComponent("*[]{_id,_type}")}`,
+  { headers: { Authorization: `Bearer ${token}` } },
+);
+if (!res.ok) {
+  console.error(`Query failed: ${res.status} ${await res.text()}`);
+  process.exit(1);
+}
+const { result } = await res.json();
+
+const manifest: Manifest = buildManifest(result, dataset);
+manifest.archive = {
+  file: path.basename(archive),
+  bytes: fs.statSync(archive).size,
+  sha256: createHash("sha256").update(fs.readFileSync(archive)).digest("hex"),
+};
+
+const manifestPath = "docs/migration/sanity-archive-manifest.json";
+fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
+fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+
+console.log(`\nArchive:  ${archive} (${(manifest.archive.bytes / 1e6).toFixed(1)} MB)`);
+console.log(`Manifest: ${manifestPath}`);
+console.log(`Content:  ${manifest.totals.published} published + ${manifest.totals.drafts} drafts`);
+```
+
+- [ ] **Step 6: Run the export against production**
+
+Run: `npx tsx scripts/export-sanity-archive.ts --prod`
+
+Expected: an archive in `backups/` of roughly 620-640 MB, and a manifest reporting
+**`446 published + 30 drafts`**.
+
+That 446 breaks down as **438 migratable content documents + 8 `translation.metadata`**.
+`buildManifest` excludes only `sanity.*` and `system.*`, so Sanity's translation-grouping
+documents are counted here even though §6 of the spec does not migrate them. Both numbers
+are correct for their own purpose: 446 is what the archive contains, 438 is what Phase 2
+imports.
+
+**If the totals differ from those numbers, stop** — the dataset changed since the design
+was measured, and §2 of the spec needs re-checking before anything is migrated.
+
+- [ ] **Step 7: Verify the archive is readable**
+
+Run: `tar -tzf backups/sanity-production_2-*.tar.gz | head -20`
+Expected: a `data.ndjson` entry plus `images/` and `files/` entries. A truncated or
+corrupt archive fails here rather than during the Phase 2 import.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add scripts/export-sanity-archive.ts scripts/lib/sanity-archive-manifest.ts \
+        lib/__tests__/sanity-archive-manifest.test.ts docs/migration/sanity-archive-manifest.json
+git commit -m "feat(migration): archival Sanity export with integrity manifest
+
+Rollback floor for the Payload migration. The .tar.gz stays local
+(backups/ is gitignored); the manifest records per-type published and
+draft counts plus the archive checksum so later phases can prove they
+did not lose documents."
+```
+
+---
+
+### Task 2: Next.js upgrade to 16.2.6+
+
+Payload's supported range excludes 16.1.x. Ships on its own so a Next regression stays diagnosable before Payload exists in the tree.
+
+**Files:**
+- Modify: `package.json` (`next`, `eslint-config-next`)
+- Modify: `pnpm-lock.yaml`
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: a tree on Next `>=16.2.6`. Phase 2's `withPayload()` wrapper depends on it.
+
+- [ ] **Step 1: Record the baseline**
+
+Run and save the output somewhere you can diff against:
+
+```bash
+pnpm typecheck 2>&1 | tail -20
+pnpm test 2>&1 | tail -20
+node scripts/create-all-outputs-pages.mjs && pnpm exec next build 2>&1 | tail -30
+```
+
+Do NOT run `pnpm build` here. It fires the `postbuild` hook, which runs `sync:search`
+and pushes records to the **live Algolia index** — an external side effect with no place
+in a verification step. The two commands above reproduce the same build without it.
+
+Expected: `typecheck` clean, tests green, build succeeds. **If any is already red, fix or
+document that before upgrading** — otherwise you cannot tell what the upgrade broke.
+
+- [ ] **Step 2: Check what the upgrade actually spans**
+
+Run: `pnpm view next versions --json | tail -30`
+
+Identify the latest `16.x`. The jump from `16.1.1` crosses a minor, with Turbopack,
+`next-intl@4`, `@clerk/nextjs@6` and `@sentry/nextjs@10` all in the tree.
+
+- [ ] **Step 3: Upgrade**
+
+```bash
+pnpm add next@latest
+pnpm add -D eslint-config-next@latest
+```
+
+Verify the resolved version is `>=16.2.6`: `pnpm list next --depth 0`
+
+- [ ] **Step 4: Run the codemod**
+
+Run: `pnpm dlx @next/codemod@latest upgrade`
+
+Accept only transformations it proposes for this version jump. Review the diff — do not
+accept blind rewrites of app code.
+
+- [ ] **Step 5: Verify against the baseline**
+
+```bash
+pnpm typecheck
+pnpm test
+node scripts/create-all-outputs-pages.mjs && pnpm exec next build
+```
+
+Again: not `pnpm build` — see Step 1.
+
+Expected: all three match the Step 1 baseline. Common breakages at this boundary are
+`next/headers` async APIs, `params`/`searchParams` promise shapes, and Turbopack
+resolution differences.
+
+- [ ] **Step 6: Verify the running app**
+
+Run `pnpm dev`, then load and visually confirm — a green build is not validation:
+
+- `/` (homepage, block rendering)
+- `/en/research-and-action/case-studies` (list + Algolia search)
+- `/ar` (RTL layout)
+- `/studio` (Sanity Studio still mounts)
+- one authenticated page (Clerk session still resolves)
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add package.json pnpm-lock.yaml
+git commit -m "chore(deps): upgrade Next.js to 16.2.6+ for Payload compatibility
+
+Payload supports 15.2.9-15.4.x and 16.2.6+; 16.1.1 is outside that range,
+so this gates the CMS migration. Shipped alone so any regression here is
+diagnosable without Payload in the tree.
+
+Verified: typecheck, 75 test files, production build, and rendered checks
+on homepage, case studies, RTL and Studio."
+```
+
+**If this task fails** and the upgrade cannot be stabilised, stop the migration and report.
+Every later phase depends on it; there is no workaround short of running Payload as a
+separate service, which decision D1 rejected.
+
+---
+
+### Task 3: Pin the `whyJoinCTA` type mismatch (do NOT "fix" the schema)
+
+**This task was rewritten after investigation. The original instruction — change the
+declaration from `hero-1` to `cta-1` — would have destroyed data.** Read the reasoning
+before touching anything.
+
+**What is actually true.** The field is declared `type: "hero-1"`. All 28 published
+documents store `_type: "cta-1"`. But their *field set* is hero-1's:
+
+| Field stored in `whyJoinCTA` | Docs | Declared by `cta-1`? | Declared by `hero-1`? |
+|---|---|---|---|
+| `title`, `body`, `links` | 28 | yes | yes |
+| `image` | 24 | **no** | yes |
+| `imagePosition` | 20 | **no** | yes |
+| `padding` | 8 | yes | yes |
+| `background` | 7 | yes | yes |
+
+`cta-1` declares no `image` and no `imagePosition`. Redeclaring the field as `cta-1` would
+hide those fields from the Studio for 24 and 20 documents respectively — and Sanity strips
+undeclared fields on write, so the first editor to open and save a regional page would
+silently drop its hero image. `sanity.types.ts:2111` also declares `whyJoinCTA?: Hero1`,
+and the GROQ projection in `sanity/queries/regional-community-page.ts` selects hero-1
+fields including `imagePosition`.
+
+The data is hero-1 data wearing a `cta-1` label. The declaration is right; the stored
+`_type` is wrong.
+
+**Why we are not fixing the data either.** Rewriting `_type` on 28 production documents
+mutates a system we are decommissioning, to tidy an inconsistency that harms nothing today.
+The normalization belongs in the Phase 2 importer, which has to read every one of these
+documents regardless: map `whyJoinCTA._type === "cta-1"` onto the hero-1 Payload block.
+Spec §7.1 is updated to say so.
+
+**So this task changes no schema and no data.** It pins the current reality with a test, so
+nobody "helpfully" reconciles the declaration later and loses the images.
+
+**Files:**
+- Test: `lib/__tests__/regional-community-page-schema.test.ts`
+- Modify: `sanity/schemas/documents/regional-community-page.ts` — comment only
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: a committed, executable record of the mismatch. The Phase 2 importer depends on
+  the mapping this documents.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `lib/__tests__/regional-community-page-schema.test.ts`:
+
+```ts
+import { describe, expect, it } from "vitest";
+import regionalCommunityPage from "@/sanity/schemas/documents/regional-community-page";
+import hero1 from "@/sanity/schemas/blocks/hero/hero-1";
+import cta1 from "@/sanity/schemas/blocks/cta/cta-1";
+
+const fieldNamed = (name: string) =>
+  (regionalCommunityPage.fields as Array<{ name: string; type: string }>).find(
+    (f) => f.name === name,
+  );
+
+describe("regionalCommunityPage schema", () => {
+  /**
+   * whyJoinCTA is declared hero-1 while every stored document carries
+   * _type: "cta-1". The DECLARATION is correct: the stored field set is hero-1's,
+   * including `image` (24 docs) and `imagePosition` (20 docs), neither of which
+   * cta-1 declares. Redeclaring this as cta-1 hides those fields in the Studio and
+   * Sanity strips them on the next save.
+   *
+   * The stored _type is normalised in the Payload importer, not here. See
+   * docs/superpowers/specs/2026-09-02-sanity-to-payload-migration-design.md §7.1.
+   */
+  it("declares whyJoinCTA as hero-1, matching the stored field set", () => {
+    expect(fieldNamed("whyJoinCTA")?.type).toBe("hero-1");
+  });
+
+  it("declares welcomeHero as hero-1", () => {
+    expect(fieldNamed("welcomeHero")?.type).toBe("hero-1");
+  });
+
+  it("hero-1 still declares the fields the stored data depends on", () => {
+    // image (24 of 28 docs) and imagePosition (20 of 28) live in stored
+    // whyJoinCTA objects. cta-1 declares neither. If hero-1 ever stops
+    // declaring them, that data becomes unreachable in the Studio and is
+    // stripped on the next save — so pin them here, not just the field type.
+    const hero1Fields = (hero1.fields as Array<{ name: string }>).map((f) => f.name);
+    expect(hero1Fields).toContain("image");
+    expect(hero1Fields).toContain("imagePosition");
+  });
+
+  it("cta-1 does NOT declare those fields, which is why the swap is unsafe", () => {
+    const cta1Fields = (cta1.fields as Array<{ name: string }>).map((f) => f.name);
+    expect(cta1Fields).not.toContain("image");
+    expect(cta1Fields).not.toContain("imagePosition");
+  });
+});
+```
+
+- [ ] **Step 2: Run the test**
+
+Run: `pnpm exec vitest run lib/__tests__/regional-community-page-schema.test.ts`
+Expected: PASS immediately — this test pins existing behaviour rather than driving a change.
+If the first assertion FAILS, someone has already changed the declaration to `cta-1`:
+revert that change, then re-run.
+
+- [ ] **Step 3: Add the warning comment to the schema**
+
+In `sanity/schemas/documents/regional-community-page.ts`, above the `whyJoinCTA` field, add:
+
+```ts
+    // NOTE: stored documents carry _type: "cta-1" while this field is declared
+    // hero-1. The declaration is correct and must NOT be "fixed" to cta-1 —
+    // the stored field set is hero-1's, including `image` (24 docs) and
+    // `imagePosition` (20 docs), which cta-1 does not declare. Sanity strips
+    // undeclared fields on save, so redeclaring would drop those images.
+    // The stored _type is normalised in the Payload importer. See spec §7.1.
+```
+
+Change nothing else — not the `type`, not the `title`, not the `description`.
+
+- [ ] **Step 4: Verify nothing else moved**
+
+```bash
+git diff --stat
+pnpm typecheck
+pnpm exec vitest run lib/__tests__/regional-community-page-schema.test.ts
+```
+
+Expected: two files touched (the schema comment, the new test); typecheck clean; tests pass.
+
+- [ ] **Step 5: Verify the rendered page**
+
+Run `pnpm dev` and load `/en/communities/sub-saharan-africa`. The "why join" section must
+render exactly as before, image included. Nothing in this task should be able to change it.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add sanity/schemas/documents/regional-community-page.ts \
+        lib/__tests__/regional-community-page-schema.test.ts
+git commit -m "test(cms): pin the whyJoinCTA hero-1/cta-1 mismatch
+
+whyJoinCTA is declared hero-1 while all 28 stored documents carry
+_type: cta-1. The declaration is correct: the stored field set is
+hero-1's, including image (24 docs) and imagePosition (20 docs), neither
+of which cta-1 declares. Redeclaring it as cta-1 would hide those fields
+in the Studio, and Sanity strips undeclared fields on save.
+
+Locks the declaration with a test and a comment so it is not reconciled
+the wrong way. The stored _type is normalised in the Payload importer."
+```
+
+---
+
+### Task 4: Verify tags are clean, and close a production footgun
+
+**This task was rewritten after investigation. The defect it was written to fix no longer
+exists, and the task no longer writes to production.**
+
+Verified against the live dataset on 2026-09-02:
+
+```
+livedExperience total (incl drafts): 56
+with a tags field        : 56
+MALFORMED (non-reference): 0
+```
+
+The spec's claim that 33 of 35 documents held string tags came from a July note, not a
+live query. It was true on 2026-07-28 and has since been fixed. `node
+scripts/fix-lived-experience-tags.mjs` (dry-run) independently agrees: "Would patch 0/56
+documents."
+
+What IS still true is a hazard worth closing while we are here. `scripts/fix-lived-experience-tags.mjs`
+**defaults to `DATASET = "production_2"`** and gates writes only behind `--execute`. There
+is no production confirmation. `node scripts/fix-lived-experience-tags.mjs --execute`
+rewrites tags on live content with nothing to stop it — and in `map` mode, unmapped strings
+are silently dropped. That violates this plan's Global Constraint that every script must
+refuse `production_2` unless explicitly told otherwise.
+
+**Files:**
+- Modify: `scripts/fix-lived-experience-tags.mjs`
+- Test: `lib/__tests__/lived-experience-tags-guard.test.ts`
+
+**Interfaces:**
+- Consumes: `resolveDataset` shape from Task 1 is the precedent to mirror, but this script
+  is `.mjs` and standalone — do not import across them.
+- Produces: nothing later tasks depend on.
+
+- [ ] **Step 1: Confirm the defect is still absent**
+
+```bash
+set -a; . ./.env; set +a
+curl -s -G "https://${NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v${NEXT_PUBLIC_SANITY_API_VERSION}/data/query/${NEXT_PUBLIC_SANITY_DATASET}" \
+  --data-urlencode 'query={"total":count(*[_type=="livedExperience"]),"malformed":count(*[_type=="livedExperience" && count(tags[!defined(_ref)])>0])}' \
+  -H "Authorization: Bearer ${SANITY_API_READ_TOKEN}"
+```
+
+Expected: `{"total":56,"malformed":0}`.
+
+**If `malformed` is greater than 0, STOP and report.** The defect has returned, which means
+something is still writing string tags, and that root cause matters more than the cleanup.
+
+- [ ] **Step 2: Write the failing test**
+
+Create `lib/__tests__/lived-experience-tags-guard.test.ts`:
+
+```ts
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+
+/**
+ * scripts/fix-lived-experience-tags.mjs writes to whichever dataset it resolves,
+ * and that default is production_2. A --execute run with no further ceremony
+ * rewrites live content, dropping unmapped tag strings. The plan's global
+ * constraint requires production to be opt-in for every script.
+ */
+const script = () =>
+  readFileSync("scripts/fix-lived-experience-tags.mjs", "utf8");
+
+describe("fix-lived-experience-tags production guard", () => {
+  it("requires an explicit production acknowledgement flag", () => {
+    expect(script()).toContain("--i-understand-this-is-production");
+  });
+
+  it("refuses rather than warns — it must exit non-zero", () => {
+    const src = script();
+    const guardIndex = src.indexOf("--i-understand-this-is-production");
+    expect(guardIndex).toBeGreaterThan(-1);
+    // The refusal must terminate the process, not merely log.
+    expect(src.slice(guardIndex, guardIndex + 600)).toMatch(/process\.exit\(1\)/);
+  });
+
+  it("still prints the dataset it is about to touch", () => {
+    expect(script()).toMatch(/dataset \$\{?DATASET/);
+  });
+});
+```
+
+- [ ] **Step 3: Run the test to verify it fails**
+
+Run: `pnpm exec vitest run lib/__tests__/lived-experience-tags-guard.test.ts`
+Expected: FAIL on the first two assertions — the flag does not exist yet.
+
+- [ ] **Step 4: Add the guard**
+
+In `scripts/fix-lived-experience-tags.mjs`, immediately after the existing `MODE`
+validation block, add:
+
+```js
+// Writing to production must be deliberate. This script defaults to
+// production_2 and, in map mode, DROPS unmapped tag strings — so an
+// accidental --execute is destructive. Mirrors the refusal in
+// scripts/backfill-region-codes.mjs.
+const ackProd = args.includes('--i-understand-this-is-production');
+if (EXECUTE && DATASET === 'production_2' && !ackProd) {
+  console.error(
+    'Refusing: --execute against production_2 without acknowledgement.\n' +
+      'Dry-run first, then pass --i-understand-this-is-production to apply.'
+  );
+  process.exit(1);
+}
+```
+
+Dry-runs stay unguarded — they are read-only and are how you inspect the change.
+
+Also correct the usage comment at the top of the file to document the new flag.
+
+- [ ] **Step 5: Run the test to verify it passes**
+
+Run: `pnpm exec vitest run lib/__tests__/lived-experience-tags-guard.test.ts`
+Expected: PASS, 3 tests.
+
+- [ ] **Step 6: Verify both paths behave**
+
+```bash
+node scripts/fix-lived-experience-tags.mjs                      # dry-run: still works
+node scripts/fix-lived-experience-tags.mjs --execute            # must refuse, exit 1
+echo "exit=$?"
+```
+
+Expected: the dry-run prints "Would patch 0/56 documents"; the `--execute` run refuses and
+exits 1. **Do not pass `--i-understand-this-is-production`.** There is nothing to fix, so
+there is no reason to write to production at all.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add scripts/fix-lived-experience-tags.mjs \
+        lib/__tests__/lived-experience-tags-guard.test.ts
+git commit -m "fix(scripts): require acknowledgement before writing tags to production
+
+fix-lived-experience-tags.mjs defaults to dataset production_2 and gates
+writes only behind --execute. In map mode it drops unmapped tag strings,
+so an accidental --execute silently destroys data on live content.
+
+Adds the same refusal used by backfill-region-codes.mjs. Dry-runs stay
+unguarded since they are read-only.
+
+The malformed-tag defect this script was written for is already resolved:
+0 of 56 lived experiences hold non-reference tags as of 2026-09-02."
+```
+
+---
+
+### Task 5: Remove the `post` type and the dead `/blog` route
+
+`/blog` queries `post`, which has zero documents, and is linked from both the header and the footer — a dead navigation link live in production today.
+
+**Files:**
+- Delete: `app/[locale]/(main)/blog/page.tsx`, `app/[locale]/(main)/blog/[slug]/page.tsx`
+- Delete: `sanity/schemas/documents/post.ts`, `sanity/queries/post.ts`
+- Modify: `sanity/schema.ts` (remove the `post` import and registry entry)
+- Modify: `components/header/index.tsx:16`, `components/footer.tsx:13`
+- Modify: `app/sitemap.ts:30-31`, `app/api/webhooks/sanity/route.ts:100`, `lib/algolia.ts:234`
+- Modify: `sanity/lib/fetch.ts` (remove `fetchSanityPosts`, `fetchSanityPostBySlug`, `fetchSanityPostsStaticParams`)
+- Modify: `lib/issue-report.ts:74` (remove the `/blog` route label)
+- Test: `lib/__tests__/no-dead-blog-route.test.ts`
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: a tree with no `post` document type. Phase 2 models 19 collections, not 20.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `lib/__tests__/no-dead-blog-route.test.ts`:
+
+```ts
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { schema } from "@/sanity/schema";
+
+describe("the dead /blog route is gone", () => {
+  it("no longer registers a post document type", () => {
+    const names = schema.types.map((t) => (t as { name: string }).name);
+    expect(names).not.toContain("post");
+  });
+
+  it("does not link to /blog from the header", () => {
+    expect(readFileSync("components/header/index.tsx", "utf8")).not.toContain('"/blog"');
+  });
+
+  it("does not link to /blog from the footer", () => {
+    expect(readFileSync("components/footer.tsx", "utf8")).not.toContain('"/blog"');
+  });
+
+  it("does not emit /blog URLs in the sitemap", () => {
+    expect(readFileSync("app/sitemap.ts", "utf8")).not.toContain("/blog/");
+  });
+});
+```
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `pnpm exec vitest run lib/__tests__/no-dead-blog-route.test.ts`
+Expected: FAIL on all four assertions.
+
+- [ ] **Step 3: Delete the route and the schema**
+
+```bash
+git rm -r "app/[locale]/(main)/blog"
+git rm sanity/schemas/documents/post.ts sanity/queries/post.ts
+```
+
+In `sanity/schema.ts`, remove both the `import post from "./schemas/documents/post";`
+line and the bare `post,` entry in the `types` array.
+
+- [ ] **Step 4: Repoint the navigation**
+
+`components/header/index.tsx:16` — change `href: "/blog"` to `href: "/news"`.
+`components/footer.tsx:13` — change `{ label: t("blog"), href: "/blog" }` to
+`{ label: t("news"), href: "/news" }`.
+
+Check that a `news` key exists in every locale file before using it:
+
+```bash
+for f in messages/*.json; do echo -n "$f: "; node -e '
+const m = require("./" + process.argv[1]);
+const flat = JSON.stringify(m);
+console.log(flat.includes("\"news\"") ? "has news key" : "MISSING news key");
+' "$f"; done
+```
+
+If any locale lacks the key, add it to all four (`en`, `es`, `fr`, `ar`) before continuing.
+
+- [ ] **Step 5: Remove the remaining `post` branches**
+
+- `app/sitemap.ts:30-31` — delete the `*[_type == 'post']` query block and the entry it
+  produces.
+- `app/api/webhooks/sanity/route.ts:100` — delete the `case 'post':` branch.
+- `lib/algolia.ts:234` — change `contentType: 'report' | 'post' | 'case-study'` to
+  `contentType: 'report' | 'case-study'`, then fix the call sites `tsc` reports.
+- `sanity/lib/fetch.ts` — delete `fetchSanityPosts`, `fetchSanityPostBySlug` and
+  `fetchSanityPostsStaticParams`, and their now-unused imports from `@/sanity/queries/post`
+  and `@/sanity.types`.
+- `lib/issue-report.ts:74` — delete the `[/^\/blog/, "blog"]` entry.
+
+- [ ] **Step 6: Run the test to verify it passes**
+
+Run: `pnpm exec vitest run lib/__tests__/no-dead-blog-route.test.ts`
+Expected: PASS, 4 tests.
+
+- [ ] **Step 7: Verify the whole suite and types**
+
+```bash
+pnpm typecheck
+pnpm test
+pnpm exec eslint app components lib sanity
+```
+
+Expected: `typecheck` clean; full suite green. `tsc` is the real gate here — it finds every
+remaining reference to the deleted types.
+
+- [ ] **Step 8: Verify the rendered app**
+
+Run `pnpm dev` and confirm:
+- The header and footer links now go to `/news`, which lists the 4 news posts.
+- `/en/blog` returns 404.
+- `/sitemap.xml` contains no `/blog/` URLs.
+
+- [ ] **Step 9: Commit**
+
+```bash
+git add -A
+git commit -m "refactor(cms): remove the dead post type and /blog route
+
+/blog queried the post type, which has zero documents, while being linked
+from both the header and footer — a dead nav link in production. newsPost
+at /news is the real type and supersedes it.
+
+Removes the post schema and queries, the /blog routes, its sitemap and
+webhook branches, the algolia contentType member, and three fetch helpers.
+Header and footer now point at /news."
+```
+
+---
+
+## Phase 0 exit criteria
+
+Before starting Phase 1, all of these must hold:
+
+- [ ] `pnpm list next --depth 0` reports `>=16.2.6`
+- [ ] `pnpm typecheck` clean, `pnpm test` green
+- [ ] `backups/sanity-production_2-*.tar.gz` exists, passes `tar -tzf`, and its checksum matches `docs/migration/sanity-archive-manifest.json`
+- [ ] The manifest reports 446 published (438 migratable + 8 `translation.metadata`) + 30 drafts
+- [ ] `whyJoinCTA` is still declared `hero-1`, with the mismatch pinned by a test
+- [ ] No `livedExperience` document has a non-reference tag (verified: 0 of 56)
+- [ ] `/en/blog` 404s; header and footer link to `/news`

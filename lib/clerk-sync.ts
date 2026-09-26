@@ -1,11 +1,44 @@
 import { clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import type { User } from "@/generated/prisma"
+import { applyStaffRoleInvite } from "@/lib/staff-role-invite"
 
-interface ClerkSyncOptions {
-  userId: string
-  direction?: 'to_clerk' | 'from_clerk' | 'bidirectional'
-  fields?: string[]
+/**
+ * What this service (and every other writer in the codebase — the onboarding
+ * complete/waive routes and the profile route) puts in Clerk `publicMetadata`.
+ * Prisma owns all profile data; Clerk carries onboarding state and language so
+ * the session claim can gate routes without a database read.
+ *
+ * Until 2026-09-16 the reader below expected twenty profile keys here (bio,
+ * workTypes, every privacy flag…) that no writer ever set, and copied any it
+ * found over the Prisma row. Writer and reader now share this one shape.
+ */
+interface ClerkSyncMetadata {
+  onboardingCompleted?: boolean
+  preferredLanguage?: string
+  lastSyncedAt?: string
+  syncedFrom?: string
+}
+
+type PreferredLanguage = NonNullable<User["preferredLanguage"]>
+
+const PREFERRED_LANGUAGES = ["EN", "ES", "FR", "AR"] as const satisfies readonly PreferredLanguage[]
+
+function isPreferredLanguage(value: unknown): value is PreferredLanguage {
+  return typeof value === "string" && (PREFERRED_LANGUAGES as readonly string[]).includes(value)
+}
+
+/**
+ * The Prisma columns Clerk metadata is allowed to set, validated: a boolean
+ * `onboardingCompleted`, a `preferredLanguage` the enum knows. Anything else
+ * in the metadata — however it got there — is ignored.
+ */
+function syncableFromMetadata(metadata: unknown): Partial<Pick<User, "onboardingCompleted" | "preferredLanguage">> {
+  const pm = (metadata ?? {}) as ClerkSyncMetadata
+  const out: Partial<Pick<User, "onboardingCompleted" | "preferredLanguage">> = {}
+  if (typeof pm.onboardingCompleted === "boolean") out.onboardingCompleted = pm.onboardingCompleted
+  if (isPreferredLanguage(pm.preferredLanguage)) out.preferredLanguage = pm.preferredLanguage
+  return out
 }
 
 /**
@@ -27,8 +60,8 @@ export class ClerkSyncService {
         lastName: userData.lastName || undefined,
         username: userData.username || undefined,
         publicMetadata: {
-          onboardingCompleted: (userData as any).onboardingCompleted,
-          preferredLanguage: (userData as any).preferredLanguage,
+          onboardingCompleted: userData.onboardingCompleted,
+          preferredLanguage: userData.preferredLanguage,
           lastSyncedAt: new Date().toISOString(),
           syncedFrom: 'prisma'
         }
@@ -52,84 +85,53 @@ export class ClerkSyncService {
       const clerkClientInstance = await clerkClient()
       const clerkUser = await clerkClientInstance.users.getUser(userId)
       
-      const metadata = clerkUser.publicMetadata as any
-      
+      // Only onboarding state and language come back from Clerk. Profile data
+      // (bio, work, privacy flags) lives in Prisma alone and is never read
+      // from metadata — see ClerkSyncMetadata.
+      const syncable = syncableFromMetadata(clerkUser.publicMetadata)
+
+      // Clerk-managed identity fields: Clerk is the source of truth for these.
+      const identity = {
+        email: clerkUser.primaryEmailAddress?.emailAddress || null,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        username: clerkUser.username,
+        image: clerkUser.imageUrl,
+        emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified'
+          ? new Date() : null,
+        phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
+        phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified'
+          ? new Date() : null,
+      }
+
       await prisma.user.upsert({
         where: { id: userId },
         create: {
           id: userId,
-          email: clerkUser.primaryEmailAddress?.emailAddress || null,
-          firstName: clerkUser.firstName,
-          lastName: clerkUser.lastName,
-          username: clerkUser.username,
-          image: clerkUser.imageUrl,
-          emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' 
-            ? new Date() : null,
-          phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
-          phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' 
-            ? new Date() : null,
-          
-          // App-specific data from metadata
-          bio: metadata?.bio || null,
-          ageGroup: metadata?.ageGroup || null,
-          country: metadata?.country || null,
-          city: metadata?.city || null,
-          workTypes: metadata?.workTypes || [],
-          expertiseAreas: metadata?.expertiseAreas || [],
-          organization: metadata?.organization || null,
-          position: metadata?.position || null,
-          workBio: metadata?.workBio || null,
-          personalWebsite: metadata?.personalWebsite || null,
-          linkedinProfile: metadata?.linkedinProfile || null,
-          otherSocialLinks: metadata?.otherSocialLinks || [],
-          
-          // Privacy settings
-          isSearchable: metadata?.isSearchable ?? true,
-          profileVisibility: metadata?.profileVisibility || 'PUBLIC',
-          showEmail: metadata?.showEmail ?? false,
-          showPhoneNumber: metadata?.showPhoneNumber ?? false,
-          showWorkDetails: metadata?.showWorkDetails ?? true,
-          showSocialLinks: metadata?.showSocialLinks ?? true,
-          showLocation: metadata?.showLocation ?? true,
+          ...identity,
+          ...syncable,
+
+          // Defaults for a row that did not exist yet — the same ones the
+          // Clerk webhook's user.created uses. Never sourced from metadata.
+          workTypes: [],
+          expertiseAreas: [],
+          isSearchable: true,
+          profileVisibility: 'MEMBERS',
+          showEmail: false,
+          showPhoneNumber: false,
+          showWorkDetails: true,
+          showSocialLinks: true,
+          showLocation: true,
         },
         update: {
-          email: clerkUser.primaryEmailAddress?.emailAddress || null,
-          firstName: clerkUser.firstName,
-          lastName: clerkUser.lastName,
-          username: clerkUser.username,
-          image: clerkUser.imageUrl,
-          emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' 
-            ? new Date() : null,
-          phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
-          phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' 
-            ? new Date() : null,
-          
-          // Update app-specific data only if metadata exists
-          ...(metadata?.bio !== undefined && { bio: metadata.bio }),
-          ...(metadata?.ageGroup !== undefined && { ageGroup: metadata.ageGroup }),
-          ...(metadata?.country !== undefined && { country: metadata.country }),
-          ...(metadata?.city !== undefined && { city: metadata.city }),
-          ...(metadata?.workTypes !== undefined && { workTypes: metadata.workTypes }),
-          ...(metadata?.expertiseAreas !== undefined && { expertiseAreas: metadata.expertiseAreas }),
-          ...(metadata?.organization !== undefined && { organization: metadata.organization }),
-          ...(metadata?.position !== undefined && { position: metadata.position }),
-          ...(metadata?.workBio !== undefined && { workBio: metadata.workBio }),
-          ...(metadata?.personalWebsite !== undefined && { personalWebsite: metadata.personalWebsite }),
-          ...(metadata?.linkedinProfile !== undefined && { linkedinProfile: metadata.linkedinProfile }),
-          ...(metadata?.otherSocialLinks !== undefined && { otherSocialLinks: metadata.otherSocialLinks }),
-          
-          // Update privacy settings
-          ...(metadata?.isSearchable !== undefined && { isSearchable: metadata.isSearchable }),
-          ...(metadata?.profileVisibility !== undefined && { profileVisibility: metadata.profileVisibility }),
-          ...(metadata?.showEmail !== undefined && { showEmail: metadata.showEmail }),
-          ...(metadata?.showPhoneNumber !== undefined && { showPhoneNumber: metadata.showPhoneNumber }),
-          ...(metadata?.showWorkDetails !== undefined && { showWorkDetails: metadata.showWorkDetails }),
-          ...(metadata?.showSocialLinks !== undefined && { showSocialLinks: metadata.showSocialLinks }),
-          ...(metadata?.showLocation !== undefined && { showLocation: metadata.showLocation }),
-          
+          ...identity,
+          ...syncable,
           updatedAt: new Date(),
         }
       })
+
+      // A role reserved for this email before the first sign-in (pnpm user:role --invite).
+      await applyStaffRoleInvite(userId, identity.email)
       
       console.log(`✅ Successfully synced user ${userId} from Clerk`)
       return true
@@ -157,10 +159,14 @@ export class ClerkSyncService {
       }
       
       if (!clerkUser && prismaUser) {
-        // User deleted from Clerk but exists in Prisma - delete from Prisma
-        await prisma.user.delete({ where: { id: userId } })
-        console.log(`🗑️ Deleted user ${userId} from Prisma (not found in Clerk)`)
-        return true
+        // A Prisma row with no Clerk user. Never deleted from a sync path —
+        // account erasure goes through `deleteUserData` (the in-app flow and
+        // the Clerk `user.deleted` webhook), which hands off workspaces and
+        // sweeps R2/Resend/CMS first. A raw delete here skipped all of that.
+        // (In practice `getUser` throws on an unknown id, so this branch is a
+        // guard rather than a path.)
+        console.warn(`⚠️ User ${userId} exists in Prisma but not in Clerk — not deleting from a sync; use deleteUserData`)
+        return false
       }
       
       if (clerkUser && !prismaUser) {
@@ -171,7 +177,7 @@ export class ClerkSyncService {
       // Both exist - check timestamps to determine sync direction
       const clerkUpdatedAt = new Date(clerkUser.updatedAt)
       const prismaUpdatedAt = prismaUser!.updatedAt
-      const metadata = clerkUser.publicMetadata as any
+      const metadata = clerkUser.publicMetadata as ClerkSyncMetadata
       const clerkSyncedAt = metadata?.lastSyncedAt ? new Date(metadata.lastSyncedAt) : null
       
       if (clerkSyncedAt && clerkSyncedAt > prismaUpdatedAt) {

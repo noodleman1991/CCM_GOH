@@ -8,7 +8,8 @@
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { writeClient } from '@/sanity/lib/write-client'
+import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
+import { queryRaw } from '@/lib/content/internal/sanity-source'
 import { notifyCaseStudyStatusChange, isNotifiableStatus } from '@/lib/case-study-emails'
 
 // Types for webhook payload
@@ -18,10 +19,22 @@ interface SanityWebhookPayload {
   _rev: string
   projectId: string
   dataset: string
-  [key: string]: any
+  slug?: { current?: string }
+  [key: string]: unknown
 }
 
-// Verify webhook signature
+/**
+ * Verify the webhook signature.
+ *
+ * This previously read an `x-sanity-signature` header and compared it against
+ * `sha256=<hex hmac>` — a GitHub-style scheme that Sanity does not use, so no
+ * genuine webhook could ever pass and every delivery was rejected with a 401.
+ *
+ * Sanity signs with header `sanity-webhook-signature` (SIGNATURE_HEADER_NAME)
+ * carrying `t=<timestamp>,v1=<base64url hmac>`, and the timestamp is part of the
+ * signed payload. Rather than re-implement that, use @sanity/webhook — already
+ * a dependency — which owns the format and its expiry handling.
+ */
 async function verifySignature(payload: string, signature: string | null) {
   const webhookSecret = process.env.SANITY_WEBHOOK_SECRET
   if (!webhookSecret) {
@@ -29,18 +42,12 @@ async function verifySignature(payload: string, signature: string | null) {
     return false
   }
   if (!signature) {
-    console.warn('Sanity webhook received without signature header')
+    console.warn(`Sanity webhook received without ${SIGNATURE_HEADER_NAME} header`)
     return false
   }
 
   try {
-    const crypto = await import('crypto')
-    const computedSignature = crypto
-      .createHmac('sha256', webhookSecret)
-      .update(payload)
-      .digest('hex')
-
-    return signature === `sha256=${computedSignature}`
+    return await isValidSignature(payload, signature, webhookSecret)
   } catch (error) {
     console.error('Error verifying webhook signature:', error)
     return false
@@ -49,7 +56,13 @@ async function verifySignature(payload: string, signature: string | null) {
 
 // Handle cache invalidation based on document type
 function handleCacheInvalidation(payload: SanityWebhookPayload) {
-  const tagsToRevalidate: string[] = []
+  // Every sanityFetch() result is cached under the "sanity" tag (next-sanity's
+  // defineLive uses `tags = ["sanity"]` by default, plus per-document sync
+  // tags). Invalidating it here is what makes a publish show up without waiting
+  // for the revalidate window — the per-type cases below only ever covered a
+  // handful of tags, so all ~98 sanityFetch call sites used to rely purely on
+  // the timer. Unconditional: any document type can appear in any query.
+  const tagsToRevalidate: string[] = ['sanity']
   const pathsToRevalidate: string[] = []
   const locales = ['en', 'es', 'fr', 'ar']
 
@@ -84,7 +97,6 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
       break
 
     case 'page':
-    case 'post':
     case 'homepage':
       // Handle other content types if needed
       tagsToRevalidate.push('general-content')
@@ -118,6 +130,15 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
   return [...tagsToRevalidate, ...pathsToRevalidate]
 }
 
+interface CaseStudyNotificationDoc {
+  title?: string
+  status: string
+  notifiedStatus?: string
+  submittedBy?: string
+  reviewNotes?: string
+  locale: string
+}
+
 /**
  * Resolve the fields needed to email the submitter and send (idempotently).
  * The Sanity webhook projection may not include everything, so we fetch the
@@ -133,7 +154,9 @@ async function handleCaseStudyNotification(payload: SanityWebhookPayload): Promi
 
   // Fetch the authoritative fields (status may have just changed; submittedBy /
   // notifiedStatus / title are often not projected into the webhook payload).
-  const doc = await writeClient.fetch(
+  // Raw/authenticated, not the cached/published read: a status change may not
+  // yet be reflected in the CDN-cached published perspective.
+  const doc = await queryRaw<CaseStudyNotificationDoc | null>(
     `*[_type == "caseStudy" && _id == $id][0]{
       "title": title.en,
       status,
@@ -166,11 +189,12 @@ export async function POST(request: NextRequest) {
 
     // Get signature from headers
     const headersList = await headers()
-    const signature = headersList.get('x-sanity-signature')
+    const signature = headersList.get(SIGNATURE_HEADER_NAME)
 
-    // Verify webhook signature
-    const isValidSignature = await verifySignature(payload, signature)
-    if (!isValidSignature) {
+    // Verify webhook signature (named to avoid shadowing the imported
+    // isValidSignature that verifySignature delegates to).
+    const signatureIsValid = await verifySignature(payload, signature)
+    if (!signatureIsValid) {
       console.error('❌ Invalid webhook signature')
       return NextResponse.json(
         { error: 'Invalid signature' },
@@ -213,14 +237,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return success response
-    return NextResponse.json({
-      success: true,
-      message: 'Webhook processed successfully',
-      revalidated: revalidatedTags,
-      emailResult,
-      timestamp: new Date().toISOString()
-    })
+    // A failed status email is a failed delivery: answer 5xx so Sanity retries.
+    // Revalidation already ran and is idempotent, and the notifier's
+    // notifiedStatus brake stops a duplicate once a send succeeds.
+    const emailFailed = emailResult === 'error' || (emailResult?.startsWith('failed:') ?? false)
+    return NextResponse.json(
+      {
+        success: !emailFailed,
+        message: emailFailed ? 'Webhook processed; status email failed' : 'Webhook processed successfully',
+        revalidated: revalidatedTags,
+        emailResult,
+        timestamp: new Date().toISOString()
+      },
+      { status: emailFailed ? 500 : 200 }
+    )
 
   } catch (error) {
     console.error('❌ Error processing Sanity webhook:', error)
@@ -235,28 +265,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET handler for webhook health check
+// GET handler for webhook health check. Deliberately says nothing about
+// configuration — this endpoint is unauthenticated and webhook deliveries are
+// server-to-server (no CORS/preflight involved).
 export async function GET() {
-  return NextResponse.json({
-    status: 'healthy',
-    message: 'Sanity webhook endpoint is active',
-    timestamp: new Date().toISOString(),
-    environment: {
-      hasWebhookSecret: !!process.env.SANITY_WEBHOOK_SECRET,
-      projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-      dataset: process.env.NEXT_PUBLIC_SANITY_DATASET
-    }
-  })
-}
-
-// OPTIONS handler for CORS
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-sanity-signature',
-    },
-  })
+  return NextResponse.json({ status: 'healthy' })
 }

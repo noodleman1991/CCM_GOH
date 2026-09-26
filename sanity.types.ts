@@ -372,6 +372,82 @@ export type RegionMap = {
   allowedFacets?: Array<string>;
 };
 
+// Hand-added (Slice H3); never run `sanity typegen generate` (it renames/breaks
+// the committed *_RESULT types). Keep in sync with
+// sanity/schemas/blocks/events/events-calendar.ts + its projection.
+export type EventsCalendar = {
+  _type: "events-calendar";
+  padding?: SectionPadding;
+  title?: string;
+  description?: string;
+  upcomingLimit?: number;
+};
+
+// Hand-added (Task E8); keep in sync with
+// sanity/schemas/blocks/story-timeline.ts / story-chart.ts / story-mermaid.ts
+// ("Data & story" portable-text object types).
+export type StoryTimeline = {
+  _type: "storyTimeline";
+  _key?: string;
+  items?: Array<{
+    _key: string;
+    _type?: "storyTimelineItem";
+    date?: string;
+    title?: string;
+    text?: string;
+  }>;
+};
+
+export type StoryChart = {
+  _type: "storyChart";
+  _key?: string;
+  chartType?: "bar" | "line" | "pie";
+  title?: string;
+  data?: Array<{
+    _key: string;
+    _type?: "storyChartRow";
+    label?: string;
+    value?: number;
+  }>;
+  /** Sanitized SVG produced by POST /api/story-blocks/render at save time. */
+  renderedSvg?: string;
+  /** Blocks whose status is not "ok" are withheld from the public renderer. */
+  renderStatus?: "ok" | "failed";
+};
+
+export type StoryMermaid = {
+  _type: "storyMermaid";
+  _key?: string;
+  code?: string;
+  /** Sanitized SVG (browser-rendered mermaid, server-sanitized) — see lib/story-blocks/render.ts. */
+  renderedSvg?: string;
+  /** Blocks whose status is not "ok" are withheld from the public renderer. */
+  renderStatus?: "ok" | "failed";
+};
+
+// Hand-added (Task E4); keep in sync with
+// sanity/schemas/blocks/cta/submit-story-banner.ts + its projection.
+export type SubmitStoryBanner = {
+  _type: "submit-story-banner";
+  padding?: SectionPadding;
+  title?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  illustration?: {
+    asset?: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+  };
+};
+
 export type AllPosts = {
   _type: "all-posts";
   padding?: SectionPadding;
@@ -1248,6 +1324,16 @@ export type LivedExperience = {
     ar?: string;
   };
   videoLink?: string;
+  // Hand-added (Task E2); keep in sync with
+  // sanity/schemas/documents/lived-experience.ts (videoSource / videoFile /
+  // body — video sources + blog-post body).
+  videoSource?: "youtube" | "vimeo" | "upload";
+  videoFile?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  body?: StyledBlockContent;
   thumbnail?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -1555,6 +1641,7 @@ export type Tag = {
     | "#6b7280"
     | "#f97316"
     | "#14b8a6";
+  useAsTheme?: boolean;
   orderRank?: string;
 };
 
@@ -2315,6 +2402,9 @@ export type CaseStudy = {
     | "disaster-resilience"
     | "digital-inclusion"
     | "other";
+  // Hand-added (Task E3); keep in sync with the `layout` field in
+  // sanity/schemas/documents/case-study.ts (detail-page layout archetype).
+  layout?: "story" | "feature" | "report";
   submittedBy?: string;
   submittedAt?: string;
   authors?: Array<{
@@ -2430,6 +2520,7 @@ export type Author = {
     _type: "image";
   };
   organizationalAffiliation?: string;
+  userId?: string;
   communityMemberships?: Array<{
     community?: RegionalCommunityReference;
     role?: string;
@@ -12082,6 +12173,35 @@ export type PAGE_QUERY_RESULT = {
         description: string | null;
         defaultFacet: "caseStudyCount" | "memberCount" | "newsCount" | null;
         allowedFacets: Array<string> | null;
+      }
+    | {
+        _type: "events-calendar";
+        _key: string;
+        padding: SectionPadding | null;
+        title: string | null;
+        description: string | null;
+        upcomingLimit: number | null;
+      }
+    | {
+        _type: "submit-story-banner";
+        _key: string;
+        padding: SectionPadding | null;
+        title: string | null;
+        subtitle: string | null;
+        ctaLabel: string | null;
+        illustration: {
+          asset: {
+            _id: string;
+            url: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
       }
     | {
         _type: "section-header";

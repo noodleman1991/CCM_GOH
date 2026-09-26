@@ -1,15 +1,21 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import NewsPostCard from "./news-post-card";
+import { imageUrl } from "@/lib/content/images"
 
 interface NewsCardProps {
   post: {
     _id: string;
-    title: any;
+    title: Record<string, string> | string;
     slug: { current: string };
-    excerpt?: any;
+    excerpt?: Record<string, string> | string;
     publishedAt?: string;
-    image?: any;
+    image?: {
+      asset?: { _id?: string; url?: string; metadata?: { lqip?: string } };
+      alt?: string;
+      hotspot?: unknown;
+      crop?: unknown;
+    };
     author?: {
       name: string;
       slug?: { current: string };
@@ -38,7 +44,7 @@ export function NewsCard({ post, locale, variant = "default" }: NewsCardProps) {
           {post.image && (
             <div className="aspect-video bg-muted rounded-md overflow-hidden">
               <img
-                src={post.image.asset?.url}
+                src={imageUrl(post.image, { width: 800 })}
                 alt={post.image.alt || ""}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
@@ -50,7 +56,7 @@ export function NewsCard({ post, locale, variant = "default" }: NewsCardProps) {
             </h3>
             {post.publishedAt && (
               <p className="text-xs text-muted-foreground mt-1">
-                {new Date(post.publishedAt).toLocaleDateString()}
+                {new Date(post.publishedAt).toLocaleDateString(locale)}
               </p>
             )}
           </div>

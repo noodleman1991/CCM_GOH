@@ -1,10 +1,31 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
-import { urlFor } from "@/sanity/lib/image";
-import { POST_QUERY_RESULT } from "@/sanity.types";
+import { imageUrl } from "@/lib/content/images";
+import { siteUrl } from "@/lib/seo/site-url"
 
-type PostHeroProps = NonNullable<POST_QUERY_RESULT>;
+interface PostHeroImage {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
+
+interface PostHeroProps {
+  title?: string | null;
+  author?: {
+    name?: string | null;
+    image?: PostHeroImage | null;
+  } | null;
+  image?: PostHeroImage | null;
+  slug?: { current?: string | null } | null;
+  _createdAt?: string | null;
+}
 
 export default function PostHero({
   title,
@@ -13,13 +34,14 @@ export default function PostHero({
   slug,
   _createdAt,
 }: PostHeroProps) {
+  const t = useTranslations("common");
   return (
     <>
-      {title && <h1 className="mb-4 md:mb-6 text-3xl lg:text-5xl">{title}</h1>}
+      {title && <h1 dir="auto" className="mb-4 @content-md/page:mb-6 text-3xl @content-lg/page:text-5xl">{title}</h1>}
       {image && image.asset?._id && (
-        <div className="my-4 md:my-6 rounded-2xl overflow-hidden">
+        <div className="my-4 @content-md/page:my-6 rounded-2xl overflow-hidden">
           <Image
-            src={urlFor(image).url()}
+            src={imageUrl(image, { width: 1200, height: 675 })}
             alt={image.alt || ""}
             placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
             blurDataURL={image.asset?.metadata?.lqip || undefined}
@@ -28,13 +50,13 @@ export default function PostHero({
           />
         </div>
       )}
-      <div className="flex items-center justify-between gap-2 text-sm md:text-base">
-        <div className="flex flex-col md:flex-row md:items-center gap-2">
+      <div className="flex items-center justify-between gap-2 text-sm @content-md/page:text-base">
+        <div className="flex flex-col @content-md/page:flex-row @content-md/page:items-center gap-2">
           <div className="flex items-center gap-2">
             {author?.image && author.image.asset?._id && (
-              <div className="relative w-6 h-6 md:w-10 md:h-10">
+              <div className="relative w-6 h-6 @content-md/page:w-10 @content-md/page:h-10">
                 <Image
-                  src={urlFor(author.image).url()}
+                  src={imageUrl(author.image, { width: 80, height: 80, crop: true })}
                   alt={author.image.alt ? author.image.alt : ""}
                   fill
                   style={{
@@ -45,25 +67,25 @@ export default function PostHero({
                   }
                   blurDataURL={author.image.asset?.metadata?.lqip || undefined}
                   sizes="40px"
-                  className="w-10 h-10 rounded-full mr-2"
+                  className="w-10 h-10 rounded-full me-2"
                 />
               </div>
             )}
-            {author?.name && <div>{author.name}</div>}
-            <div className="hidden md:block">•</div>
+            {author?.name && <div className="min-w-0 truncate"><bdi>{author.name}</bdi></div>}
+            <div className="hidden @content-md/page:block">•</div>
           </div>
           <PostDate date={_createdAt as string} />
         </div>
-        <div className="flex flex-col md:flex-row gap-2">
-          <div>Share this post</div>
+        <div className="flex flex-col @content-md/page:flex-row gap-2">
+          <div>{t("sharePost")}</div>
           <div className="flex gap-2">
             <a
               className="hover:opacity-70"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${siteUrl()}/blog/${slug?.current}`}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Share on Facebook"
-              title="Share on Facebook"
+              aria-label={t("shareOnFacebook")}
+              title={t("shareOnFacebook")}
             >
               <svg
                 width="24"
@@ -80,18 +102,18 @@ export default function PostHero({
             </a>
             <a
               className="hover:opacity-70"
-              href={`mailto:?subject=${title}&body=${title}%0A%0A${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`mailto:?subject=${title}&body=${title}%0A%0A${siteUrl()}/blog/${slug?.current}`}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Share via email"
-              title="Share via email"
+              aria-label={t("shareViaEmail")}
+              title={t("shareViaEmail")}
             >
               <Mail size={24} />
             </a>
           </div>
         </div>
       </div>
-      <hr className="my-4 md:my-6 border-primary/30" />
+      <hr className="my-4 @content-md/page:my-6 border-primary/30" />
     </>
   );
 }

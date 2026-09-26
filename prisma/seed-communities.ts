@@ -12,43 +12,43 @@ const REGIONAL_COMMUNITIES = [
     name: 'Sub-Saharan Africa',
     description: 'Community for climate and mental health professionals in Sub-Saharan Africa',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.SUB_SAHARAN_AFRICA
+    regionalName: RegionalCommunityName.ssa
   },
   {
     name: 'Northern Africa and Western Asia',
     description: 'Community for climate and mental health professionals in Northern Africa and Western Asia',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.NORTHERN_AFRICA_AND_WESTERN_ASIA
+    regionalName: RegionalCommunityName.nawa
   },
   {
     name: 'Central and Southern Asia',
     description: 'Community for climate and mental health professionals in Central and Southern Asia',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.CENTRAL_AND_SOUTHERN_ASIA
+    regionalName: RegionalCommunityName.csa
   },
   {
     name: 'Eastern and South-Eastern Asia',
     description: 'Community for climate and mental health professionals in Eastern and South-Eastern Asia',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.EASTERN_AND_SOUTH_EASTERN_ASIA
+    regionalName: RegionalCommunityName.esea
   },
   {
     name: 'Latin America and the Caribbean',
     description: 'Community for climate and mental health professionals in Latin America and the Caribbean',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.LATIN_AMERICA_AND_THE_CARIBBEAN
+    regionalName: RegionalCommunityName.lac
   },
   {
     name: 'Oceania',
     description: 'Community for climate and mental health professionals in Oceania',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.OCEANIA
+    regionalName: RegionalCommunityName.oce
   },
   {
     name: 'Europe and Northern America',
     description: 'Community for climate and mental health professionals in Europe and Northern America',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.EUROPE_AND_NORTH_AMERICA
+    regionalName: RegionalCommunityName.enam
   }
 ]
 

@@ -1,20 +1,27 @@
 import { cn } from "@/lib/utils";
-import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
+import { cleanText } from "@/lib/content/text";
 import { getLocalizedField } from "@/lib/localization-utils";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { heading } from "@/lib/design-tokens";
+import { SectionHeader as UISectionHeader } from "@/components/ui/section-header";
 
-type SectionHeaderProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "section-header" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface SectionHeaderProps {
+  padding?: SectionPadding | null;
+  sectionWidth?: "default" | "narrow" | string | null;
+  stackAlign?: "left" | "center" | string | null;
+  tagLine?: LocalizedText;
+  title?: LocalizedText;
+  description?: LocalizedText;
   locale?: string;
-};
+}
 
 export default function SectionHeader({
   padding,
-  colorVariant,
   sectionWidth = "default",
   stackAlign = "left",
   tagLine,
@@ -22,9 +29,8 @@ export default function SectionHeader({
   description,
   locale = "en",
 }: SectionHeaderProps) {
-  const isNarrow = stegaClean(sectionWidth) === "narrow";
-  const align = stegaClean(stackAlign);
-  const color = stegaClean(colorVariant);
+  const isNarrow = cleanText(sectionWidth) === "narrow";
+  const align = cleanText(stackAlign);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -41,37 +47,34 @@ export default function SectionHeader({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer color={color} padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer padding={padding}>
         <div
           className={cn(
-            align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
-            isNarrow ? "max-w-[48rem] mx-auto" : undefined
+            align === "center" ? "max-w-3xl text-center mx-auto" : undefined,
+            isNarrow ? "max-w-3xl mx-auto" : undefined
           )}
         >
-        <div
-          className={cn(color === "primary" ? "text-background" : undefined)}
-        >
-          {localizedTagLine && (
-            <p className={cn(
-              "text-base font-semibold uppercase tracking-wider mb-4",
-              color === "primary" ? "text-background/80" : "text-ccm-water"
-            )}>
-              {localizedTagLine}
-            </p>
-          )}
-          <h2 className={cn('font-bold font-heading text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
-        </div>
+        {/* Left-aligned headers get the shared bar'd SectionHeader (matches the
+            rest of the app). Centred headers keep the tagLine accent — a vertical
+            bar reads oddly on centred text. */}
+        {align === "center" ? (
+          <div>
+            {localizedTagLine && (
+              <p className="text-sm font-semibold uppercase tracking-wider text-ccm-water mb-3">
+                {localizedTagLine}
+              </p>
+            )}
+            <h2 className={cn('font-bold font-heading text-ccm-midnight text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
+          </div>
+        ) : (
+          <UISectionHeader title={localizedTitle} subtitle={localizedTagLine || undefined} titleClassName={heading('md')} />
+        )}
         {localizedDescription && (
-          <p className={cn(
-            "text-lg",
-            color === "primary" ? "text-background/90" : "text-muted-foreground"
-          )}>
+          <p className={cn("text-base @content-md/page:text-lg text-muted-foreground", align !== "center" && "mt-3")}>
             {localizedDescription}
           </p>
         )}
         </div>
-      </div>
     </SectionContainer>
   );
 }

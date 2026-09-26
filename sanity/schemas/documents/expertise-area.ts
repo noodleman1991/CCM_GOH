@@ -65,7 +65,7 @@ export default defineType({
     prepare(selection) {
       const { key, label, isActive } = selection
       // Try to get English label or first available
-      const displayLabel = label?.find((l: any) => l._key === 'en')?.value ||
+      const displayLabel = label?.find((l: { _key?: string; value?: string }) => l._key === 'en')?.value ||
                           label?.[0]?.value ||
                           key
 

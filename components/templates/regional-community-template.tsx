@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Blocks from '@/components/blocks/index';
 import TeamGrid from '@/components/blocks/grid/team-grid';
+import { RegionMembersBlock } from '@/components/blocks/community/region-members-block';
+import { RegionSectionSpine } from '@/components/regions/region-section-spine';
 import { getTranslations } from 'next-intl/server';
-import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
-import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
-import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
-import { fetchRegionalCommunityNewsBySlug } from '@/sanity/queries/regional-community-news';
+import { getAgendasByRegion } from '@/lib/content/outputs';
+import {
+  getRegionalCommunityCaseStudiesBySlug,
+  getRegionalCommunityLivedExperiencesBySlug,
+  getRegionalCommunityNewsBySlug,
+} from '@/lib/content/pages';
+import { mergePinnedWithDynamic, type WithId } from '@/lib/community/grid-items';
+import { RC_SLUG_TO_REGION } from '@/lib/maps/region-codes';
+
+/** A loosely-shaped CMS block config (hero, team grid, logo cloud, …) passed through to Blocks. */
+type CmsBlockConfig = Record<string, unknown>;
 
 interface GridConfig {
-  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent';
+  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned';
   gridColumns?: string;
   maxItems?: number;
   initialDisplayCount?: number;
@@ -16,31 +25,31 @@ interface GridConfig {
   title?: string;
   subtitle?: string;
   showDescription?: boolean;
-  description?: any;
-  headerImage?: any;
-  manualItems?: any[];
+  description?: unknown;
+  headerImage?: unknown;
+  manualItems?: WithId[];
 }
 
 interface CarouselConfig {
-  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent';
+  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned';
   maxItems?: number;
   showTitle?: boolean;
   title?: string;
   subtitle?: string;
   showDescription?: boolean;
-  description?: any;
-  background?: any;
-  padding?: any;
-  manualItems?: any[];
+  description?: unknown;
+  background?: unknown;
+  padding?: unknown;
+  manualItems?: WithId[];
 }
 
 interface RegionalCommunity {
   _id: string | null;
-  name: any;
+  name: unknown;
   slug: {
     current: string;
   } | null;
-  coverImage?: any;
+  coverImage?: unknown;
 }
 
 interface RegionalCommunityTemplateProps {
@@ -49,11 +58,12 @@ interface RegionalCommunityTemplateProps {
   newsGrid?: GridConfig;
   caseStudiesGrid?: GridConfig;
   livedExperiencesCarousel?: CarouselConfig;
-  welcomeHero?: any;
-  whyJoinCTA?: any;
-  logoCloud?: any;
-  teamGrid?: any;
-  teamMembers?: any[];
+  welcomeHero?: CmsBlockConfig;
+  whyJoinCTA?: CmsBlockConfig;
+  logoCloud?: CmsBlockConfig;
+  teamGrid?: CmsBlockConfig;
+  teamMembers?: unknown[];
+  atlasEmbed?: { enabled?: boolean; showBreakdown?: boolean };
   locale: string;
   userId: string;
 }
@@ -69,6 +79,7 @@ export default async function RegionalCommunityTemplate({
   logoCloud,
   teamGrid,
   teamMembers,
+  atlasEmbed,
   locale,
   userId
 }: RegionalCommunityTemplateProps) {
@@ -109,27 +120,24 @@ export default async function RegionalCommunityTemplate({
   ] = await Promise.all([
     agendasGrid?.mode === 'manual' && agendasGrid?.manualItems?.length
       ? Promise.resolve(agendasGrid.manualItems)
-      : fetchRegionalCommunityAgendas({
-          slug: communitySlug,
-          limit: agendasLimit
-        }),
+      : getAgendasByRegion(communitySlug, agendasLimit),
     caseStudiesGrid?.mode === 'manual' && caseStudiesGrid?.manualItems?.length
       ? Promise.resolve(caseStudiesGrid.manualItems)
-      : fetchRegionalCommunityCaseStudiesBySlug({
+      : getRegionalCommunityCaseStudiesBySlug({
           slug: communitySlug,
           limit: caseStudiesLimit,
           featured: caseStudiesMode === 'dynamic-featured'
         }),
     livedExperiencesCarousel?.mode === 'manual' && livedExperiencesCarousel?.manualItems?.length
       ? Promise.resolve(livedExperiencesCarousel.manualItems)
-      : fetchRegionalCommunityLivedExperiencesBySlug({
+      : getRegionalCommunityLivedExperiencesBySlug({
           slug: communitySlug,
           limit: livedExpLimit,
           featured: livedExpMode === 'dynamic-featured'
         }),
     newsGrid?.mode === 'manual' && newsGrid?.manualItems?.length
       ? Promise.resolve(newsGrid.manualItems)
-      : fetchRegionalCommunityNewsBySlug({
+      : getRegionalCommunityNewsBySlug({
           slug: communitySlug,
           limit: newsLimit,
           featured: newsMode === 'dynamic-featured'
@@ -142,7 +150,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for lived experiences
   if (livedExpMode === 'dynamic-featured' && (!livedExperiencesData || livedExperiencesData.length === 0)) {
     console.log('No featured lived experiences found, falling back to recent');
-    livedExperiencesData = await fetchRegionalCommunityLivedExperiencesBySlug({
+    livedExperiencesData = await getRegionalCommunityLivedExperiencesBySlug({
       slug: communitySlug,
       limit: livedExpLimit,
       featured: false
@@ -152,7 +160,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for case studies
   if (caseStudiesMode === 'dynamic-featured' && (!caseStudiesData || caseStudiesData.length === 0)) {
     console.log('No featured case studies found, falling back to recent');
-    caseStudiesData = await fetchRegionalCommunityCaseStudiesBySlug({
+    caseStudiesData = await getRegionalCommunityCaseStudiesBySlug({
       slug: communitySlug,
       limit: caseStudiesLimit,
       featured: false
@@ -162,7 +170,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for news
   if (newsMode === 'dynamic-featured' && (!newsData || newsData.length === 0)) {
     console.log('No featured news found, falling back to recent');
-    newsData = await fetchRegionalCommunityNewsBySlug({
+    newsData = await getRegionalCommunityNewsBySlug({
       slug: communitySlug,
       limit: newsLimit,
       featured: false
@@ -172,14 +180,29 @@ export default async function RegionalCommunityTemplate({
   // Fallback for agendas (if it uses featured mode)
   if (agendasMode === 'dynamic-featured' && (!agendasData || agendasData.length === 0)) {
     console.log('No featured agendas found, falling back to recent');
-    agendasData = await fetchRegionalCommunityAgendas({
-      slug: communitySlug,
-      limit: agendasLimit
-    });
+    agendasData = await getAgendasByRegion(communitySlug, agendasLimit);
   }
 
-  // Create template blocks array for Blocks component
-  const templateBlocks = [];
+  // Hybrid "dynamic-with-pinned": editor-pinned manualItems render first, then
+  // the dynamic results fill the rest (deduped, capped at maxItems). This lets
+  // editors curate without losing the auto-updating regional feed.
+  if (agendasMode === 'dynamic-with-pinned') {
+    agendasData = mergePinnedWithDynamic(agendasGrid?.manualItems, agendasData, agendasLimit);
+  }
+  if (caseStudiesMode === 'dynamic-with-pinned') {
+    caseStudiesData = mergePinnedWithDynamic(caseStudiesGrid?.manualItems, caseStudiesData, caseStudiesLimit);
+  }
+  if (livedExpMode === 'dynamic-with-pinned') {
+    livedExperiencesData = mergePinnedWithDynamic(livedExperiencesCarousel?.manualItems, livedExperiencesData, livedExpLimit);
+  }
+  if (newsMode === 'dynamic-with-pinned') {
+    newsData = mergePinnedWithDynamic(newsGrid?.manualItems, newsData, newsLimit);
+  }
+
+  // Create template blocks array for Blocks component. These are synthesized
+  // CMS-shaped block objects; the Blocks renderer dispatches on `_type`.
+  type TemplateBlock = { _type: string; _key: string } & Record<string, unknown>;
+  const templateBlocks: TemplateBlock[] = [];
 
   // Add Welcome Hero if configured
   if (welcomeHero && (welcomeHero.title || welcomeHero.body)) {
@@ -215,9 +238,9 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: agendasData?.length ? agendasData
-        .filter((agenda: any) => agenda && agenda._id)
+        .filter((agenda: WithId) => agenda && agenda._id)
         .slice(0, agendasLimit)
-        .map((agenda: any) => ({
+        .map((agenda: WithId) => ({
           _type: 'grid-agenda',
           _key: `agenda-${agenda._id}`,
           agenda: agenda,
@@ -242,9 +265,9 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: caseStudiesData?.length ? caseStudiesData
-        .filter((caseStudy: any) => caseStudy && caseStudy._id)
+        .filter((caseStudy: WithId) => caseStudy && caseStudy._id)
         .slice(0, caseStudiesLimit)
-        .map((caseStudy: any) => ({
+        .map((caseStudy: WithId) => ({
           _type: 'grid-case-study',
           _key: `case-study-${caseStudy._id}`,
           caseStudy: caseStudy,
@@ -269,9 +292,9 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: newsData?.length ? newsData
-        .filter((news: any) => news && news._id)
+        .filter((news: WithId) => news && news._id)
         .slice(0, newsLimit)
-        .map((news: any) => {
+        .map((news: WithId) => {
           // Check if it's an external source or news post
           if (news._type === 'externalSource') {
             return {
@@ -333,6 +356,21 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
+  // Region-scoped atlas embed (spec A4) — ON BY DEFAULT for the seven
+  // canonical regions (opt-OUT via CMS, not opt-in): every regional page
+  // carries its live atlas facet — map + compact spotlight (composition bar,
+  // countries, cards) reacting to the shared filters. AtlasEmbedBlock
+  // returns null for a slug with no region code, so non-canonical
+  // communities are unaffected.
+  if (atlasEmbed?.enabled !== false && RC_SLUG_TO_REGION[communitySlug]) {
+    templateBlocks.push({
+      _type: 'atlas-embed',
+      _key: 'atlas-embed',
+      region: RC_SLUG_TO_REGION[communitySlug],
+      showBreakdown: atlasEmbed?.showBreakdown ?? true,
+    } as never);
+  }
+
   // Add Logo Cloud as last component
   if (logoCloud && (logoCloud.images || logoCloud.showTitle !== false)) {
     templateBlocks.push({
@@ -342,16 +380,82 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
+  // ── Anchor-spine grouping (Gate-2 §regional) ────────────────────────────
+  // The page stays ONE scroll: blocks group into anchored <section>s in the
+  // approved order (atlas joins Overview), and the sticky spine above them is
+  // scroll-spied anchor nav — never content-switching tabs. Sections with no
+  // blocks simply don't appear in the spine.
+  const KEY_TO_SECTION: Record<string, string> = {
+    'template-welcome-hero': 'overview',
+    'template-why-join-hero': 'overview',
+    'atlas-embed': 'overview',
+    'template-agendas-grid': 'agendas',
+    'template-case-studies-grid': 'case-studies',
+    'template-news-grid': 'news',
+    'template-lived-experiences': 'voices',
+    'template-team-grid': 'members',
+    'template-logo-cloud': 'partners',
+  };
+  const SECTION_ORDER = ['overview', 'agendas', 'case-studies', 'news', 'voices', 'members', 'partners'];
+  const SECTION_LABEL: Record<string, string> = {
+    overview: t('sectionTitles.overview'),
+    agendas: t('sectionTitles.agendas'),
+    'case-studies': t('sectionTitles.caseStudies'),
+    news: t('sectionTitles.newsUpdates'),
+    voices: t('sectionTitles.communityVoices'),
+    members: t('sectionTitles.members'),
+    partners: t('sectionTitles.partners'),
+  };
+  const SECTION_COUNT: Record<string, number | undefined> = {
+    agendas: agendasData?.length || undefined,
+    'case-studies': caseStudiesData?.length || undefined,
+    news: newsData?.length || undefined,
+    voices: livedExperiencesData?.length || undefined,
+  };
+
+  const grouped = new Map<string, typeof templateBlocks>();
+  for (const block of templateBlocks) {
+    const section = KEY_TO_SECTION[(block as { _key?: string })._key ?? ''] ?? 'overview';
+    grouped.set(section, [...(grouped.get(section) ?? []), block]);
+  }
+  // Members always exists (RegionMembersBlock renders independently of config).
+  if (!grouped.has('members')) grouped.set('members', []);
+
+  const spineSections = SECTION_ORDER.filter(
+    (id) => grouped.has(id) && (id === 'members' || (grouped.get(id)?.length ?? 0) > 0)
+  ).map((id) => ({ id, label: SECTION_LABEL[id], count: SECTION_COUNT[id] }));
+
   return (
     <>
-      {/* Render all template blocks in order */}
-      {templateBlocks.length > 0 && (
-        <Blocks
-          blocks={templateBlocks}
-          locale={locale}
-          userId={userId}
-        />
-      )}
+      {spineSections.length > 1 && <RegionSectionSpine sections={spineSections} />}
+      {SECTION_ORDER.map((id) => {
+        const blocks = grouped.get(id);
+        if (!blocks || (blocks.length === 0 && id !== 'members')) return null;
+        return (
+          // scroll-mt clears the sticky spine when an anchor jumps.
+          <section key={id} id={id} className="scroll-mt-14">
+            {/* Reserved-height fallbacks: a null fallback let late-hydrating
+                blocks grow the page after an anchor jump, stranding the
+                viewport mid-section (and costing CLS). */}
+            {blocks.length > 0 && (
+              <Suspense fallback={<div className="min-h-[320px]" aria-hidden />}>
+                {/* Synthesized blocks match the renderer's `_type` dispatch, not the
+                    generated PAGE_QUERY block union — hence the cast. */}
+                <Blocks blocks={blocks as React.ComponentProps<typeof Blocks>['blocks']} locale={locale} userId={userId} />
+              </Suspense>
+            )}
+            {/* One people surface per section: when the CMS team-grid is
+                configured it wins; the community-members graph renders only
+                as the fallback so Members is never empty — two stacked
+                people grids read as a duplicate block. */}
+            {id === 'members' && blocks.length === 0 && (
+              <Suspense fallback={<div className="min-h-[180px]" aria-hidden />}>
+                <RegionMembersBlock slug={communitySlug} locale={locale} />
+              </Suspense>
+            )}
+          </section>
+        );
+      })}
     </>
   );
 }

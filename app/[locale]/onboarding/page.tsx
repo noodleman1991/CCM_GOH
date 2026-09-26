@@ -1,17 +1,26 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
-import { client } from "@/sanity/lib/client"
-import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-content"
+import { redirect } from "@/i18n/navigation"
+import { getOnboardingCommunities, getOnboardingContent } from "@/lib/content/onboarding"
+import type { Locale } from "@/lib/content/types"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 import { prisma } from "@/lib/prisma"
 import { OnboardingClient } from "./onboarding-client"
-import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
+import type { RegionalCommunityName } from "@/generated/prisma"
+
+// The community shape assembled below for the onboarding form.
+interface OnboardingCommunity {
+    id: string
+    slug: string
+    name: Record<string, string> | string
+    type: string
+    regionalName: string | null
+}
 
 // Fallback communities with multilingual names (all 4 languages)
 const FALLBACK_COMMUNITIES = [
     {
         slug: 'sub-saharan-africa',
-        regionalName: 'SUB_SAHARAN_AFRICA',
+        regionalName: 'ssa',
         name: {
             en: 'Sub-Saharan Africa',
             es: 'África subsahariana',
@@ -21,7 +30,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'northern-africa-and-western-asia',
-        regionalName: 'NORTHERN_AFRICA_AND_WESTERN_ASIA',
+        regionalName: 'nawa',
         name: {
             en: 'Northern Africa and Western Asia',
             es: 'África del Norte y Asia Occidental',
@@ -31,7 +40,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'central-and-southern-asia',
-        regionalName: 'CENTRAL_AND_SOUTHERN_ASIA',
+        regionalName: 'csa',
         name: {
             en: 'Central and Southern Asia',
             es: 'Asia Central y del Sur',
@@ -41,7 +50,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'eastern-and-south-eastern-asia',
-        regionalName: 'EASTERN_AND_SOUTH_EASTERN_ASIA',
+        regionalName: 'esea',
         name: {
             en: 'Eastern and South-Eastern Asia',
             es: 'Asia Oriental y Sudoriental',
@@ -51,7 +60,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'latin-america-and-the-caribbean',
-        regionalName: 'LATIN_AMERICA_AND_THE_CARIBBEAN',
+        regionalName: 'lac',
         name: {
             en: 'Latin America and the Caribbean',
             es: 'América Latina y el Caribe',
@@ -61,7 +70,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'oceania',
-        regionalName: 'OCEANIA',
+        regionalName: 'oce',
         name: {
             en: 'Oceania',
             es: 'Oceanía',
@@ -71,7 +80,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'europe-and-north-america',
-        regionalName: 'EUROPE_AND_NORTH_AMERICA',
+        regionalName: 'enam',
         name: {
             en: 'Europe and North America',
             es: 'Europa y América del Norte',
@@ -87,7 +96,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
 
     // Require authentication
     if (!userId) {
-        redirect(`/${locale}/sign-in`)
+        redirect({ href: "/sign-in", locale })
     }
 
     console.log(`[Onboarding] Loading page for user ${userId}`)
@@ -165,7 +174,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             communityMemberships: [],
             recentWork: [],
             isSearchable: true,
-            profileVisibility: 'PUBLIC',
+            profileVisibility: 'MEMBERS',
             showEmail: false,
             showPhoneNumber: false,
             showWorkDetails: true,
@@ -187,15 +196,15 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
 
     // Load Sanity content and user management options
     const [content, userManagement] = await Promise.all([
-        client.fetch(onboardingContentQueryWithFallback, { locale }),
+        getOnboardingContent(locale as Locale),
         fetchUserManagementOptionsWithLocale(locale)
     ])
 
     // Fetch communities directly from Prisma/Sanity (avoids HTTP self-call issues)
-    let communities: any[] = []
+    let communities: OnboardingCommunity[] = []
     try {
         // Fetch communities from Sanity (source of truth for names and translations)
-        const sanityCommunities = await getRegionalCommunities()
+        const sanityCommunities = await getOnboardingCommunities()
 
         // Fetch from database to get IDs for joining with user profiles
         const dbCommunities = await prisma.community.findMany({
@@ -216,8 +225,8 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
         if (!sanityCommunities || sanityCommunities.length === 0) {
             console.warn('[Onboarding] ⚠️ No communities in Sanity, using hardcoded fallback')
             communities = FALLBACK_COMMUNITIES
-                .map(community => {
-                    const dbId = regionalNameToId.get(community.regionalName as any)
+                .map((community): OnboardingCommunity | null => {
+                    const dbId = regionalNameToId.get(community.regionalName as RegionalCommunityName)
                     if (!dbId) return null
                     return {
                         id: dbId,
@@ -227,18 +236,18 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
                         regionalName: community.regionalName
                     }
                 })
-                .filter(Boolean)
+                .filter((c): c is OnboardingCommunity => Boolean(c))
         } else {
             // Merge Sanity data with database IDs. The DB enum (regionalName) and
             // the Sanity slug don't always transform 1:1 — e.g. slug
             // `europe-and-northern-america` → `EUROPE_AND_NORTHERN_AMERICA` but the
-            // enum is `EUROPE_AND_NORTH_AMERICA`. Match robustly so a community is
+            // enum is `enam`. Match robustly so a community is
             // never silently dropped from onboarding.
 
             // Normalize an enum-ish key for fuzzy comparison: lowercase, drop
             // filler words and non-letters, and collapse the north/northern,
             // east/eastern, etc. difference (the actual cause of the
-            // europe-and-northern-america vs EUROPE_AND_NORTH_AMERICA mismatch).
+            // europe-and-northern-america vs enam mismatch).
             const norm = (s: string) =>
                 s.toLowerCase()
                     .replace(/\b(and|the|of)\b/g, '')
@@ -250,10 +259,10 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             )
 
             communities = sanityCommunities
-                .map((community: any) => {
-                    const transformed = community.slug.replace(/-/g, '_').toUpperCase()
+                .map((community): OnboardingCommunity | null => {
+                    const transformed = community.slug.replace(/-/g, '_').toUpperCase() as RegionalCommunityName
                     // 1) exact transform match, 2) fuzzy normalized match
-                    let match = regionalNameToId.get(transformed)
+                    const match = regionalNameToId.get(transformed)
                         ? { id: regionalNameToId.get(transformed)!, regionalName: transformed }
                         : normalizedDbIds.get(norm(transformed))
 
@@ -264,12 +273,12 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
                     return {
                         id: match.id,
                         slug: community.slug,
-                        name: community.name,
+                        name: community.name as Record<string, string>,
                         type: 'REGIONAL',
                         regionalName: match.regionalName,
                     }
                 })
-                .filter(Boolean)
+                .filter((c: OnboardingCommunity | null): c is OnboardingCommunity => Boolean(c))
         }
 
         console.log('[Onboarding] Communities loaded:', communities.length)

@@ -21,21 +21,32 @@
     "support": "Support",
     "browseProfiles": "Browse Profiles",
     "researchAction": "Research & Action",
+    "discover": "Discover",
+    "collaborateGroup": "Collaborate",
+    "atlasExplore": "Atlas & Explore",
+    "newsUpdates": "News & Updates",
     "allOutputs": "All outputs",
     "globalAgenda": "Global Agenda",
     "regionalAgendas": "Regional Agendas",
     "communityAgendas": "Community Agendas",
-    "caseStudies": "Case Studies",
+    "caseStudies": "Case studies",
     "toolkits": "Toolkits",
     "impactReports": "Impact Reports",
     "search": "Search",
     "regionalCommunities": "Regional Communities",
     "collaborate": "Collaborate",
+    "findPeople": "Find people",
+    "startOrFindProject": "Start or find a project",
+    "sectionExplore": "Explore",
+    "sectionConnect": "Collaborate",
     "news": "News",
-    "livedExperiences": "Lived Experiences",
+    "livedExperiences": "Lived experiences",
     "about": "About",
     "feedback": "Feedback",
     "searchPlaceholder": "Search...",
+    "searchTitle": "Search the hub",
+    "searchDescription": "Search across content, projects, people and regions.",
+    "searchSubmit": "Search",
     "regions": {
       "subSaharanAfrica": "Sub-Saharan Africa",
       "northernAfricaWesternAsia": "Northern Africa and Western Asia",
@@ -50,7 +61,32 @@
       "youth": "Youth",
       "indigenous": "Indigenous",
       "smallholderFarmers": "Smallholder Farmers"
-    }
+    },
+    "specialCommunities": {
+      "youth": "Youth",
+      "indigenous": "Indigenous",
+      "farmerAndFisher": "Farmers & Fishers"
+    },
+    "collaborations": "Workspaces",
+    "messages": "Messages",
+    "staff": "Staff",
+    "moderation": "Moderation",
+    "broadcast": "Send notification",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "readAgenda": "Read the Agenda",
+    "quickSearch": "Search",
+    "quickMessages": "Messages",
+    "quickNotifications": "Alerts",
+    "quickFindPeople": "Find people",
+    "quickStartProject": "Start a project",
+    "messagesNav": "Messages & alerts",
+    "userMenu": "Your account",
+    "userDashboard": "Dashboard",
+    "userMessages": "Messages & alerts",
+    "userSettings": "Settings",
+    "atlas": "Atlas",
+    "researchOutputs": "Research outputs"
   },
   "navUser": {
     "account": "Account",
@@ -114,7 +150,48 @@
     "availableInLanguages": "Available in {count} {count, plural, one {language} other {languages}}",
     "availableIn": "Available in:",
     "noContentYet": "No content available yet.",
-    "checkBackSoon": "Check back soon for updates."
+    "checkBackSoon": "Check back soon for updates.",
+    "clear": "Clear",
+    "clearFilters": "Clear filters",
+    "close": "Close",
+    "goToHomepage": "Go to homepage",
+    "toggleSidebar": "Toggle sidebar",
+    "openMenu": "Open menu",
+    "previousPage": "Go to previous page",
+    "nextPage": "Go to next page",
+    "morePages": "More pages",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "copyCode": "Copy code",
+    "scrollBack": "Scroll back",
+    "scrollForward": "Scroll forward",
+    "removeFilter": "Remove filter",
+    "clearSearch": "Clear search",
+    "selectLanguage": "Select language",
+    "regionalMap": "Regional map",
+    "approxLocation": "country-level location",
+    "shareOnFacebook": "Share on Facebook",
+    "shareViaEmail": "Share via email",
+    "enterYourEmail": "Enter your email",
+    "sharePost": "Share this post",
+    "mainNavigation": "Main navigation",
+    "mainNavigationDescription": "Navigate to the website pages",
+    "toggleTheme": "Toggle theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "emailRequired": "Please enter your email",
+    "emailInvalid": "Please enter a valid email",
+    "untitled": "Untitled",
+    "charCount": "{count} / {max}",
+    "charCountSr": "{count} of {max} characters",
+    "moreCount": "+{count} more",
+    "featured": "Featured",
+    "present": "Present",
+    "goToSlide": "Go to slide {index}",
+    "slideOf": "Slide {index} of {count}",
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}",
+    "external": "External"
   },
   "settings": {
     "title": "Settings",
@@ -130,13 +207,147 @@
       "system": "System"
     },
     "privacy": "Privacy",
-    "security": "Security"
+    "security": "Security",
+    "saved": "Settings saved.",
+    "save": "Save",
+    "emailNotifications": "Email notifications",
+    "emailReply": "Email me when someone replies",
+    "emailMention": "Email me when someone mentions me",
+    "emailMessage": "Email me about new messages",
+    "emailWeeklyDigest": "Send me the weekly summary email",
+    "messaging": "Messaging",
+    "whoCanMessage": "Who can message me",
+    "everyone": "Everyone",
+    "nobody": "No one",
+    "blocked": "Blocked members",
+    "unblock": "Unblock",
+    "yourData": "Your data",
+    "downloadData": "Download my data",
+    "privacyContact": "Privacy & contact",
+    "profileEditDescription": "Update your name, photo, headline and other public details.",
+    "editProfileCta": "Edit your profile",
+    "followersOnly": "People who follow me",
+    "contactsOnly": "My accepted contacts"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Upcoming events from across the community.",
+    "empty": "No upcoming events yet.",
+    "submit": "Submit an event",
+    "rsvp": "RSVP",
+    "going": "Going",
+    "scopeCommunity": "Community",
+    "scopeProject": "Project",
+    "modeOnline": "Online",
+    "modeInPerson": "In person",
+    "modeHybrid": "Hybrid",
+    "fieldTitle": "Title",
+    "fieldDescription": "Description",
+    "fieldStart": "Starts",
+    "fieldEnd": "Ends",
+    "fieldMode": "Mode",
+    "fieldScope": "Scope",
+    "fieldLocation": "Location / venue",
+    "fieldUrl": "Joining / details URL",
+    "moderationNote": "Your event is reviewed by an editor before it appears publicly.",
+    "validationRequired": "Please add a title and a start date.",
+    "submitPending": "Submitted — pending review.",
+    "submitFailed": "Could not submit. Please check the form and try again.",
+    "calendarTitle": "Events calendar",
+    "upcomingHeading": "Upcoming",
+    "subscribe": "Subscribe (iCal)",
+    "noUpcoming": "No upcoming events.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today",
+    "pastEvent": "Past event",
+    "addToCalendar": "Add to calendar",
+    "share": "Share",
+    "linkCopied": "Link copied",
+    "watchRecording": "Watch the recording",
+    "goingCount": "{count, plural, =0 {Be the first to RSVP} one {# going} other {# going}}",
+    "partOf": "Part of",
+    "theProject": "the organising project",
+    "attendeesHeading": "Who's coming · {count}",
+    "attendeesNone": "No RSVPs yet — share the event to get the word out.",
+    "attendeesInterested": "{count} more interested",
+    "relation": {
+      "hosts": "Hosts",
+      "co-hosts": "Co-hosts",
+      "partners": "Partners",
+      "related": "Related"
+    }
+  },
+  "plan": {
+    "empty": "No plan yet.",
+    "addStage": "Add a stage",
+    "addTask": "Add a task",
+    "deleteStage": "Delete stage",
+    "deleteTask": "Delete task",
+    "cycleStatus": "Change status",
+    "stageComplete": "Stage complete",
+    "dragTask": "Drag to reorder",
+    "heading": "Plan",
+    "subtitle": "Break the work into stages, then add tasks under each. Click a task to move it To do → In progress → Done.",
+    "emptyTitle": "No stages yet",
+    "emptyBody": "Add your first stage (e.g. Discovery, Drafting, Review) to start tracking the work.",
+    "assign": "Assign",
+    "unassigned": "Unassigned",
+    "addNotes": "Add notes — @username notifies a teammate",
+    "moveStageEarlier": "Move stage earlier",
+    "moveStageLater": "Move stage later"
+  },
+  "follow": {
+    "follow": "Follow",
+    "following": "Following",
+    "signInToFollow": "Sign in to follow",
+    "contract": {
+      "PROJECT": "Get notified when this project publishes an output or schedules an event",
+      "REGION": "New content from this region appears in your For-you strip and weekly digest",
+      "THEME": "New content on this theme appears in your For-you strip and weekly digest",
+      "USER": "New outputs and activity from this person appear in your For-you strip and weekly digest"
+    }
   },
   "notifications": {
     "success": "Success!",
     "error": "Error!",
     "info": "Information",
-    "warning": "Warning"
+    "warning": "Warning",
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "repliedToYou": "replied to you",
+    "mentionedYou": "mentioned you",
+    "reactedToYou": "reacted to your comment",
+    "commentApproved": "Your comment was approved",
+    "sentMessage": "sent you a message",
+    "activity": "new activity",
+    "sentRequest": "sent you a request",
+    "today": "Today",
+    "earlier": "Earlier",
+    "requests": "Requests",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "assignedYouTask": "assigned you a task",
+    "taskDue": "task due soon",
+    "outputStatus": "output status changed",
+    "threadReply": "replied in a thread",
+    "memberJoined": "joined the workspace",
+    "followedPublish": "published something new",
+    "eventReminder": "event starting soon",
+    "snippets": {
+      "joinAccepted": "accepted your request to join",
+      "joinDeclined": "declined your request to join",
+      "invitedToJoin": "invited you to join “{title}”",
+      "inviteAccepted": "accepted your invitation to “{title}”",
+      "inviteDeclined": "declined your invitation to “{title}”",
+      "contactAccepted": "accepted your contact request",
+      "contactDeclined": "declined your contact request",
+      "removedFromWorkspace": "removed you from “{title}”",
+      "rsvpGoing": "You're going to “{title}” — {when}"
+    },
+    "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}"
   },
   "dates": {
     "today": "Today",
@@ -179,13 +390,104 @@
     "address": "Address",
     "phone": "Phone number",
     "submit": "Submit",
-    "reset": "Reset"
+    "reset": "Reset",
+    "tagSuggestions": {
+      "label": "Suggest a tag",
+      "hint": "Can't find the right tag? Suggest up to {max}. Our editors review suggestions and create the ones the community needs.",
+      "placeholder": "e.g. Eco-anxiety",
+      "add": "Add",
+      "didYouMean": "Did you mean:",
+      "alreadyExists": "That tag already exists — pick it above.",
+      "limitReached": "You've suggested {max} tags, the maximum.",
+      "yourSuggestions": "Your suggested tags",
+      "remove": "Remove suggestion {tag}"
+    },
+    "errors": {
+      "title": {
+        "required": "Add a title so readers know what this is about",
+        "tooShort": "Make the title a little longer (at least {min} characters)"
+      },
+      "summary": {
+        "required": "Write a short summary of what happened",
+        "tooShort": "Write at least {min} characters so readers know what to expect ({count} so far)"
+      },
+      "englishTitle": {
+        "required": "Add a short English title so the English site can list this"
+      },
+      "englishSummary": {
+        "tooShort": "Add a one-line English summary (at least {min} characters)"
+      },
+      "story": {
+        "required": "Write your story — at least a paragraph"
+      },
+      "authors": {
+        "required": "Add who wrote this"
+      },
+      "author": {
+        "nameRequired": "Add this person's name",
+        "email": "This email doesn't look right — check for typos"
+      },
+      "tags": {
+        "themeRequired": "Choose at least one theme"
+      },
+      "location": {
+        "required": "Add where this took place — search for a place, or choose a regional community"
+      },
+      "dates": {
+        "endBeforeStart": "The end date is before the start date"
+      },
+      "generic": {
+        "tooLong": "Keep this under {max} characters (it's {count} now)"
+      },
+      "upload": {
+        "tooBig": "This image is {size} MB — the limit is {max} MB. Try a smaller photo or a screenshot.",
+        "wrongType": "Use a JPEG, PNG or WebP image.",
+        "wrongTypeImage": "Use a JPEG, PNG, WebP or GIF image."
+      },
+      "form": {
+        "fixBelow": "Some details need fixing — they're marked below.",
+        "generic": "Something went wrong on our side. Your work is saved — try again in a moment.",
+        "rateLimited": "You've sent this a few times in a row. Wait a minute and try again.",
+        "notAllowed": "You can't edit this any more — it may already be published.",
+        "signIn": "Your session has ended. Sign in again to continue — your work is saved."
+      }
+    },
+    "whatsLeft": {
+      "heading": "What's left",
+      "allDone": "Everything's ready to send",
+      "left": "{count, plural, one {# thing left} other {# things left}}",
+      "open": "Show what's left",
+      "suggestion": "Suggestion"
+    }
   },
   "profile": {
     "noName": "No name",
     "unnamed": "Unnamed User",
     "editProfile": "Edit Profile",
     "contact": "Contact",
+    "visibilityNotice": {
+      "change": "Change",
+      "public": {
+        "title": "Visible to everyone",
+        "detail": "Anyone can open this page, including visitors who are not signed in. Fields you switched off stay hidden."
+      },
+      "publicHidden": {
+        "title": "Visible to everyone, not in search",
+        "detail": "Anyone with the link can open this page; it does not appear in member search."
+      },
+      "members": {
+        "title": "Members only",
+        "detail": "Only signed-in hub members can open this page."
+      },
+      "membersHidden": {
+        "title": "Members only, not in search",
+        "detail": "Only signed-in members with the link can open this page."
+      },
+      "private": {
+        "title": "Only you",
+        "detail": "Nobody else can open this page or find you in search."
+      }
+    },
     "basicInfo": "About",
     "about": "About",
     "skills": "Skills",
@@ -244,7 +546,37 @@
       "projectLink": "Project Link",
       "startDate": "Start Date",
       "endDate": "End Date",
-      "ongoingProject": "This work is ongoing"
+      "ongoingProject": "This work is ongoing",
+      "hide": "Hide from profile",
+      "show": "Show on profile",
+      "pin": "Pin to top",
+      "unpin": "Unpin",
+      "form": {
+        "title": "Add Recent Work",
+        "description": "Share a project or contribution so others can see what you've been working on",
+        "workTitle": "Project Title",
+        "workTitlePlaceholder": "Enter your project or work title",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Tell us about this project and its impact...",
+        "workDescriptionHint": "A short summary of what the work is about and why it matters",
+        "workLink": "Project Link",
+        "workLinkHint": "Optional — a link where people can learn more",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "ongoing": "This work is ongoing",
+        "ongoingDescription": "Check this if you're still working on it",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saveSuccess": "Work saved successfully",
+        "saveError": "Failed to save work",
+        "validation": {
+          "titleRequired": "Title is required",
+          "descriptionRequired": "Description is required",
+          "urlInvalid": "Please enter a valid URL",
+          "startDateRequired": "Start date is required",
+          "endDateRule": "End date is required for completed work and must be after the start date"
+        }
+      }
     },
     "communities": {
       "title": "Communities",
@@ -377,7 +709,89 @@
         }
       },
       "cancel": "Cancel",
-      "save": "Save Changes"
+      "save": "Save Changes",
+      "headline": {
+        "label": "Headline",
+        "placeholder": "e.g. Researcher on climate anxiety in youth",
+        "help": "One line that sums you up — the first thing people see.",
+        "importLinkedIn": "Import from LinkedIn",
+        "importing": "Importing…"
+      },
+      "pronouns": {
+        "label": "Pronouns",
+        "placeholder": "she/her"
+      },
+      "collab": {
+        "title": "Motivation & collaboration",
+        "description": "Share what drives you and how you'd like to connect.",
+        "motivation": {
+          "label": "What brought you here?",
+          "placeholder": "What draws you to climate change and mental health…",
+          "help": "Your story helps others connect with you."
+        },
+        "openToCollaboration": {
+          "label": "I'm open to collaborate",
+          "help": "A quiet signal that you're open to connect or collaborate — no pressure, just open to a conversation."
+        },
+        "interests": {
+          "label": "What would you like to collaborate on?",
+          "placeholder": "Co-authoring, mentorship, sharing data…"
+        },
+        "livedExperience": {
+          "label": "Lived experience (optional)",
+          "placeholder": "Share as much or as little as you like…",
+          "help": "Private by default. You choose whether to show it."
+        },
+        "showLivedExperience": {
+          "label": "Show on my public profile",
+          "help": "Off keeps this visible only to you."
+        }
+      },
+      "tabs": {
+        "basic": "Basics",
+        "collaboration": "Collaboration",
+        "work": "Work",
+        "communities": "Communities",
+        "recentWork": "Recent work",
+        "social": "Links",
+        "privacy": "Privacy"
+      },
+      "orcidImport": {
+        "label": "ORCID iD",
+        "button": "Import from ORCID",
+        "importing": "Importing…",
+        "help": "Paste your ORCID iD to pull in your publications and affiliations for review.",
+        "needId": "Enter your ORCID iD first.",
+        "added": "Imported {count} works — review and save.",
+        "none": "No new works found to import.",
+        "failed": "Import failed"
+      },
+      "validation": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "usernameMin": "Username must be at least 3 characters",
+        "usernamePattern": "Username can only contain letters, numbers and underscores",
+        "bioMax": "Bio must be less than 500 characters",
+        "workTypesMin": "Please select at least one work type",
+        "expertiseAreasMin": "Please select at least one expertise area",
+        "workBioMax": "Work bio must be less than 1000 characters",
+        "urlInvalid": "Please enter a valid URL",
+        "workTitleRequired": "Title is required",
+        "workDescriptionRequired": "Description is required",
+        "workStartDateRequired": "Start date is required",
+        "headlineMax": "Headline must be under 120 characters",
+        "keepUnder600": "Keep it under 600 characters",
+        "keepUnder1000": "Keep it under 1000 characters",
+        "firstNameMax": "First name must be 50 characters or fewer",
+        "lastNameMax": "Last name must be 50 characters or fewer",
+        "usernameMax": "Username must be 30 characters or fewer",
+        "socialPlatformRequired": "Name the platform for this link (for example Bluesky or Mastodon)",
+        "socialUrlInvalid": "Enter the full link, starting with https://",
+        "pronounsMax": "Pronouns must be 40 characters or fewer",
+        "orcidMax": "That is longer than an ORCID iD; use the format 0000-0000-0000-0000",
+        "workTitleMax": "Keep the title under 200 characters",
+        "workDescriptionMax": "Keep the description under 1000 characters"
+      }
     },
     "account": {
       "pageTitle": "Account & Security",
@@ -416,10 +830,63 @@
           "type": "To confirm, type",
           "cancel": "Cancel",
           "delete": "Delete Account",
-          "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email."
+          "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email.",
+          "typeError": "Please type {token} to confirm",
+          "typeInstruction": "To confirm, type <strong>{token}</strong> in the box below."
         }
+      },
+      "groups": {
+        "account": "Your account",
+        "accountDescription": "Manage your sign-in email and password.",
+        "dangerZone": "Danger zone",
+        "dangerZoneDescription": "Irreversible actions. Please be certain."
+      },
+      "validation": {
+        "emailInvalid": "Please enter a valid email address",
+        "currentPasswordRequired": "Current password is required",
+        "newPasswordMin": "New password must be at least 8 characters",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordsMismatch": "Passwords don't match"
+      },
+      "errors": {
+        "loadFailed": "Failed to load account information",
+        "updateEmailFailed": "Failed to update email",
+        "changePasswordFailed": "Failed to change password",
+        "deleteFailed": "Failed to delete account"
       }
-    }
+    },
+    "contributions": {
+      "title": "Contributions",
+      "kind": {
+        "caseStudy": "Case study",
+        "content": "Article",
+        "recentWork": "Project"
+      }
+    },
+    "openToCollaboration": "Open to collaborate",
+    "motivation": "What brought me here",
+    "collaboration": "Collaboration",
+    "focusTopics": "Focus areas",
+    "lookingFor": "Looking for",
+    "livedExperience": "Lived experience",
+    "prompts": {
+      "title": "Prompts",
+      "description": "Pick a few prompts and answer them — the most personal part of your profile.",
+      "loading": "Loading prompts…",
+      "add": "Add a prompt",
+      "remove": "Remove",
+      "save": "Save prompts",
+      "saved": "Saved",
+      "answerPlaceholder": "Your answer…"
+    },
+    "statistics": {
+      "memberSince": "Member since",
+      "location": "Location",
+      "projects": "Projects",
+      "communities": "Communities",
+      "skills": "Skills"
+    },
+    "workspaces": "Workspaces"
   },
   "profilePicture": {
     "title": "Profile Picture",
@@ -446,98 +913,159 @@
     "search": "Search",
     "noResults": "No profiles found. Try adjusting your search.",
     "unnamed": "Unnamed User",
-    "browseProfiles": "Browse Profiles"
+    "browseProfiles": "Browse Profiles",
+    "metaNotFound": "Profile Not Found",
+    "metaProfileTitle": "{name} - Profile",
+    "metaProfileDescription": "View {name}'s profile"
   },
   "caseStudySubmission": {
     "pageTitle": "Submit Case Study",
     "pageDescription": "Share your research and insights with our global multilingual community",
     "title": "Submit Your Case Study",
-    "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide."
-  },
-  "caseStudy": {
-    "backToCaseStudies": "Back to Case Studies"
-  },
-  "caseStudyForm": {
-    "sections": {
+    "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide.",
+    "layoutChooser": {
+      "label": "Choose a layout",
+      "hint": "Same content, different presentation — you can change this anytime.",
+      "story": {
+        "title": "Story",
+        "caption": "A narrative account of change in a community"
+      },
+      "feature": {
+        "title": "Feature",
+        "caption": "A visual, image-led showcase"
+      },
+      "report": {
+        "title": "Report",
+        "caption": "A structured research summary with findings"
+      }
+    },
+    "canvas": {
+      "titlePlaceholder": "Title your case study…",
+      "excerptPlaceholder": "Write a short summary — what happened, where, and why it matters…",
+      "bodyPlaceholder": "Tell the story — type / for blocks…"
+    },
+    "byline": {
+      "addAuthor": "Add author",
+      "removeAuthor": "Remove author",
+      "unnamed": "New author",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Enter full name",
+      "emailLabel": "Email (optional)",
+      "roleLabel": "Role in study",
+      "done": "Done",
+      "organizationPlaceholder": "Organization or institution name",
+      "roles": {
+        "lead": "Lead author",
+        "coauthor": "Co-author",
+        "contributor": "Contributor",
+        "advisor": "Advisor"
+      }
+    },
+    "hero": {
+      "dropHint": "Drag a cover image here, or tap to choose",
+      "formats": "JPEG, PNG or WebP, up to 5MB",
+      "replace": "Replace image",
+      "remove": "Remove image",
+      "previewAlt": "Cover image preview",
+      "uploading": "Uploading your image…"
+    },
+    "bar": {
+      "saveDraft": "Save draft",
+      "preview": "Preview",
+      "submit": "Submit for review",
+      "submitting": "Sending…"
+    },
+    "toasts": {
+      "draftRestored": "Your saved draft has been restored"
+    },
+    "successScreen": {
+      "heading": "Thank You for Your Contribution!",
+      "submittedLine": "Your case study has been submitted successfully.",
+      "reviewLine": "Our team will review it and email you once there's an update. You can also check its status anytime on your submissions page.",
+      "submitAnother": "Submit Another Case Study",
+      "viewSubmissions": "View My Submissions"
+    },
+    "review": {
+      "heading": "Review Your Submission",
+      "subheading": "Please check everything looks correct before submitting",
+      "goBack": "Go Back to Edit",
       "basicInfo": "Basic Information",
-      "content": "Content & Details",
-      "authors": "Authors & Contributors",
-      "classification": "Tags & Classification",
-      "location": "Study Location",
-      "timeline": "Study Period"
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "authorsHeading": "Authors ({count})",
+      "tagsCommunity": "Tags & Community",
+      "community": "Community: {name}",
+      "context": "Context",
+      "location": "Location: {location}",
+      "period": "Period: {start} – {end}",
+      "ongoing": "Ongoing",
+      "confirmSubmit": "Confirm & Submit"
+    },
+    "tags": {
+      "hint": "Pick at least one theme. Your first theme is the main one.",
+      "search": "Search tags…",
+      "noMatch": "No tags match. Suggest a new one below.",
+      "groups": {
+        "topic": "Themes",
+        "audience": "Who it affects",
+        "impact": "Impact",
+        "method": "Approach",
+        "other": "Other"
+      },
+      "main": "Main theme",
+      "remove": "Remove {tag}"
+    },
+    "sections": {
+      "writingIn": "I'm writing in",
+      "story": "Your story",
+      "people": "Who wrote this?",
+      "where": "Where & when",
+      "tags": "Tags",
+      "presentation": "How should it look?"
     },
     "fields": {
       "title": "Title",
-      "subtitle": "Subtitle",
-      "excerpt": "Excerpt",
-      "content": "Full Content",
-      "featuredImage": "Featured Image",
-      "organization": "Associated Organization",
-      "authors": "Research Team",
-      "tags": "Tags",
-      "country": "Country",
-      "city": "City",
-      "region": "Region/State",
-      "startDate": "Start Date",
-      "endDate": "End Date"
+      "summary": "Summary",
+      "summaryHint": "One or two sentences about what happened ({min}+ characters)",
+      "englishTitle": "English title",
+      "englishSummary": "One-line English summary",
+      "englishHint": "So the English site and search can list your case study.",
+      "translations": "Add translations (optional)",
+      "translationTitle": "Title in {language}",
+      "translationSummary": "Summary in {language}",
+      "dates": "When did this happen?",
+      "start": "Started",
+      "end": "Ended (leave empty if ongoing)",
+      "organisation": "Organisation (optional)",
+      "community": "Regional community (optional if you add a place)",
+      "communityNone": "No community"
     },
-    "placeholders": {
-      "title": "Enter title in {language}",
-      "subtitle": "Enter subtitle in {language}",
-      "excerpt": "Brief summary in {language}",
-      "content": "Detailed case study content in {language}",
-      "organization": "Enter organization name",
-      "authorName": "Full name",
-      "authorEmail": "Email address",
-      "country": "Enter country",
-      "city": "Enter city",
-      "region": "Enter region"
+    "whatsLeft": {
+      "title": "Add a title",
+      "summary": "Write a short summary (at least {min} characters)",
+      "story": "Write your story",
+      "englishTitle": "Add an English title",
+      "englishSummary": "Add a one-line English summary",
+      "authors": "Add who wrote this",
+      "theme": "Choose at least one theme",
+      "where": "Add where this took place",
+      "pin": "Add a specific place so this appears as a pin on the map — without one it only shows on the community's page"
     },
-    "descriptions": {
-      "excerpt": "These summaries help researchers worldwide discover your work. Required in all four languages.",
-      "content": "Write your case study in any language you prefer. At least one language version is required.",
-      "organization": "If this case study is associated with a specific organization, enter its name here.",
-      "tags": "Select at least one tag to help categorize your case study.",
-      "endDate": "Leave empty if the study is ongoing",
-      "image": "Upload a high-quality image to represent your case study (max 10MB)",
-      "multilingual": "Our platform serves researchers in 4 languages. You can submit in any language, but please help us with titles and excerpts in all languages."
-    },
-    "roles": {
-      "lead": "Lead Author",
-      "coauthor": "Co-Author",
-      "contributor": "Contributor",
-      "advisor": "Advisor"
-    },
-    "actions": {
-      "addAuthor": "Add Author",
-      "removeAuthor": "Remove Author",
-      "uploadImage": "Upload Image",
-      "submit": "Submit Case Study",
-      "submitting": "Submitting..."
-    },
-    "validation": {
-      "titleRequired": "Title is required in all four languages to help our global community",
-      "excerptMinLength": "Excerpt must be at least 50 characters in all languages",
-      "contentMinLength": "Please provide detailed content in at least one language (minimum 200 characters)",
-      "authorNameRequired": "Author name is required",
-      "invalidEmail": "Invalid email address",
-      "oneAuthorRequired": "At least one author is required",
-      "oneTagRequired": "At least one tag is required",
-      "invalidImageType": "Please upload a valid image file (JPEG, PNG, or WebP)",
-      "imageTooLarge": "Image size must be less than 10MB"
-    },
-    "status": {
-      "draft": "Draft",
-      "submitting": "Submitting...",
-      "submitted": "Submitted for Review"
-    },
-    "messages": {
-      "submitSuccess": "Thank you for sharing your work! Your case study has been submitted and our team will review it soon.",
-      "submitError": "We couldn't submit your case study right now. Please try again in a moment.",
-      "loginRequired": "You must be logged in to submit a case study",
-      "reviewNote": "Once you submit, our team will review your case study and get back to you. This usually takes a few days.",
-      "multilingualWelcome": "Welcome to our global community! Submit in any language and help us reach researchers worldwide."
+    "draft": {
+      "saving": "Saving…",
+      "savedAt": "Saved · {time}",
+      "error": "Couldn't save — we'll keep trying. Your text is safe on this device.",
+      "restorePrompt": "Restore your unsaved changes from {time}?",
+      "restore": "Restore",
+      "discard": "Discard",
+      "idle": "Your work saves as you go",
+      "loading": "Loading your draft…"
     }
+  },
+  "caseStudy": {
+    "backToCaseStudies": "Back to Case Studies",
+    "coAuthorsCount": "+{count, plural, one {# author} other {# authors}}",
+    "publishedOn": "Published {date}"
   },
   "dashboard": {
     "pageTitle": "Dashboard - Connecting Climate Minds Hub",
@@ -608,20 +1136,71 @@
         "drafts": {
           "title": "No drafts saved",
           "description": "Your draft case studies will appear here automatically as you work on them."
-        }
+        },
+        "filtered": "No submissions with status “{status}”"
       },
       "alerts": {
         "revision": {
           "title": "Action Required",
           "description": "You have {count} case stud{plural} that need{singular} revision based on editor feedback.",
-          "editorFeedback": "Editor feedback:"
+          "editorFeedback": "Editor feedback:",
+          "body": "{count, plural, one {You have # case study that needs revision based on editor feedback.} other {You have # case studies that need revision based on editor feedback.}}"
         }
-      }
+      },
+      "untitled": "Untitled",
+      "untitledDraft": "Untitled Draft",
+      "featured": "Featured",
+      "draftBadge": "Draft",
+      "dateUnknown": "Date unknown",
+      "authorCount": "{count, plural, one {# author} other {# authors}}",
+      "tagFallback": "Tag",
+      "moreTags": "+{count}",
+      "noDescription": "No description yet…",
+      "lastSaved": "Last saved {date}",
+      "lastSavedUnknown": "Last saved date unknown",
+      "step": "Step: {step}",
+      "withCount": "{label} ({count})",
+      "filterAll": "All"
+    },
+    "recentSubmissions": "Your recent submissions",
+    "memberCount": "{count, plural, one {# member} other {# members}}",
+    "viewPublicProfile": "View public profile",
+    "submitCaseStudyAction": "Submit a case study",
+    "workspaces": "Workspaces",
+    "workspacesDescription": "Create and join shared spaces to work on projects together",
+    "openWorkspaces": "Open workspaces",
+    "messages": "Messages",
+    "messagesDescription": "Your direct conversations with other members",
+    "openMessages": "Open messages",
+    "attentionTitle": "What needs you",
+    "attentionOpen": "Open →",
+    "forYouTitle": "For you",
+    "forYouRegion": "from a region you follow",
+    "forYouTheme": "on a theme you follow",
+    "setup": {
+      "title": "Setting up your account…",
+      "description": "We're preparing your dashboard. This usually takes just a few seconds.",
+      "refreshPage": "Refresh Page",
+      "support": "If this message persists, please contact support."
+    },
+    "notificationTypes": {
+      "TASK_ASSIGNED": "Task assigned to you",
+      "TASK_DUE": "Task due soon",
+      "OUTPUT_STATUS": "Output status update",
+      "THREAD_REPLY": "New reply in a discussion",
+      "MEMBER_JOINED": "New member joined",
+      "FOLLOWED_PUBLISH": "New from someone you follow",
+      "EVENT_REMINDER": "Event reminder"
     }
   },
   "caseStudies": {
     "title": "Case Studies",
     "description": "Explore research and insights from our global community",
+    "viewCommunity": "View community",
+    "caseStudySingular": "case study",
+    "caseStudyPlural": "case studies",
+    "backToCaseStudies": "Back to Case Studies",
+    "relatedContent": "Related",
     "pageTitle": "Case Studies",
     "pageDescription": "Explore research and insights from our global community",
     "featured": "Featured Case Studies",
@@ -632,6 +1211,7 @@
     "submitButton": "Submit Case Study",
     "searchResults": "Search Results",
     "resultsFound": "results found",
+    "openAsGallery": "Open as gallery",
     "noResults": "No case studies found",
     "noResultsDescription": "Try adjusting your search or filters to find what you're looking for.",
     "clearFilters": "Clear all filters",
@@ -648,7 +1228,9 @@
       "updating": "Updating...",
       "all": "All Topics",
       "featured": "Featured",
-      "recent": "Recently Published"
+      "recent": "Recently Published",
+      "topic": "Topic",
+      "tags": "Tags"
     },
     "topics": {
       "climate-environment": "Climate Change & Environment",
@@ -679,9 +1261,28 @@
     "organizations": "Organizations",
     "relatedProjects": "Related Projects",
     "studyAreas": "Study Areas",
-    "allAuthors": "All Authors"
+    "allAuthors": "All Authors",
+    "featuredBadge": "Featured",
+    "producedBy": "Produced by",
+    "atAGlance": "At a glance",
+    "published": "Published",
+    "author": "Author",
+    "location": "Location",
+    "viewToggle": "View",
+    "galleryView": "Gallery",
+    "mapView": "Map",
+    "writtenBy": "Written by",
+    "withOrgs": "With",
+    "metaNotFound": "Case Study Not Found",
+    "metaFallbackTitle": "Case Study",
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}",
+    "originallyWrittenIn": "Originally written in {language}"
   },
   "livedExperiences": {
+    "relatedContent": "Related",
+    "formatVideo": "Video",
+    "formatAudio": "Audio",
+    "formatWritten": "Written",
     "title": "Lived Experiences",
     "description": "Lived experience is a foundational source of expertise to be engaged when addressing the mental health consequences of climate change. Listening to and learning from various individuals and communities that are directly affected by the interrelated challenges of climate change and mental health is fundamental to creating impactful research and action. Importantly, lived experiences help all efforts at this intersection to generate feasible solutions for and with the most impacted groups, leading to more inclusive research and action. The stories shown below, and the insights within them, reflect a commitment to moving beyond tokenization, and towards valuing and uplifting the contribution of lived experiences to this growing field.",
     "pageTitle": "Lived Experiences",
@@ -702,16 +1303,33 @@
     "videoUnavailable": "This video is unavailable.",
     "sortBy": "Sort",
     "sortNewest": "Newest first",
-    "sortAZ": "A–Z"
+    "sortAZ": "A–Z",
+    "issueLabel": "The issue",
+    "aboutPersonLabel": "About the person",
+    "shareCta": "Share your experience",
+    "storyLabel": "Story",
+    "closeVideo": "Close",
+    "videoTitleFallback": "Lived experience",
+    "backToGallery": "Back to gallery",
+    "viewFull": "View full story",
+    "audioTitleFallback": "Lived experience audio",
+    "audioFallback": "Your browser does not support the audio element.",
+    "atAGlance": "At a glance",
+    "published": "Published",
+    "author": "Author",
+    "community": "Community",
+    "videoCount": "{count, plural, one {# video} other {# videos}}"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
-    "description": "You have {count} case stud{plural} that need{singular} revision based on editor feedback.",
+    "description": "{count, plural, one {You have # case study that needs revision based on editor feedback.} other {You have # case studies that need revision based on editor feedback.}}",
     "editorFeedback": "Editor feedback:",
     "actions": {
       "remindLater": "Remind Me Later",
       "viewSubmissions": "View & Edit Submissions"
-    }
+    },
+    "submittedOn": "Submitted {date}",
+    "revisionBadge": "Revision"
   },
   "search": {
     "pageTitle": "Search",
@@ -725,6 +1343,18 @@
     "results": "Results",
     "noResults": "No results found",
     "noResultsDescription": "Try adjusting your search terms or filters",
+    "clear": "Clear search",
+    "seeAll": "See all",
+    "allResults": "All",
+    "searching": "Searching…",
+    "seeAllResults": "See all results for \"{q}\"",
+    "searchUnavailable": "Content search is temporarily unavailable. Please try again shortly.",
+    "regions": "Regions",
+    "resultsFor": "Results for \"{q}\"",
+    "typeToSearch": "Search the hub",
+    "typeToSearchHint": "Find case studies, news, people and regions.",
+    "nothingFound": "Nothing found for \"{q}\"",
+    "nothingFoundHint": "Try a different term, or <link>browse the Atlas</link>.",
     "people": "People",
     "agendas": "Agendas",
     "news": "News",
@@ -750,6 +1380,54 @@
       "result": "result",
       "relevant": "relevant results out of",
       "foundIn": "Found in"
+    },
+    "filterLabels": {
+      "title": "Filters",
+      "activeFilters": "Active filters",
+      "yearRange": "Year range",
+      "to": "to",
+      "apply": "Apply",
+      "clear": "Clear",
+      "status": "Status",
+      "authorRole": "Author role",
+      "organizations": "Organizations",
+      "projects": "Projects",
+      "tags": "Tags",
+      "featured": "Featured",
+      "agendaType": "Agenda type",
+      "regionalCommunities": "Regional communities",
+      "author": "Author",
+      "country": "Country",
+      "accessLevel": "Access level"
+    },
+    "featured": "Featured",
+    "authorsLabel": "Authors:",
+    "more": "+{count} more",
+    "downloads": "{count, plural, one {# download} other {# downloads}}",
+    "byAuthor": "By {name}",
+    "emptyCaseStudies": "Try different keywords or check back later for new case studies.",
+    "emptyAgendas": "Try different keywords or check back later for new agendas.",
+    "emptyNews": "Try different keywords or check back later for new news posts.",
+    "positionAt": "{position} at {organization}",
+    "memberOf": "Member of {communities}",
+    "memberOfMore": "Member of {communities} and {count, plural, one {# other community} other {# other communities}}",
+    "agendaTypes": {
+      "global": "Global Agenda",
+      "regional": "Regional Agenda",
+      "community": "Community Agenda",
+      "annual": "Annual Agenda",
+      "quarterly": "Quarterly Agenda",
+      "meeting": "Meeting Agenda",
+      "actionPlan": "Action Plan",
+      "strategy": "Strategic Plan",
+      "other": "Other"
+    },
+    "error": {
+      "title": "Search Service Error",
+      "description": "There was an issue with the search service. This might be due to missing configuration.",
+      "genericMessage": "There was an issue with the search service.",
+      "checkConfig": "Please check that your Algolia configuration is correct.",
+      "tryAgain": "Try Again"
     }
   },
   "collaborate": {
@@ -778,7 +1456,9 @@
       "viewAll": "View all",
       "showMore": "Show more",
       "loadMore": "Load more",
-      "noMembers": "No members in this community yet"
+      "noMembers": "No members in this community yet",
+      "previous": "Previous",
+      "next": "Next"
     },
     "userCard": {
       "viewProfile": "View profile",
@@ -792,7 +1472,8 @@
       "hoursAgo": "{count}h ago",
       "daysAgo": "{count}d ago",
       "weeksAgo": "{count}w ago",
-      "monthsAgo": "{count}mo ago"
+      "monthsAgo": "{count}mo ago",
+      "openToCollaborate": "Open to collaborate"
     },
     "stats": {
       "totalMembers": "{count} members",
@@ -804,7 +1485,8 @@
       "title": "Active filters:",
       "search": "Search: {query}",
       "clear": "Reset All Filters"
-    }
+    },
+    "startCollaboration": "Start a workspace"
   },
   "onboarding": {
     "steps": {
@@ -837,6 +1519,29 @@
           "step2": "Share your work experience and expertise areas",
           "step3": "Add recent projects to showcase your contributions",
           "step4": "Choose your privacy and visibility settings"
+        },
+        "tagline": "Get started with your journey",
+        "hero": {
+          "title": "Welcome to Connecting Climate Minds",
+          "description": "Join a global community of climate leaders, experts, and advocates working together to address the climate crisis."
+        },
+        "highlights": {
+          "connect": {
+            "title": "Connect with Climate Leaders",
+            "description": "Network with professionals, researchers, and activists from around the world."
+          },
+          "share": {
+            "title": "Share Your Expertise",
+            "description": "Contribute your knowledge and learn from diverse perspectives on climate action."
+          },
+          "privacy": {
+            "title": "Privacy & Security",
+            "description": "Your data is protected. Control what you share and who can see your profile."
+          }
+        },
+        "gettingStarted": {
+          "title": "Let's get started!",
+          "description": "Complete your profile to connect with the right people and opportunities in the climate movement."
         }
       },
       "basicInfo": {
@@ -865,7 +1570,14 @@
         "usernamePlaceholder": "Enter a unique username",
         "countryPlaceholder": "Enter your country",
         "cityPlaceholder": "Enter your city",
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Tell us about yourself",
+        "headline": "Headline",
+        "headlinePlaceholder": "e.g. Researcher on climate anxiety in youth",
+        "headlineHint": "One line that sums you up — people see this first.",
+        "motivation": "What brought you here?",
+        "motivationPlaceholder": "What draws you to climate change and mental health…",
+        "motivationHint": "Optional. Your story helps others connect with you."
       },
       "workInfo": {
         "title": "Work Information",
@@ -915,11 +1627,16 @@
         "otherLinksHint": "Add links to your professional profiles (Twitter, GitHub, Portfolio, etc.)",
         "platformPlaceholder": "Platform name (e.g., Twitter, GitHub)",
         "urlPlaceholder": "https://example.com/yourprofile",
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Share your expertise",
+        "addLink": "Add Link",
+        "linkedinPlaceholder": "https://linkedin.com/in/username",
+        "workTypeFallback": "Work type {key}",
+        "expertiseFallback": "Expertise {key}"
       },
       "recentWork": {
         "title": "Recent Work",
-        "description": "Description",
+        "description": "Add up to five recent projects or pieces of work to showcase your experience.",
         "addWork": "Add Work",
         "editWork": "Edit Work",
         "yourWork": "Your Recent Work",
@@ -944,7 +1661,8 @@
         "viewProject": "View Project",
         "cancel": "Cancel",
         "updateWork": "Update Work",
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Showcase your projects"
       },
       "privacy": {
         "title": "Privacy & Visibility",
@@ -985,7 +1703,8 @@
           "showLocation": "Show location",
           "locationHint": "Display your country and city information"
         },
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Control your visibility"
       },
       "review": {
         "title": "Almost Ready!",
@@ -1048,7 +1767,10 @@
         "viewProject": "View Project",
         "readyTitle": "You're all set!",
         "readyDescription": "Welcome to our global community of climate minds. Let's create meaningful change together.",
-        "completeOnboarding": "Complete Setup"
+        "completeOnboarding": "Complete Setup",
+        "tagline": "Review and complete",
+        "websiteLink": "Website",
+        "updateLater": "You can always update your profile from the dashboard."
       }
     },
     "title": "Setup Your Profile",
@@ -1070,7 +1792,62 @@
     "getStarted": "Get Started",
     "continue": "Continue",
     "reviewProfile": "Review Profile",
-    "completeProfile": "Complete Profile"
+    "completeProfile": "Complete Profile",
+    "redirectDialog": {
+      "title": "Complete Your Profile",
+      "message": "To get the most out of your experience, we recommend completing your profile.",
+      "proceed": "Complete Profile",
+      "continue": "Continue to Collaborate",
+      "waiver": "You can complete this later",
+      "processing": "Processing..."
+    },
+    "stepOf": "Step {current, number} of {total, number}",
+    "percentComplete": "{value, number}% complete",
+    "minutesLeft": "~{minutes, number} min left",
+    "footerTagline": "Join thousands of climate minds from around the world",
+    "successToast": "Welcome! Your profile has been set up successfully.",
+    "errors": {
+      "networkFailed": "Network connection failed. Please check your internet connection and try again.",
+      "unexpectedResponse": "Server returned an unexpected response format. Please try again or contact support.",
+      "serverErrorSupport": "Server error ({status}). Please try again or contact support.",
+      "authRequired": "You need to be logged in to complete onboarding.",
+      "correctFields": "Please correct the following: {details}",
+      "userNotFound": "Your user account was not found. Please refresh and try again.",
+      "serverErrorRetry": "Server error ({status}). Please try again.",
+      "unexpectedSuccess": "Onboarding may have completed, but we received an unexpected response. Please refresh to check your status.",
+      "submissionFailed": "Onboarding submission failed",
+      "submitFailed": "Failed to submit your information. Please try again."
+    },
+    "validation": {
+      "basicInfo": {
+        "firstName": "First name is required",
+        "lastName": "Last name is required",
+        "username": "Username must be at least 3 characters",
+        "usernameMax": "Username must be less than 30 characters",
+        "usernamePattern": "Username can only contain letters, numbers and underscores",
+        "bio": "Bio must be less than 500 characters",
+        "country": "Country is required",
+        "city": "City is required",
+        "preferredLanguage": "Please choose your preferred language"
+      },
+      "workInfo": {
+        "workTypes": "Please select at least one work type",
+        "expertiseAreas": "Please select at least one expertise area",
+        "workBio": "Work bio must be less than 1000 characters",
+        "linkedinUrl": "Please enter a valid LinkedIn URL",
+        "websiteUrl": "Please enter a valid website URL",
+        "socialLinkUrl": "Please enter a valid URL",
+        "socialLinkPlatform": "Platform name is required"
+      },
+      "recentWork": {
+        "title": "Title is required",
+        "titleMax": "Title must be less than 100 characters",
+        "description": "Description is required",
+        "descriptionMax": "Description must be less than 500 characters",
+        "link": "Please enter a valid URL",
+        "startDate": "Start date is required"
+      }
+    }
   },
   "news": {
     "title": "News",
@@ -1097,6 +1874,7 @@
     "filters": {
       "searchPlaceholder": "Search news...",
       "dateRange": "Date Range",
+      "byDate": "By date",
       "dateFrom": "From",
       "dateTo": "To",
       "tags": "Tags",
@@ -1107,15 +1885,36 @@
       "activeFilters": "Active filters",
       "updating": "Updating...",
       "filters": "Filters",
-      "advancedFilters": "Advanced Filters"
+      "advancedFilters": "Advanced Filters",
+      "timeFrame": {
+        "any": "Any time",
+        "year": "Past year",
+        "threeYears": "Past 3 years",
+        "fiveYears": "Past 5 years",
+        "month": "Past month",
+        "threeMonths": "Past 3 months"
+      },
+      "global": "Global"
     },
     "metadata": {
       "author": "Author",
       "organization": "Organization",
       "project": "Project",
       "location": "Location",
-      "publishDate": "Published"
-    }
+      "publishDate": "Published",
+      "projects": "{count, plural, one {Project} other {Projects}}",
+      "organizations": "{count, plural, one {Organization} other {Organizations}}"
+    },
+    "siteBadge": "CCM",
+    "featuredBadge": "Featured",
+    "minRead": "{minutes} min read",
+    "regionEmpty": {
+      "title": "No updates in {region} yet.",
+      "description": "Follow this region to hear when something's posted.",
+      "cta": "Follow this region"
+    },
+    "metaNotFound": "News Not Found",
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}"
   },
   "regional": {
     "noLivedExperiences": "No lived experiences available yet.",
@@ -1137,12 +1936,18 @@
       "caseStudies": "Case Studies",
       "newsUpdates": "News & Updates",
       "communityVoices": "Community Voices",
-      "communityVoicesSubtitle": "Hear directly from community members about their experiences"
-    }
+      "communityVoicesSubtitle": "Hear directly from community members about their experiences",
+      "overview": "Overview",
+      "members": "Members",
+      "partners": "Partners"
+    },
+    "communityMembers": "Community members",
+    "contributionCount": "{count, plural, one {# contribution} other {# contributions}}",
+    "downloadFile": "Download {name}"
   },
   "cookieConsent": {
     "title": "We value your privacy",
-    "description": "We use essential cookies to keep things running smoothly, and optional cookies to make your experience better. Plausible, our analytics tool, is completely cookieless — it never tracks you personally.",
+    "description": "We use essential cookies to keep things running smoothly, and optional cookies to make your experience better. Plausible, our visit counter, is cookieless. With your permission, PostHog helps us understand which features people use.",
     "acceptAll": "Accept All",
     "rejectNonEssential": "Essential Only",
     "managePreferences": "Manage Preferences",
@@ -1160,7 +1965,7 @@
       },
       "analytics": {
         "title": "Analytics",
-        "description": "We use Plausible Analytics, which is completely cookieless — no tracking cookies are ever set. No consent needed here!"
+        "description": "Plausible counts visits without cookies or personal data. If you turn this on, PostHog (hosted in the EU) also records which pages and features you use — linked to your account when signed in, never the content you write, and no session recordings. You can switch it off at any time."
       }
     }
   },
@@ -1173,14 +1978,859 @@
     "viewAll": "View All",
     "noPostsTitle": "No posts yet",
     "noPostsBody": "Check back soon for updates.",
-    "noContent": "No content available at this time."
+    "noContent": "No content available at this time.",
+    "noQueryType": "No query type specified",
+    "contentLoadFailed": "Failed to load content",
+    "errorLoadingContent": "Error loading content: {error}",
+    "downloadsCount": "{count, plural, one {# download} other {# downloads}}",
+    "sourceKind": {
+      "news": "News",
+      "research": "Research",
+      "blog": "Blog",
+      "report": "Report",
+      "press": "Press",
+      "policy": "Policy",
+      "other": "External"
+    }
   },
   "map": {
     "title": "Explore by region",
+    "allContent": "All content",
     "facetCaseStudies": "Case studies",
     "facetMembers": "Members",
     "facetNews": "News",
     "viewInSearch": "View in search",
-    "noData": "No data for this region yet."
+    "noData": "No data for this region yet.",
+    "facetLivedExperiences": "Lived experiences",
+    "facetAgendas": "Agendas",
+    "facetReports": "Reports",
+    "facetResearchOutputs": "Research outputs"
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcement",
+    "readMore": "Read more"
+  },
+  "organizations": {
+    "types": {
+      "ngo": "NGOs",
+      "research": "Research institutions",
+      "university": "Universities",
+      "government": "Government agencies",
+      "international": "International organizations",
+      "company": "Companies",
+      "community": "Community organizations",
+      "foundation": "Foundations",
+      "other": "Other"
+    }
+  },
+  "livedExperienceSubmission": {
+    "pageTitle": "Share a lived experience",
+    "pageDescription": "Link a video and tell us, in your own words, who you are and what your experience speaks to. An editor will review it before it appears.",
+    "story": {
+      "title": "Your story",
+      "description": "The video and your words."
+    },
+    "context": {
+      "title": "Context"
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "A short title for your experience",
+      "videoLink": "Video link",
+      "videoLinkHelp": "Paste a YouTube or Vimeo link.",
+      "description": "Description",
+      "descriptionPlaceholder": "Briefly, what is this experience about?",
+      "issue": "The issue it speaks to",
+      "issuePlaceholder": "e.g. eco-anxiety among young people…",
+      "issueHelp": "What climate × mental-health theme does this touch?",
+      "personContext": "About you",
+      "personContextPlaceholder": "A sentence or two about who you are…",
+      "personContextHelp": "Shared respectfully alongside your story. Optional.",
+      "region": "Regional community",
+      "regionPlaceholder": "Choose a region (optional)",
+      "tags": "Tags",
+      "tagsHelp": "Up to 6.",
+      "body": "The full story (optional)",
+      "bodyPlaceholder": "Tell the story in full — you can add images with captions…",
+      "bodyHelp": "Like a blog post: paragraphs and a few images. Shown below your video."
+    },
+    "validation": {
+      "titleMin": "Please add a title",
+      "descriptionMin": "Please describe the experience",
+      "issueMin": "What issue does this speak to?",
+      "videoUrl": "Please paste a valid video link",
+      "youtubeUrl": "Please paste a valid YouTube link",
+      "vimeoUrl": "Please paste a valid Vimeo link",
+      "titleMax": "Keep the title under {max} characters",
+      "descriptionMax": "Keep the description under {max} characters",
+      "issueMax": "Keep this under {max} characters",
+      "personContextMax": "Keep this under {max} characters"
+    },
+    "submit": "Submit for review",
+    "cancel": "Cancel",
+    "success": "Thank you — your experience was submitted for review.",
+    "video": {
+      "uploadVideo": "Upload a video",
+      "youtubeLink": "YouTube link",
+      "vimeoLink": "Vimeo link",
+      "youtubeValid": "YouTube link recognized — here's the preview.",
+      "youtubePreviewAlt": "Preview image of the YouTube video",
+      "vimeoValid": "This Vimeo link looks good.",
+      "chooseFile": "Choose a video file",
+      "removeFile": "Remove",
+      "fileHint": "MP4 or WebM, up to 100 MB.",
+      "fileRequired": "Please choose a video file to upload.",
+      "fileTooLarge": "That file is over the 100 MB limit — please choose a smaller one.",
+      "fileWrongType": "Please choose an MP4 or WebM file.",
+      "keepExisting": "Your current video is kept unless you choose a new file."
+    },
+    "submitError": "We couldn't submit your experience. Please try again."
+  },
+  "comments": {
+    "heading": "Discussion",
+    "loading": "Loading…",
+    "empty": "No comments yet. Start the conversation.",
+    "post": "Post",
+    "reply": "Reply",
+    "placeholder": "Add a comment…",
+    "replyPlaceholder": "Write a reply…",
+    "namePlaceholder": "Your name",
+    "anonNotice": "Posting anonymously — your comment will be reviewed before it appears.",
+    "heldForReview": "Thanks — your comment will appear after review.",
+    "posted": "Comment posted.",
+    "loadMore": "Load more",
+    "pending": "Pending review",
+    "deleted": "This comment was deleted.",
+    "anonymous": "Anonymous",
+    "delete": "Delete",
+    "report": "Report",
+    "reported": "Reported. Thank you.",
+    "signInToReact": "Sign in to react.",
+    "signInToReport": "Sign in to report.",
+    "readOnly": "You can read this discussion, but only workspace members with comment access can post."
+  },
+  "discovery": {
+    "searchPlaceholder": "Search…",
+    "sortLabel": "Sort",
+    "clearAll": "Clear all",
+    "sort": {
+      "relevance": "Relevance",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "az": "A–Z",
+      "region": "By region"
+    },
+    "timeFrame": {
+      "any": "Any time",
+      "year": "Past year",
+      "threeYears": "Past 3 years",
+      "fiveYears": "Past 5 years",
+      "month": "Past month",
+      "threeMonths": "Past 3 months"
+    },
+    "facet": {
+      "region": "Region",
+      "topic": "Topic",
+      "tags": "Tags",
+      "language": "Language",
+      "source": "Source",
+      "agendaType": "Type",
+      "workType": "Work type",
+      "expertise": "Expertise",
+      "openToTalk": "Open to talk"
+    }
+  },
+  "collaboration": {
+    "pageTitle": "Collaborations",
+    "pageDescription": "Shared workspaces for working together.",
+    "breadcrumbHome": "Workspaces",
+    "create": "New workspace",
+    "createTitle": "Create a workspace",
+    "titleLabel": "Name",
+    "descriptionLabel": "Description",
+    "visibilityLabel": "Visibility",
+    "visibilityMembers": "Members only",
+    "visibilityPublic": "Public",
+    "signInToCreate": "Sign in to create",
+    "empty": "No workspaces yet.",
+    "public": "Public",
+    "members": "Members only",
+    "untitledWorkspace": "Untitled workspace",
+    "addDescription": "Add a description…",
+    "open": "Open",
+    "storageNotConfigured": "File storage is being set up — files and media will appear here soon.",
+    "roleUpdated": "Role updated.",
+    "backToThreads": "Back to threads",
+    "threadTitlePlaceholder": "Thread title…",
+    "createThread": "Create",
+    "newThread": "New thread",
+    "noThreads": "No threads yet.",
+    "nav": {
+      "overview": "Overview",
+      "plan": "Plan",
+      "threads": "Threads",
+      "files": "Files",
+      "media": "Media",
+      "members": "Members",
+      "sections": "Sections",
+      "docs": "Docs",
+      "outputs": "Outputs"
+    },
+    "role": {
+      "OWNER": "Owner",
+      "EDITOR": "Editor",
+      "COMMENTER": "Commenter",
+      "VIEWER": "Viewer"
+    },
+    "uploadFile": "Upload file",
+    "uploading": "Uploading…",
+    "uploaded": "File uploaded.",
+    "uploadFailed": "Upload failed.",
+    "noFiles": "No files yet.",
+    "openPdf": "Open",
+    "download": "Download",
+    "loadingPdf": "Loading PDF…",
+    "notesOn": "Notes: on",
+    "notesOff": "Notes",
+    "youtubeUrlPlaceholder": "YouTube link…",
+    "mediaTitlePlaceholder": "Title (optional)",
+    "addMedia": "Add",
+    "noMedia": "No media yet.",
+    "emptyState": {
+      "docsTitle": "No documents yet",
+      "docsBody": "Draft notes, briefs, and write-ups together. Create your first document to get started.",
+      "threadsTitle": "No discussions yet",
+      "threadsBody": "Start a thread to discuss decisions, share updates, or ask the group a question.",
+      "filesTitle": "No files yet",
+      "filesBody": "Upload PDFs and documents the team needs. Drag a file here or use the upload button.",
+      "mediaTitle": "No media yet",
+      "mediaBody": "Add YouTube videos to share talks, demos, or recordings with the workspace."
+    },
+    "mediaConsentRequired": "This video needs cookie consent to play.",
+    "dropToUpload": "Drag a file here or",
+    "viewPublicPage": "View public page",
+    "attention": {
+      "title": "What needs you",
+      "subtitle": "Tasks, reviews and replies waiting on you",
+      "open": "Open →",
+      "task": "task · {detail}",
+      "output": "revision requested",
+      "notification": "{detail}"
+    },
+    "invitePeople": "Invite people",
+    "inviteSearchPlaceholder": "Search members by name…",
+    "inviteAction": "Invite",
+    "invitedLabel": "Invited",
+    "inviteSent": "Invitation sent.",
+    "inviteNoResults": "No members match.",
+    "removeMember": "Remove",
+    "removeConfirm": "Confirm removal?",
+    "memberRemoved": "Member removed.",
+    "archiveThread": "Archive",
+    "archiveConfirm": "Confirm archive?",
+    "threadArchived": "Thread archived.",
+    "leaveWorkspace": "Leave",
+    "leaveConfirm": "Confirm leave",
+    "archiveWorkspace": "Archive",
+    "archived": "Workspace archived",
+    "readOnlyNotice": "You're viewing this workspace read-only.",
+    "readOnlyJoinLink": "About this project & how to join",
+    "fileUnavailable": "File unavailable",
+    "makePublic": "Make public",
+    "makePrivate": "Make private",
+    "visibilityConfirm": "Confirm change",
+    "nowPublic": "Workspace is now public — anyone can explore it read-only.",
+    "nowPrivate": "Workspace is now members-only.",
+    "acceptCookies": "Accept cookies to play",
+    "delete": "Delete",
+    "taskStatus": {
+      "TODO": "To do",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done"
+    },
+    "errors": {
+      "tooLong": "Keep this under {max} characters.",
+      "empty": "This can't be empty."
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "empty": "No conversations yet.",
+    "selectConversation": "Select a conversation.",
+    "unknownUser": "Member",
+    "unread": "Unread",
+    "back": "Back",
+    "typeMessage": "Type a message…",
+    "send": "Send",
+    "messageButton": "Message",
+    "delete": "Delete",
+    "report": "Report",
+    "reported": "Reported.",
+    "messageDeleted": "Message deleted"
+  },
+  "reader": {
+    "chapters": "Chapters",
+    "onThisPage": "On this page",
+    "footnotes": "Footnotes",
+    "backToReference": "Back to reference {number}",
+    "documentTitle": "Global Research and Action Agenda",
+    "title": "Reader"
+  },
+  "atlas": {
+    "title": "Atlas",
+    "description": "Explore case studies, lived experiences, people and more across the seven regions.",
+    "show": "Show",
+    "explore": "Explore {region}",
+    "empty": "No {layer} here yet.",
+    "untitled": "Untitled",
+    "theme": "Theme",
+    "searchPlaceholder": "Search the atlas…",
+    "clearSearch": "Clear search",
+    "openIn": "Open in {label}",
+    "pinItems": "{count} here",
+    "locator": "Where {region} sits on the world map",
+    "close": "Close",
+    "embedTitle": "Explore this region",
+    "openFullAtlas": "Open the full Atlas",
+    "countryBreakdown": "Where in the region",
+    "lastLayer": "At least one layer stays selected",
+    "tapHint": "Tap a region to see its stories",
+    "latestEverywhere": "Latest from across the regions",
+    "aroundTheRegions": "Around the regions",
+    "viewAllType": "View all {label}",
+    "region": "Region",
+    "allRegions": "All regions",
+    "when": "When",
+    "when_y1": "Past year",
+    "when_y3": "Past 3 years",
+    "when_older": "Earlier",
+    "regionalSpotlight": "Regional spotlight",
+    "inThisView": "{count} in this view",
+    "visitCommunity": "Visit the community page",
+    "followTheme": "Follow this theme"
+  },
+  "docs": {
+    "title": "Documents",
+    "empty": "No documents yet.",
+    "newDoc": "New document",
+    "deleteDoc": "Delete document",
+    "backToDocs": "Back to documents",
+    "untitled": "Untitled",
+    "startWriting": "Start writing…"
+  },
+  "home": {
+    "peopleTitle": "People in your region",
+    "peopleEmpty": "No members to show here yet.",
+    "aMember": "A member",
+    "seeking": "Seeking"
+  },
+  "researchOutputs": {
+    "backToResearch": "Back to Research & Action",
+    "featured": "Featured",
+    "documents": "Documents",
+    "download": "Download",
+    "pages": "pages",
+    "atAGlance": "At a glance",
+    "type": "Type",
+    "published": "Published",
+    "organizations": "Organizations",
+    "relatedContent": "Related content",
+    "pageTitle": "Research outputs",
+    "pageDescription": "Reports, toolkits, briefs and other outputs produced across the Connecting Climate Minds community.",
+    "empty": "No research outputs published yet.",
+    "metaNotFound": "Research Output Not Found",
+    "metaFallbackTitle": "Research Output"
+  },
+  "outputs": {
+    "title": "Outputs",
+    "subtitle": "The hub content this workspace is producing.",
+    "whatMaking": "What are you making?",
+    "addOutput": "Add an output",
+    "createNew": "Create a new draft",
+    "linkExisting": "Link an existing draft",
+    "pickType": "Pick a type",
+    "empty": "No outputs yet. Add the case study, lived experience, or research output this workspace is working toward.",
+    "statusDraft": "Draft",
+    "statusPending": "In review",
+    "statusRevision": "Needs changes",
+    "statusApproved": "Published",
+    "remove": "Remove",
+    "removeConfirm": "Remove this output from the workspace? The draft itself is not deleted.",
+    "pendingHint": "Will link here once published",
+    "continueEditing": "Continue editing →",
+    "removeArmed": "Confirm remove"
+  },
+  "projectPublic": {
+    "aboutHeading": "About this project",
+    "teamHeading": "The team",
+    "outputsHeading": "Published outputs",
+    "outputsEmpty": "No published outputs yet.",
+    "follow": "Follow",
+    "following": "Following",
+    "requestToJoin": "Request to join",
+    "messageLead": "Message the lead",
+    "signInToJoin": "Sign in to request to join",
+    "openWorkspace": "Open workspace",
+    "privateNotice": "This is a private workspace.",
+    "requestModalTitle": "Request to join {title}",
+    "requestModalHint": "Tell the lead how you'd like to contribute (optional).",
+    "requestModalPlaceholder": "I'd like to help with…",
+    "requestModalSubmit": "Send request",
+    "requestSent": "Request sent — the lead will review it.",
+    "requestCancel": "Cancel",
+    "statusDraft": "Forming",
+    "statusActive": "Active",
+    "statusArchived": "Completed",
+    "exploreWorkspace": "Explore the workspace"
+  },
+  "placePicker": {
+    "searchLabel": "Where did this take place?",
+    "searchPlaceholder": "Search a town, city, region or country…",
+    "searching": "Searching…",
+    "noResults": "No places found. Try the nearest town, the country, or the region.",
+    "hint": "Can't find it? Search for the country or region instead.",
+    "displayLabel": "How should we name this place?",
+    "change": "Change",
+    "kind": {
+      "exact": "Place",
+      "city": "Town or city",
+      "region": "Region",
+      "country": "Country"
+    },
+    "clear": "Remove location"
+  },
+  "editor": {
+    "hint": "Type / for blocks — headings, images, video and more",
+    "charCountSuffix": "characters",
+    "link": {
+      "promptUrl": "Enter a URL"
+    },
+    "image": {
+      "insertLabel": "Insert image",
+      "uploadFailed": "Image upload failed. Please try again.",
+      "altLabel": "Alternative text",
+      "altPlaceholder": "Describe the image for screen readers",
+      "altRequiredHint": "Please add alt text so everyone can understand the image.",
+      "captionLabel": "Caption",
+      "captionPlaceholder": "Add a caption (optional)"
+    },
+    "slashMenu": {
+      "label": "Insert a block",
+      "empty": "No blocks match your search",
+      "groupInsert": "Insert",
+      "items": {
+        "heading2": {
+          "label": "Heading 2",
+          "hint": "Large section heading"
+        },
+        "heading3": {
+          "label": "Heading 3",
+          "hint": "Medium section heading"
+        },
+        "heading4": {
+          "label": "Heading 4",
+          "hint": "Small section heading"
+        },
+        "bulletList": {
+          "label": "Bulleted list",
+          "hint": "A simple list with bullets"
+        },
+        "orderedList": {
+          "label": "Numbered list",
+          "hint": "A list with numbering"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Upload an image with a caption"
+        },
+        "youtube": {
+          "label": "YouTube",
+          "hint": "Embed a YouTube video"
+        },
+        "quote": {
+          "label": "Quote",
+          "hint": "Highlight a quotation"
+        },
+        "infoBox": {
+          "label": "Info box",
+          "hint": "Callout for tips or warnings"
+        },
+        "break": {
+          "label": "Section break",
+          "hint": "Visual divider between sections"
+        },
+        "timeline": {
+          "label": "Timeline",
+          "hint": "Key moments on a dated rail"
+        },
+        "chart": {
+          "label": "Chart",
+          "hint": "Bar, line or pie chart from your data"
+        },
+        "mermaid": {
+          "label": "Diagram",
+          "hint": "Flow or process diagram (Mermaid)"
+        }
+      },
+      "groupData": "Data & story"
+    },
+    "toolbar": {
+      "label": "Block options",
+      "delete": "Delete block",
+      "placement": {
+        "full": "Full width",
+        "wide": "Wide",
+        "start": "Align to the start",
+        "end": "Align to the end",
+        "center": "Centered"
+      }
+    },
+    "youtube": {
+      "urlPlaceholder": "Paste a YouTube link…",
+      "confirm": "Add video",
+      "invalidUrl": "That doesn't look like a YouTube link. Try the full video URL.",
+      "captionLabel": "Caption",
+      "captionPlaceholder": "Add a caption (optional)"
+    },
+    "infoBox": {
+      "variantLabel": "Info box style",
+      "variant": {
+        "info": "Info",
+        "warning": "Warning",
+        "success": "Success"
+      }
+    },
+    "break": {
+      "styleLabel": "Break style",
+      "style": {
+        "hr": "Line",
+        "readMore": "Dots",
+        "section": "Section",
+        "chapter": "Chapter"
+      }
+    },
+    "timeline": {
+      "blockLabel": "Timeline",
+      "addItem": "Add moment",
+      "removeItem": "Remove moment",
+      "dateLabel": "Date",
+      "datePlaceholder": "e.g. 2021",
+      "titleLabel": "Title",
+      "titlePlaceholder": "What happened",
+      "textLabel": "Description",
+      "textPlaceholder": "Tell this part of the story…"
+    },
+    "chart": {
+      "typeLabel": "Chart type",
+      "type": {
+        "bar": "Bar",
+        "line": "Line",
+        "pie": "Pie",
+        "groupedBar": "Grouped",
+        "stackedBar": "Stacked",
+        "area": "Area",
+        "donut": "Donut",
+        "regionMap": "Region map"
+      },
+      "titleLabel": "Chart title",
+      "titlePlaceholder": "Give the chart a title (optional)",
+      "labelLabel": "Label",
+      "labelPlaceholder": "Label",
+      "valueLabel": "Value",
+      "addRow": "Add row",
+      "removeRow": "Remove row",
+      "rendering": "Rendering chart…",
+      "renderFailed": "We couldn't draw this chart. Check the rows and try again.",
+      "renderFailedLastGood": "We couldn't update the chart — showing the last good version.",
+      "previewEmpty": "Add data to see the chart preview",
+      "defaultSeries": "Value",
+      "dataStep": "Data — paste anything, or type into the grid",
+      "labelColumn": "Label",
+      "seriesName": "Series name",
+      "highlightSeries": "Highlight as the story series",
+      "highlightHint": "Amber with a direct label — the series that carries the story",
+      "removeSeries": "Remove series",
+      "addSeries": "Add series",
+      "pasteHint": "⌘V a spreadsheet range, CSV, or even \"Gazi 72, Vanga 64\"",
+      "suggested": "suggested",
+      "unitPlaceholder": "Unit (%, households…)",
+      "captionPlaceholder": "Caption — what the reader should notice",
+      "sourcePlaceholder": "Source (who collected the data)",
+      "sourceUrlPlaceholder": "Source link (DOI / URL)",
+      "altPlaceholder": "Alt text — what the chart shows, for screen readers",
+      "annotationAt": "Pin note at",
+      "annotationPlaceholder": "Note pinned to this category (e.g. Cyclone hits)",
+      "removeAnnotation": "Remove note",
+      "addAnnotation": "Pin a note",
+      "thresholdLabel": "Threshold",
+      "thresholdName": "e.g. Target",
+      "edit": "Edit chart",
+      "done": "Done",
+      "sourceLabel": "Source"
+    },
+    "mermaid": {
+      "blockLabel": "Diagram",
+      "codeLabel": "Diagram source",
+      "codePlaceholder": "graph TD; A-->B",
+      "rendering": "Rendering diagram…",
+      "renderFailed": "We couldn't draw this diagram. Check the syntax and try again.",
+      "renderFailedLastGood": "We couldn't update the diagram — showing the last good version.",
+      "previewEmpty": "Write Mermaid code to see the preview"
+    }
+  },
+  "submitStoryBanner": {
+    "title": "Share your story",
+    "subtitle": "Your lived experience can help shape research and action on climate and mental health.",
+    "cta": "Submit your story"
+  },
+  "collabSpace": {
+    "header": "Find people, projects & events",
+    "projectsTab": "Projects",
+    "peopleTab": "People",
+    "eventsTab": "Events",
+    "publicChip": "Public",
+    "memberCount": "{count, plural, one {# member} other {# members}}",
+    "openWorkspace": "Open workspace",
+    "viewProject": "View project →",
+    "noProjects": "No public projects yet — start one and invite collaborators.",
+    "message": "Message",
+    "connect": "Connect",
+    "requested": "Requested ✓",
+    "connected": "Connected ✓"
+  },
+  "regionalCommunity": {
+    "kicker": "Regional Community of Practice",
+    "intro": "A connected space bringing together the region's research, lived experiences, events and the people working on climate change and mental health.",
+    "getInvolved": "Get involved",
+    "statMembers": "Members",
+    "statCaseStudies": "Case studies",
+    "statLived": "Lived experiences",
+    "reportsTitle": "Regional Reports & Agendas",
+    "reportsDescription": "Access the latest reports, research findings, and meeting agendas from our regional community.",
+    "viewAllReports": "View All Reports"
+  },
+  "researchOutputSubmission": {
+    "pageTitle": "Submit a research output",
+    "pageDescription": "Share a report, toolkit, dataset brief or guideline. An editor will review it before it appears publicly.",
+    "about": {
+      "title": "About this output",
+      "description": "What it is and what it covers."
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. Heat and mental health in coastal cities — 2026 report",
+      "type": "Type of output",
+      "region": "Region",
+      "regionPlaceholder": "Choose a region (optional)",
+      "excerpt": "Summary",
+      "excerptPlaceholder": "A few sentences on what readers will find…",
+      "excerptHelp": "Shown on cards and at the top of the page.",
+      "bodyPlaceholder": "Optional in-hub reading — key findings, charts, context…",
+      "themes": "Themes",
+      "tags": "Tags",
+      "tagsHelp": "Up to 6.",
+      "communities": "Regional communities"
+    },
+    "types": {
+      "report": "Report",
+      "toolkit": "Toolkit",
+      "dataset-brief": "Dataset brief",
+      "guideline": "Guideline"
+    },
+    "docs": {
+      "title": "Documents",
+      "description": "The files readers can download — add a full report, a summary, translations or slides.",
+      "addFile": "Add a document",
+      "fileHint": "PDF, Word, Excel or PowerPoint · up to 50MB",
+      "remove": "Remove",
+      "kind": "Document kind",
+      "language": "Document language",
+      "fileWrongType": "That file type isn't supported. Use PDF, Word, Excel or PowerPoint.",
+      "fileTooLarge": "That file is over 50MB."
+    },
+    "kinds": {
+      "summary": "Summary",
+      "full": "Full report",
+      "brief": "Brief",
+      "deck": "Slides"
+    },
+    "reading": {
+      "title": "Read it on the hub",
+      "description": "Optional: tell the story of this output right on the page — findings, charts, quotes."
+    },
+    "context": {
+      "title": "Context"
+    },
+    "validation": {
+      "titleMin": "Please add a title",
+      "titleMax": "The title must be 200 characters or fewer",
+      "excerptMax": "The summary must be 600 characters or fewer"
+    },
+    "cancel": "Cancel",
+    "submit": "Submit for review",
+    "success": "Thank you — your research output was submitted for review.",
+    "submitError": "We couldn't submit your research output. Please try again.",
+    "regions": {
+      "ssa": "Sub-Saharan Africa",
+      "nawa": "Northern Africa & Western Asia",
+      "csa": "Central & Southern Asia",
+      "esea": "Eastern & South-Eastern Asia",
+      "lac": "Latin America & the Caribbean",
+      "oce": "Oceania",
+      "enam": "Europe & Northern America"
+    },
+    "themes": {
+      "displacement": "Displacement",
+      "livelihoods": "Livelihoods",
+      "youth": "Youth",
+      "indigenous": "Indigenous"
+    }
+  },
+  "editorReview": {
+    "status": {
+      "draft": "Draft — not yet submitted",
+      "pending": "In review",
+      "revision": "Changes requested"
+    },
+    "hint": {
+      "draft": "Finish it up and submit when ready.",
+      "pending": "An editor is reviewing this. Resubmitting replaces the version in review.",
+      "revision": "An editor asked for changes — address the notes below and resubmit."
+    }
+  },
+  "typedCards": {
+    "type": {
+      "caseStudy": "Case study",
+      "livedExperience": "Lived experience",
+      "newsPost": "News",
+      "researchOutput": "Research output",
+      "event": "Event",
+      "person": "Member",
+      "region": "Regional community",
+      "report": "Report",
+      "project": "Project"
+    },
+    "untitled": "Untitled",
+    "new": "New",
+    "freshHeading": "Fresh on the hub",
+    "exploreAtlas": "Explore in Atlas"
+  },
+  "blog": {
+    "pageTitle": "Blog",
+    "pageDescription": "Stories, updates and reflections from the Connecting Climate Minds community.",
+    "noPosts": "No posts yet",
+    "noPostsDescription": "Check back soon — new stories are on their way."
+  },
+  "researchAndAction": {
+    "pageDescription": "Explore the agendas, case studies, outputs and tools produced across the Connecting Climate Minds network."
+  },
+  "communitiesIndex": {
+    "pageTitle": "Regional Communities",
+    "pageDescription": "Seven regional communities of practice connect researchers, practitioners and people with lived experience around the world.",
+    "explore": "Explore community"
+  },
+  "issueReport": {
+    "trigger": "Report a problem",
+    "title": "Report a problem",
+    "description": "We'll include the page you're on, your browser and your screen size — no need to type any of that.",
+    "summaryLabel": "What's wrong?",
+    "summaryPlaceholder": "Map is blank on my phone",
+    "whatHappenedLabel": "What happened?",
+    "whatHappenedPlaceholder": "What you did, and what you saw. Copy any error message word for word.",
+    "whatShouldHappenLabel": "What should happen instead? (optional)",
+    "whatShouldHappenPlaceholder": "The map with the community pins on it",
+    "urgencyLabel": "How urgent is this for you?",
+    "urgency": {
+      "blocking": "Blocking me",
+      "annoying": "Annoying",
+      "minor": "Minor",
+      "idea": "Just an idea"
+    },
+    "areaLabel": "Where in the hub?",
+    "areas": {
+      "home": "Home page",
+      "map": "The map",
+      "stories": "Lived experiences (stories)",
+      "story-submit": "Submitting a story",
+      "case-studies": "Case studies",
+      "research-outputs": "Research outputs",
+      "communities": "Communities",
+      "collaborations": "Collaborations / workspaces",
+      "events": "Events",
+      "news": "News",
+      "blog": "Blog",
+      "reader": "Reader",
+      "search": "Search",
+      "profiles": "Member profiles",
+      "dashboard": "My dashboard",
+      "messages": "Messages",
+      "comments": "Comments",
+      "notifications": "Notifications",
+      "auth": "Sign in / sign up",
+      "onboarding": "New member setup",
+      "studio": "Sanity Studio",
+      "cms": "The CMS (Payload admin)",
+      "navigation": "Menu, header or footer",
+      "whole-site": "Whole site",
+      "other": "Not sure"
+    },
+    "signedInLabel": "Were you signed in?",
+    "signedInYes": "Signed in",
+    "signedInNo": "Signed out",
+    "screenshotLabel": "Screenshot",
+    "screenshotAdd": "Add a screenshot",
+    "screenshotCapture": "Capture this page",
+    "screenshotHint": "Take a screenshot, then paste it here. You can also drag an image in.",
+    "screenshotHintCapture": "Capture this page (your browser asks which tab to share: pick this one), or paste or drag in an image.",
+    "screenshotRemove": "Remove screenshot",
+    "screenshotTooBig": "That image is over {mb}MB. Try a smaller one.",
+    "screenshotWrongType": "Use a PNG, JPEG, WebP or GIF.",
+    "screenshotFailed": "That image couldn't be read.",
+    "screenshotCaptureFailed": "The page couldn't be captured. Add a screenshot instead.",
+    "contextNote": "Also sending:",
+    "cancel": "Cancel",
+    "submit": "Send report",
+    "submitting": "Sending…",
+    "successTitle": "Report sent",
+    "successBody": "Thanks — we'll take it from here.",
+    "errorGeneric": "Your report wasn't sent. Please try again."
+  },
+  "moderation": {
+    "broadcast": {
+      "messageLabel": "Message",
+      "audience": "Audience",
+      "everyone": "Everyone",
+      "aCommunity": "A community",
+      "aRegion": "A region",
+      "community": "Community",
+      "region": "Region",
+      "selectPlaceholder": "Select…",
+      "pickCommunity": "Pick a community.",
+      "pickRegion": "Pick a region.",
+      "sentTo": "{count, plural, one {Sent to # member.} other {Sent to # members.}}",
+      "send": "Send notification",
+      "title": "Send a notification",
+      "description": "Notify a single member, a community, a region, or everyone. Recipients get an in-app notification (and an email if they haven't opted out)."
+    },
+    "queue": {
+      "tabPending": "Pending (anonymous)",
+      "tabFlagged": "Flagged",
+      "tabReported": "Reported",
+      "done": "Done",
+      "failed": "Failed",
+      "empty": "Nothing to review here.",
+      "reports": "{count, plural, one {# report} other {# reports}}",
+      "approve": "Approve",
+      "remove": "Remove",
+      "dismissReport": "Dismiss report",
+      "title": "Moderation"
+    }
+  },
+  "requests": {
+    "errors": {
+      "cooldown": "This member recently declined your request. Please wait a while before asking again.",
+      "rateLimit": "You've sent a lot of requests in a short time. Please try again in a little while.",
+      "unavailable": "This feature isn't available yet."
+    }
   }
 }

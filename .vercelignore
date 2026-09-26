@@ -1,0 +1,12 @@
+# Keep the deployment upload small: the CLI tarball was 155 MB and Vercel's
+# upload endpoint failed on it (2026-09-21). None of this is read by the build.
+.git
+node_modules
+.next*
+downloads
+docs
+backups
+.sanity-export-cache
+coverage
+.claude
+*.log

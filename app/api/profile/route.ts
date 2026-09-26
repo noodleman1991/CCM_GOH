@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse, after } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
+import { syncUserSearchRecord } from "@/lib/algolia-user-sync"
 import { UserService } from "@/lib/services/user.service"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { prisma } from "@/lib/prisma"
@@ -9,21 +10,23 @@ import type {
   UserProfileUpdateData,
   LocalizedQueryOptions
 } from "@/types/prisma"
+import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { LIMITS } from "@/lib/validation/limits";
 
 const ProfileUpdateSchema = z.object({
     // Clerk-managed fields (read-only from UI, sync only)
-    firstName: z.string().min(1, "First name is required").max(50),
-    lastName: z.string().min(1, "Last name is required").max(50),
-    username: z.string().min(3, "Username must be at least 3 characters").max(30)
+    firstName: z.string().min(1, "First name is required").max(LIMITS.profile.firstName),
+    lastName: z.string().min(1, "Last name is required").max(LIMITS.profile.lastName),
+    username: z.string().min(3, "Username must be at least 3 characters").max(LIMITS.profile.username)
         .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"),
     
     // App-managed profile fields - handle null values properly
-    bio: z.string().max(500, "Bio must be less than 500 characters").optional().or(z.literal("")).or(z.null()),
+    bio: z.string().max(LIMITS.profile.bio, "Bio must be less than 500 characters").optional().or(z.literal("")).or(z.null()),
     ageGroup: z.enum(["UNDER_18", "ABOVE_18"], {
         errorMap: () => ({ message: "Please select your age group" })
     }).optional().or(z.null()),
-    country: z.string().max(100).optional().or(z.literal("")).or(z.null()),
-    city: z.string().max(100).optional().or(z.literal("")).or(z.null()),
+    country: z.string().max(LIMITS.profile.country).optional().or(z.literal("")).or(z.null()),
+    city: z.string().max(LIMITS.profile.city).optional().or(z.literal("")).or(z.null()),
     workTypes: z.array(z.enum([
         "RESEARCH",
         "POLICY",
@@ -43,11 +46,11 @@ const ProfileUpdateSchema = z.object({
     ], {
         errorMap: () => ({ message: "Please select valid expertise areas" })
     })).default([]),
-    organization: z.string().max(200).optional().or(z.literal("")).or(z.null()),
-    position: z.string().max(200).optional().or(z.literal("")).or(z.null()),
-    workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
+    organization: z.string().max(LIMITS.profile.organization).optional().or(z.literal("")).or(z.null()),
+    position: z.string().max(LIMITS.profile.position).optional().or(z.literal("")).or(z.null()),
+    workBio: z.string().max(LIMITS.profile.workBio, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
     personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")).or(z.null()),
-    linkedinProfile: z.string().max(100).optional().or(z.literal("")).or(z.null()),
+    linkedinProfile: z.string().max(LIMITS.profile.linkedinProfile).optional().or(z.literal("")).or(z.null()),
     otherSocialLinks: z.array(z.object({
         platform: z.string().min(1),
         url: z.string().url()
@@ -55,8 +58,11 @@ const ProfileUpdateSchema = z.object({
 
     // Recent Work
     recentWork: z.array(z.object({
-        title: z.string().min(1, "Title is required").max(100),
-        description: z.string().min(1, "Description is required").max(500),
+        // The row's id when it already exists, so the save updates it in place
+        // and keeps the owner's pinned/hidden curation.
+        id: z.string().optional(),
+        title: z.string().min(1, "Title is required").max(LIMITS.recentWork.title),
+        description: z.string().min(1, "Description is required").max(LIMITS.recentWork.description),
         link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
         startDate: z.string().min(1, "Start date is required"),
         endDate: z.string().optional().or(z.literal("")),
@@ -70,12 +76,25 @@ const ProfileUpdateSchema = z.object({
     isSearchable: z.boolean().default(true),
     profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"], {
         errorMap: () => ({ message: "Please choose who can see your profile" })
-    }).default("PUBLIC"),
+    }).default("MEMBERS"),
     showEmail: z.boolean().default(false),
     showPhoneNumber: z.boolean().default(false),
     showWorkDetails: z.boolean().default(true),
     showSocialLinks: z.boolean().default(true),
     showLocation: z.boolean().default(true),
+
+    // Domain-rich fields (K4) — all optional
+    headline: z.string().max(LIMITS.profile.headline).optional().or(z.literal("")).or(z.null()),
+    pronouns: z.string().max(LIMITS.profile.pronouns).optional().or(z.literal("")).or(z.null()),
+    languages: z.array(z.string().max(LIMITS.profile.language)).optional().default([]),
+    focusTopics: z.array(z.string().max(LIMITS.profile.focusTopic)).optional().default([]),
+    motivation: z.string().max(LIMITS.profile.motivation).optional().or(z.literal("")).or(z.null()),
+    openToCollaboration: z.boolean().optional().default(false),
+    lookingFor: z.array(z.string().max(LIMITS.profile.lookingFor)).optional().default([]),
+    collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests).optional().or(z.literal("")).or(z.null()),
+    livedExperienceStatement: z.string().max(LIMITS.profile.livedExperienceStatement).optional().or(z.literal("")).or(z.null()),
+    showLivedExperience: z.boolean().optional().default(false),
+    orcidId: z.string().max(LIMITS.profile.orcidId).optional().or(z.literal("")).or(z.null()),
 }).transform((data) => ({
     // Transform empty strings and null values to null for database storage
     ...data,
@@ -91,6 +110,16 @@ const ProfileUpdateSchema = z.object({
     otherSocialLinks: data.otherSocialLinks || [],
     recentWork: data.recentWork || [],
     communityIds: data.communityIds || [],
+    // Domain-rich fields → null when blank
+    headline: data.headline || null,
+    pronouns: data.pronouns || null,
+    languages: data.languages || [],
+    focusTopics: data.focusTopics || [],
+    motivation: data.motivation || null,
+    lookingFor: data.lookingFor || [],
+    collaborationInterests: data.collaborationInterests || null,
+    livedExperienceStatement: data.livedExperienceStatement || null,
+    orcidId: data.orcidId || null,
 }))
 
 type ProfileFormValues = z.infer<typeof ProfileUpdateSchema>
@@ -175,7 +204,7 @@ export async function GET(request: NextRequest) {
         // Recent work is already included in getUserById result (no duplicate query needed)
         // Use the recentWork from result.data instead of fetching again
         // Type assertion: transformToLocalizedUser includes relations via spread
-        const recentWork = (result.data as any).recentWork || []
+        const recentWork = (result.data as { recentWork?: unknown[] }).recentWork || []
 
         // Return data at root level (matching working pattern)
         return NextResponse.json({
@@ -198,6 +227,9 @@ export async function GET(request: NextRequest) {
  * Update user profile with type safety and i18n support
  */
 export async function PUT(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "profile:update", { limit: 20, windowSeconds: 300 });
+  if (limited) return limited;
+
     try {
         const { userId } = await auth()
 
@@ -245,6 +277,18 @@ export async function PUT(request: NextRequest) {
             showLocation: validatedData.showLocation,
             communityIds: validatedData.communityIds || [],
             recentWork: validatedData.recentWork || [],
+            // Domain-rich fields (K4)
+            headline: validatedData.headline || null,
+            pronouns: validatedData.pronouns || null,
+            languages: validatedData.languages || [],
+            focusTopics: validatedData.focusTopics || [],
+            motivation: validatedData.motivation || null,
+            openToCollaboration: validatedData.openToCollaboration ?? false,
+            lookingFor: validatedData.lookingFor || [],
+            collaborationInterests: validatedData.collaborationInterests || null,
+            livedExperienceStatement: validatedData.livedExperienceStatement || null,
+            showLivedExperience: validatedData.showLivedExperience ?? false,
+            orcidId: validatedData.orcidId || null,
         }
 
         // STEP 1: Update using type-safe service
@@ -284,22 +328,21 @@ export async function PUT(request: NextRequest) {
 
         // STEP 1.6: Recent work and community memberships are now handled in the main update above
 
-        // STEP 2: Background sync to Clerk (fire and forget)
-        const { ClerkSyncService } = await import('../../../lib/clerk-sync')
-        ClerkSyncService.syncToClerk(userId, result.data!).catch(() => {
-            // Silent fail - already logged in sync service
-        })
-
-        // STEP 3: Update search index (fire and forget)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
-            },
-            body: JSON.stringify({ userId, action: 'update' })
-        }).catch((error) => {
-            console.warn(`Search index update failed for user ${userId}:`, error)
+        // STEP 2 + 3: Clerk sync and the search-index write run after the
+        // response. The index update used to be an un-awaited fetch to
+        // `${NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`
+        // with no `res.ok` check, so a 401/404 from that hop looked like
+        // success (audit finding H5); it is now a direct call, logged on
+        // failure. `syncToClerk` logs its own failures and never throws.
+        const updatedProfile = result.data!
+        after(async () => {
+            const { ClerkSyncService } = await import('@/lib/clerk-sync')
+            await ClerkSyncService.syncToClerk(userId, updatedProfile)
+            try {
+                await syncUserSearchRecord(userId, 'update')
+            } catch (error) {
+                console.error(`❌ Search index update failed for user ${userId}:`, error)
+            }
         })
 
         // STEP 4: Return localized response

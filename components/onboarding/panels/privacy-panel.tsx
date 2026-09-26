@@ -1,20 +1,19 @@
 "use client"
 
 import React from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
-import { Shield, Eye, EyeOff, Users, Globe, Lock } from "lucide-react"
+import { Shield, Users, Globe, Lock } from "lucide-react"
 
 import { Switch } from "@/components/ui/switch"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
 
 interface PrivacyPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 
@@ -49,10 +48,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
   return (
     <div className={cn(
       "space-y-5",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
-        <div className={cn("flex items-center gap-2 mb-2", isRTL && "flex-row-reverse")}>
+        <div className={cn("flex items-center gap-2 mb-2")}>
           <Shield className="h-5 w-5 text-primary" />
           <h2 className="text-2xl font-bold text-foreground">{content?.privacyTitle || t("title")}</h2>
         </div>
@@ -73,7 +72,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.isSearchable"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6")}>
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal text-base">{content?.privacyFieldLabels?.allowSearch || t("searchability.allowSearch")}</FormLabel>
                     <FormDescription className="leading-normal">{content?.privacyFieldLabels?.searchHint || t("searchability.searchHint")}</FormDescription>
@@ -108,8 +107,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
                         key={option.value}
                         className={cn(
                           "flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50",
-                          profileVisibility === option.value && "border-primary bg-primary/5",
-                          isRTL && "flex-row-reverse"
+                          profileVisibility === option.value && "border-primary bg-primary/5"
                         )}
                         onClick={() => field.onChange(option.value)}
                       >
@@ -120,7 +118,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
                           )} />
                         </div>
                         <div className="space-y-1">
-                          <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                          <div className={cn("flex items-center gap-2")}>
                             <h4 className="font-medium">{option.label}</h4>
                             {profileVisibility === option.value && (
                               <div className="w-2 h-2 bg-primary rounded-full" />
@@ -148,7 +146,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showEmail"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6")}>
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showEmail || t("profileInfo.showEmail")}</FormLabel>
                     <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.emailHint || t("profileInfo.emailHint")}</FormDescription>
@@ -167,7 +165,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showPhoneNumber"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6")}>
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showPhone || t("profileInfo.showPhone")}</FormLabel>
                     <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.phoneHint || t("profileInfo.phoneHint")}</FormDescription>
@@ -186,7 +184,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showWorkDetails"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6")}>
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showWork || t("profileInfo.showWork")}</FormLabel>
                     <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.workHint || t("profileInfo.workHint")}</FormDescription>
@@ -205,7 +203,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showSocialLinks"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6")}>
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showSocial || t("profileInfo.showSocial")}</FormLabel>
                     <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.socialHint || t("profileInfo.socialHint")}</FormDescription>
@@ -224,7 +222,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showLocation"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6")}>
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showLocation || t("profileInfo.showLocation")}</FormLabel>
                     <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.locationHint || t("profileInfo.locationHint")}</FormDescription>

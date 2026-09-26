@@ -1,41 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
-import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
-import { sanityFetch } from '@/sanity/lib/live'
-
-// Sanity query to get all published news posts
-const NEWS_QUERY = `*[_type == "newsPost" && publishedAt <= now()] | order(publishedAt desc) {
-  _id,
-  title,
-  subtitle,
-  excerpt,
-  slug,
-  publishedAt,
-  _updatedAt,
-  featured,
-  author->{_id, name},
-  tags[]->{label},
-  organizations[]->{name},
-  projects[]->{name},
-  location,
-  locationDetails {
-    city,
-    country
-  },
-  language
-}`
+import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord, writeIndexName } from '@/lib/algolia'
+import {
+  getPublishedNewsIndexDocs,
+  getNewsIndexDocsByIds,
+  getPublishedNewsCount,
+  type NewsIndexDoc,
+} from '@/lib/content/news'
+import { transformNewsForIndex } from '@/payload/hooks/search-sync'
+import { authorizeSearchSync, refuseUnlessLiveIndexWritesAllowed } from '@/lib/auth/search-sync-gate'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check internal secret auth or Clerk auth
-    const authHeader = request.headers.get('authorization')
-    const internalSecret = process.env.INTERNAL_SYNC_SECRET
-    const { userId } = await auth()
-
-    // Allow if either internal secret matches OR user is authenticated
-    if (authHeader !== `Bearer ${internalSecret}` && !userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Internal bearer or staff actor; 401 anonymous, 403 member. The check this
+    // replaced let any signed-in user re-index and matched `Bearer undefined`
+    // when the secret was unset (hub audit 2026-09-16, H3).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
 
     // Check if Algolia client is available
     if (!algoliaClient) {
@@ -44,33 +24,33 @@ export async function POST(request: NextRequest) {
       }, { status: 503 })
     }
 
+    // Never write to the live index from dev, preview or CI.
+    const refused = refuseUnlessLiveIndexWritesAllowed()
+    if (refused) return refused
+
     const { type = 'full', newsIds = [] } = await request.json()
 
     if (type === 'full') {
       // Full sync - get all published news posts
-      const result = await sanityFetch({
-        query: NEWS_QUERY,
-        tags: ['newsPost']
-      })
-      const newsPosts = result.data || []
+      const newsPosts = await getPublishedNewsIndexDocs()
 
       console.log(`Starting full sync of ${newsPosts.length} news posts to Algolia`)
 
       // Transform news posts for indexing
       const records: NewsSearchRecord[] = newsPosts
-        .map((newsPost: any) => transformNewsForIndex(newsPost))
+        .map((newsPost: NewsIndexDoc) => transformNewsForIndex(newsPost))
         .filter(Boolean) as NewsSearchRecord[]
 
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
-          indexName: ALGOLIA_INDICES.NEWS,
-          objects: records as any[]
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
+          objects: records
         })
 
         // Wait for indexing to complete
         if (Array.isArray(response) && response[0]?.taskID) {
-          await algoliaClient.waitForTask({ indexName: ALGOLIA_INDICES.NEWS, taskID: response[0].taskID })
+          await algoliaClient.waitForTask({ indexName: writeIndexName(ALGOLIA_INDICES.NEWS), taskID: response[0].taskID })
         }
 
         console.log(`✅ Successfully indexed ${records.length} news posts`)
@@ -92,31 +72,7 @@ export async function POST(request: NextRequest) {
 
     } else if (type === 'partial' && newsIds.length > 0) {
       // Partial sync - specific news posts
-      const result = await sanityFetch({
-        query: `*[_type == "newsPost" && _id in $ids] {
-          _id,
-          title,
-          subtitle,
-          excerpt,
-          slug,
-          publishedAt,
-          _updatedAt,
-          featured,
-          author->{_id, name},
-          tags[]->{label},
-          organizations[]->{name},
-          projects[]->{name},
-          location,
-          locationDetails {
-            city,
-            country
-          },
-          language
-        }`,
-        params: { ids: newsIds },
-        tags: ['newsPost']
-      })
-      const newsPosts = result.data || []
+      const newsPosts = await getNewsIndexDocsByIds(newsIds)
 
       const toIndex: NewsSearchRecord[] = []
       const toDelete: string[] = []
@@ -137,15 +93,15 @@ export async function POST(request: NextRequest) {
       // Index published news posts
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.NEWS,
-          objects: toIndex as any[]
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
+          objects: toIndex
         })
       }
 
       // Remove unpublished news posts
       if (toDelete.length > 0) {
         await algoliaClient.deleteObjects({
-          indexName: ALGOLIA_INDICES.NEWS,
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
           objectIDs: toDelete
         })
       }
@@ -173,8 +129,13 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint to check sync status
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Same gate as POST: this used to return CMS/index counts to anyone
+    // (hub audit 2026-09-16, H3c).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
+
     // Check if Algolia client is available
     if (!algoliaClient) {
       return NextResponse.json({
@@ -186,18 +147,14 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as any).getStats?.({ indexName: ALGOLIA_INDICES.NEWS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: writeIndexName(ALGOLIA_INDICES.NEWS) })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)
     }
 
     // Get total published news posts from Sanity
-    const result = await sanityFetch({
-      query: `count(*[_type == "newsPost" && publishedAt <= now()])`,
-      tags: ['newsPost']
-    })
-    const publishedNewsPosts = result.data || 0
+    const publishedNewsPosts = await getPublishedNewsCount()
 
     return NextResponse.json({
       indexStats: {
@@ -219,49 +176,3 @@ export async function GET() {
   }
 }
 
-// Helper function to transform news post for Algolia indexing
-function transformNewsForIndex(newsPost: any): NewsSearchRecord | null {
-  try {
-    // Ensure required fields exist
-    if (!newsPost._id || !newsPost.title || !newsPost.slug) {
-      console.warn(`Skipping news post: missing required fields`)
-      return null
-    }
-
-    return {
-      objectID: newsPost._id,
-      contentId: newsPost._id,
-      title: newsPost.title || { en: 'Untitled News Post' },
-      subtitle: newsPost.subtitle || {},
-      excerpt: newsPost.excerpt || {},
-      slug: newsPost.slug?.current || '',
-      publishedAt: newsPost.publishedAt ? new Date(newsPost.publishedAt).getTime() : Date.now(),
-      updatedAt: newsPost._updatedAt ? new Date(newsPost._updatedAt).getTime() : Date.now(),
-      author: {
-        name: newsPost.author?.name || 'Unknown Author',
-        id: newsPost.author?._id || ''
-      },
-      featured: newsPost.featured || false,
-      tags: (newsPost.tags || [])
-        .map((tag: any) => tag.label?.en || tag.name)
-        .filter(Boolean),
-      organizations: (newsPost.organizations || [])
-        .map((org: any) => org.name)
-        .filter(Boolean),
-      projects: (newsPost.projects || [])
-        .map((project: any) => project.name)
-        .filter(Boolean),
-      location: {
-        city: newsPost.locationDetails?.city,
-        country: newsPost.locationDetails?.country,
-        lat: newsPost.location?.lat,
-        lng: newsPost.location?.lng
-      },
-      accessLevel: 'public', // News is always public
-      language: newsPost.language || 'en'
-    }
-  } catch (error) {
-    console.warn(`Failed to transform news post ${newsPost._id}:`, error)
-    return null
-  }
-}

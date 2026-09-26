@@ -15,12 +15,6 @@ export default defineType({
       type: "section-padding",
     }),
     defineField({
-      name: "colorVariant",
-      type: "color-variant",
-      title: "Color Variant",
-      description: "Select a background color variant",
-    }),
-    defineField({
       name: "stackAlign",
       type: "string",
       title: "Stack Layout Alignment",

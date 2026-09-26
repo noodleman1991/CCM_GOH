@@ -40,9 +40,10 @@ export default function RevisionAlertDialog({
   const [isProcessing, setIsProcessing] = useState(false)
   const router = useRouter()
   const t = useTranslations('revisionAlert')
+  const tCommon = useTranslations('common')
 
   const getTitle = (submission: RevisionSubmission) => {
-    return submission.title[locale] || submission.title.en || 'Untitled'
+    return submission.title[locale] || submission.title.en || tCommon('untitled')
   }
 
   const handleViewSubmissions = () => {
@@ -65,11 +66,7 @@ export default function RevisionAlertDialog({
             {t('title')}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            {t('description', {
-              count: submissions.length,
-              plural: submissions.length === 1 ? 'y' : 'ies',
-              singular: submissions.length === 1 ? 's' : ''
-            })}
+            {t('description', { count: submissions.length })}
           </DialogDescription>
         </DialogHeader>
 
@@ -82,12 +79,12 @@ export default function RevisionAlertDialog({
                     {getTitle(submission)}
                   </h4>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Submitted {new Date(submission.submittedAt).toLocaleDateString()}
+                    {t('submittedOn', { date: new Date(submission.submittedAt).toLocaleDateString(locale) })}
                   </p>
                 </div>
                 <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
-                  <AlertCircle className="w-3 h-3 mr-1" />
-                  Revision
+                  <AlertCircle className="w-3 h-3 me-1" />
+                  {t('revisionBadge')}
                 </Badge>
               </div>
 
@@ -109,7 +106,7 @@ export default function RevisionAlertDialog({
             disabled={isProcessing}
             className="w-full sm:w-auto"
           >
-            <Clock className="w-4 h-4 mr-2" />
+            <Clock className="w-4 h-4 me-2" />
             {t('actions.remindLater')}
           </Button>
           <Button
@@ -118,10 +115,10 @@ export default function RevisionAlertDialog({
             className="w-full sm:w-auto"
           >
             {isProcessing ? (
-              'Loading...'
+              tCommon('loading')
             ) : (
               <>
-                <Edit className="w-4 h-4 mr-2" />
+                <Edit className="w-4 h-4 me-2" />
                 {t('actions.viewSubmissions')}
               </>
             )}

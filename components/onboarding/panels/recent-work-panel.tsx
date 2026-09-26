@@ -1,25 +1,25 @@
 "use client"
 
 import React, { useState } from "react"
-import { UseFormReturn, useFieldArray } from "react-hook-form"
+import { useFieldArray } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
-import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Calendar, ExternalLink } from "lucide-react"
+import { Edit, Trash2, Calendar, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
+import { LIMITS } from "@/lib/validation/limits"
+import { CharCounter } from "@/components/ui/char-counter"
 
 interface RecentWorkPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 
@@ -56,7 +56,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
   }
 
   const handleEdit = (index: number) => {
-    const item = fields[index] as any
+    const item = fields[index]
     setFormData({
       title: item.title,
       description: item.description,
@@ -92,11 +92,9 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
   }
 
   const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "MMM yyyy")
-    } catch {
-      return dateString
-    }
+    const date = new Date(dateString)
+    if (Number.isNaN(date.getTime())) return dateString
+    return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric" }).format(date)
   }
 
   const isFormValid = formData.title && formData.description && formData.startDate &&
@@ -105,7 +103,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
   return (
     <div className={cn(
       "space-y-5",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
         <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -120,13 +118,13 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
       {fields.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-medium">{content?.fieldLabels?.recentWork?.yourWork || t("yourWork")}</h3>
-          {fields.map((item: any, index: number) => (
+          {fields.map((item, index) => (
             <Card key={item.id}>
               <CardHeader className="pb-3">
-                <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>
+                <div className={cn("flex items-start justify-between")}>
                   <div className="space-y-1">
                     <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground")}>
                       <Calendar className="h-4 w-4" />
                       <span>
                         {formatDate(item.startDate)} - {item.isOngoing ? t("ongoing") : formatDate(item.endDate || "")}
@@ -136,7 +134,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                       )}
                     </div>
                   </div>
-                  <div className={cn("flex gap-2", isRTL && "flex-row-reverse")}>
+                  <div className={cn("flex gap-2")}>
                     <Button
                       type="button"
                       variant="outline"
@@ -163,7 +161,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                    className={cn("inline-flex items-center gap-1 text-primary hover:underline")}
                   >
                     <ExternalLink className="h-4 w-4" />
                     {t("viewProject")}
@@ -193,8 +191,8 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                 id="work-title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder={content?.fieldPlaceholders?.workTitle || t("workTitlePlaceholder")}
-              />
+                placeholder={content?.fieldPlaceholders?.workTitle || t("workTitlePlaceholder")} maxLength={LIMITS.recentWork.title} />
+              <CharCounter value={formData.title} max={LIMITS.recentWork.title} />
             </div>
             <div>
               <label htmlFor="work-link" className="text-sm font-medium">{content?.fieldLabels?.recentWork?.projectLink || t("projectLink")}</label>
@@ -218,8 +216,8 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder={content?.fieldPlaceholders?.description || t("descriptionPlaceholder")}
-              rows={3}
-            />
+              rows={3} maxLength={LIMITS.recentWork.description} />
+            <CharCounter value={formData.description} max={LIMITS.recentWork.description} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -238,7 +236,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             <div>
               <label htmlFor="work-end-date" className="text-sm font-medium">
                 {content?.fieldLabels?.recentWork?.endDate || t("endDate")}
-                {!formData.isOngoing && <span className="text-red-500 ml-1">*</span>}
+                {!formData.isOngoing && <span className="text-red-500 ms-1">*</span>}
               </label>
               <Input
                 id="work-end-date"
@@ -250,7 +248,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             </div>
           </div>
 
-          <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+          <div className={cn("flex items-center gap-2")}>
             <Checkbox
               id="ongoing"
               checked={formData.isOngoing}
@@ -265,7 +263,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             </label>
           </div>
 
-          <div className={cn("flex gap-2 pt-4", isRTL && "flex-row-reverse")}>
+          <div className={cn("flex gap-2 pt-4")}>
             <Button
               type="button"
               onClick={handleSave}

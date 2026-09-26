@@ -1,29 +1,25 @@
-import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
-import Timeline1 from "@/components/blocks/timeline/timeline-1";
-import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
+import Timeline1, { type Timeline1Fields } from "@/components/blocks/timeline/timeline-1";
 
-type TimelineRow = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "timeline-row" }
->;
+interface TimelineRowProps {
+  padding?: SectionPadding | null;
+  timelines?: Timeline1Fields[] | null;
+}
 
 export default function TimelineRow({
   padding,
-  colorVariant,
   timelines,
-}: TimelineRow) {
-  const color = stegaClean(colorVariant) as ColorVariant;
+}: TimelineRowProps) {
 
   return (
-    <SectionContainer color={color} padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer padding={padding}>
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         {timelines && timelines?.length > 0 && (
           <div className="max-w-[48rem] mx-auto">
           {timelines?.map((timeline, index) => (
             <Timeline1
               key={index}
-              color={color}
+
               tagLine={timeline.tagLine}
               title={timeline.title}
               body={timeline.body}

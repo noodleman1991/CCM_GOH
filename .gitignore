@@ -25,9 +25,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
-.env
+# local env files — every .env variant, including backups like .env.local.bak-2026-09-20
+.env*
+!.env.example
+!**/.env.example
+!**/.env.local.example
 
 # vercel
 .vercel
@@ -55,3 +57,39 @@ BLOCK-SYSTEM-COHERENCE-REPORT.local.md
 
 # dataset backups (local only)
 backups/
+*.local.md
+
+# Playwright MCP session artifacts
+.playwright-mcp/
+
+# screen recordings / local video captures
+*.mov
+*.mp4
+*.m4v
+*.webm
+Screen Recording*
+
+# browser-verification screenshot artifacts (Playwright)
+verify-*.png
+
+# Sanity dataset export backups (local only)
+.sanity-backups/
+
+# Brainstorm visual companion (local only)
+.superpowers/
+
+# user data dumps — never commit (PII: emails + password hashes)
+supabase-users.json
+*-users-dump*.json
+
+# migration run artifacts — contain emails + user ids (PII). Same class of file
+# as supabase-users.json; never commit these.
+migration-results-*.json
+migration-log-*.json
+
+# Unpacked Phase 0 Sanity archive (payload import working copy; regenerate with
+# `pnpm import:assets`, which re-extracts backups/sanity-production_2-*.tar.gz)
+/.sanity-export-cache/
+
+# Parity harness dist dirs (scripts/parity/render-diff.ts)
+/.next-parity-*/

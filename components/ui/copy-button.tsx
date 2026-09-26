@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
@@ -8,6 +9,7 @@ interface CopyButtonProps {
 }
 
 export function CopyButton({ code }: CopyButtonProps) {
+  const t = useTranslations("common");
   const [isCopied, setIsCopied] = useState(false);
 
   const copy = async () => {
@@ -20,7 +22,7 @@ export function CopyButton({ code }: CopyButtonProps) {
     <button
       className="p-2 rounded-md transition-colors hover:bg-muted-foreground/10"
       onClick={copy}
-      aria-label="Copy code"
+      aria-label={t("copyCode")}
     >
       {isCopied ? (
         <Check className="h-4 w-4 text-green-500" />

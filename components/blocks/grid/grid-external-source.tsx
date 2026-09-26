@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from "@/i18n/navigation";
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
@@ -9,8 +9,11 @@ import {
     ExternalLink,
     MapPin
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
+import { useTranslations } from 'next-intl';
+import { getLocalizedText } from '@/lib/localization-utils';
 
 // Define the external source type based on the schema
 interface ExternalSource {
@@ -70,11 +73,6 @@ interface GridExternalSourceComponentProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(obj: any, locale: string): string {
-    if (!obj) return '';
-    if (typeof obj === 'string') return obj;
-    return obj[locale] || obj['en'] || '';
-}
 
 // Helper function to format date
 function formatNewsDate(date: Date, locale: string): string {
@@ -87,7 +85,7 @@ function formatNewsDate(date: Date, locale: string): string {
     try {
         return new Intl.DateTimeFormat(locale, options).format(date);
     } catch {
-        return date.toLocaleDateString('en-US', options);
+        return date.toLocaleDateString(locale === "ar" ? "ar-EG" : locale, options);
     }
 }
 
@@ -101,6 +99,8 @@ export default function GridExternalSourceComponent({
     cardVariant = "classic",
     imageSizes,
 }: GridExternalSourceComponentProps) {
+    const tCommon = useTranslations('common');
+    const tBlocks = useTranslations('blocks');
     if (!externalSource) return null;
 
     const isWide = cardVariant === "wide";
@@ -116,40 +116,14 @@ export default function GridExternalSourceComponent({
     const publishDate = externalSource.publishedAt ? new Date(externalSource.publishedAt) : null;
 
     // Localized text helpers
-    const getMoreText = (count: number) => {
-        const moreTexts = {
-            en: 'more',
-            es: 'más',
-            fr: 'autres',
-            ar: 'آخرين'
-        };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
     const getSourceTypeText = () => {
-        const typeTexts: Record<string, Record<string, string>> = {
-            news: { en: 'News', es: 'Noticias', fr: 'Actualités', ar: 'أخبار' },
-            research: { en: 'Research', es: 'Investigación', fr: 'Recherche', ar: 'بحث' },
-            blog: { en: 'Blog', es: 'Blog', fr: 'Blog', ar: 'مدونة' },
-            report: { en: 'Report', es: 'Informe', fr: 'Rapport', ar: 'تقرير' },
-            press: { en: 'Press', es: 'Prensa', fr: 'Presse', ar: 'صحافة' },
-            policy: { en: 'Policy', es: 'Política', fr: 'Politique', ar: 'سياسة' },
-            other: { en: 'External', es: 'Externo', fr: 'Externe', ar: 'خارجي' },
-        };
-
-        const sourceType = externalSource.sourceType || 'other';
-        return typeTexts[sourceType]?.[supportedLocale] || typeTexts['other'][supportedLocale];
+        const kind = externalSource.sourceType || 'other';
+        return tBlocks.has(`sourceKind.${kind}`) ? tBlocks(`sourceKind.${kind}`) : tBlocks('sourceKind.other');
     };
 
-    const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
-    };
+    const getFeaturedText = () => tCommon('featured');
 
     return (
         <Link
@@ -166,7 +140,7 @@ export default function GridExternalSourceComponent({
                 {externalSource.image?.asset?.url && (
                     <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                         <Image
-                            src={urlForCropped(externalSource.image, 800, isWide ? 450 : 533).url()}
+                            src={imageUrl(externalSource.image, { width: 800, height: isWide ? 450 : 533, crop: true })}
                             alt={externalSource.image.alt || title}
                             fill
                             className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -243,28 +217,32 @@ export default function GridExternalSourceComponent({
                     )}
 
                     {/* Tags */}
-                    {showTags && externalSource.tags && externalSource.tags.length > 0 && (
+                    {showTags && externalSource.tags && externalSource.tags.length > 0 && (() => {
+                        const tags = sortedTags(externalSource.tags, supportedLocale);
+                        if (tags.length === 0) return null;
+                        return (
                         <div className="flex flex-wrap gap-1 mt-3">
-                            {externalSource.tags.slice(0, 3).map((tag: any) => (
+                            {tags.slice(0, 3).map((tag) => {
+                                const color = normalizeTagColor(tag.color);
+                                return (
                                 <Badge
                                     key={tag._id}
                                     variant="outline"
                                     className="text-xs"
-                                    style={{
-                                        borderColor: tag.color,
-                                        color: tag.color
-                                    }}
+                                    style={{ borderColor: color, color }}
                                 >
                                     {getLocalizedText(tag.label, supportedLocale)}
                                 </Badge>
-                            ))}
-                            {externalSource.tags.length > 3 && (
+                                );
+                            })}
+                            {tags.length > 3 && (
                                 <Badge variant="outline" className="text-xs">
-                                    {getMoreText(externalSource.tags.length - 3)}
+                                    {getMoreText(tags.length - 3)}
                                 </Badge>
                             )}
                         </div>
-                    )}
+                        );
+                    })()}
                 </CardContent>
             </Card>
         </Link>

@@ -1,19 +1,24 @@
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { SanityButton } from "@/components/ui/sanity-button";
+import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { createElement } from "react";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import type { SectionPadding } from "@/components/ui/section-container";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitContent = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-content" }
->;
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
 
-interface SplitContentProps extends SplitContent {
+interface SplitContentProps {
+  sticky?: boolean;
+  padding?: SectionPadding | null;
+  tagLine?: LocalizedText;
+  title?: LocalizedText;
+  body?: PortableTextBlock[] | Record<string, unknown> | null;
+  link?: SanityLinkData | null;
   noGap?: boolean;
   locale?: string;
 }
@@ -47,14 +52,14 @@ export default function SplitContent({
     <div
       className={cn(
         !sticky ? "flex flex-col justify-center" : undefined,
-        padding?.top ? "pt-8 lg:pt-12 xl:pt-16" : undefined,
-        padding?.bottom ? "pb-8 lg:pb-12 xl:pb-16" : undefined
+        padding?.top ? "pt-8 @content-lg/page:pt-12 @content-xl/page:pt-16" : undefined,
+        padding?.bottom ? "pb-8 @content-lg/page:pb-12 @content-xl/page:pb-16" : undefined
       )}
     >
       <div
         className={cn(
           "flex flex-col items-start overflow-hidden",
-          sticky ? "lg:sticky lg:top-56" : undefined,
+          sticky ? "@content-lg/page:sticky @content-lg/page:top-56" : undefined,
           noGap ? "px-10" : undefined
         )}
       >
@@ -74,7 +79,7 @@ export default function SplitContent({
         )}
         {link?.href && (
           <div className="mt-6 flex flex-col">
-            <SanityButton link={link as any} locale={locale} />
+            <SanityButton link={link as SanityLinkData} locale={locale} />
           </div>
         )}
       </div>

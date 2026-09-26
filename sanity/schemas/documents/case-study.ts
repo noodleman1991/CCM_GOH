@@ -1,6 +1,6 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type PreviewValue } from "sanity";
 import { FileSearch } from "lucide-react";
-import { topicOptions } from "../shared/topic-options";
+import { topicOptions, REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "@/lib/content/taxonomy-options";
 import { createLocalizedField as createSharedLocalizedField } from "../shared/localized-field";
 
 // Role configuration
@@ -21,8 +21,12 @@ const statusOptions = [
 
 // Thin wrapper preserving this file's call signature; delegates to the shared
 // Lane-B localized-field helper (group defaults to "content" here).
-const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) =>
-    createSharedLocalizedField(name, title, type, { group: "content", required });
+const createLocalizedField = (
+    name: string,
+    title: string,
+    type: string = "string",
+    options: { required?: boolean; maxWarn?: number } = {}
+) => createSharedLocalizedField(name, title, type, { group: "content", ...options });
 
 export default defineType({
     name: "caseStudy",
@@ -38,7 +42,7 @@ export default defineType({
     ],
     fields: [
         // Content fields
-        createLocalizedField("title", "Title", "string", true),
+        createLocalizedField("title", "Title", "string", { required: true, maxWarn: 110 }),
 
         defineField({
             name: "slug",
@@ -52,7 +56,7 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
 
-        createLocalizedField("excerpt", "Excerpt", "text"),
+        createLocalizedField("excerpt", "Excerpt", "text", { maxWarn: 300 }),
 
         defineField({
             name: "content",
@@ -94,7 +98,9 @@ export default defineType({
                 layout: "tags",
                 sortable: true,
             },
-            validation: (Rule) => Rule.max(15),
+            validation: (Rule) =>
+                Rule.max(6).warning("Aim for 3–4 tags; more than 6 dilutes them."),
+            description: "3–4 focused tags work best (6 max).",
         }),
 
         defineField({
@@ -107,6 +113,48 @@ export default defineType({
                 list: [...topicOptions],
             },
             validation: (Rule) => Rule.required(),
+        }),
+
+        // Detail-page layout archetype (WIREFRAMES §4.12). Same content, different
+        // arrangement. Defaults to "story" = the current centered reading layout.
+        defineField({
+            name: "layout",
+            title: "Detail layout",
+            type: "string",
+            group: "content",
+            options: { list: [
+                { title: "Story (narrative + photography)", value: "story" },
+                { title: "Feature (one bold statement)", value: "feature" },
+                { title: "Report (evidence + data; sticky 'At a glance')", value: "report" },
+            ] },
+            initialValue: "story",
+        }),
+
+        // Phase 6 fixed taxonomy (additive — coexists with topic/tags + the
+        // relatedCommunity ref during the dual-field transition).
+        defineField({
+            name: "region",
+            title: "Region",
+            type: "string",
+            group: "affiliations",
+            options: { list: [...REGION_OPTIONS] },
+            description: "Fixed-7 region code. Backfilled from the related community; required by the redesign on all content except news.",
+        }),
+        defineField({
+            name: "themes",
+            title: "Themes",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...THEME_OPTIONS] },
+            group: "affiliations",
+        }),
+        defineField({
+            name: "populations",
+            title: "Populations",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...POPULATION_OPTIONS] },
+            group: "affiliations",
         }),
 
         // Metadata fields
@@ -248,6 +296,48 @@ export default defineType({
             type: "geopoint",
             group: "metadata",
             description: "The main location's coordinates. This is what drives the regional map and search — set it for every case study.",
+            // Soft region-mismatch warning (spec: "never a hard block"). The full
+            // check (country → region vs. the doc's relatedCommunity) needs an
+            // async dereference of `relatedCommunity` and the iso-to-region /
+            // region-codes maps; wiring async custom validators with a dynamic
+            // `import()` through the Studio's CustomValidator typing didn't
+            // resolve cleanly (Promise<boolean> vs. CustomValidatorResult), so
+            // this stays a no-op `.warning()` scaffold. The enforced check lives
+            // in the "Missing geotags" coverage view instead — this rule never
+            // returns anything but `true` and can never block a save.
+            validation: (Rule) => Rule.custom(() => true).warning(),
+        }),
+
+        defineField({
+            name: "locationDisplayText",
+            title: "Location display text",
+            type: "string",
+            group: "metadata",
+            description: "Human-readable place from the location picker (e.g. \"Nakuru, Kenya\"). Shown to readers; the legacy locationText object is unaffected.",
+        }),
+
+        defineField({
+            name: "locationPrecision",
+            title: "Shown on the map as",
+            type: "string",
+            group: "metadata",
+            options: {
+                list: [
+                    { title: "Exact point", value: "exact" },
+                    { title: "City", value: "city" },
+                    { title: "Country", value: "country" },
+                    { title: "Region only (no pin)", value: "region" },
+                ],
+                layout: "radio",
+            },
+            initialValue: "city",
+        }),
+
+        defineField({
+            name: "locationCountryCode",
+            title: "Country code (ISO alpha-3)",
+            type: "string",
+            group: "metadata",
         }),
 
         defineField({
@@ -317,6 +407,18 @@ export default defineType({
             description: "The community this case study relates to",
         }),
 
+        // Cross-content links (lived experiences, other case studies, news…)
+        // rendered as a content-type-aware "Related" strip on the public page.
+        defineField({
+            name: "relatedContent",
+            title: "Related content",
+            type: "array",
+            group: "affiliations",
+            of: [{ type: "connection" }],
+            description: "Link to lived experiences, news or other studies this connects to.",
+            validation: (Rule) => Rule.max(8),
+        }),
+
         // Review workflow and publishing
         defineField({
             name: "status",
@@ -351,6 +453,15 @@ export default defineType({
             description: "Set automatically by the Approve action when the case study goes live. Read-only so it always reflects the real publish time.",
         }),
 
+        defineField({
+            name: "suggestedTags",
+            title: "Suggested tags",
+            type: "array",
+            of: [{ type: "string" }],
+            group: "review",
+            readOnly: true,
+            description: "Free-text tags the submitter proposed and no existing tag matched. Create the tag, attach it above, then clear this list.",
+        }),
         defineField({
             name: "reviewNotes",
             title: "Editorial Notes",
@@ -435,7 +546,7 @@ export default defineType({
         prepare({ title, status, media, featured }: {
             title?: Record<string, string>;
             status?: string;
-            media?: any;
+            media?: PreviewValue["media"];
             featured?: boolean;
         }) {
             const displayTitle = title?.en || "Untitled Case Study";

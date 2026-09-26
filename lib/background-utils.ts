@@ -1,4 +1,4 @@
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl as getImageUrl } from "@/lib/content/images";
 import { BackgroundOptionType } from "@/types/background-option";
 
 export function getBackgroundStyles(backgroundOption?: BackgroundOptionType | null): {
@@ -78,7 +78,7 @@ export function getBackgroundStyles(backgroundOption?: BackgroundOptionType | nu
 
     case "image":
       if (backgroundOption.image?.asset?._id) {
-        const imageUrl = urlFor(backgroundOption.image).url();
+        const imageUrl = getImageUrl(backgroundOption.image);
         return {
           style: {
             backgroundImage: `url("${imageUrl}")`,

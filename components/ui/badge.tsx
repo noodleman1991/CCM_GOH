@@ -27,9 +27,15 @@ export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, children, title, ...props }: BadgeProps) {
+  // The text sits in its own flex item so `truncate` can clip it (text-overflow
+  // does not apply to a flex container's anonymous items). `title` falls back
+  // to the label when it is a plain string, so a clipped badge stays readable.
+  const plain = typeof children === "string" ? children : undefined
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div className={cn(badgeVariants({ variant }), "max-w-full", className)} title={title ?? plain} {...props}>
+      <span className="min-w-0 truncate">{children}</span>
+    </div>
   )
 }
 

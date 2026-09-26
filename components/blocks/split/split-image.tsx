@@ -1,15 +1,22 @@
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { imageUrl } from "@/lib/content/images";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitImage = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-image" }
->;
+interface SplitImageShape {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
 
-export default function SplitImage({ image }: SplitImage) {
+interface SplitImageProps {
+  image?: SplitImageShape | null;
+}
+
+export default function SplitImage({ image }: SplitImageProps) {
   if (!image || !image.asset?._id) return null;
 
   // Render at the image's natural aspect ratio with object-contain so the WHOLE
@@ -22,7 +29,7 @@ export default function SplitImage({ image }: SplitImage) {
   return (
     <div className="relative mx-auto w-full max-w-[82%] min-w-0">
       <Image
-        src={urlFor(image).width(1100).url()}
+        src={imageUrl(image, { width: 1100 })}
         alt={image.alt || ""}
         width={width}
         height={height}

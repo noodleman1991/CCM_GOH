@@ -6,7 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 import { BreadcrumbLink as BreadcrumbLinkType } from "@/types";
 

@@ -1,22 +1,61 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { Calendar, Users, MapPin, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from 'next-intl';
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from "@/lib/case-study-utils";
+import type { CaseStudy, LocalizedString } from "@/types/case-study";
+import { enumLabel } from "@/lib/i18n/labels";
+
+/**
+ * Minimal case-study shape actually consumed by this modal (and by the grid
+ * card that opens it). The data comes from loosely-typed Sanity projections,
+ * so only the fields rendered here are modeled.
+ */
+export interface CaseStudyModalData {
+  _id?: string;
+  title?: LocalizedString;
+  excerpt?: LocalizedString;
+  featured?: boolean | null;
+  publishedAt?: string | null;
+  topic?: string | null;
+  status?: string | null;
+  authors?: Array<{
+    _id?: string;
+    name?: string;
+    role?: string;
+    affiliation?: string | null;
+  }> | null;
+  tags?: Array<{
+    _id?: string;
+    label?: LocalizedString;
+    color?: string | null;
+    category?: string | null;
+  } | null> | null;
+  image?: {
+    asset?: { _id?: string; url?: string | null } | null;
+    alt?: string | null;
+    caption?: string | null;
+  } | null;
+  content?: Array<{ _type: string; _key?: string; [key: string]: unknown }> | null;
+  studyPeriod?: { startDate?: string; endDate?: string } | null;
+  organizations?: Array<{ _id?: string; name?: string | null }> | null;
+  projects?: Array<{ _id?: string; name?: string | null }> | null;
+  studyAreas?: string[] | null;
+}
 
 interface CaseStudyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  caseStudy: any;
+  caseStudy: CaseStudyModalData;
   locale: string;
 }
 
@@ -24,32 +63,29 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
   const isRTL = locale === 'ar';
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
   const t = useTranslations('caseStudies');
+  const tType = useTranslations('typedCards');
 
   const title = getLocalizedText(caseStudy.title, supportedLocale, 'Case Study');
   const excerpt = getLocalizedText(caseStudy.excerpt, supportedLocale, '');
-  const primaryAuthor = getPrimaryAuthor(caseStudy);
-  const locationText = getStudyLocationText(caseStudy);
+  // The shared utils are typed against the fuller CaseStudy interface but only
+  // read fields present on CaseStudyModalData — bridge the type gap here.
+  const primaryAuthor = getPrimaryAuthor(caseStudy as unknown as CaseStudy);
+  const locationText = getStudyLocationText(caseStudy as unknown as CaseStudy);
   const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className={cn(
-          "w-[95vw] max-w-sm sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl",
-          "h-[95vh]",
-          "flex flex-col",
-          "p-0",
-          isRTL && "rtl"
-        )}
-        dir={isRTL ? "rtl" : "ltr"}
-      >
-        {/* Add DialogHeader with sr-only title for accessibility */}
-        <DialogHeader className="sr-only">
-          <DialogTitle>{title || "Case Study"}</DialogTitle>
-        </DialogHeader>
-
-        {/* Case Study Content */}
-        <div className="overflow-y-auto flex-1 p-8 space-y-6">
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      title={title || tType('type.caseStudy')}
+      titleHidden
+      className={cn("sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl", isRTL && "rtl")}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+        {/* Case Study Content — the surface scrolls and pads (ResponsiveDialog) */}
+        <div className="space-y-6">
           {/* Header */}
           <div className="space-y-4">
             {/* Featured badge */}
@@ -95,7 +131,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Tags */}
             {caseStudy.tags && caseStudy.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {caseStudy.tags.map((tag: any) => {
+                {caseStudy.tags.map((tag) => {
                   // Skip null or incomplete tags
                   if (!tag || !tag.color) return null;
 
@@ -122,7 +158,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
           {caseStudy.image?.asset?.url && (
             <div className="relative aspect-video rounded-lg overflow-hidden">
               <Image
-                src={urlFor(caseStudy.image).width(1200).height(675).url()}
+                src={imageUrl(caseStudy.image, { width: 1200, height: 675 })}
                 alt={caseStudy.image.alt || title}
                 fill
                 className="object-cover"
@@ -156,7 +192,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('studyPeriod')}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {formatCaseStudyDate(new Date(caseStudy.studyPeriod.startDate), supportedLocale)}
+                  {formatCaseStudyDate(new Date(caseStudy.studyPeriod.startDate ?? NaN), supportedLocale)}
                   {caseStudy.studyPeriod.endDate && (
                     <> – {formatCaseStudyDate(new Date(caseStudy.studyPeriod.endDate), supportedLocale)}</>
                   )}
@@ -171,7 +207,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('organizations')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {caseStudy.organizations.map((org: any) => (
+                  {caseStudy.organizations.map((org) => (
                     <Badge key={org._id} variant="outline">
                       {org.name}
                     </Badge>
@@ -187,7 +223,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('relatedProjects')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {caseStudy.projects.map((project: any) => (
+                  {caseStudy.projects.map((project) => (
                     <Badge key={project._id} variant="outline">
                       {project.name}
                     </Badge>
@@ -203,9 +239,9 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('studyAreas')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {caseStudy.studyAreas.map((area: any) => (
+                  {caseStudy.studyAreas.map((area) => (
                     <Badge key={area} variant="secondary">
-                      {area.replace(/_/g, ' ')}
+                      {enumLabel(t, area, 'studyAreaLabels')}
                     </Badge>
                   ))}
                 </div>
@@ -219,7 +255,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('allAuthors')}
                 </h3>
                 <div className="space-y-2">
-                  {caseStudy.authors.map((author: any) => (
+                  {caseStudy.authors.map((author) => (
                     <div key={author._id} className="flex items-center gap-2">
                       <div className="text-sm">
                         <p className="font-medium">{author.name}</p>
@@ -236,7 +272,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
 
           {/* Link back to case studies listing */}
           <div className="flex justify-center pt-4 border-t">
-            <Link href={`/${locale}/research-and-action/case-studies`}>
+            <Link href="/research-and-action/case-studies">
               <Button className="gap-2" variant="outline">
                 {isRTL ? (
                   <>
@@ -253,7 +289,6 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             </Link>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

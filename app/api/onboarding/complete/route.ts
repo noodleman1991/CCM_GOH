@@ -1,34 +1,84 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse, after } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import type { ExpertiseArea, WorkType } from "@/generated/prisma"
+import { syncUserSearchRecord } from "@/lib/algolia-user-sync"
+import { captureServer } from "@/lib/analytics/server"
+import { LIMITS } from "@/lib/validation/limits";
 
 // Force Node.js runtime for Prisma and Clerk compatibility with Fluid Compute
 export const runtime = 'nodejs'
 
+// The Prisma enum values, spelled out so zod rejects an unknown key with a 400
+// instead of letting it reach Prisma and 500 (audit finding M2). `satisfies`
+// ties each list to the generated type, so adding a value to schema.prisma
+// without adding it here fails `tsc` rather than silently rejecting it.
+// Same lists as `app/api/profile/route.ts`.
+const WORK_TYPES = [
+  "RESEARCH",
+  "POLICY",
+  "LIVED_EXPERIENCE_EXPERT",
+  "NGO",
+  "COMMUNITY_ORGANIZATION",
+  "EDUCATION_TEACHING",
+] as const satisfies readonly WorkType[]
+
+const EXPERTISE_AREAS = [
+  "CLIMATE_CHANGE",
+  "MENTAL_HEALTH",
+  "HEALTH",
+  "EDUCATION",
+  "SOCIAL_JUSTICE",
+] as const satisfies readonly ExpertiseArea[]
+
+/**
+ * Thrown when the email on the account being onboarded already belongs to a
+ * DIFFERENT user row. Until 2026-09-16 the route deleted that older row inside
+ * the transaction and retried (audit finding H8) — cascading its community
+ * memberships, recent work, comments and workspace membership — while the
+ * Clerk webhook explicitly refuses to do the same. Now it is a 409 for the
+ * request and a log line naming both ids for manual resolution.
+ */
+class EmailConflictError extends Error {
+  constructor(
+    readonly newClerkId: string,
+    readonly existingUserId: string | null,
+    readonly email: string | null,
+  ) {
+    super(`Email ${email} already belongs to user ${existingUserId}; new Clerk id ${newClerkId}`)
+    this.name = "EmailConflictError"
+  }
+}
+
 const OnboardingSchema = z.object({
   // Basic Info
-  firstName: z.string().min(1).max(50),
-  lastName: z.string().min(1).max(50),
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
-  bio: z.string().max(500).optional(),
+  firstName: z.string().min(1).max(LIMITS.profile.firstName),
+  lastName: z.string().min(1).max(LIMITS.profile.lastName),
+  username: z.string().min(3).max(LIMITS.profile.username).regex(/^[a-zA-Z0-9_]+$/),
+  headline: z.string().max(LIMITS.profile.headline).optional(),
+  bio: z.string().max(LIMITS.profile.bio).optional(),
+  motivation: z.string().max(LIMITS.profile.motivation).optional(),
   ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
-  country: z.string().max(100).optional(),
-  city: z.string().max(100).optional(),
+  country: z.string().max(LIMITS.profile.country).optional(),
+  city: z.string().max(LIMITS.profile.city).optional(),
   preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
     errorMap: () => ({ message: "Please choose your preferred language" })
   }).optional(),
 
-  // Work Info — Prisma handles enum validation at DB level
-  workTypes: z.array(z.string()).default([]),
-  expertiseAreas: z.array(z.string()).default([]),
+  // Work Info — validated against the Prisma enum values (see WORK_TYPES)
+  workTypes: z.array(z.enum(WORK_TYPES, {
+    errorMap: () => ({ message: "Please select the types of work you do" })
+  })).default([]),
+  expertiseAreas: z.array(z.enum(EXPERTISE_AREAS, {
+    errorMap: () => ({ message: "Please select valid expertise areas" })
+  })).default([]),
   communityIds: z.array(z.string()).max(10).default([]),
-  organization: z.string().max(200).optional(),
-  position: z.string().max(200).optional(),
-  workBio: z.string().max(1000).optional(),
+  organization: z.string().max(LIMITS.profile.organization).optional(),
+  position: z.string().max(LIMITS.profile.position).optional(),
+  workBio: z.string().max(LIMITS.profile.workBio).optional(),
   personalWebsite: z.string().url().optional().or(z.literal("")),
-  linkedinProfile: z.string().max(100).optional(),
+  linkedinProfile: z.string().max(LIMITS.profile.linkedinProfile).optional(),
   otherSocialLinks: z.array(z.object({
     platform: z.string().min(1),
     url: z.string().url()
@@ -36,8 +86,8 @@ const OnboardingSchema = z.object({
 
   // Recent Work
   recentWork: z.array(z.object({
-    title: z.string().min(1).max(100),
-    description: z.string().min(1).max(500),
+    title: z.string().min(1).max(LIMITS.recentWork.title),
+    description: z.string().min(1).max(LIMITS.recentWork.description),
     link: z.string().url().optional().or(z.literal("")),
     isOngoing: z.boolean(),
     startDate: z.string(),
@@ -48,7 +98,7 @@ const OnboardingSchema = z.object({
   isSearchable: z.boolean().default(true),
   profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"], {
     errorMap: () => ({ message: "Please choose who can see your profile" })
-  }).default("PUBLIC"),
+  }).default("MEMBERS"),
   showEmail: z.boolean().default(false),
   showPhoneNumber: z.boolean().default(false),
   showWorkDetails: z.boolean().default(true),
@@ -63,13 +113,15 @@ function buildUpsertData(validatedData: z.infer<typeof OnboardingSchema>) {
     firstName: validatedData.firstName,
     lastName: validatedData.lastName,
     username: validatedData.username,
+    headline: validatedData.headline || null,
     bio: validatedData.bio,
+    motivation: validatedData.motivation || null,
     ageGroup: validatedData.ageGroup,
     country: validatedData.country,
     city: validatedData.city,
     preferredLanguage: validatedData.preferredLanguage,
-    workTypes: validatedData.workTypes as WorkType[],
-    expertiseAreas: validatedData.expertiseAreas as ExpertiseArea[],
+    workTypes: validatedData.workTypes,
+    expertiseAreas: validatedData.expertiseAreas,
     organization: validatedData.organization,
     position: validatedData.position,
     workBio: validatedData.workBio,
@@ -194,7 +246,7 @@ export async function POST(request: NextRequest) {
               workTypes: [],
               expertiseAreas: [],
               isSearchable: true,
-              profileVisibility: 'PUBLIC',
+              profileVisibility: 'MEMBERS',
               showEmail: false,
               showPhoneNumber: false,
               showWorkDetails: true,
@@ -204,9 +256,9 @@ export async function POST(request: NextRequest) {
           })
 
           console.log(`✅ Onboarding API: Created user ${userId} successfully`)
-        } catch (createError: any) {
+        } catch (createError) {
           // Handle P2002 (unique constraint) gracefully - webhook likely just created the user
-          if (createError.code === 'P2002') {
+          if ((createError as { code?: string }).code === 'P2002') {
             console.log(`✓ Onboarding API: User ${userId} created by webhook during request - refetching`)
 
             // Try to fetch by user ID first
@@ -220,8 +272,11 @@ export async function POST(request: NextRequest) {
                 where: { email: clerkUser.primaryEmailAddress.emailAddress }
               })
 
-              if (existingUser) {
-                console.log(`✓ Onboarding API: Found user by email instead: ${existingUser.id}`)
+              // A row with this email under ANOTHER Clerk id is the H8
+              // conflict. Stop here: continuing would upsert under the new id
+              // and trip the same constraint inside the transaction.
+              if (existingUser && existingUser.id !== userId) {
+                throw new EmailConflictError(userId, existingUser.id, existingUser.email)
               }
             }
 
@@ -235,6 +290,7 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch (error) {
+        if (error instanceof EmailConflictError) throw error
         console.error(`❌ Onboarding API: Failed to set up user ${userId}:`, error)
         return NextResponse.json({
           success: false,
@@ -275,6 +331,7 @@ export async function POST(request: NextRequest) {
 
     // Wrap all DB operations in a transaction for atomicity
     const upsertData = buildUpsertData(validatedData)
+    let joinedCommunities: { id: string; type: string }[] = []
     const updatedUser = await prisma.$transaction(async (tx) => {
       // Update user in Prisma with onboarding data - use upsert for race condition safety
       let user
@@ -292,39 +349,17 @@ export async function POST(request: NextRequest) {
             phoneVerified: null,
           }
         })
-      } catch (upsertError: any) {
-        // Handle email conflict - old user exists with same email but different Clerk ID
-        if (upsertError.code === 'P2002' && upsertError.meta?.target?.includes('email')) {
+      } catch (upsertError) {
+        // Email conflict — a row with this email exists under a different
+        // Clerk id. Never resolved here (see EmailConflictError): the
+        // transaction is abandoned and the request gets a 409.
+        const prismaError = upsertError as { code?: string; meta?: { target?: string[] } }
+        if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
           const email = existingUser?.email || null
-          console.log(`⚠️ Onboarding: Email ${email} conflict - cleaning up old user`)
-
-          const oldUser = await tx.user.findUnique({ where: { email: email! } })
-          if (oldUser && oldUser.id !== userId) {
-            console.log(`🗑️ Onboarding: Deleting old user ${oldUser.id}, will create new ${userId}`)
-            await tx.user.delete({ where: { id: oldUser.id } })
-
-            // Retry upsert - will now succeed
-            user = await tx.user.upsert({
-              where: { id: userId },
-              update: { ...upsertData, updatedAt: new Date() },
-              create: {
-                id: userId,
-                email: existingUser?.email || null,
-                image: null,
-                ...upsertData,
-                emailVerified: null,
-                phoneNumber: null,
-                phoneVerified: null,
-              }
-            })
-
-            console.log(`✅ Onboarding: Created user ${user.id} after cleanup`)
-          } else {
-            throw upsertError
-          }
-        } else {
-          throw upsertError
+          const oldUser = email ? await tx.user.findUnique({ where: { email }, select: { id: true } }) : null
+          throw new EmailConflictError(userId, oldUser?.id ?? null, email)
         }
+        throw upsertError
       }
 
       // Create recent work entries
@@ -371,6 +406,7 @@ export async function POST(request: NextRequest) {
           console.log(`✓ Found ${communities.length} valid communities:`, communities.map(c => `${c.name} (${c.type})`))
         }
 
+        joinedCommunities = communities.map((community) => ({ id: community.id, type: String(community.type) }))
         if (communities.length > 0) {
           await tx.userCommunity.createMany({
             data: communities.map(community => ({
@@ -397,8 +433,42 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Update Clerk user with minimal metadata
-    await (await clerkClient()).users.updateUser(userId, clerkUpdateData)
+    // The database is committed and is the source of truth: the onboarding
+    // layout and /api/onboarding/status read Prisma first and Clerk's claim
+    // only as a fallback. So the Clerk metadata write and the search-index
+    // write run after the response — a Clerk hiccup no longer turns a
+    // completed onboarding into a 500 (it was awaited outside any try/catch),
+    // and the index is updated in-process rather than by an un-awaited fetch
+    // to ourselves (audit findings M2, H5). Each is logged on failure.
+    after(async () => {
+      try {
+        await (await clerkClient()).users.updateUser(userId, clerkUpdateData)
+      } catch (error) {
+        console.error(`❌ Onboarding: Clerk metadata update failed for ${userId}:`, error)
+      }
+      try {
+        await syncUserSearchRecord(userId, 'update')
+      } catch (error) {
+        console.error(`❌ Onboarding: search index update failed for ${userId}:`, error)
+      }
+      // Product analytics (Slice 11): the funnel's end, plus one join event per
+      // community so the `community` group carries the membership. Person
+      // properties are role and state only — never name, email or location.
+      await captureServer({
+        event: "onboarding_completed",
+        distinctId: userId,
+        properties: { waived: false },
+        set: { onboarding_completed: true, role: updatedUser.role, community_kinds: joinedCommunities.map((c) => c.type) },
+      })
+      for (const community of joinedCommunities) {
+        await captureServer({
+          event: "community_joined",
+          distinctId: userId,
+          properties: { community_id: community.id, community_kind: community.type === "special" ? "special" : "regional" },
+          groups: { community: community.id },
+        })
+      }
+    })
 
     console.log(`✅ Onboarding completed for user ${userId}`)
 
@@ -413,11 +483,34 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    if (error instanceof EmailConflictError) {
+      // Both ids on one line, like the Clerk webhook's conflict branch, so the
+      // two can be reconciled by hand. Nothing was deleted.
+      console.error(
+        `🚨 EMAIL CONFLICT (onboarding): new Clerk user ${error.newClerkId} has email ${error.email} ` +
+        `which belongs to existing user ${error.existingUserId}. Action required: resolve manually.`
+      )
+      return NextResponse.json({
+        success: false,
+        error: "EMAIL_CONFLICT",
+        code: "EMAIL_CONFLICT",
+        message: "This email address already belongs to another account. Please contact the Connecting Climate Minds Hub team.",
+        timestamp: new Date().toISOString()
+      }, {
+        status: 409,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
     console.error('❌ Error completing onboarding:', error)
 
-    // Handle specific Prisma errors
-    if (error instanceof Error && error.message.includes('P2002')) {
-      // Unique constraint violation - likely username conflict
+    // Prisma 6 reports the error code in `error.code`; the message reads
+    // "Unique constraint failed on the fields: (`username`)" and does NOT
+    // contain "P2002", which is why the old `message.includes` check 500'd.
+    const prismaCode = (error as { code?: unknown } | null)?.code
+
+    if (prismaCode === 'P2002') {
+      // Unique constraint violation - username conflict (email is handled above)
       return NextResponse.json({
         success: false,
         error: "Username is already taken. Please choose a different username.",
@@ -429,7 +522,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    if (error instanceof Error && error.message.includes('P2025')) {
+    if (prismaCode === 'P2025') {
       // No record found for update - webhook hasn't created user yet
       return NextResponse.json({
         success: false,

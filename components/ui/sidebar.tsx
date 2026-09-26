@@ -1,9 +1,10 @@
 "use client"
+import { useTranslations } from "next-intl"
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeftIcon, PanelRightIcon } from "lucide-react"
+import { MenuIcon, PanelLeftIcon, PanelRightIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useLocale } from "next-intl"
@@ -19,6 +20,13 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet"
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
     Tooltip,
@@ -184,6 +192,7 @@ function Sidebar({
     collapsible?: "offcanvas" | "icon" | "none"
 }) {
     const { isMobile, state, openMobile, setOpenMobile, isRtl } = useSidebar()
+    const t = useTranslations("common")
 
     // Auto-determine side based on RTL if not explicitly set
     const effectiveSide = side ?? (isRtl ? "right" : "left")
@@ -204,27 +213,27 @@ function Sidebar({
     }
 
     if (isMobile) {
+        // Native-feel BOTTOM drawer (vaul): the phone-native sheet pattern —
+        // slides up with a grab handle, swipe-down to dismiss, rounded top,
+        // safe-area padding. Direction-agnostic, so RTL needs no special case.
         return (
-            <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-                <SheetContent
+            <Drawer open={openMobile} onOpenChange={setOpenMobile} direction="bottom">
+                <DrawerContent
                     data-sidebar="sidebar"
                     data-slot="sidebar"
                     data-mobile="true"
-                    className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
-                    style={
-                        {
-                            "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-                        } as React.CSSProperties
-                    }
-                    side={effectiveSide}
+                    className="max-h-[88dvh] rounded-t-2xl border-transparent bg-sidebar text-sidebar-foreground p-0 [&>button]:hidden"
                 >
-                    <SheetHeader className="sr-only">
-                        <SheetTitle>Sidebar</SheetTitle>
-                        <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-                    </SheetHeader>
-                    <div className="flex h-full w-full flex-col">{children}</div>
-                </SheetContent>
-            </Sheet>
+                    <DrawerHeader className="sr-only">
+                        <DrawerTitle>{t("mainNavigation")}</DrawerTitle>
+                        <DrawerDescription>{t("mainNavigationDescription")}</DrawerDescription>
+                    </DrawerHeader>
+                    {/* vaul's built-in grab handle renders for bottom drawers. */}
+                    <div className="flex w-full flex-col overflow-y-auto overscroll-contain pb-[max(env(safe-area-inset-bottom),12px)]">
+                        {children}
+                    </div>
+                </DrawerContent>
+            </Drawer>
         )
     }
 
@@ -243,7 +252,11 @@ function Sidebar({
                 className={cn(
                     "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
                     "group-data-[collapsible=offcanvas]:w-0",
-                    variant === "floating" || variant === "inset"
+                    // Only `floating` insets its fixed container (adds the
+                    // +spacing(4) padding below) — `inset`'s fixed container is
+                    // plain w-(--sidebar-width-icon), so including it here left
+                    // a ~16px dead gutter in the collapsed workspace rail.
+                    variant === "floating"
                         ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
                         : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
                 )}
@@ -251,21 +264,29 @@ function Sidebar({
             <div
                 data-slot="sidebar-container"
                 className={cn(
-                    // Height comes from inset-y-0 (top/bottom pinned). Avoid h-svh
-                    // here: the small-viewport unit recalculates as mobile browser
-                    // chrome shows/hides during scroll, which makes the fixed
-                    // sidebar flicker. inset-y-0 alone gives a stable full height.
-                    "fixed inset-y-0 z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+                    // Height: pin top/bottom with inset-y-0 AND set h-dvh. inset-y-0
+                    // alone resolves against the *containing block*, so it collapses
+                    // if any ancestor establishes one (transform/filter/will-change/
+                    // contain) — which silently broke vertical responsiveness. h-dvh
+                    // (dynamic viewport height) tracks the viewport without the svh
+                    // scroll-flicker, so it stays full-height regardless of ancestors.
+                    "fixed inset-y-0 h-dvh z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
                     // Simple positioning based on effectiveSide
                     effectiveSide === "left"
                         ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
                         : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-                    // Adjust the padding for floating and inset variants.
-                    variant === "floating" || variant === "inset"
+                    // Only `floating` insets the panel from the screen edge.
+                    // `inset` runs the sidebar flush to the edge so the shell
+                    // reads as two solid regions — blue nav, white content —
+                    // rather than a card floating inside a blue frame.
+                    variant === "floating"
                         ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
                         : cn(
                             "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
-                            effectiveSide === "left" ? "border-r" : "border-l"
+                            // No divider for `inset`: the blue panel meets the
+                            // white content directly, so a border reads as a seam.
+                            variant === "sidebar" &&
+                                (effectiveSide === "left" ? "border-r" : "border-l")
                         ),
                     className
                 )}
@@ -288,7 +309,8 @@ function SidebarTrigger({
                             onClick,
                             ...props
                         }: React.ComponentProps<typeof Button>) {
-    const { toggleSidebar, isRtl } = useSidebar()
+    const { toggleSidebar, isRtl, isMobile } = useSidebar()
+    const t = useTranslations("common")
 
     return (
         <Button
@@ -303,23 +325,26 @@ function SidebarTrigger({
             }}
             {...props}
         >
-            {isRtl ? <PanelRightIcon /> : <PanelLeftIcon />}
-            <span className="sr-only">Toggle Sidebar</span>
+            {/* Mobile opens a bottom sheet, so the affordance is the universal
+                menu glyph; desktop keeps the panel icon (it collapses a panel). */}
+            {isMobile ? <MenuIcon /> : isRtl ? <PanelRightIcon /> : <PanelLeftIcon />}
+            <span className="sr-only">{t("toggleSidebar")}</span>
         </Button>
     )
 }
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
+    const t = useTranslations("common")
     const { toggleSidebar, isRtl } = useSidebar()
 
     return (
         <button
             data-sidebar="rail"
             data-slot="sidebar-rail"
-            aria-label="Toggle Sidebar"
+            aria-label={t("toggleSidebar")}
             tabIndex={-1}
             onClick={toggleSidebar}
-            title="Toggle Sidebar"
+            title={t("toggleSidebar")}
             className={cn(
                 "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex",
                 isRtl
@@ -343,15 +368,24 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
         <main
             data-slot="sidebar-inset"
             className={cn(
-                "bg-background relative flex w-full flex-1 flex-col",
-                // General inset styling
+                // min-w-0 is load-bearing: as a flex item this defaults to
+                // min-width:auto, which floors the panel at its content's
+                // min-content width. Any wide descendant (e.g. a horizontally
+                // scrollable chip row whose chips don't shrink) then pins the
+                // panel wider than the space left by the sidebar, pushing the
+                // page past the viewport and stopping it tracking screen width.
+                // min-w-0 lets it shrink to the available space in both the
+                // expanded and collapsed sidebar states; wide children scroll or
+                // clip inside it instead of blowing out the shell.
+                "bg-background relative flex w-full min-w-0 flex-1 flex-col",
+                // The content panel is a soft-cornered card inset from the blue
+                // shell — the curve on all four corners is the intended look, so
+                // it needs the small gap on every side to curve against. (An
+                // earlier pass ran it flush to the edges, which squared off the
+                // corners; the rounded card reads better.) The sidebar panel
+                // itself stays flush to the screen edge — see the container's
+                // variant handling above — so the blue still reaches the edge.
                 "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
-                // Logical margin adjustments (RTL-safe). When expanded the panel
-                // sits flush against the sidebar (ms-0); in that flush state we
-                // also drop the start-side rounding so the white panel meets the
-                // sidebar cleanly instead of leaving a thin light seam.
-                "md:peer-data-[variant=inset]:ms-0 md:peer-data-[variant=inset]:rounded-s-none",
-                "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2 md:peer-data-[variant=inset]:peer-data-[state=collapsed]:rounded-s-xl",
                 className
             )}
             {...props}
@@ -378,7 +412,11 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
         <div
             data-slot="sidebar-header"
             data-sidebar="header"
-            className={cn("flex flex-col gap-2 p-2", className)}
+            // shrink-0 so the header keeps its full height and any overflow is
+            // pushed into SidebarContent's scroll region rather than squeezing
+            // the header/footer (which clipped the avatar + language switcher
+            // off the bottom on short/tall viewports when signed in).
+            className={cn("flex shrink-0 flex-col gap-2 p-2", className)}
             {...props}
         />
     )
@@ -389,7 +427,10 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
         <div
             data-slot="sidebar-footer"
             data-sidebar="footer"
-            className={cn("flex flex-col gap-2 p-2", className)}
+            // shrink-0 so the footer (avatar + language switcher) always keeps
+            // its full height and stays visible; overflow goes to the scrollable
+            // SidebarContent instead of clipping the footer off the viewport.
+            className={cn("flex shrink-0 flex-col gap-2 p-2", className)}
             {...props}
         />
     )
@@ -522,7 +563,13 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-    "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+    // group-data-[collapsible=icon]:justify-center + rounded-lg: the collapsed
+    // rail forces every button to an exact icon-sized square, but that alone
+    // only centers the icon by coincidence (padding math happens to cancel
+    // out) — justify-center makes it deliberate and resilient to badges/
+    // chevrons/long labels that would otherwise skew it. rounded-lg matches
+    // the rail's other icon boxes (search action, user avatar).
+    "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
     {
         variants: {
             variant: {
@@ -587,6 +634,9 @@ function SidebarMenuButton({
         }
     }
 
+    // CCM-styled tooltip for the collapsed rail: midnight chip, no arrow, a
+    // hair of offset (ms-1 is a logical margin so it stays correct in RTL,
+    // where the tooltip flips to the left of the rail).
     return (
         <Tooltip>
             <TooltipTrigger asChild>{button}</TooltipTrigger>
@@ -594,7 +644,12 @@ function SidebarMenuButton({
                 side={isRtl ? "left" : "right"}
                 align="center"
                 hidden={state !== "collapsed" || isMobile}
+                showArrow={false}
                 {...tooltip}
+                className={cn(
+                    "ms-1 border-0 bg-ccm-midnight px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg",
+                    tooltip.className
+                )}
             />
         </Tooltip>
     )
@@ -668,6 +723,7 @@ function SidebarMenuSkeleton({
     const { isRtl } = useSidebar()
     // Random width between 50 to 90%.
     const width = React.useMemo(() => {
+        // eslint-disable-next-line react-hooks/purity -- vendored shadcn skeleton: intentionally random width, computed once per mount
         return `${Math.floor(Math.random() * 40) + 50}%`
     }, [])
 
@@ -677,7 +733,7 @@ function SidebarMenuSkeleton({
             data-sidebar="menu-skeleton"
             className={cn(
                 "flex h-8 items-center gap-2 rounded-md px-2",
-                isRtl ? "flex-row-reverse" : "flex-row",
+                "flex-row",
                 className
             )}
             {...props}

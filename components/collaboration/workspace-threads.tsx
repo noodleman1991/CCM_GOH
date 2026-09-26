@@ -1,0 +1,155 @@
+"use client";
+
+import { useState } from "react";
+import useSWR from "swr";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Plus, MessagesSquare } from "lucide-react";
+import { archiveThread, createThread, renameThread } from "@/lib/actions/collaboration";
+import { InlineText } from "@/components/ui/inline-text";
+import { CommentSection } from "@/components/comments/comment-section";
+import { WorkspaceEmptyState } from "./workspace-empty-state";
+import type { CollaborationRole } from "@/generated/prisma";
+import { LIMITS } from "@/lib/validation/limits";
+import { RelativeTime } from "@/components/ui/relative-time";
+import { jsonFetcher } from "@/lib/swr";
+
+type Thread = { id: string; title: string; createdAt: string };
+
+export function WorkspaceThreads({
+  collaborationId,
+  myRole,
+  isSignedIn,
+}: {
+  collaborationId: string;
+  myRole: CollaborationRole | null;
+  isSignedIn: boolean;
+}) {
+  const t = useTranslations("collaboration");
+  const { data, mutate } = useSWR<{ threads: Thread[] }>(`/api/collaborations/${collaborationId}/threads`, jsonFetcher, {
+    revalidateOnFocus: false,
+  });
+  const [open, setOpen] = useState<Thread | null>(null);
+  const [title, setTitle] = useState("");
+  const [confirmArchive, setConfirmArchive] = useState<string | null>(null);
+
+  const canEdit = myRole === "EDITOR" || myRole === "OWNER";
+  const threads = data?.threads ?? [];
+
+  const create = async () => {
+    const t = title.trim();
+    if (!t) return;
+    setTitle("");
+    const res = await createThread(collaborationId, t);
+    if (!res.ok) { toast.error(res.error); return; }
+    mutate();
+  };
+
+  const rename = async (threadId: string, next: string) => {
+    const res = await renameThread(collaborationId, threadId, next);
+    if (!res.ok) { toast.error(res.error); return; }
+    mutate();
+  };
+
+  // Two-click archive (no blocking confirm dialog): first click arms, second executes.
+  const archive = async (threadId: string) => {
+    if (confirmArchive !== threadId) {
+      setConfirmArchive(threadId);
+      return;
+    }
+    setConfirmArchive(null);
+    const res = await archiveThread(collaborationId, threadId);
+    if (!res.ok) { toast.error(res.error); return; }
+    toast.success(t("threadArchived"));
+    mutate();
+  };
+
+  if (open) {
+    return (
+      <div className="space-y-4">
+        <Button variant="ghost" size="sm" onClick={() => setOpen(null)}>
+          <ArrowLeft className="size-4 me-2 rtl:-scale-x-100" />
+          {t("backToThreads")}
+        </Button>
+        <h2 className="text-xl font-heading font-semibold text-ccm-midnight">
+          <bdi>{open.title}</bdi>
+        </h2>
+        {/* Reuse the polymorphic comment engine for thread discussion */}
+        <CommentSection
+          targetType="collaborationThread"
+          targetId={open.id}
+          isSignedIn={isSignedIn}
+          canComment={myRole === "COMMENTER" || myRole === "EDITOR" || myRole === "OWNER"}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {threads.length === 0 && !canEdit ? (
+        <WorkspaceEmptyState
+          icon={MessagesSquare}
+          title={t("emptyState.threadsTitle")}
+          body={t("emptyState.threadsBody")}
+        />
+      ) : (
+        <ul className="divide-y rounded-lg border">
+          {threads.map((th) => (
+            <li key={th.id} className="flex items-center gap-3 p-4 hover:bg-muted/50">
+              <MessagesSquare className="size-4 flex-shrink-0 text-ccm-sea" aria-hidden="true" />
+              {/* Inline rename for editors; click-to-open via the chevron/title area. */}
+              {canEdit ? (
+                <InlineText maxLength={LIMITS.collaboration.thread}
+                  value={th.title}
+                  onCommit={(next) => rename(th.id, next)}
+                  canEdit
+                  as="span"
+                  className="min-w-0 flex-1 break-words font-medium"
+                  placeholder={t("threadTitlePlaceholder")}
+                />
+              ) : (
+                <button onClick={() => setOpen(th)} className="min-w-0 flex-1 truncate text-start font-medium" title={th.title}>
+                  <bdi>{th.title}</bdi>
+                </button>
+              )}
+              <span className="text-xs text-muted-foreground">
+                <RelativeTime date={th.createdAt} />
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => setOpen(th)}>
+                {t("open")}
+              </Button>
+              {canEdit && (
+                <Button
+                  variant={confirmArchive === th.id ? "destructive" : "ghost"}
+                  size="sm"
+                  onClick={() => archive(th.id)}
+                  onBlur={() => setConfirmArchive((c) => (c === th.id ? null : c))}
+                >
+                  {confirmArchive === th.id ? t("archiveConfirm") : t("archiveThread")}
+                </Button>
+              )}
+            </li>
+          ))}
+
+          {/* Persistent inline add-row (Notion-style): type + Enter to create. */}
+          {canEdit && (
+            <li className="flex items-center gap-3 p-2">
+              <Plus className="size-4 flex-shrink-0 text-muted-foreground" aria-hidden="true" />
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t("newThread")}
+                maxLength={160}
+                onKeyDown={(e) => e.key === "Enter" && create()}
+                className="h-8 border-0 bg-transparent shadow-none focus-visible:ring-0"
+              />
+            </li>
+          )}
+        </ul>
+      )}
+    </div>
+  );
+}

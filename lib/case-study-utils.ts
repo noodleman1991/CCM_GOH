@@ -1,15 +1,9 @@
 import { CaseStudy, LocalizedString, SupportedLanguage, CaseStudyAuthor } from '@/types/case-study';
 
-export function getLocalizedText(
-    text: LocalizedString | undefined,
-    locale: SupportedLanguage,
-    fallback: string = ''
-): string {
-    if (!text) return fallback;
-
-    const supportedLocale = locale as SupportedLanguage;
-    return text[supportedLocale] || text.en || fallback;
-}
+// One implementation for the whole app (Slice 15): lib/localization-utils.ts.
+// It also falls back to any available language before the fallback text.
+import { getLocalizedText } from '@/lib/localization-utils';
+export { getLocalizedText };
 
 export function getCaseStudyTitle(caseStudy: CaseStudy, locale: SupportedLanguage): string {
     return getLocalizedText(caseStudy.title, locale, 'Untitled Case Study');
@@ -29,8 +23,8 @@ export function getCaseStudyExcerpt(
 export function getCaseStudyUrl(caseStudy: CaseStudy, locale: SupportedLanguage): string {
     const slug = caseStudy.slug.current;
     return locale === 'en'
-        ? `/case-studies/${slug}`
-        : `/${locale}/case-studies/${slug}`;
+        ? `/research-and-action/case-studies/${slug}`
+        : `/${locale}/research-and-action/case-studies/${slug}`;
 }
 
 export function getPrimaryAuthor(caseStudy: CaseStudy): CaseStudyAuthor | null {
@@ -43,19 +37,13 @@ export function getPrimaryAuthor(caseStudy: CaseStudy): CaseStudyAuthor | null {
 }
 
 export function getStudyLocationText(caseStudy: CaseStudy): string | null {
-    if (caseStudy.studyAreas && caseStudy.studyAreas.length > 0) {
-        const firstArea = caseStudy.studyAreas[0];
-        if (firstArea.name) {
-            return firstArea.name;
-        }
-    }
-
-    if (caseStudy.studyLocation) {
-        const { lat, lng } = caseStudy.studyLocation;
-        return `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
-    }
-
-    return null;
+    const named = caseStudy.locationDisplayText?.trim();
+    if (named) return named;
+    const { city, country } = caseStudy.locationText ?? {};
+    const pair = [city, country].filter((part): part is string => Boolean(part && part.trim())).join(', ');
+    if (pair) return pair;
+    const area = caseStudy.studyAreas?.find((a) => a.name)?.name;
+    return area || null;
 }
 
 export function formatCaseStudyDate(date: Date, locale: SupportedLanguage): string {
@@ -67,7 +55,9 @@ export function formatCaseStudyDate(date: Date, locale: SupportedLanguage): stri
     };
 
     const targetLocale = localeMap[locale] || 'en-US';
-    return date.toLocaleDateString(targetLocale);
+    // Editorial month + year (e.g. "Jan 2024") rather than a numeric date —
+    // case studies are dated by period, not day.
+    return date.toLocaleDateString(targetLocale, { year: 'numeric', month: 'short' });
 }
 
 export function isRTL(locale: string): boolean {

@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 
@@ -9,12 +10,19 @@ interface LogoProps {
 }
 
 export default function Logo({ className = "", size = "default", asChild = false }: LogoProps) {
+    const t = useTranslations("common");
     // Smart sizing that adapts to container
     const sizeClasses = {
         sm: "h-4 w-auto",           // Small - nav bars
         default: "h-9 w-auto",     // Default - 40% bigger than original h-6
         md: "h-11 w-auto",         // Medium - 40% bigger than original h-8
-        lg: "w-full h-auto max-h-16",  // Large - sidebar (fit width) - 40% bigger
+        // Large - sidebar. Hard-coded height, 15% up from the 4rem (64px) this
+        // used to cap at via max-h-16. That cap was the real constraint: the
+        // sidebar's `[&_img]:h-[…]` wrapper override never applied, so bumping
+        // that value had no effect. Keep the size here, in one place.
+        // max-w-full + h-auto keep it safe on narrower containers (the mobile
+        // bottom-drawer nav) — it scales down to fit instead of overflowing.
+        lg: "h-[4.6rem] max-h-full w-auto max-w-full",
         xl: "h-[104px] w-auto"     // Extra large - 30% bigger than original h-20
     };
 
@@ -49,7 +57,7 @@ export default function Logo({ className = "", size = "default", asChild = false
                 "inline-flex items-center",
                 className
             )}
-            aria-label="Go to homepage"
+            aria-label={t("goToHomepage")}
         >
             {logoImage}
         </Link>

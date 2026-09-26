@@ -12,8 +12,10 @@ import {
     Play,
     Clock
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
+import { getLocalizedText } from '@/lib/localization-utils';
 
 // Define the lived experience type based on the schema
 interface LivedExperience {
@@ -73,7 +75,7 @@ interface GridLivedExperienceProps {
     showMetadata?: boolean;
     showCommunity?: boolean;
     showOrganizations?: boolean;
-    customExcerpt?: any;
+    customExcerpt?: string | Record<string, string | undefined> | null;
     locale: string;
     userId?: string;
     className?: string;
@@ -82,11 +84,6 @@ interface GridLivedExperienceProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(obj: any, locale: string): string {
-    if (!obj) return '';
-    if (typeof obj === 'string') return obj;
-    return obj[locale] || obj['en'] || '';
-}
 
 // Helper function to format date
 function formatExperienceDate(date: Date, locale: string): string {
@@ -99,7 +96,7 @@ function formatExperienceDate(date: Date, locale: string): string {
     try {
         return new Intl.DateTimeFormat(locale, options).format(date);
     } catch {
-        return date.toLocaleDateString('en-US', options);
+        return date.toLocaleDateString(locale === "ar" ? "ar-EG" : locale, options);
     }
 }
 
@@ -128,6 +125,8 @@ export default function GridLivedExperienceComponent({
                                                         cardVariant = "classic",
                                                     }: GridLivedExperienceProps) {
     const t = useTranslations('regional');
+    const tCommon = useTranslations('common');
+    const tType = useTranslations('typedCards');
 
     if (!livedExperience) return null;
 
@@ -147,35 +146,11 @@ export default function GridLivedExperienceComponent({
     const videoInfo = getVideoInfo(livedExperience.videoUrl);
 
     // Localized text helpers
-    const getMoreText = (count: number) => {
-        const moreTexts = {
-            en: 'more',
-            es: 'más',
-            fr: 'autres',
-            ar: 'آخرين'
-        };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
-    const getExperienceTypeText = () => {
-        const typeTexts = {
-            en: 'Lived Experience',
-            es: 'Experiencia Vivida',
-            fr: 'Expérience Vécue',
-            ar: 'تجربة معيشة'
-        };
-        return typeTexts[supportedLocale] || 'Lived Experience';
-    };
+    const getExperienceTypeText = () => tType('type.livedExperience');
 
-    const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
-    };
+    const getFeaturedText = () => tCommon('featured');
 
     return (
         <Card className={cn(
@@ -188,7 +163,7 @@ export default function GridLivedExperienceComponent({
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     {livedExperience.thumbnail?.asset?.url ? (
                         <Image
-                            src={urlFor(livedExperience.thumbnail).width(400).height(225).url()}
+                            src={imageUrl(livedExperience.thumbnail, { width: 400, height: 225 })}
                             alt={livedExperience.thumbnail.alt || title}
                             fill
                             className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -219,7 +194,7 @@ export default function GridLivedExperienceComponent({
                     {livedExperience.duration && (
                         <div className="absolute top-3 end-3">
                             <Badge variant="outline" className="bg-black/70 text-white border-white/20">
-                                <Clock className="h-3 w-3 mr-1" />
+                                <Clock className="h-3 w-3 me-1" />
                                 {livedExperience.duration}
                             </Badge>
                         </div>
@@ -294,28 +269,32 @@ export default function GridLivedExperienceComponent({
                 )}
 
                 {/* Tags */}
-                {showTags && livedExperience.tags && livedExperience.tags.length > 0 && (
+                {showTags && livedExperience.tags && livedExperience.tags.length > 0 && (() => {
+                    const tags = sortedTags(livedExperience.tags, supportedLocale);
+                    if (tags.length === 0) return null;
+                    return (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {livedExperience.tags.slice(0, 3).map((tag: any) => (
+                        {tags.slice(0, 3).map((tag) => {
+                            const color = normalizeTagColor(tag.color);
+                            return (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
-                                style={{
-                                    borderColor: tag.color,
-                                    color: tag.color
-                                }}
+                                style={{ borderColor: color, color }}
                             >
                                 {getLocalizedText(tag.label, supportedLocale)}
                             </Badge>
-                        ))}
-                        {livedExperience.tags.length > 3 && (
+                            );
+                        })}
+                        {tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                {getMoreText(livedExperience.tags.length - 3)}
+                                {getMoreText(tags.length - 3)}
                             </Badge>
                         )}
                     </div>
-                )}
+                    );
+                })()}
             </CardContent>
 
             <CardFooter className="pt-0">

@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState, useTransition } from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter, usePathname } from "@/i18n/navigation"
 import { Check, Loader2 } from "lucide-react"
@@ -12,11 +11,13 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
+import { LIMITS } from "@/lib/validation/limits"
+import { CharCounter } from "@/components/ui/char-counter"
 
 interface BasicInfoPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 
@@ -39,23 +40,33 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
   const usernameValue = form.watch("basicInfo.username")
   // The user's current username (server-provided default) — no need to check it
   const currentUsername: string = form.formState.defaultValues?.basicInfo?.username || ""
-  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle")
+  // The last completed check, keyed by the value it checked. The displayed
+  // status is DERIVED during render (no setState inside the effect body):
+  // skip-conditions → "idle"; a stale/absent result → "checking"; otherwise
+  // the recorded result.
+  const [checkResult, setCheckResult] = useState<{
+    value: string
+    status: "idle" | "available" | "taken"
+  } | null>(null)
+
+  const trimmedUsername = (usernameValue || "").trim()
+  // Skip: empty, below min length, invalid format (zod handles those),
+  // or unchanged from the user's current username
+  const shouldCheckUsername = !(
+    trimmedUsername.length < 3 ||
+    !/^[a-zA-Z0-9_]+$/.test(trimmedUsername) ||
+    (currentUsername && trimmedUsername.toLowerCase() === currentUsername.toLowerCase())
+  )
+  const usernameStatus: "idle" | "checking" | "available" | "taken" = !shouldCheckUsername
+    ? "idle"
+    : checkResult?.value === trimmedUsername
+      ? checkResult.status
+      : "checking"
 
   useEffect(() => {
-    const value = (usernameValue || "").trim()
+    if (!shouldCheckUsername) return
 
-    // Skip: empty, below min length, invalid format (zod handles those),
-    // or unchanged from the user's current username
-    if (
-      value.length < 3 ||
-      !/^[a-zA-Z0-9_]+$/.test(value) ||
-      (currentUsername && value.toLowerCase() === currentUsername.toLowerCase())
-    ) {
-      setUsernameStatus("idle")
-      return
-    }
-
-    setUsernameStatus("checking")
+    const value = trimmedUsername
     const controller = new AbortController()
     const timeout = setTimeout(async () => {
       try {
@@ -65,18 +76,18 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
         )
         if (!response.ok) {
           // Auth/server errors: don't block typing, fall back to submit-time check
-          setUsernameStatus("idle")
+          setCheckResult({ value, status: "idle" })
           return
         }
         const data = await response.json()
         if (data.available) {
-          setUsernameStatus("available")
+          setCheckResult({ value, status: "available" })
           // Only clear our own manual error, never zod validation errors
           if (form.formState.errors?.basicInfo?.username?.type === "manual") {
             form.clearErrors("basicInfo.username")
           }
         } else {
-          setUsernameStatus("taken")
+          setCheckResult({ value, status: "taken" })
           form.setError("basicInfo.username", {
             type: "manual",
             message: data.message || t("usernameTaken")
@@ -84,7 +95,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
         }
       } catch (error) {
         if (!(error instanceof DOMException && error.name === "AbortError")) {
-          setUsernameStatus("idle")
+          setCheckResult({ value, status: "idle" })
         }
       }
     }, 500)
@@ -93,12 +104,12 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
       clearTimeout(timeout)
       controller.abort()
     }
-  }, [usernameValue, currentUsername, form])
+  }, [trimmedUsername, shouldCheckUsername, currentUsername, form])
 
   return (
     <div className={cn(
       "space-y-5",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
         <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -160,19 +171,38 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                 <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.usernamePlaceholder || t("usernamePlaceholder")} />
               </FormControl>
               {usernameStatus === "checking" && (
-                <p className={cn("flex items-center gap-1.5 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                <p className={cn("flex items-center gap-1.5 text-sm text-muted-foreground")}>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   {t("usernameChecking")}
                 </p>
               )}
               {usernameStatus === "available" && (
-                <p className={cn("flex items-center gap-1.5 text-sm text-green-600", isRTL && "flex-row-reverse")}>
+                <p className={cn("flex items-center gap-1.5 text-sm text-green-600")}>
                   <Check className="h-3.5 w-3.5" />
                   {t("usernameAvailable")}
                 </p>
               )}
               <FormDescription>
                 {content?.basicInfoFieldHints?.usernameHint || t("usernameHint")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Headline — a one-line self-description */}
+        <FormField
+          control={form.control}
+          name="basicInfo.headline"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{content?.fieldLabels?.basicInfo?.headline || t("headline")}</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value || ""} placeholder={content?.fieldLabels?.basicInfo?.headlinePlaceholder || t("headlinePlaceholder")} maxLength={LIMITS.profile.headline} />
+              </FormControl>
+                <CharCounter value={field.value} max={LIMITS.profile.headline} />
+              <FormDescription>
+                {content?.basicInfoFieldHints?.headlineHint || t("headlineHint")}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -187,10 +217,30 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             <FormItem>
               <FormLabel>{content?.fieldLabels?.basicInfo?.bio || t("bio")}</FormLabel>
               <FormControl>
-                <Textarea {...field} rows={3} placeholder={content?.fieldLabels?.basicInfo?.bioPlaceholder || t("bioPlaceholder")} />
+                <Textarea {...field} rows={3} placeholder={content?.fieldLabels?.basicInfo?.bioPlaceholder || t("bioPlaceholder")} maxLength={LIMITS.profile.bio} />
               </FormControl>
+                <CharCounter value={field.value} max={LIMITS.profile.bio} />
               <FormDescription>
                 {content?.basicInfoFieldHints?.bioHint || t("bioHint")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Motivation — "what brought you here" */}
+        <FormField
+          control={form.control}
+          name="basicInfo.motivation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{content?.fieldLabels?.basicInfo?.motivation || t("motivation")}</FormLabel>
+              <FormControl>
+                <Textarea {...field} value={field.value || ""} rows={3} placeholder={content?.fieldLabels?.basicInfo?.motivationPlaceholder || t("motivationPlaceholder")} maxLength={LIMITS.profile.motivation} />
+              </FormControl>
+                <CharCounter value={field.value} max={LIMITS.profile.motivation} />
+              <FormDescription>
+                {content?.basicInfoFieldHints?.motivationHint || t("motivationHint")}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -210,7 +260,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                     <SelectValue placeholder={content?.fieldLabels?.basicInfo?.selectAge || t("selectAge")} />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent dir={isRTL ? "rtl" : "ltr"} className={cn(isRTL && "text-right")}>
+                <SelectContent dir={isRTL ? "rtl" : "ltr"} className="text-start">
                   <SelectItem value="UNDER_18">{content?.fieldLabels?.basicInfo?.under18 || t("under18")}</SelectItem>
                   <SelectItem value="ABOVE_18">{content?.fieldLabels?.basicInfo?.above18 || t("above18")}</SelectItem>
                 </SelectContent>
@@ -284,7 +334,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                     <SelectItem
                       key={option.value}
                       value={option.value}
-                      className={cn(option.isRTL && "flex-row-reverse text-right")}
+                      className={cn(option.isRTL && "text-right")}
                       dir={option.isRTL ? "rtl" : "ltr"}
                     >
                       {option.label}

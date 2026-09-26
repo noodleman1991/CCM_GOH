@@ -1,0 +1,321 @@
+"use server";
+
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
+import { createNotification } from "@/lib/notifications/service";
+import { getActor } from "@/lib/authz";
+import { structuredSnippet } from "@/lib/notifications/structured";
+import { authorizeCollab, getMembershipRole } from "@/lib/collaboration/service";
+import { seedWorkspace } from "@/lib/collaboration/seed";
+import type { CollaborationRole } from "@/generated/prisma";
+import { r2Configured, copyObject, deleteObject, rekeyForVisibility } from "@/lib/r2";
+import { FEATURES } from "@/lib/features";
+import { LIMITS } from "@/lib/validation/limits";
+import { lengthProblem } from "@/lib/collaboration/errors";
+
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
+
+const createSchema = z.object({
+  title: z.string().trim().min(1).max(LIMITS.collaboration.title),
+  description: z.string().trim().max(LIMITS.collaboration.description).optional(),
+  visibility: z.enum(["PUBLIC", "MEMBERS"]).default("MEMBERS"),
+});
+
+/** Create a workspace — the creator becomes OWNER. */
+export async function createCollaboration(input: z.infer<typeof createSchema>): Promise<Result<{ id: string }>> {
+  // Flag OFF means no rows: the pages redirect home, so a workspace created
+  // here would be unreachable — it was being created anyway (Slice 6).
+  if (!FEATURES.engagement) return { ok: false, error: "This feature isn't available yet." };
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in to create a workspace." };
+  const parsed = createSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+
+  const collab = await prisma.collaboration.create({
+    data: {
+      title: parsed.data.title,
+      description: parsed.data.description ?? null,
+      visibility: parsed.data.visibility,
+      createdById: actor.id,
+      members: { create: { userId: actor.id, role: "OWNER" } },
+    },
+    select: { id: true },
+  });
+
+  // Seed the workspace so it is never empty: a plan with the three starter
+  // stages + a starter doc. Best-effort — never fail creation on a seed error.
+  try {
+    await seedWorkspace(prisma, collab.id, actor.id);
+  } catch {
+    // Seeding is convenience-only; the workspace is the source of truth.
+  }
+
+  revalidatePath("/collaborations");
+  return { ok: true, id: collab.id };
+}
+
+/** Join a PUBLIC workspace as a VIEWER. */
+export async function joinCollaboration(id: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in to join." };
+  const collab = await prisma.collaboration.findUnique({ where: { id }, select: { visibility: true } });
+  if (!collab) return { ok: false, error: "Not found." };
+  if (collab.visibility !== "PUBLIC") return { ok: false, error: "This workspace is invite-only." };
+
+  await prisma.collaborationMember.upsert({
+    where: { collaborationId_userId: { collaborationId: id, userId: actor.id } },
+    create: { collaborationId: id, userId: actor.id, role: "VIEWER" },
+    update: {},
+  });
+  revalidatePath(`/collaborations/${id}`);
+  return { ok: true };
+}
+
+/** Owner sets a member's role. */
+export async function setMemberRole(
+  collaborationId: string,
+  userId: string,
+  role: CollaborationRole
+): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:manageMembers");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  // Guard: don't demote the sole OWNER.
+  if (role !== "OWNER") {
+    const target = await getMembershipRole(collaborationId, userId);
+    if (target === "OWNER") {
+      const owners = await prisma.collaborationMember.count({
+        where: { collaborationId, role: "OWNER" },
+      });
+      if (owners <= 1) return { ok: false, error: "Assign another owner before changing this role." };
+    }
+  }
+  await prisma.collaborationMember.update({
+    where: { collaborationId_userId: { collaborationId, userId } },
+    data: { role },
+  });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+/** Archive a thread (soft delete — comments retained, thread leaves the list). */
+export async function archiveThread(collaborationId: string, threadId: string): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  // Scoped: a thread id from another workspace must not be archivable here.
+  const r = await prisma.collaborationThread.updateMany({
+    where: { id: threadId, collaborationId },
+    data: { archivedAt: new Date() },
+  });
+  if (r.count === 0) return { ok: false, error: "Not found in this workspace." };
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+/** Owner removes a member (yourself = use leave). The removed member is told. */
+export async function removeMember(collaborationId: string, userId: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  if (userId === actor.id) return { ok: false, error: "Use Leave to remove yourself." };
+  try {
+    await authorizeCollab(collaborationId, "collab:manageMembers");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const target = await getMembershipRole(collaborationId, userId);
+  if (!target) return { ok: true };
+  // Guard: the sole OWNER can't be removed.
+  if (target === "OWNER") {
+    const owners = await prisma.collaborationMember.count({
+      where: { collaborationId, role: "OWNER" },
+    });
+    if (owners <= 1) return { ok: false, error: "Assign another owner first." };
+  }
+  const collab = await prisma.collaboration.findUnique({
+    where: { id: collaborationId },
+    select: { title: true },
+  });
+  await prisma.collaborationMember.delete({
+    where: { collaborationId_userId: { collaborationId, userId } },
+  });
+  await createNotification({
+    recipientId: userId,
+    type: "COLLAB_ACTIVITY",
+    actorId: actor.id,
+    entityType: "collaboration",
+    entityId: collaborationId,
+    snippet: structuredSnippet("removedFromWorkspace", { title: collab?.title ?? "" }),
+  });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+/** Leave a workspace — blocked for the sole OWNER (transfer or archive first). */
+export async function leaveCollaboration(id: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const role = await getMembershipRole(id, actor.id);
+  if (!role) return { ok: true };
+  if (role === "OWNER") {
+    const owners = await prisma.collaborationMember.count({ where: { collaborationId: id, role: "OWNER" } });
+    if (owners <= 1) {
+      return { ok: false, error: "You are the only owner. Transfer ownership or archive the workspace first." };
+    }
+  }
+  await prisma.collaborationMember.delete({
+    where: { collaborationId_userId: { collaborationId: id, userId: actor.id } },
+  });
+  revalidatePath(`/collaborations/${id}`);
+  return { ok: true };
+}
+
+/** Archive the workspace (owner or staff). */
+export async function archiveCollaboration(id: string): Promise<Result> {
+  try {
+    await authorizeCollab(id, "collab:archive");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  await prisma.collaboration.update({ where: { id }, data: { status: "ARCHIVED" } });
+  revalidatePath("/collaborations");
+  return { ok: true };
+}
+
+/** Create a discussion thread (EDITOR+). */
+/** Inline-edit the workspace title and/or description (EDITOR+ via editThread cap). */
+export async function updateCollaboration(
+  collaborationId: string,
+  patch: { title?: string; description?: string }
+): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const data: { title?: string; description?: string } = {};
+  if (patch.title !== undefined) {
+    const t = patch.title.trim();
+    const problem = await lengthProblem(t, LIMITS.collaboration.title);
+    if (problem) return problem;
+    data.title = t;
+  }
+  if (patch.description !== undefined) {
+    data.description = patch.description.trim().slice(0, 2000) || "";
+  }
+  if (Object.keys(data).length === 0) return { ok: true };
+  await prisma.collaboration.update({ where: { id: collaborationId }, data });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+/** Inline-rename a thread (EDITOR+). */
+export async function renameThread(
+  collaborationId: string,
+  threadId: string,
+  title: string
+): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const t = title.trim();
+  const problem = await lengthProblem(t, LIMITS.collaboration.thread);
+  if (problem) return problem;
+  const r = await prisma.collaborationThread.updateMany({
+    where: { id: threadId, collaborationId },
+    data: { title: t },
+  });
+  if (r.count === 0) return { ok: false, error: "Not found in this workspace." };
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+export async function createThread(collaborationId: string, title: string): Promise<Result<{ id: string }>> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const t = title.trim();
+  const problem = await lengthProblem(t, LIMITS.collaboration.thread);
+  if (problem) return problem;
+
+  const thread = await prisma.collaborationThread.create({
+    data: { collaborationId, title: t, createdById: actor.id },
+    select: { id: true },
+  });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true, id: thread.id };
+}
+
+
+/**
+ * Flip a workspace between PUBLIC and MEMBERS (OWNER only). File keys are
+ * prefix-routed at upload time (public/ vs members/), so the flip must
+ * re-home every R2 object or MEMBERS files would stay world-readable (and
+ * vice versa). Order is roll-forward-safe:
+ *   1. copy every object to the new prefix (abort on any failure),
+ *   2. update the DB rows + the visibility in one transaction,
+ *   3. best-effort delete the old objects.
+ */
+export async function setCollaborationVisibility(
+  collaborationId: string,
+  visibility: "PUBLIC" | "MEMBERS"
+): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const role = await getMembershipRole(collaborationId, actor.id);
+  if (role !== "OWNER") return { ok: false, error: "Only an owner can change visibility." };
+
+  const collab = await prisma.collaboration.findUnique({
+    where: { id: collaborationId },
+    select: { visibility: true },
+  });
+  if (!collab) return { ok: false, error: "Not found." };
+  if (collab.visibility === visibility) return { ok: true };
+
+  const files = await prisma.collaborationFile.findMany({
+    where: { collaborationId },
+    select: { id: true, r2Key: true },
+  });
+
+  const moved: { id: string; from: string; to: string }[] = [];
+  if (files.length > 0) {
+    if (!r2Configured()) {
+      return { ok: false, error: "File storage is unavailable — try again later." };
+    }
+    for (const f of files) {
+      const to = rekeyForVisibility(f.r2Key, visibility);
+      if (to === f.r2Key) continue;
+      try {
+        await copyObject(f.r2Key, to);
+        moved.push({ id: f.id, from: f.r2Key, to });
+      } catch {
+        // Roll back the copies we made; visibility stays unchanged.
+        for (const m of moved) await deleteObject(m.to);
+        return { ok: false, error: "Couldn't move the workspace files — visibility unchanged." };
+      }
+    }
+  }
+
+  await prisma.$transaction([
+    ...moved.map((m) =>
+      prisma.collaborationFile.update({ where: { id: m.id }, data: { r2Key: m.to } })
+    ),
+    prisma.collaboration.update({ where: { id: collaborationId }, data: { visibility } }),
+  ]);
+
+  for (const m of moved) await deleteObject(m.from);
+
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}

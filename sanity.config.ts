@@ -24,6 +24,21 @@ import {
   rejectCaseStudyAction,
   previewCaseStudyAction
 } from './sanity/actions'
+import {
+  approveLivedExperienceAction,
+  requestLivedExperienceRevisionAction,
+  rejectLivedExperienceAction
+} from './sanity/actions/lived-experience-actions'
+import {
+  approveEventAction,
+  requestEventRevisionAction,
+  rejectEventAction
+} from './sanity/actions/event-actions'
+import {
+  approveResearchOutputAction,
+  requestResearchOutputRevisionAction,
+  rejectResearchOutputAction
+} from './sanity/actions/research-output-actions'
 
 
 
@@ -44,6 +59,33 @@ export default defineConfig({
             requestRevisionAction,
             rejectCaseStudyAction,
             previewCaseStudyAction
+          ]
+        }
+        // Review actions for user-submitted lived experiences
+        if (context.schemaType === 'livedExperience') {
+          return [
+            ...prev,
+            approveLivedExperienceAction,
+            requestLivedExperienceRevisionAction,
+            rejectLivedExperienceAction
+          ]
+        }
+        // Review actions for member/project-submitted events
+        if (context.schemaType === 'event') {
+          return [
+            ...prev,
+            approveEventAction,
+            requestEventRevisionAction,
+            rejectEventAction
+          ]
+        }
+        // Review actions for research outputs
+        if (context.schemaType === 'researchOutput') {
+          return [
+            ...prev,
+            approveResearchOutputAction,
+            requestResearchOutputRevisionAction,
+            rejectResearchOutputAction
           ]
         }
         return prev

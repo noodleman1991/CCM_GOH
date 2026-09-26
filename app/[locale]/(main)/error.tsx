@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { reportError } from "@/lib/errors/report";
 
 export default function MainError({
   error,
@@ -15,7 +16,10 @@ export default function MainError({
   const t = useTranslations('errors');
 
   useEffect(() => {
-    console.error(error);
+    // A boundary-caught render error never reaches the client SDK's global
+    // handlers, so report it explicitly (Sentry in production, console
+    // otherwise). `digest` is the key that matches the server log line.
+    reportError(error, { route: "main-error", extra: { digest: error.digest } });
   }, [error]);
 
   return (

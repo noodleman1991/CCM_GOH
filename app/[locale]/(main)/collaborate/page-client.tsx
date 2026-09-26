@@ -6,18 +6,21 @@
  * Full i18n and RTL support
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/navigation'
-import { Input } from '@/components/ui/input'
+import { useRouter, Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { buildCollaborateParams } from '@/lib/collaborate-filters'
 import { CommunityFilters, type CommunityFiltersState } from '@/components/collaborate/community-filters'
 import { UserCarousel } from '@/components/collaborate/user-carousel'
 import { cn } from '@/lib/utils'
-import { Search, X } from 'lucide-react'
+import { heading } from '@/lib/design-tokens'
+import { PageContainer } from '@/components/ui/page-container'
+import { SearchInput } from '@/components/ui/search-input'
+import { FolderKanban } from 'lucide-react'
+import { FEATURES } from '@/lib/features'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
+import type { RequestStatus } from '@/generated/prisma'
 
 // All possible filter values (workTypes and expertiseAreas are static enums)
 const ALL_WORK_TYPES = [
@@ -39,23 +42,26 @@ const ALL_EXPERTISE_AREAS = [
 
 // Map regional name enum values to translation keys
 const REGIONAL_NAME_TO_TRANSLATION_KEY: Record<string, string> = {
-  'SUB_SAHARAN_AFRICA': 'subSaharanAfrica',
-  'NORTHERN_AFRICA_AND_WESTERN_ASIA': 'northernAfricaWesternAsia',
-  'CENTRAL_AND_SOUTHERN_ASIA': 'centralSouthernAsia',
-  'EASTERN_AND_SOUTH_EASTERN_ASIA': 'easternSouthEasternAsia',
-  'LATIN_AMERICA_AND_THE_CARIBBEAN': 'latinAmericaCaribbean',
-  'OCEANIA': 'oceania',
-  'EUROPE_AND_NORTH_AMERICA': 'europeNorthAmerica'
+  'ssa': 'subSaharanAfrica',
+  'nawa': 'northernAfricaWesternAsia',
+  'csa': 'centralSouthernAsia',
+  'esea': 'easternSouthEasternAsia',
+  'lac': 'latinAmericaCaribbean',
+  'oce': 'oceania',
+  'enam': 'europeNorthAmerica'
 }
 
 interface CollaboratePageClientProps {
-  initialCommunityUsers: Record<string, LocalizedUser[]>
+  initialCommunityUsers: Record<string, { users: LocalizedUser[]; total: number }>
   communities: Array<{
     id: string
     name: string
     regionalName: string | null
   }>
   userCommunityIds: string[]
+  /** Viewer's contact-request status by member id (server-read); threaded to
+   *  each card so "Requested"/"Connected" survives a reload. */
+  contactStatuses?: Record<string, RequestStatus>
   locale: SupportedLocale
   initialSearch?: string
   /**
@@ -67,15 +73,20 @@ interface CollaboratePageClientProps {
     expertiseAreas: string[] | null
     communities: string[] | null
   }
+  /** Rendered inside the Collaborate tabs shell — the parent owns the page
+   *  container and header, so skip both here. */
+  embedded?: boolean
 }
 
 export function CollaboratePageClient({
   initialCommunityUsers,
   communities,
   userCommunityIds,
+  contactStatuses,
   locale,
   initialSearch,
-  initialFilters
+  initialFilters,
+  embedded
 }: CollaboratePageClientProps) {
   const t = useTranslations('collaborate')
   const tNav = useTranslations('navigation')
@@ -99,16 +110,21 @@ export function CollaboratePageClient({
   const [filters, setFilters] = useState<CommunityFiltersState>(filtersFromProps)
 
   // Re-sync local state when the URL-derived props change (e.g. back/forward
-  // navigation). Serialize-compare to avoid render loops after router.push.
-  useEffect(() => {
-    setFilters(prev =>
-      JSON.stringify(prev) === JSON.stringify(filtersFromProps) ? prev : filtersFromProps
-    )
-  }, [filtersFromProps])
+  // navigation), adjusting state during render instead of in an effect.
+  // Serialize-compare to avoid render loops after router.push.
+  const [prevFiltersFromProps, setPrevFiltersFromProps] = useState(filtersFromProps)
+  if (prevFiltersFromProps !== filtersFromProps) {
+    setPrevFiltersFromProps(filtersFromProps)
+    if (JSON.stringify(filters) !== JSON.stringify(filtersFromProps)) {
+      setFilters(filtersFromProps)
+    }
+  }
 
-  useEffect(() => {
+  const [prevInitialSearch, setPrevInitialSearch] = useState(initialSearch)
+  if (prevInitialSearch !== initialSearch) {
+    setPrevInitialSearch(initialSearch)
     setSearchInput(initialSearch || '')
-  }, [initialSearch])
+  }
 
   // No local state for community users - always use prop from server
   const communityUsers = initialCommunityUsers
@@ -166,37 +182,45 @@ export function CollaboratePageClient({
     router.push('/collaborate')
   }
 
+  const Wrapper = embedded ? "div" : PageContainer
   return (
-    <div className="container mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{t('pageTitle')}</h1>
-        <p className="text-muted-foreground">{t('pageDescription')}</p>
+    <Wrapper>
+      {!embedded && (
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
+        </div>
+        {/* Workspaces UI hidden in the intermediate release; infra stays. */}
+        {FEATURES.engagement && (
+          <Button asChild variant="outline" className="flex-shrink-0">
+            <Link href="/collaborations" className="flex items-center gap-2">
+              <FolderKanban className="size-4" />
+              <span>{t('startCollaboration')}</span>
+            </Link>
+          </Button>
+        )}
       </div>
+      )}
 
       {/* Search + horizontal filters, full width */}
       <div className="mb-8 space-y-4">
+        {/* Search — the shared pill used across content pages. */}
         <form
           onSubmit={(e) => {
             e.preventDefault()
             handleSearch(searchInput)
           }}
-          className="flex gap-2"
         >
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground start-3" />
-            <Input
-              type="text"
-              placeholder={t('searchPlaceholder')}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="ps-10"
-              dir={isRTL ? 'rtl' : 'ltr'}
-            />
-          </div>
-          <Button type="submit">
-            {tCommon('search')}
-          </Button>
+          <SearchInput
+            containerClassName="w-full"
+            placeholder={t('searchPlaceholder')}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            dir={isRTL ? 'rtl' : 'ltr'}
+            onClear={searchInput ? () => { setSearchInput(''); handleSearch('') } : undefined}
+            clearLabel={tCommon('clear')}
+          />
         </form>
 
         {/* Horizontal filter bar, directly under the search */}
@@ -222,7 +246,7 @@ export function CollaboratePageClient({
       ) : (
         <div className="space-y-8">
           {filteredCommunities.map(communityName => {
-            // communityName is the regionalName enum value (e.g., "EASTERN_AND_SOUTH_EASTERN_ASIA")
+            // communityName is the regionalName enum value (e.g., "esea")
             // or "No Regional Community" for users without a regional community
             const translationKey = communityName === 'No Regional Community'
               ? 'noRegionalCommunity'
@@ -236,13 +260,14 @@ export function CollaboratePageClient({
               <UserCarousel
                 key={communityName}
                 title={translatedTitle}
-                users={communityUsers[communityName] || []}
-                defaultExpanded={false}
+                users={communityUsers[communityName]?.users || []}
+                total={communityUsers[communityName]?.total}
+                contactStatuses={contactStatuses}
               />
             )
           })}
         </div>
       )}
-    </div>
+    </Wrapper>
   )
 }

@@ -1,22 +1,28 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { Play, Clock, User } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 interface LivedExperienceCardProps {
   experience: {
     _id: string;
-    title: any;
+    title: Record<string, string> | string;
     slug: { current: string };
-    description?: any;
+    description?: Record<string, string> | string;
     publishedAt?: string;
     videoLink?: string;
     duration?: string;
-    thumbnail?: any;
+    thumbnail?: {
+      asset?: { _id?: string; url?: string; metadata?: { lqip?: string } };
+      alt?: string;
+      hotspot?: unknown;
+      crop?: unknown;
+    };
     author?: {
       name: string;
       slug?: { current: string };
@@ -33,7 +39,9 @@ interface LivedExperienceCardProps {
   variant?: "default" | "minimal";
 }
 
+
 export function LivedExperienceCard({ experience, locale, variant = "default" }: LivedExperienceCardProps) {
+  const tCommon = useTranslations('common');
   if (!experience) return null;
 
   const href = `/${locale}/lived-experiences/${experience.slug?.current}`;
@@ -47,7 +55,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
           <div className="aspect-video bg-muted rounded-md overflow-hidden relative">
             {experience.thumbnail?.asset ? (
               <Image
-                src={urlFor(experience.thumbnail).width(400).height(225).url()}
+                src={imageUrl(experience.thumbnail, { width: 400, height: 225 })}
                 alt={experience.thumbnail.alt || localizedTitle || ""}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -62,7 +70,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
               <Play className="w-8 h-8 text-white drop-shadow-lg opacity-80 group-hover:opacity-100 transition-opacity" />
             </div>
             {experience.duration && (
-              <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-xs font-medium">
+              <div className="absolute bottom-2 end-2 bg-black/80 text-white px-2 py-1 rounded text-xs font-medium">
                 {experience.duration}
               </div>
             )}
@@ -93,7 +101,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
         <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden bg-muted">
           {experience.thumbnail?.asset ? (
             <Image
-              src={urlFor(experience.thumbnail).width(600).height(400).url()}
+              src={imageUrl(experience.thumbnail, { width: 600, height: 400 })}
               alt={experience.thumbnail.alt || localizedTitle || ""}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -109,22 +117,22 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:bg-white transition-colors duration-300">
-              <Play className="w-6 h-6 text-foreground ml-1" />
+              <Play className="w-6 h-6 text-foreground ms-1" />
             </div>
           </div>
 
           {/* Duration badge */}
           {experience.duration && (
-            <div className="absolute bottom-3 right-3 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-medium">
-              <Clock className="w-3 h-3 inline mr-1" />
+            <div className="absolute bottom-3 end-3 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-medium">
+              <Clock className="w-3 h-3 inline me-1" />
               {experience.duration}
             </div>
           )}
 
           {/* Featured badge */}
           {experience.featured && (
-            <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-              Featured
+            <div className="absolute top-3 end-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+              {tCommon('featured')}
             </div>
           )}
         </div>
@@ -171,16 +179,16 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
             <div className="flex items-center justify-between">
               {/* Author */}
               {experience.author && (
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span className="font-medium">{experience.author.name}</span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <User className="w-4 h-4 shrink-0" />
+                  <span className="min-w-0 truncate font-medium">{experience.author.name}</span>
                 </div>
               )}
 
               {/* Published date */}
               {experience.publishedAt && (
                 <time dateTime={experience.publishedAt}>
-                  {formatDate(experience.publishedAt)}
+                  {formatDate(experience.publishedAt, locale)}
                 </time>
               )}
             </div>

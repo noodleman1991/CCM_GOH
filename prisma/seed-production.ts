@@ -12,13 +12,13 @@ async function main() {
   console.log('📊 Database:', DATABASE_URL?.split('@')[1]?.split('/')[0] || 'unknown')
 
   const communities = [
-    { name: 'Sub-Saharan Africa', type: 'REGIONAL' as const, regionalName: 'SUB_SAHARAN_AFRICA' as const },
-    { name: 'Northern Africa & Western Asia', type: 'REGIONAL' as const, regionalName: 'NORTHERN_AFRICA_AND_WESTERN_ASIA' as const },
-    { name: 'Central & Southern Asia', type: 'REGIONAL' as const, regionalName: 'CENTRAL_AND_SOUTHERN_ASIA' as const },
-    { name: 'Eastern & South-Eastern Asia', type: 'REGIONAL' as const, regionalName: 'EASTERN_AND_SOUTH_EASTERN_ASIA' as const },
-    { name: 'Latin America & the Caribbean', type: 'REGIONAL' as const, regionalName: 'LATIN_AMERICA_AND_THE_CARIBBEAN' as const },
-    { name: 'Oceania', type: 'REGIONAL' as const, regionalName: 'OCEANIA' as const },
-    { name: 'Europe & North America', type: 'REGIONAL' as const, regionalName: 'EUROPE_AND_NORTH_AMERICA' as const }
+    { name: 'Sub-Saharan Africa', type: 'REGIONAL' as const, regionalName: 'ssa' as const },
+    { name: 'Northern Africa & Western Asia', type: 'REGIONAL' as const, regionalName: 'nawa' as const },
+    { name: 'Central & Southern Asia', type: 'REGIONAL' as const, regionalName: 'csa' as const },
+    { name: 'Eastern & South-Eastern Asia', type: 'REGIONAL' as const, regionalName: 'esea' as const },
+    { name: 'Latin America & the Caribbean', type: 'REGIONAL' as const, regionalName: 'lac' as const },
+    { name: 'Oceania', type: 'REGIONAL' as const, regionalName: 'oce' as const },
+    { name: 'Europe & North America', type: 'REGIONAL' as const, regionalName: 'enam' as const }
   ]
 
   for (const community of communities) {

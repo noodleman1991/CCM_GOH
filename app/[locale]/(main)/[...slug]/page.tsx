@@ -1,62 +1,16 @@
-export const revalidate = 120;
-
 import type { Metadata } from "next"
+import type { ComponentProps } from "react";
 import Blocks from "@/components/blocks";
-import Hero1 from "@/components/blocks/hero/hero-1"
 import {
-  fetchSanityPageBySlug,
-  fetchSanityPagesStaticParams,
-  fetchSanityRCPageBySlug,
-  fetchSanityRCPagesStaticParams,
-  fetchTranslationsForPage,
-} from "@/sanity/lib/fetch";
+  getPageBySlug,
+  getRegionalCommunityPage,
+} from "@/lib/content/pages";
+import type { Locale } from "@/lib/content/types";
 import { notFound } from "next/navigation";
-import { generatePageMetadata } from "@/sanity/lib/metadata";
+import { redirect } from "@/i18n/navigation";
+import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
-
-export async function generateStaticParams() {
-    // Fetch both regional community pages AND generic pages
-    const rcPages = await fetchSanityRCPagesStaticParams();
-    const genericPages = await fetchSanityPagesStaticParams();
-    const allPages = [...rcPages, ...genericPages];
-    const params = [];
-
-    for (const page of allPages) {
-        // Split slug into segments for catch-all route [...slug]
-        const slugSegments = page.slug.current.split('/');
-
-        if (page.language) {
-            params.push({
-                locale: page.language,
-                slug: slugSegments, // Array for catch-all route
-            });
-        } else {
-            params.push({
-                locale: "en",
-                slug: slugSegments, // Array for catch-all route
-            });
-        }
-
-        try {
-            const translations = page?._id ? await fetchTranslationsForPage(page._id) : [];
-            if (translations?.length > 0) {
-                for (const translation of translations) {
-                    if (translation.language && translation.slug?.current) {
-                        const translationSlugSegments = translation.slug.current.split('/');
-                        params.push({
-                            locale: translation.language,
-                            slug: translationSlugSegments, // Array for catch-all route
-                        });
-                    }
-                }
-            }
-        } catch (e) {
-            console.error(`Error fetching translations for ${page._id}:`, e);
-        }
-    }
-
-    return params;
-}
+import { getViewerUserId } from "@/lib/authz";
 
 export async function generateMetadata({
     params
@@ -67,17 +21,21 @@ export async function generateMetadata({
     const slug = slugArray.join('/'); // Join array to create full slug path
 
     // Try regional community page first, then generic page
-    let page = await fetchSanityRCPageBySlug({ slug, locale });
+    let page: unknown = await getRegionalCommunityPage(slug, locale as Locale);
 
     if (!page) {
-        page = await fetchSanityPageBySlug({ slug, locale });
+        page = await getPageBySlug(slug, locale as Locale);
     }
 
     if (!page) {
         notFound();
     }
 
-    return generatePageMetadata({ page, slug: slug });
+    // Both getRegionalCommunityPage and getPageBySlug keep meta_title/
+    // meta_description/noindex/ogImage as top-level fields, matching
+    // generatePageMetadata's MetadataSource — see lib/content/pages.ts's
+    // comment on `Page` for why.
+    return generatePageMetadata({ page: page as MetadataSource, slug: slug, locale });
 }
 
 export default async function Page({
@@ -88,14 +46,15 @@ export default async function Page({
     const {locale, slug: slugArray} = await params;
     const slug = slugArray.join('/'); // Join array to create full slug path
 
-    // Try regional community page first, then generic page
-    let page = await fetchSanityRCPageBySlug({slug, locale});
-    let isGenericPage = false;
-
-    if (!page) {
-        page = await fetchSanityPageBySlug({slug, locale});
-        isGenericPage = true;
+    // Regional community pages render via their dedicated template at
+    // /communities/<slug> — this catch-all only has the generic-page fields, so
+    // redirect RC slugs to the canonical URL instead of rendering them empty.
+    const rcPage = await getRegionalCommunityPage(slug, locale as Locale);
+    if (rcPage) {
+        redirect({ href: `/communities/${slug}`, locale });
     }
+
+    const page = await getPageBySlug(slug, locale as Locale);
 
     if (!page) {
         notFound();
@@ -104,19 +63,24 @@ export default async function Page({
     // Determine text direction for RTL languages
     const rtl = isRTL(locale);
 
+    // Who is looking: agenda blocks gate their download buttons on
+    // `accessLevel`, and without this every non-public agenda locked for
+    // everyone, signed in or not (audit M4). The (main) layout already reads
+    // the session, so this adds no new dynamic dependency.
+    const userId = await getViewerUserId();
+
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
-            {/* Regional Community Page specific heros */}
-            {!isGenericPage && page.titleHero && (
-                <Hero1 {...page.titleHero} locale={locale} />
-            )}
-
-            {!isGenericPage && page.listHero && (
-                <Hero1 {...page.listHero} locale={locale} />
-            )}
-
-            {/* Render blocks (works for both page types) */}
-            <Blocks blocks={page.blocks ?? []} locale={locale} />
+            {/* Generic page: render its block array. (RC pages are redirected
+                above to their dedicated /communities/<slug> template.) Raw
+                Sanity block shape (_type/_key) passed straight through — see
+                lib/content/pages.ts's comment on why `Page.blocks` isn't
+                remapped to the loose ContentBlock alias name's own fields. */}
+            <Blocks
+                blocks={page.blocks as unknown as ComponentProps<typeof Blocks>["blocks"]}
+                locale={locale}
+                userId={userId}
+            />
         </main>
     );
 }

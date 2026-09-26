@@ -11,7 +11,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import {
     Report,
     SupportedLanguage
@@ -23,6 +23,7 @@ import {
     canAccessReport
 } from '@/lib/report-utils';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
 import { DownloadSection } from './grid-report-download';
 
 interface GridReportComponentProps {
@@ -91,7 +92,7 @@ export default function GridReportComponent({
             {report.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlForCropped(report.coverImage, 800, isWide ? 450 : 533).url()}
+                        src={imageUrl(report.coverImage, { width: 800, height: isWide ? 450 : 533, crop: true })}
                         alt={report.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -99,7 +100,7 @@ export default function GridReportComponent({
                     />
 
                     {/* Report type badge */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 start-3">
                         <Badge variant="secondary" className="bg-white/90 text-black">
                             {reportTypeLabel}
                         </Badge>
@@ -107,7 +108,7 @@ export default function GridReportComponent({
 
                     {/* Featured badge */}
                     {report.featured && (
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 end-3">
                             <Badge className="bg-yellow-500 text-black">
                                 {'⭐ '}{t('featured')}
                             </Badge>
@@ -168,28 +169,32 @@ export default function GridReportComponent({
                 )}
 
                 {/* Tags */}
-                {showTags && report.tags && report.tags.length > 0 && (
+                {showTags && report.tags && report.tags.length > 0 && (() => {
+                    const tags = sortedTags(report.tags, locale);
+                    if (tags.length === 0) return null;
+                    return (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {report.tags.slice(0, 3).map((tag) => (
+                        {tags.slice(0, 3).map((tag) => {
+                            const color = normalizeTagColor(tag.color);
+                            return (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
-                                style={{
-                                    borderColor: tag.color,
-                                    color: tag.color
-                                }}
+                                style={{ borderColor: color, color }}
                             >
                                 {getLocalizedText(tag.label, locale)}
                             </Badge>
-                        ))}
-                        {report.tags.length > 3 && (
+                            );
+                        })}
+                        {tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                +{report.tags.length - 3} more
+                                +{tags.length - 3} more
                             </Badge>
                         )}
                     </div>
-                )}
+                    );
+                })()}
             </CardContent>
 
             <CardFooter className="pt-0 px-0">

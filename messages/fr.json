@@ -21,6 +21,10 @@
     "support": "Support",
     "browseProfiles": "Parcourir les Profils",
     "researchAction": "Recherche et Action",
+    "discover": "Découvrir",
+    "collaborateGroup": "Collaborer",
+    "atlasExplore": "Atlas et Exploration",
+    "newsUpdates": "Actualités et Mises à jour",
     "allOutputs": "Tous les résultats",
     "globalAgenda": "Agenda Global",
     "regionalAgendas": "Agendas Régionaux",
@@ -30,12 +34,19 @@
     "impactReports": "Rapports d'Impact",
     "regionalCommunities": "Communautés Régionales",
     "collaborate": "Collaborer",
+    "findPeople": "Trouver des personnes",
+    "startOrFindProject": "Lancer ou trouver un projet",
+    "sectionExplore": "Explorer",
+    "sectionConnect": "Collaborer",
     "news": "Actualités",
     "livedExperiences": "Expériences Vécues",
     "about": "À Propos",
     "feedback": "Commentaires",
     "search": "Rechercher",
     "searchPlaceholder": "Rechercher...",
+    "searchTitle": "Rechercher dans le hub",
+    "searchDescription": "Rechercher parmi les contenus, projets, personnes et régions.",
+    "searchSubmit": "Rechercher",
     "regions": {
       "subSaharanAfrica": "Afrique Subsaharienne",
       "northernAfricaWesternAsia": "Afrique du Nord et Asie Occidentale",
@@ -50,7 +61,32 @@
       "youth": "Jeunesse",
       "indigenous": "Autochtones",
       "smallholderFarmers": "Petits Agriculteurs"
-    }
+    },
+    "specialCommunities": {
+      "youth": "Jeunesse",
+      "indigenous": "Autochtone",
+      "farmerAndFisher": "Agriculteurs et pêcheurs"
+    },
+    "collaborations": "Espaces",
+    "messages": "Messages",
+    "staff": "Équipe",
+    "moderation": "Modération",
+    "broadcast": "Envoyer une notification",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "readAgenda": "Lire l'Agenda",
+    "quickSearch": "Recherche",
+    "quickMessages": "Messages",
+    "quickNotifications": "Alertes",
+    "quickFindPeople": "Trouver des gens",
+    "quickStartProject": "Lancer un projet",
+    "messagesNav": "Messages et alertes",
+    "userMenu": "Votre compte",
+    "userDashboard": "Tableau de bord",
+    "userMessages": "Messages et alertes",
+    "userSettings": "Paramètres",
+    "atlas": "Atlas",
+    "researchOutputs": "Résultats de recherche"
   },
   "navUser": {
     "account": "Compte",
@@ -114,7 +150,48 @@
     "availableInLanguages": "Disponible en {count} {count, plural, one {langue} other {langues}}",
     "availableIn": "Disponible en :",
     "noContentYet": "Aucun contenu disponible pour le moment.",
-    "checkBackSoon": "Revenez bientôt pour les mises à jour."
+    "checkBackSoon": "Revenez bientôt pour les mises à jour.",
+    "clear": "Effacer",
+    "clearFilters": "Effacer les filtres",
+    "close": "Fermer",
+    "goToHomepage": "Aller à l'accueil",
+    "toggleSidebar": "Afficher ou masquer la barre latérale",
+    "openMenu": "Ouvrir le menu",
+    "previousPage": "Aller à la page précédente",
+    "nextPage": "Aller à la page suivante",
+    "morePages": "Plus de pages",
+    "previousSlide": "Diapositive précédente",
+    "nextSlide": "Diapositive suivante",
+    "copyCode": "Copier le code",
+    "scrollBack": "Faire défiler vers l’arrière",
+    "scrollForward": "Faire défiler vers l’avant",
+    "removeFilter": "Retirer le filtre",
+    "clearSearch": "Effacer la recherche",
+    "selectLanguage": "Choisir la langue",
+    "regionalMap": "Carte régionale",
+    "approxLocation": "localisation au niveau du pays",
+    "shareOnFacebook": "Partager sur Facebook",
+    "shareViaEmail": "Partager par e-mail",
+    "enterYourEmail": "Saisissez votre adresse e-mail",
+    "sharePost": "Partager cet article",
+    "mainNavigation": "Navigation principale",
+    "mainNavigationDescription": "Naviguer vers les pages du site",
+    "toggleTheme": "Changer de thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "emailRequired": "Veuillez saisir votre adresse e-mail",
+    "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+    "untitled": "Sans titre",
+    "charCount": "{count} / {max}",
+    "charCountSr": "{count} caractères sur {max}",
+    "moreCount": "+{count} autres",
+    "featured": "À la une",
+    "present": "Aujourd'hui",
+    "goToSlide": "Aller à la diapositive {index}",
+    "slideOf": "Diapositive {index} sur {count}",
+    "resultsCount": "{count, plural, one {# résultat trouvé} other {# résultats trouvés}}",
+    "external": "Externe"
   },
   "dashboard": {
     "pageTitle": "Tableau de bord - Connecting Climate Minds Hub",
@@ -185,15 +262,61 @@
         "drafts": {
           "title": "Aucun brouillon enregistré",
           "description": "Vos brouillons d'études de cas apparaîtront ici automatiquement pendant que vous y travaillez."
-        }
+        },
+        "filtered": "Aucune soumission avec le statut « {status} »"
       },
       "alerts": {
         "revision": {
           "title": "Action Requise",
           "description": "Vous avez {count} étude{plural} de cas qui nécessite{singular} une révision basée sur les commentaires de l'éditeur.",
-          "editorFeedback": "Commentaires de l'éditeur:"
+          "editorFeedback": "Commentaires de l'éditeur:",
+          "body": "{count, plural, one {Vous avez # étude de cas à réviser suite aux commentaires de l'éditeur.} other {Vous avez # études de cas à réviser suite aux commentaires de l'éditeur.}}"
         }
-      }
+      },
+      "untitled": "Sans titre",
+      "untitledDraft": "Brouillon sans titre",
+      "featured": "À la une",
+      "draftBadge": "Brouillon",
+      "dateUnknown": "Date inconnue",
+      "authorCount": "{count, plural, one {# auteur} other {# auteurs}}",
+      "tagFallback": "Étiquette",
+      "moreTags": "+{count}",
+      "noDescription": "Pas encore de description…",
+      "lastSaved": "Dernier enregistrement le {date}",
+      "lastSavedUnknown": "Date du dernier enregistrement inconnue",
+      "step": "Étape : {step}",
+      "withCount": "{label} ({count})",
+      "filterAll": "Toutes"
+    },
+    "recentSubmissions": "Vos contributions récentes",
+    "memberCount": "{count, plural, one {# membre} other {# membres}}",
+    "viewPublicProfile": "Voir le profil public",
+    "submitCaseStudyAction": "Soumettre une étude de cas",
+    "workspaces": "Espaces",
+    "workspacesDescription": "Créez et rejoignez des espaces partagés pour travailler ensemble",
+    "openWorkspaces": "Ouvrir les espaces",
+    "messages": "Messages",
+    "messagesDescription": "Vos conversations directes avec d'autres membres",
+    "openMessages": "Ouvrir les messages",
+    "attentionTitle": "Ce qui vous attend",
+    "attentionOpen": "Ouvrir →",
+    "forYouTitle": "Pour vous",
+    "forYouRegion": "d'une région que vous suivez",
+    "forYouTheme": "sur un thème que vous suivez",
+    "setup": {
+      "title": "Configuration de votre compte…",
+      "description": "Nous préparons votre tableau de bord. Cela ne prend généralement que quelques secondes.",
+      "refreshPage": "Actualiser la page",
+      "support": "Si ce message persiste, veuillez contacter l'assistance."
+    },
+    "notificationTypes": {
+      "TASK_ASSIGNED": "Tâche qui vous est attribuée",
+      "TASK_DUE": "Tâche bientôt à échéance",
+      "OUTPUT_STATUS": "Mise à jour du statut d'un livrable",
+      "THREAD_REPLY": "Nouvelle réponse dans une discussion",
+      "MEMBER_JOINED": "Un nouveau membre a rejoint",
+      "FOLLOWED_PUBLISH": "Nouveauté de quelqu'un que vous suivez",
+      "EVENT_REMINDER": "Rappel d'événement"
     }
   },
   "settings": {
@@ -210,13 +333,147 @@
       "system": "Système"
     },
     "privacy": "Confidentialité",
-    "security": "Sécurité"
+    "security": "Sécurité",
+    "saved": "Paramètres enregistrés.",
+    "save": "Enregistrer",
+    "emailNotifications": "Notifications par e-mail",
+    "emailReply": "M'envoyer un e-mail en cas de réponse",
+    "emailMention": "M'envoyer un e-mail en cas de mention",
+    "emailMessage": "M'avertir par e-mail des nouveaux messages",
+    "emailWeeklyDigest": "M'envoyer le résumé hebdomadaire par e-mail",
+    "messaging": "Messagerie",
+    "whoCanMessage": "Qui peut m'envoyer des messages",
+    "everyone": "Tout le monde",
+    "nobody": "Personne",
+    "blocked": "Membres bloqués",
+    "unblock": "Débloquer",
+    "yourData": "Vos données",
+    "downloadData": "Télécharger mes données",
+    "privacyContact": "Confidentialité et contact",
+    "profileEditDescription": "Mettez à jour votre nom, photo, titre et autres informations publiques.",
+    "editProfileCta": "Modifier votre profil",
+    "followersOnly": "Les personnes qui me suivent",
+    "contactsOnly": "Mes contacts acceptés"
+  },
+  "events": {
+    "title": "Événements",
+    "subtitle": "Événements à venir dans toute la communauté.",
+    "empty": "Aucun événement à venir pour le moment.",
+    "submit": "Proposer un événement",
+    "rsvp": "Je participe",
+    "going": "Je participe",
+    "scopeCommunity": "Communauté",
+    "scopeProject": "Projet",
+    "modeOnline": "En ligne",
+    "modeInPerson": "En présentiel",
+    "modeHybrid": "Hybride",
+    "fieldTitle": "Titre",
+    "fieldDescription": "Description",
+    "fieldStart": "Début",
+    "fieldEnd": "Fin",
+    "fieldMode": "Mode",
+    "fieldScope": "Portée",
+    "fieldLocation": "Lieu / salle",
+    "fieldUrl": "Lien d'accès / détails",
+    "moderationNote": "Votre événement est examiné par un éditeur avant publication.",
+    "validationRequired": "Ajoutez un titre et une date de début.",
+    "submitPending": "Envoyé — en attente de révision.",
+    "submitFailed": "Échec de l'envoi. Vérifiez le formulaire et réessayez.",
+    "calendarTitle": "Calendrier des événements",
+    "upcomingHeading": "À venir",
+    "subscribe": "S'abonner (iCal)",
+    "noUpcoming": "Aucun événement à venir.",
+    "prevMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "today": "Aujourd'hui",
+    "pastEvent": "Événement passé",
+    "addToCalendar": "Ajouter au calendrier",
+    "share": "Partager",
+    "linkCopied": "Lien copié",
+    "watchRecording": "Voir l'enregistrement",
+    "goingCount": "{count, plural, =0 {Soyez le premier à répondre} one {# participant} other {# participants}}",
+    "partOf": "Fait partie de",
+    "theProject": "le projet organisateur",
+    "attendeesHeading": "Qui vient · {count}",
+    "attendeesNone": "Pas encore de réponses — partagez l'événement pour le faire connaître.",
+    "attendeesInterested": "{count} autres intéressé·es",
+    "relation": {
+      "hosts": "Organise",
+      "co-hosts": "Co-organise",
+      "partners": "Partenaires",
+      "related": "En lien"
+    }
+  },
+  "plan": {
+    "empty": "Pas encore de plan.",
+    "addStage": "Ajouter une étape",
+    "addTask": "Ajouter une tâche",
+    "deleteStage": "Supprimer l'étape",
+    "deleteTask": "Supprimer la tâche",
+    "cycleStatus": "Changer le statut",
+    "stageComplete": "Étape terminée",
+    "dragTask": "Glisser pour réordonner",
+    "heading": "Plan",
+    "subtitle": "Découpez le travail en étapes, puis ajoutez des tâches sous chacune. Cliquez sur une tâche pour la faire passer À faire → En cours → Terminé.",
+    "emptyTitle": "Aucune étape pour le moment",
+    "emptyBody": "Ajoutez votre première étape (p. ex. Exploration, Rédaction, Relecture) pour commencer à suivre le travail.",
+    "assign": "Attribuer",
+    "unassigned": "Non attribué",
+    "addNotes": "Ajoutez des notes — @pseudo prévient la personne",
+    "moveStageEarlier": "Avancer l'étape",
+    "moveStageLater": "Reculer l'étape"
+  },
+  "follow": {
+    "follow": "Suivre",
+    "following": "Suivi",
+    "signInToFollow": "Connectez-vous pour suivre",
+    "contract": {
+      "PROJECT": "Soyez averti quand ce projet publie ou planifie un événement",
+      "REGION": "Les nouveautés de cette région alimentent votre fil Pour vous et le résumé hebdomadaire",
+      "THEME": "Les nouveautés de ce thème alimentent votre fil Pour vous et le résumé hebdomadaire",
+      "USER": "Les nouveautés de cette personne alimentent votre fil Pour vous et le résumé hebdomadaire"
+    }
   },
   "notifications": {
     "success": "Succès !",
     "error": "Erreur !",
     "info": "Information",
-    "warning": "Avertissement"
+    "warning": "Avertissement",
+    "title": "Notifications",
+    "empty": "Aucune notification pour le moment.",
+    "repliedToYou": "vous a répondu",
+    "mentionedYou": "vous a mentionné",
+    "reactedToYou": "a réagi à votre commentaire",
+    "commentApproved": "Votre commentaire a été approuvé",
+    "sentMessage": "vous a envoyé un message",
+    "activity": "nouvelle activité",
+    "sentRequest": "vous a envoyé une demande",
+    "today": "Aujourd'hui",
+    "earlier": "Plus tôt",
+    "requests": "Demandes",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "accepted": "Acceptée",
+    "declined": "Refusée",
+    "assignedYouTask": "vous a assigné une tâche",
+    "taskDue": "tâche bientôt due",
+    "outputStatus": "statut d'une production modifié",
+    "threadReply": "a répondu dans un fil",
+    "memberJoined": "a rejoint l'espace de travail",
+    "followedPublish": "a publié du nouveau",
+    "eventReminder": "l'événement commence bientôt",
+    "snippets": {
+      "joinAccepted": "a accepté votre demande d'adhésion",
+      "joinDeclined": "a refusé votre demande d'adhésion",
+      "invitedToJoin": "vous a invité·e à rejoindre « {title} »",
+      "inviteAccepted": "a accepté votre invitation à « {title} »",
+      "inviteDeclined": "a refusé votre invitation à « {title} »",
+      "contactAccepted": "a accepté votre demande de contact",
+      "contactDeclined": "a refusé votre demande de contact",
+      "removedFromWorkspace": "vous a retiré·e de « {title} »",
+      "rsvpGoing": "Vous participez à « {title} » — {when}"
+    },
+    "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}"
   },
   "dates": {
     "today": "Aujourd'hui",
@@ -259,13 +516,104 @@
     "address": "Adresse",
     "phone": "Numéro de téléphone",
     "submit": "Envoyer",
-    "reset": "Réinitialiser"
+    "reset": "Réinitialiser",
+    "tagSuggestions": {
+      "label": "Proposer un mot-clé",
+      "hint": "Vous ne trouvez pas le bon mot-clé ? Proposez-en jusqu'à {max}. L'équipe éditoriale examine les propositions et crée celles dont la communauté a besoin.",
+      "placeholder": "ex. Éco-anxiété",
+      "add": "Ajouter",
+      "didYouMean": "Vouliez-vous dire :",
+      "alreadyExists": "Ce mot-clé existe déjà : sélectionnez-le ci-dessus.",
+      "limitReached": "Vous avez proposé {max} mots-clés, le maximum.",
+      "yourSuggestions": "Vos mots-clés proposés",
+      "remove": "Retirer la proposition {tag}"
+    },
+    "errors": {
+      "title": {
+        "required": "Ajoutez un titre pour que l'on sache de quoi il s'agit",
+        "tooShort": "Allongez un peu le titre (au moins {min} caractères)"
+      },
+      "summary": {
+        "required": "Écrivez un court résumé de ce qui s'est passé",
+        "tooShort": "Écrivez au moins {min} caractères pour que l'on sache à quoi s'attendre ({count} pour l'instant)"
+      },
+      "englishTitle": {
+        "required": "Ajoutez un court titre en anglais pour que le site anglais puisse l'afficher"
+      },
+      "englishSummary": {
+        "tooShort": "Ajoutez un résumé d'une ligne en anglais (au moins {min} caractères)"
+      },
+      "story": {
+        "required": "Écrivez votre récit : au moins un paragraphe"
+      },
+      "authors": {
+        "required": "Indiquez qui l'a écrit"
+      },
+      "author": {
+        "nameRequired": "Ajoutez le nom de cette personne",
+        "email": "Cette adresse e-mail semble incorrecte : vérifiez les fautes de frappe"
+      },
+      "tags": {
+        "themeRequired": "Choisissez au moins un thème"
+      },
+      "location": {
+        "required": "Indiquez où cela s'est passé : cherchez un lieu ou choisissez une communauté régionale"
+      },
+      "dates": {
+        "endBeforeStart": "La date de fin est antérieure à la date de début"
+      },
+      "generic": {
+        "tooLong": "Restez sous {max} caractères (actuellement {count})"
+      },
+      "upload": {
+        "tooBig": "Cette image fait {size} Mo, la limite est de {max} Mo. Essayez une photo plus légère ou une capture d'écran.",
+        "wrongType": "Utilisez une image JPEG, PNG ou WebP.",
+        "wrongTypeImage": "Utilisez une image JPEG, PNG, WebP ou GIF."
+      },
+      "form": {
+        "fixBelow": "Certains éléments sont à corriger : ils sont signalés ci-dessous.",
+        "generic": "Un problème est survenu de notre côté. Votre travail est enregistré : réessayez dans un instant.",
+        "rateLimited": "Vous l'avez envoyé plusieurs fois de suite. Attendez une minute et réessayez.",
+        "notAllowed": "Vous ne pouvez plus modifier ceci : il est peut-être déjà publié.",
+        "signIn": "Votre session a expiré. Reconnectez-vous pour continuer : votre travail est enregistré."
+      }
+    },
+    "whatsLeft": {
+      "heading": "Ce qu'il reste",
+      "allDone": "Tout est prêt à être envoyé",
+      "left": "{count, plural, one {# élément restant} other {# éléments restants}}",
+      "open": "Voir ce qu'il reste",
+      "suggestion": "Suggestion"
+    }
   },
   "profile": {
     "noName": "Sans nom",
     "unnamed": "Utilisateur sans nom",
     "editProfile": "Modifier le Profil",
     "contact": "Contact",
+    "visibilityNotice": {
+      "change": "Modifier",
+      "public": {
+        "title": "Visible par tout le monde",
+        "detail": "Tout le monde peut ouvrir cette page, y compris les visiteurs non connectés. Les champs que vous avez désactivés restent masqués."
+      },
+      "publicHidden": {
+        "title": "Visible par tout le monde, hors recherche",
+        "detail": "Toute personne ayant le lien peut ouvrir cette page ; elle n’apparaît pas dans la recherche de membres."
+      },
+      "members": {
+        "title": "Membres uniquement",
+        "detail": "Seuls les membres connectés du hub peuvent ouvrir cette page."
+      },
+      "membersHidden": {
+        "title": "Membres uniquement, hors recherche",
+        "detail": "Seuls les membres connectés disposant du lien peuvent ouvrir cette page."
+      },
+      "private": {
+        "title": "Vous seulement",
+        "detail": "Personne d’autre ne peut ouvrir cette page ni vous trouver dans la recherche."
+      }
+    },
     "basicInfo": "À propos",
     "about": "À propos",
     "skills": "Compétences",
@@ -324,7 +672,37 @@
       "projectLink": "Lien du Projet",
       "startDate": "Date de Début",
       "endDate": "Date de Fin",
-      "ongoingProject": "Ce travail est en cours"
+      "ongoingProject": "Ce travail est en cours",
+      "hide": "Masquer du profil",
+      "show": "Afficher sur le profil",
+      "pin": "Épingler en haut",
+      "unpin": "Désépingler",
+      "form": {
+        "title": "Ajouter un Travail Récent",
+        "description": "Partagez un projet ou une contribution pour montrer aux autres ce sur quoi vous travaillez",
+        "workTitle": "Titre du Projet",
+        "workTitlePlaceholder": "Entrez le titre de votre projet ou travail",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Parlez-nous de ce projet et de son impact...",
+        "workDescriptionHint": "Un court résumé du travail et de son importance",
+        "workLink": "Lien du Projet",
+        "workLinkHint": "Facultatif — un lien pour en savoir plus",
+        "startDate": "Date de Début",
+        "endDate": "Date de Fin",
+        "ongoing": "Ce travail est en cours",
+        "ongoingDescription": "Cochez cette case si vous y travaillez encore",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "saveSuccess": "Travail enregistré avec succès",
+        "saveError": "Impossible d'enregistrer le travail",
+        "validation": {
+          "titleRequired": "Le titre est requis",
+          "descriptionRequired": "La description est requise",
+          "urlInvalid": "Veuillez saisir une URL valide",
+          "startDateRequired": "La date de début est requise",
+          "endDateRule": "La date de fin est requise pour un travail terminé et doit être postérieure à la date de début"
+        }
+      }
     },
     "communities": {
       "title": "Communautés",
@@ -457,7 +835,89 @@
       "linkedin": "Profil LinkedIn",
       "twitter": "Identifiant Twitter",
       "cancel": "Annuler",
-      "save": "Enregistrer les Modifications"
+      "save": "Enregistrer les Modifications",
+      "headline": {
+        "label": "Accroche",
+        "placeholder": "p. ex. Chercheuse sur l’éco-anxiété chez les jeunes",
+        "help": "Une ligne qui vous résume — la première chose que l’on voit.",
+        "importLinkedIn": "Importer depuis LinkedIn",
+        "importing": "Importation…"
+      },
+      "pronouns": {
+        "label": "Pronoms",
+        "placeholder": "elle"
+      },
+      "collab": {
+        "title": "Motivation et collaboration",
+        "description": "Partagez ce qui vous motive et comment vous souhaitez échanger.",
+        "motivation": {
+          "label": "Qu’est-ce qui vous amène ici ?",
+          "placeholder": "Ce qui vous attire vers le climat et la santé mentale…",
+          "help": "Votre histoire aide les autres à se connecter avec vous."
+        },
+        "openToCollaboration": {
+          "label": "Je suis ouvert·e à collaborer",
+          "help": "Un signal discret indiquant que vous êtes ouvert·e à échanger ou collaborer — sans engagement, juste à discuter."
+        },
+        "interests": {
+          "label": "Sur quoi aimeriez-vous collaborer ?",
+          "placeholder": "Co-écriture, mentorat, partage de données…"
+        },
+        "livedExperience": {
+          "label": "Expérience vécue (facultatif)",
+          "placeholder": "Partagez ce que vous souhaitez…",
+          "help": "Privée par défaut. Vous choisissez de l’afficher ou non."
+        },
+        "showLivedExperience": {
+          "label": "Afficher sur mon profil public",
+          "help": "Désactivé, elle reste visible par vous seul·e."
+        }
+      },
+      "tabs": {
+        "basic": "Bases",
+        "collaboration": "Collaboration",
+        "work": "Travail",
+        "communities": "Communautés",
+        "recentWork": "Travaux récents",
+        "social": "Liens",
+        "privacy": "Confidentialité"
+      },
+      "orcidImport": {
+        "label": "ORCID iD",
+        "button": "Importer depuis ORCID",
+        "importing": "Importation…",
+        "help": "Collez votre ORCID iD pour récupérer vos publications et affiliations à vérifier.",
+        "needId": "Saisissez d'abord votre ORCID iD.",
+        "added": "{count} travaux importés — vérifiez et enregistrez.",
+        "none": "Aucun nouveau travail à importer.",
+        "failed": "L'importation a échoué"
+      },
+      "validation": {
+        "firstNameRequired": "Le prénom est requis",
+        "lastNameRequired": "Le nom de famille est requis",
+        "usernameMin": "Le nom d'utilisateur doit comporter au moins 3 caractères",
+        "usernamePattern": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas",
+        "bioMax": "La biographie doit contenir moins de 500 caractères",
+        "workTypesMin": "Veuillez sélectionner au moins un type de travail",
+        "expertiseAreasMin": "Veuillez sélectionner au moins un domaine d'expertise",
+        "workBioMax": "La biographie professionnelle doit contenir moins de 1000 caractères",
+        "urlInvalid": "Veuillez saisir une URL valide",
+        "workTitleRequired": "Le titre est requis",
+        "workDescriptionRequired": "La description est requise",
+        "workStartDateRequired": "La date de début est requise",
+        "headlineMax": "Le titre doit contenir moins de 120 caractères",
+        "keepUnder600": "Ne dépassez pas 600 caractères",
+        "keepUnder1000": "Ne dépassez pas 1000 caractères",
+        "firstNameMax": "Le prénom doit faire 50 caractères ou moins",
+        "lastNameMax": "Le nom doit faire 50 caractères ou moins",
+        "usernameMax": "Le nom d’utilisateur doit faire 30 caractères ou moins",
+        "socialPlatformRequired": "Indiquez la plateforme de ce lien (par exemple Bluesky ou Mastodon)",
+        "socialUrlInvalid": "Saisissez le lien complet, en commençant par https://",
+        "pronounsMax": "Les pronoms doivent faire 40 caractères ou moins",
+        "orcidMax": "C’est plus long qu’un ORCID iD ; utilisez le format 0000-0000-0000-0000",
+        "workTitleMax": "Le titre doit faire moins de 200 caractères",
+        "workDescriptionMax": "La description doit faire moins de 1000 caractères"
+      }
     },
     "account": {
       "pageTitle": "Compte et Sécurité",
@@ -496,10 +956,63 @@
           "type": "Pour confirmer, tapez",
           "cancel": "Annuler",
           "delete": "Supprimer le Compte",
-          "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail."
+          "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail.",
+          "typeError": "Veuillez saisir {token} pour confirmer",
+          "typeInstruction": "Pour confirmer, saisissez <strong>{token}</strong> dans le champ ci-dessous."
         }
+      },
+      "groups": {
+        "account": "Votre compte",
+        "accountDescription": "Gérez votre e-mail de connexion et votre mot de passe.",
+        "dangerZone": "Zone sensible",
+        "dangerZoneDescription": "Actions irréversibles. Soyez certain·e."
+      },
+      "validation": {
+        "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+        "currentPasswordRequired": "Le mot de passe actuel est requis",
+        "newPasswordMin": "Le nouveau mot de passe doit comporter au moins 8 caractères",
+        "confirmPasswordRequired": "Veuillez confirmer votre mot de passe",
+        "passwordsMismatch": "Les mots de passe ne correspondent pas"
+      },
+      "errors": {
+        "loadFailed": "Impossible de charger les informations du compte",
+        "updateEmailFailed": "Impossible de mettre à jour l'adresse e-mail",
+        "changePasswordFailed": "Impossible de modifier le mot de passe",
+        "deleteFailed": "Impossible de supprimer le compte"
       }
-    }
+    },
+    "contributions": {
+      "title": "Contributions",
+      "kind": {
+        "caseStudy": "Étude de cas",
+        "content": "Article",
+        "recentWork": "Projet"
+      }
+    },
+    "openToCollaboration": "Ouvert·e à collaborer",
+    "motivation": "Ce qui m’a amené·e ici",
+    "collaboration": "Collaboration",
+    "focusTopics": "Domaines d’intérêt",
+    "lookingFor": "Je recherche",
+    "livedExperience": "Expérience vécue",
+    "prompts": {
+      "title": "Questions",
+      "description": "Choisissez quelques questions et répondez-y — la partie la plus personnelle de votre profil.",
+      "loading": "Chargement des questions…",
+      "add": "Ajouter une question",
+      "remove": "Retirer",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "answerPlaceholder": "Votre réponse…"
+    },
+    "statistics": {
+      "memberSince": "Membre depuis",
+      "location": "Lieu",
+      "projects": "Projets",
+      "communities": "Communautés",
+      "skills": "Compétences"
+    },
+    "workspaces": "Espaces"
   },
   "profilePicture": {
     "title": "Photo de Profil",
@@ -526,18 +1039,165 @@
     "search": "Rechercher",
     "noResults": "Aucun profil trouvé. Essayez d'ajuster votre recherche.",
     "unnamed": "Utilisateur Sans Nom",
-    "browseProfiles": "Parcourir les Profils"
+    "browseProfiles": "Parcourir les Profils",
+    "metaNotFound": "Profil introuvable",
+    "metaProfileTitle": "{name} - Profil",
+    "metaProfileDescription": "Voir le profil de {name}"
   },
   "caseStudySubmission": {
     "pageTitle": "Soumettre une Étude de Cas",
     "pageDescription": "Partagez votre recherche et vos idées avec notre communauté mondiale multilingue",
     "title": "Soumettez votre Étude de Cas",
-    "description": "Partagez votre recherche avec notre communauté mondiale en anglais, espagnol, français ou arabe. Aidez-nous à rendre les connaissances accessibles aux chercheurs du monde entier."
+    "description": "Partagez votre recherche avec notre communauté mondiale en anglais, espagnol, français ou arabe. Aidez-nous à rendre les connaissances accessibles aux chercheurs du monde entier.",
+    "layoutChooser": {
+      "label": "Choisissez une mise en page",
+      "hint": "Même contenu, présentation différente — modifiable à tout moment.",
+      "story": {
+        "title": "Récit",
+        "caption": "Un récit de changement au sein d'une communauté"
+      },
+      "feature": {
+        "title": "Reportage",
+        "caption": "Une vitrine visuelle portée par l'image"
+      },
+      "report": {
+        "title": "Rapport",
+        "caption": "Une synthèse de recherche structurée avec des résultats"
+      }
+    },
+    "canvas": {
+      "titlePlaceholder": "Donnez un titre à votre étude de cas…",
+      "excerptPlaceholder": "Rédigez un bref résumé : ce qui s'est passé, où et pourquoi c'est important…",
+      "bodyPlaceholder": "Racontez l'histoire — tapez / pour insérer des blocs…"
+    },
+    "byline": {
+      "addAuthor": "Ajouter un auteur",
+      "removeAuthor": "Supprimer l'auteur",
+      "unnamed": "Nouvel auteur",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Saisissez le nom complet",
+      "emailLabel": "E-mail (facultatif)",
+      "roleLabel": "Rôle dans l'étude",
+      "done": "Terminé",
+      "organizationPlaceholder": "Nom de l'organisation ou de l'institution",
+      "roles": {
+        "lead": "Auteur principal",
+        "coauthor": "Co-auteur",
+        "contributor": "Contributeur",
+        "advisor": "Conseiller"
+      }
+    },
+    "hero": {
+      "dropHint": "Glissez une image de couverture ici, ou touchez pour choisir",
+      "formats": "JPEG, PNG ou WebP, jusqu'à 5 Mo",
+      "replace": "Remplacer l'image",
+      "remove": "Supprimer l'image",
+      "previewAlt": "Aperçu de l'image de couverture",
+      "uploading": "Envoi de votre image…"
+    },
+    "bar": {
+      "saveDraft": "Enregistrer le brouillon",
+      "preview": "Aperçu",
+      "submit": "Soumettre pour relecture",
+      "submitting": "Envoi…"
+    },
+    "toasts": {
+      "draftRestored": "Votre brouillon enregistré a été restauré"
+    },
+    "successScreen": {
+      "heading": "Merci pour votre contribution !",
+      "submittedLine": "Votre étude de cas a bien été envoyée.",
+      "reviewLine": "Notre équipe la relira et vous enverra un e-mail dès qu'il y aura du nouveau. Vous pouvez aussi suivre son statut à tout moment sur votre page d'envois.",
+      "submitAnother": "Envoyer une autre étude de cas",
+      "viewSubmissions": "Voir mes envois"
+    },
+    "review": {
+      "heading": "Vérifiez votre envoi",
+      "subheading": "Vérifiez que tout est correct avant d'envoyer",
+      "goBack": "Revenir à l'édition",
+      "basicInfo": "Informations de base",
+      "titleLabel": "Titre",
+      "descriptionLabel": "Description",
+      "authorsHeading": "Auteurs ({count})",
+      "tagsCommunity": "Étiquettes et communauté",
+      "community": "Communauté : {name}",
+      "context": "Contexte",
+      "location": "Lieu : {location}",
+      "period": "Période : {start} – {end}",
+      "ongoing": "En cours",
+      "confirmSubmit": "Confirmer et envoyer"
+    },
+    "tags": {
+      "hint": "Choisissez au moins un thème. Le premier choisi sera le thème principal.",
+      "search": "Rechercher des étiquettes…",
+      "noMatch": "Aucune étiquette ne correspond. Suggérez-en une ci-dessous.",
+      "groups": {
+        "topic": "Thèmes",
+        "audience": "Qui est concerné",
+        "impact": "Impact",
+        "method": "Approche",
+        "other": "Autres"
+      },
+      "main": "Thème principal",
+      "remove": "Retirer {tag}"
+    },
+    "sections": {
+      "writingIn": "J'écris en",
+      "story": "Votre récit",
+      "people": "Qui l'a écrit ?",
+      "where": "Où et quand",
+      "tags": "Étiquettes",
+      "presentation": "Quelle présentation ?"
+    },
+    "fields": {
+      "title": "Titre",
+      "summary": "Résumé",
+      "summaryHint": "Une ou deux phrases sur ce qui s'est passé ({min} caractères ou plus)",
+      "englishTitle": "Titre en anglais",
+      "englishSummary": "Résumé d'une ligne en anglais",
+      "englishHint": "Pour que le site anglais et la recherche puissent afficher votre étude de cas.",
+      "translations": "Ajouter des traductions (facultatif)",
+      "translationTitle": "Titre en {language}",
+      "translationSummary": "Résumé en {language}",
+      "dates": "Quand cela s'est-il passé ?",
+      "start": "Début",
+      "end": "Fin (laissez vide si c'est en cours)",
+      "organisation": "Organisation (facultatif)",
+      "community": "Communauté régionale (facultatif si vous ajoutez un lieu)",
+      "communityNone": "Aucune communauté"
+    },
+    "whatsLeft": {
+      "title": "Ajoutez un titre",
+      "summary": "Écrivez un court résumé (au moins {min} caractères)",
+      "story": "Écrivez votre récit",
+      "englishTitle": "Ajoutez un titre en anglais",
+      "englishSummary": "Ajoutez un résumé d'une ligne en anglais",
+      "authors": "Indiquez qui l'a écrit",
+      "theme": "Choisissez au moins un thème",
+      "where": "Indiquez où cela s'est passé",
+      "pin": "Ajoutez un lieu précis pour qu'il apparaisse comme repère sur la carte ; sans lui, il ne figure que sur la page de la communauté"
+    },
+    "draft": {
+      "saving": "Enregistrement…",
+      "savedAt": "Enregistré · {time}",
+      "error": "Impossible d'enregistrer : nous réessayons. Votre texte est en sécurité sur cet appareil.",
+      "restorePrompt": "Récupérer vos modifications non enregistrées de {time} ?",
+      "restore": "Récupérer",
+      "discard": "Ignorer",
+      "idle": "Votre travail s'enregistre au fur et à mesure",
+      "loading": "Chargement de votre brouillon…"
+    }
   },
   "caseStudy": {
-    "backToCaseStudies": "Retour aux Études de Cas"
+    "backToCaseStudies": "Retour aux Études de Cas",
+    "coAuthorsCount": "+{count, plural, one {# auteur·ice} other {# auteur·ices}}",
+    "publishedOn": "Publié le {date}"
   },
   "livedExperiences": {
+    "relatedContent": "Associé",
+    "formatVideo": "Vidéo",
+    "formatAudio": "Audio",
+    "formatWritten": "Écrit",
     "title": "Expériences Vécues",
     "description": "L’expérience vécue est une source fondamentale d’expertise à exploiter pour aborder les conséquences du changement climatique sur la santé mentale. Écouter et apprendre de diverses personnes et communautés directement touchées par les défis interdépendants du changement climatique et de la santé mentale est fondamental pour créer des recherches et des actions efficaces. Il est important de noter que les expériences vécues aident tous les efforts à cette intersection à générer des solutions réalisables pour et avec les groupes les plus touchés, conduisant à une recherche et une action plus inclusives. Les histoires présentées ci-dessous, et les idées qu’elles contiennent, reflètent un engagement à aller au-delà de la tokenisation et à valoriser et valoriser la contribution des expériences vécues à ce domaine en pleine croissance.",
     "pageTitle": "Expériences Vécues",
@@ -558,89 +1218,22 @@
     "videoUnavailable": "Cette vidéo n'est pas disponible.",
     "sortBy": "Trier",
     "sortNewest": "Plus récents",
-    "sortAZ": "A–Z"
-  },
-  "caseStudyForm": {
-    "sections": {
-      "basicInfo": "Informations de Base",
-      "content": "Contenu et Détails",
-      "authors": "Auteurs et Contributeurs",
-      "classification": "Étiquettes et Classification",
-      "location": "Lieu de l'Étude",
-      "timeline": "Période d'Étude"
-    },
-    "fields": {
-      "title": "Titre",
-      "subtitle": "Sous-titre",
-      "excerpt": "Extrait",
-      "content": "Contenu Complet",
-      "featuredImage": "Image Mise en Avant",
-      "organization": "Organisation Associée",
-      "authors": "Équipe de Recherche",
-      "tags": "Étiquettes",
-      "country": "Pays",
-      "city": "Ville",
-      "region": "Région/État",
-      "startDate": "Date de Début",
-      "endDate": "Date de Fin"
-    },
-    "placeholders": {
-      "title": "Entrez le titre en {language}",
-      "subtitle": "Entrez le sous-titre en {language}",
-      "excerpt": "Résumé bref en {language}",
-      "content": "Contenu détaillé de l'étude de cas en {language}",
-      "organization": "Entrez le nom de l'organisation",
-      "authorName": "Nom complet",
-      "authorEmail": "Adresse e-mail",
-      "country": "Entrez le pays",
-      "city": "Entrez la ville",
-      "region": "Entrez la région"
-    },
-    "descriptions": {
-      "excerpt": "Ces résumés aident les chercheurs du monde entier à découvrir votre travail. Requis dans les quatre langues.",
-      "content": "Écrivez votre étude de cas dans la langue que vous préférez. Au moins une version linguistique est requise.",
-      "organization": "Si cette étude de cas est associée à une organisation spécifique, entrez son nom ici.",
-      "tags": "Sélectionnez au moins une étiquette pour aider à catégoriser votre étude de cas.",
-      "endDate": "Laissez vide si l'étude est en cours",
-      "image": "Téléchargez une image de haute qualité pour représenter votre étude de cas (max 10MB)",
-      "multilingual": "Notre plateforme sert les chercheurs dans 4 langues. Vous pouvez soumettre dans n'importe quelle langue, mais aidez-nous avec les titres et extraits dans toutes les langues."
-    },
-    "roles": {
-      "lead": "Auteur Principal",
-      "coauthor": "Co-Auteur",
-      "contributor": "Contributeur",
-      "advisor": "Conseiller"
-    },
-    "actions": {
-      "addAuthor": "Ajouter un Auteur",
-      "removeAuthor": "Supprimer l'Auteur",
-      "uploadImage": "Télécharger l'Image",
-      "submit": "Soumettre l'Étude de Cas",
-      "submitting": "Envoi en cours..."
-    },
-    "validation": {
-      "titleRequired": "Le titre est requis dans les quatre langues pour aider notre communauté mondiale",
-      "excerptMinLength": "L'extrait doit contenir au moins 50 caractères dans toutes les langues",
-      "contentMinLength": "Veuillez fournir un contenu détaillé dans au moins une langue (minimum 200 caractères)",
-      "authorNameRequired": "Le nom de l'auteur est requis",
-      "invalidEmail": "Adresse e-mail invalide",
-      "oneAuthorRequired": "Au moins un auteur est requis",
-      "oneTagRequired": "Au moins une étiquette est requise",
-      "invalidImageType": "Veuillez télécharger un fichier image valide (JPEG, PNG ou WebP)",
-      "imageTooLarge": "La taille de l'image doit être inférieure à 10MB"
-    },
-    "status": {
-      "draft": "Brouillon",
-      "submitting": "Envoi en cours...",
-      "submitted": "Soumis pour Révision"
-    },
-    "messages": {
-      "submitSuccess": "Merci d'avoir partagé votre travail ! Votre étude de cas a été soumise et notre équipe l'examinera bientôt.",
-      "submitError": "Nous n'avons pas pu soumettre votre étude de cas pour le moment. Veuillez réessayer dans un instant.",
-      "loginRequired": "Vous devez être connecté pour soumettre une étude de cas",
-      "reviewNote": "Une fois soumise, notre équipe examinera votre étude de cas et vous répondra. Cela prend généralement quelques jours.",
-      "multilingualWelcome": "Bienvenue dans notre communauté mondiale ! Soumettez dans n'importe quelle langue et aidez-nous à atteindre les chercheurs du monde entier."
-    }
+    "sortAZ": "A–Z",
+    "issueLabel": "Le sujet",
+    "aboutPersonLabel": "À propos de la personne",
+    "shareCta": "Partagez votre expérience",
+    "storyLabel": "Récit",
+    "closeVideo": "Fermer",
+    "videoTitleFallback": "Expérience vécue",
+    "backToGallery": "Retour à la galerie",
+    "viewFull": "Voir le récit complet",
+    "audioTitleFallback": "Audio d’expérience vécue",
+    "audioFallback": "Votre navigateur ne prend pas en charge l’élément audio.",
+    "atAGlance": "En un coup d'œil",
+    "published": "Publié",
+    "author": "Auteur·e",
+    "community": "Communauté",
+    "videoCount": "{count, plural, one {# vidéo} other {# vidéos}}"
   },
   "search": {
     "pageTitle": "Rechercher",
@@ -654,6 +1247,18 @@
     "results": "Résultats",
     "noResults": "Aucun résultat trouvé",
     "noResultsDescription": "Essayez d'ajuster vos termes de recherche ou filtres",
+    "clear": "Effacer la recherche",
+    "seeAll": "Voir tout",
+    "allResults": "Tout",
+    "searching": "Recherche…",
+    "seeAllResults": "Voir tous les résultats pour « {q} »",
+    "searchUnavailable": "La recherche de contenu est momentanément indisponible. Veuillez réessayer sous peu.",
+    "regions": "Régions",
+    "resultsFor": "Résultats pour « {q} »",
+    "typeToSearch": "Rechercher dans le hub",
+    "typeToSearchHint": "Trouvez des études de cas, des actualités, des personnes et des régions.",
+    "nothingFound": "Aucun résultat pour « {q} »",
+    "nothingFoundHint": "Essayez un autre terme ou <link>explorez l'Atlas</link>.",
     "people": "Personnes",
     "agendas": "Agendas",
     "news": "Actualités",
@@ -679,6 +1284,54 @@
       "result": "résultat",
       "relevant": "résultats pertinents sur",
       "foundIn": "Trouvé dans"
+    },
+    "filterLabels": {
+      "title": "Filtres",
+      "activeFilters": "Filtres actifs",
+      "yearRange": "Plage d'années",
+      "to": "à",
+      "apply": "Appliquer",
+      "clear": "Effacer",
+      "status": "Statut",
+      "authorRole": "Rôle de l'auteur",
+      "organizations": "Organisations",
+      "projects": "Projets",
+      "tags": "Étiquettes",
+      "featured": "À la une",
+      "agendaType": "Type d'agenda",
+      "regionalCommunities": "Communautés régionales",
+      "author": "Auteur",
+      "country": "Pays",
+      "accessLevel": "Niveau d'accès"
+    },
+    "featured": "À la une",
+    "authorsLabel": "Auteurs :",
+    "more": "+{count} autres",
+    "downloads": "{count, plural, one {# téléchargement} other {# téléchargements}}",
+    "byAuthor": "Par {name}",
+    "emptyCaseStudies": "Essayez d'autres mots-clés ou revenez plus tard pour découvrir de nouvelles études de cas.",
+    "emptyAgendas": "Essayez d'autres mots-clés ou revenez plus tard pour découvrir de nouveaux agendas.",
+    "emptyNews": "Essayez d'autres mots-clés ou revenez plus tard pour découvrir de nouvelles actualités.",
+    "positionAt": "{position} chez {organization}",
+    "memberOf": "Membre de {communities}",
+    "memberOfMore": "Membre de {communities} et de {count, plural, one {# autre communauté} other {# autres communautés}}",
+    "agendaTypes": {
+      "global": "Agenda mondial",
+      "regional": "Agenda régional",
+      "community": "Agenda communautaire",
+      "annual": "Agenda annuel",
+      "quarterly": "Agenda trimestriel",
+      "meeting": "Ordre du jour de réunion",
+      "actionPlan": "Plan d'action",
+      "strategy": "Plan stratégique",
+      "other": "Autre"
+    },
+    "error": {
+      "title": "Erreur du service de recherche",
+      "description": "Un problème est survenu avec le service de recherche. Cela peut être dû à une configuration manquante.",
+      "genericMessage": "Un problème est survenu avec le service de recherche.",
+      "checkConfig": "Veuillez vérifier que votre configuration Algolia est correcte.",
+      "tryAgain": "Réessayer"
     }
   },
   "collaborate": {
@@ -707,7 +1360,9 @@
       "viewAll": "Voir tout",
       "showMore": "Afficher plus",
       "loadMore": "Charger plus",
-      "noMembers": "Aucun membre dans cette communauté pour le moment"
+      "noMembers": "Aucun membre dans cette communauté pour le moment",
+      "previous": "Précédent",
+      "next": "Suivant"
     },
     "userCard": {
       "viewProfile": "Voir le profil",
@@ -721,7 +1376,8 @@
       "hoursAgo": "il y a {count}h",
       "daysAgo": "il y a {count}j",
       "weeksAgo": "il y a {count}sem",
-      "monthsAgo": "il y a {count}m"
+      "monthsAgo": "il y a {count}m",
+      "openToCollaborate": "Ouvert à collaborer"
     },
     "stats": {
       "totalMembers": "{count} membres",
@@ -733,7 +1389,8 @@
       "title": "Filtres actifs:",
       "search": "Recherche: {query}",
       "clear": "Réinitialiser Tous les Filtres"
-    }
+    },
+    "startCollaboration": "Créer un espace"
   },
   "onboarding": {
     "steps": {
@@ -766,6 +1423,29 @@
           "step2": "Partagez votre expérience professionnelle et domaines d'expertise",
           "step3": "Ajoutez des projets récents pour présenter vos contributions",
           "step4": "Choisissez vos paramètres de confidentialité et de visibilité"
+        },
+        "tagline": "Commencez votre parcours",
+        "hero": {
+          "title": "Bienvenue à Connecting Climate Minds",
+          "description": "Rejoignez une communauté mondiale de leaders, d'experts et de défenseurs du climat qui travaillent ensemble pour lutter contre la crise climatique."
+        },
+        "highlights": {
+          "connect": {
+            "title": "Connectez-vous avec des Leaders du Climat",
+            "description": "Réseautez avec des professionnels, chercheurs et activistes du monde entier."
+          },
+          "share": {
+            "title": "Partagez Votre Expertise",
+            "description": "Contribuez vos connaissances et apprenez de perspectives diverses sur l'action climatique."
+          },
+          "privacy": {
+            "title": "Confidentialité et Sécurité",
+            "description": "Vos données sont protégées. Contrôlez ce que vous partagez et qui peut voir votre profil."
+          }
+        },
+        "gettingStarted": {
+          "title": "Commençons !",
+          "description": "Complétez votre profil pour vous connecter avec les bonnes personnes et opportunités dans le mouvement climatique."
         }
       },
       "basicInfo": {
@@ -794,7 +1474,14 @@
         "usernamePlaceholder": "Entrez un nom d'utilisateur unique",
         "countryPlaceholder": "Entrez votre pays",
         "cityPlaceholder": "Entrez votre ville",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Parlez-nous de vous",
+        "headline": "Accroche",
+        "headlinePlaceholder": "p. ex. Chercheuse sur l’éco-anxiété chez les jeunes",
+        "headlineHint": "Une ligne qui vous résume — on la voit en premier.",
+        "motivation": "Qu’est-ce qui vous amène ici ?",
+        "motivationPlaceholder": "Ce qui vous attire vers le climat et la santé mentale…",
+        "motivationHint": "Facultatif. Votre histoire aide les autres à se connecter."
       },
       "workInfo": {
         "title": "Informations Professionnelles",
@@ -844,11 +1531,16 @@
         "otherLinksHint": "Ajoutez des liens vers vos profils professionnels (Twitter, GitHub, Portfolio, etc.)",
         "platformPlaceholder": "Nom de la plateforme (ex., Twitter, GitHub)",
         "urlPlaceholder": "https://exemple.com/votre-profil",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Partagez votre expertise",
+        "addLink": "Ajouter un lien",
+        "linkedinPlaceholder": "https://linkedin.com/in/username",
+        "workTypeFallback": "Type de travail {key}",
+        "expertiseFallback": "Expertise {key}"
       },
       "recentWork": {
         "title": "Travaux Récents",
-        "description": "Description",
+        "description": "Ajoutez jusqu’à cinq projets ou travaux récents pour présenter votre expérience.",
         "addWork": "Ajouter un Travail",
         "editWork": "Modifier le Travail",
         "yourWork": "Vos Travaux Récents",
@@ -873,7 +1565,8 @@
         "viewProject": "Voir le Projet",
         "cancel": "Annuler",
         "updateWork": "Mettre à jour le Travail",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Présentez vos projets"
       },
       "privacy": {
         "title": "Confidentialité et Visibilité",
@@ -914,7 +1607,8 @@
           "showLocation": "Afficher la localisation",
           "locationHint": "Afficher les informations de votre pays et ville"
         },
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Contrôlez votre visibilité"
       },
       "review": {
         "title": "Presque Prêt !",
@@ -977,7 +1671,10 @@
         "viewProject": "Voir le Projet",
         "readyTitle": "Vous êtes prêt !",
         "readyDescription": "Bienvenue dans notre communauté mondiale d'esprits climatiques. Créons un changement significatif ensemble.",
-        "completeOnboarding": "Terminer la Configuration"
+        "completeOnboarding": "Terminer la Configuration",
+        "tagline": "Vérifiez et terminez",
+        "websiteLink": "Site web",
+        "updateLater": "Vous pouvez toujours mettre à jour votre profil depuis le tableau de bord."
       }
     },
     "title": "Configurer votre Profil",
@@ -999,11 +1696,71 @@
     "getStarted": "Commencer",
     "continue": "Continuer",
     "reviewProfile": "Réviser le Profil",
-    "completeProfile": "Terminer le Profil"
+    "completeProfile": "Terminer le Profil",
+    "redirectDialog": {
+      "title": "Complétez votre profil",
+      "message": "Pour tirer le meilleur parti de votre expérience, nous vous recommandons de compléter votre profil.",
+      "proceed": "Compléter le profil",
+      "continue": "Continuer vers Collaborer",
+      "waiver": "Vous pourrez le compléter plus tard",
+      "processing": "Traitement en cours..."
+    },
+    "stepOf": "Étape {current, number} sur {total, number}",
+    "percentComplete": "{value, number} % terminé",
+    "minutesLeft": "~{minutes, number} min restantes",
+    "footerTagline": "Rejoignez des milliers d'esprits engagés pour le climat du monde entier",
+    "successToast": "Bienvenue ! Votre profil a été configuré avec succès.",
+    "errors": {
+      "networkFailed": "La connexion réseau a échoué. Vérifiez votre connexion internet et réessayez.",
+      "unexpectedResponse": "Le serveur a renvoyé une réponse dans un format inattendu. Réessayez ou contactez l'assistance.",
+      "serverErrorSupport": "Erreur du serveur ({status}). Réessayez ou contactez l'assistance.",
+      "authRequired": "Vous devez être connecté pour terminer la configuration.",
+      "correctFields": "Veuillez corriger les éléments suivants : {details}",
+      "userNotFound": "Votre compte utilisateur est introuvable. Actualisez la page et réessayez.",
+      "serverErrorRetry": "Erreur du serveur ({status}). Réessayez.",
+      "unexpectedSuccess": "La configuration est peut-être terminée, mais nous avons reçu une réponse inattendue. Actualisez la page pour vérifier votre statut.",
+      "submissionFailed": "L'envoi de la configuration a échoué",
+      "submitFailed": "L'envoi de vos informations a échoué. Réessayez."
+    },
+    "validation": {
+      "basicInfo": {
+        "firstName": "Le prénom est requis",
+        "lastName": "Le nom de famille est requis",
+        "username": "Le nom d'utilisateur doit comporter au moins 3 caractères",
+        "usernameMax": "Le nom d'utilisateur doit comporter moins de 30 caractères",
+        "usernamePattern": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas",
+        "bio": "La biographie doit comporter moins de 500 caractères",
+        "country": "Le pays est requis",
+        "city": "La ville est requise",
+        "preferredLanguage": "Veuillez choisir votre langue préférée"
+      },
+      "workInfo": {
+        "workTypes": "Veuillez sélectionner au moins un type de travail",
+        "expertiseAreas": "Veuillez sélectionner au moins un domaine d'expertise",
+        "workBio": "La biographie professionnelle doit comporter moins de 1000 caractères",
+        "linkedinUrl": "Veuillez saisir une URL LinkedIn valide",
+        "websiteUrl": "Veuillez saisir une URL de site web valide",
+        "socialLinkUrl": "Veuillez saisir une URL valide",
+        "socialLinkPlatform": "Le nom de la plateforme est requis"
+      },
+      "recentWork": {
+        "title": "Le titre est requis",
+        "titleMax": "Le titre doit comporter moins de 100 caractères",
+        "description": "La description est requise",
+        "descriptionMax": "La description doit comporter moins de 500 caractères",
+        "link": "Veuillez saisir une URL valide",
+        "startDate": "La date de début est requise"
+      }
+    }
   },
   "caseStudies": {
     "title": "Études de Cas",
     "description": "Explorez la recherche et les perspectives de notre communauté mondiale",
+    "viewCommunity": "Voir la communauté",
+    "caseStudySingular": "étude de cas",
+    "caseStudyPlural": "études de cas",
+    "backToCaseStudies": "Retour aux Études de Cas",
+    "relatedContent": "Associé",
     "pageTitle": "Études de Cas",
     "pageDescription": "Explorez la recherche et les perspectives de notre communauté mondiale",
     "featured": "Études de Cas en Vedette",
@@ -1014,6 +1771,7 @@
     "submitButton": "Soumettre une Étude de Cas",
     "searchResults": "Résultats de Recherche",
     "resultsFound": "résultats trouvés",
+    "openAsGallery": "Ouvrir en galerie",
     "noResults": "Aucune étude de cas trouvée",
     "noResultsDescription": "Essayez d'ajuster votre recherche ou vos filtres pour trouver ce que vous cherchez.",
     "clearFilters": "Effacer tous les filtres",
@@ -1030,7 +1788,9 @@
       "updating": "Mise à jour...",
       "all": "Tous les Thèmes",
       "featured": "En Vedette",
-      "recent": "Récemment Publiées"
+      "recent": "Récemment Publiées",
+      "topic": "Thème",
+      "tags": "Étiquettes"
     },
     "topics": {
       "climate-environment": "Changement Climatique et Environnement",
@@ -1061,16 +1821,33 @@
     "organizations": "Organisations",
     "relatedProjects": "Projets Connexes",
     "studyAreas": "Domaines d'Étude",
-    "allAuthors": "Tous les Auteurs"
+    "allAuthors": "Tous les Auteurs",
+    "featuredBadge": "À la une",
+    "producedBy": "Produit par",
+    "atAGlance": "En bref",
+    "published": "Publié",
+    "author": "Auteur",
+    "location": "Lieu",
+    "viewToggle": "Affichage",
+    "galleryView": "Galerie",
+    "mapView": "Carte",
+    "writtenBy": "Écrit par",
+    "withOrgs": "Avec",
+    "metaNotFound": "Étude de cas introuvable",
+    "metaFallbackTitle": "Étude de cas",
+    "resultsCount": "{count, plural, one {# résultat trouvé} other {# résultats trouvés}}",
+    "originallyWrittenIn": "Écrit à l'origine en {language}"
   },
   "revisionAlert": {
     "title": "Action Requise: Révision Nécessaire",
-    "description": "Vous avez {count} étude{plural} de cas qui nécessite{singular} une révision basée sur les commentaires de l'éditeur.",
+    "description": "{count, plural, one {Vous avez # étude de cas à réviser d'après les commentaires de l'équipe éditoriale.} other {Vous avez # études de cas à réviser d'après les commentaires de l'équipe éditoriale.}}",
     "editorFeedback": "Commentaires de l'éditeur:",
     "actions": {
       "remindLater": "Me Rappeler Plus Tard",
       "viewSubmissions": "Voir et Modifier les Soumissions"
-    }
+    },
+    "submittedOn": "Soumis le {date}",
+    "revisionBadge": "Révision"
   },
   "news": {
     "title": "Actualités",
@@ -1097,6 +1874,7 @@
     "filters": {
       "searchPlaceholder": "Rechercher des actualités...",
       "dateRange": "Plage de Dates",
+      "byDate": "Par date",
       "dateFrom": "De",
       "dateTo": "À",
       "tags": "Étiquettes",
@@ -1107,15 +1885,36 @@
       "activeFilters": "Filtres actifs",
       "updating": "Mise à jour...",
       "filters": "Filtres",
-      "advancedFilters": "Filtres Avancés"
+      "advancedFilters": "Filtres Avancés",
+      "timeFrame": {
+        "any": "À tout moment",
+        "year": "Dernière année",
+        "threeYears": "3 dernières années",
+        "fiveYears": "5 dernières années",
+        "month": "Dernier mois",
+        "threeMonths": "3 derniers mois"
+      },
+      "global": "Mondial"
     },
     "metadata": {
       "author": "Auteur",
       "organization": "Organisation",
       "project": "Projet",
       "location": "Emplacement",
-      "publishDate": "Publié"
-    }
+      "publishDate": "Publié",
+      "projects": "{count, plural, one {Projet} other {Projets}}",
+      "organizations": "{count, plural, one {Organisation} other {Organisations}}"
+    },
+    "siteBadge": "CCM",
+    "featuredBadge": "À la une",
+    "minRead": "{minutes} min de lecture",
+    "regionEmpty": {
+      "title": "Aucune actualité dans {region} pour l'instant.",
+      "description": "Suivez cette région pour être averti dès qu'une actualité est publiée.",
+      "cta": "Suivre cette région"
+    },
+    "metaNotFound": "Actualité introuvable",
+    "resultsCount": "{count, plural, one {# résultat trouvé} other {# résultats trouvés}}"
   },
   "regional": {
     "noLivedExperiences": "Aucune expérience vécue disponible pour le moment.",
@@ -1137,12 +1936,18 @@
       "caseStudies": "Études de Cas",
       "newsUpdates": "Actualités",
       "communityVoices": "Voix de la Communauté",
-      "communityVoicesSubtitle": "Écoutez directement les membres de la communauté partager leurs expériences"
-    }
+      "communityVoicesSubtitle": "Écoutez directement les membres de la communauté partager leurs expériences",
+      "overview": "Aperçu",
+      "members": "Membres",
+      "partners": "Partenaires"
+    },
+    "communityMembers": "Membres de la communauté",
+    "contributionCount": "{count, plural, one {# contribution} other {# contributions}}",
+    "downloadFile": "Télécharger {name}"
   },
   "cookieConsent": {
     "title": "Nous respectons votre vie privée",
-    "description": "Nous utilisons des cookies essentiels pour le bon fonctionnement, et des cookies optionnels pour améliorer votre expérience. Plausible, notre outil d'analyse, est entièrement sans cookies.",
+    "description": "Nous utilisons des cookies essentiels pour le bon fonctionnement, et des cookies optionnels pour améliorer votre expérience. Plausible, notre compteur de visites, est sans cookies. Avec votre accord, PostHog nous aide à comprendre quelles fonctionnalités sont utilisées.",
     "acceptAll": "Tout Accepter",
     "rejectNonEssential": "Essentiels Uniquement",
     "managePreferences": "Gérer les Préférences",
@@ -1160,7 +1965,7 @@
       },
       "analytics": {
         "title": "Analytiques",
-        "description": "Nous utilisons Plausible Analytics, qui est entièrement sans cookies. Aucun consentement nécessaire ici !"
+        "description": "Plausible compte les visites sans cookies ni données personnelles. Si vous activez cette option, PostHog (hébergé dans l'UE) enregistre aussi les pages et fonctionnalités que vous utilisez — lié à votre compte lorsque vous êtes connecté, jamais le contenu que vous écrivez, et sans enregistrement de session. Vous pouvez le désactiver à tout moment."
       }
     }
   },
@@ -1173,14 +1978,859 @@
     "viewAll": "Voir tout",
     "noPostsTitle": "Pas encore de publications",
     "noPostsBody": "Revenez bientôt pour découvrir les nouveautés.",
-    "noContent": "Aucun contenu disponible pour le moment."
+    "noContent": "Aucun contenu disponible pour le moment.",
+    "noQueryType": "Aucun type de requête spécifié",
+    "contentLoadFailed": "Échec du chargement du contenu",
+    "errorLoadingContent": "Erreur lors du chargement du contenu : {error}",
+    "downloadsCount": "{count, plural, one {# téléchargement} other {# téléchargements}}",
+    "sourceKind": {
+      "news": "Actualités",
+      "research": "Recherche",
+      "blog": "Blog",
+      "report": "Rapport",
+      "press": "Presse",
+      "policy": "Politique",
+      "other": "Externe"
+    }
   },
   "map": {
     "title": "Explorer par région",
+    "allContent": "Tout le contenu",
     "facetCaseStudies": "Études de cas",
     "facetMembers": "Membres",
     "facetNews": "Actualités",
     "viewInSearch": "Voir dans la recherche",
-    "noData": "Aucune donnée pour cette région."
+    "noData": "Aucune donnée pour cette région.",
+    "facetLivedExperiences": "Expériences vécues",
+    "facetAgendas": "Programmes",
+    "facetReports": "Rapports",
+    "facetResearchOutputs": "Productions de recherche"
+  },
+  "announcement": {
+    "dismiss": "Fermer l’annonce",
+    "readMore": "En savoir plus"
+  },
+  "organizations": {
+    "types": {
+      "ngo": "ONG",
+      "research": "Institutions de recherche",
+      "university": "Universités",
+      "government": "Agences gouvernementales",
+      "international": "Organisations internationales",
+      "company": "Entreprises",
+      "community": "Organisations communautaires",
+      "foundation": "Fondations",
+      "other": "Autres"
+    }
+  },
+  "livedExperienceSubmission": {
+    "pageTitle": "Partager une expérience vécue",
+    "pageDescription": "Ajoutez une vidéo et dites-nous, avec vos mots, qui vous êtes et ce que votre expérience évoque. Un éditeur la vérifiera avant publication.",
+    "story": {
+      "title": "Votre histoire",
+      "description": "La vidéo et vos mots."
+    },
+    "context": {
+      "title": "Contexte"
+    },
+    "fields": {
+      "title": "Titre",
+      "titlePlaceholder": "Un titre court pour votre expérience",
+      "videoLink": "Lien vidéo",
+      "videoLinkHelp": "Collez un lien YouTube ou Vimeo.",
+      "description": "Description",
+      "descriptionPlaceholder": "En bref, de quoi s'agit-il ?",
+      "issue": "Le sujet abordé",
+      "issuePlaceholder": "p. ex. éco-anxiété chez les jeunes…",
+      "issueHelp": "Quel thème climat × santé mentale aborde-t-il ?",
+      "personContext": "À votre sujet",
+      "personContextPlaceholder": "Une phrase ou deux sur qui vous êtes…",
+      "personContextHelp": "Partagé avec respect aux côtés de votre histoire. Facultatif.",
+      "region": "Communauté régionale",
+      "regionPlaceholder": "Choisir une région (facultatif)",
+      "tags": "Étiquettes",
+      "tagsHelp": "Jusqu'à 6.",
+      "body": "L'histoire complète (facultatif)",
+      "bodyPlaceholder": "Racontez toute l'histoire — vous pouvez ajouter des images avec légende…",
+      "bodyHelp": "Comme un article de blog : des paragraphes et quelques images. Affiché sous votre vidéo."
+    },
+    "validation": {
+      "titleMin": "Veuillez ajouter un titre",
+      "descriptionMin": "Veuillez décrire l'expérience",
+      "issueMin": "Quel sujet cela aborde-t-il ?",
+      "videoUrl": "Veuillez coller un lien vidéo valide",
+      "youtubeUrl": "Veuillez coller un lien YouTube valide",
+      "vimeoUrl": "Veuillez coller un lien Vimeo valide",
+      "titleMax": "Le titre doit faire moins de {max} caractères",
+      "descriptionMax": "La description doit faire moins de {max} caractères",
+      "issueMax": "Ce champ doit faire moins de {max} caractères",
+      "personContextMax": "Ce champ doit faire moins de {max} caractères"
+    },
+    "submit": "Soumettre pour révision",
+    "cancel": "Annuler",
+    "success": "Merci — votre expérience a été soumise pour révision.",
+    "video": {
+      "uploadVideo": "Téléverser une vidéo",
+      "youtubeLink": "Lien YouTube",
+      "vimeoLink": "Lien Vimeo",
+      "youtubeValid": "Lien YouTube reconnu — voici l'aperçu.",
+      "youtubePreviewAlt": "Image d'aperçu de la vidéo YouTube",
+      "vimeoValid": "Ce lien Vimeo semble correct.",
+      "chooseFile": "Choisir un fichier vidéo",
+      "removeFile": "Retirer",
+      "fileHint": "MP4 ou WebM, jusqu'à 100 Mo.",
+      "fileRequired": "Veuillez choisir un fichier vidéo à téléverser.",
+      "fileTooLarge": "Ce fichier dépasse la limite de 100 Mo — choisissez-en un plus léger.",
+      "fileWrongType": "Veuillez choisir un fichier MP4 ou WebM.",
+      "keepExisting": "Votre vidéo actuelle est conservée sauf si vous choisissez un nouveau fichier."
+    },
+    "submitError": "Nous n'avons pas pu envoyer votre expérience. Veuillez réessayer."
+  },
+  "comments": {
+    "heading": "Discussion",
+    "loading": "Chargement…",
+    "empty": "Pas encore de commentaires. Lancez la conversation.",
+    "post": "Publier",
+    "reply": "Répondre",
+    "placeholder": "Ajouter un commentaire…",
+    "replyPlaceholder": "Écrire une réponse…",
+    "namePlaceholder": "Votre nom",
+    "anonNotice": "Publication anonyme : votre commentaire sera examiné avant publication.",
+    "heldForReview": "Merci — votre commentaire apparaîtra après examen.",
+    "posted": "Commentaire publié.",
+    "loadMore": "Charger plus",
+    "pending": "En attente de validation",
+    "deleted": "Ce commentaire a été supprimé.",
+    "anonymous": "Anonyme",
+    "delete": "Supprimer",
+    "report": "Signaler",
+    "reported": "Signalé. Merci.",
+    "signInToReact": "Connectez-vous pour réagir.",
+    "signInToReport": "Connectez-vous pour signaler.",
+    "readOnly": "Vous pouvez lire cette discussion, mais seuls les membres autorisés à commenter peuvent publier."
+  },
+  "discovery": {
+    "searchPlaceholder": "Rechercher…",
+    "sortLabel": "Trier",
+    "clearAll": "Tout effacer",
+    "sort": {
+      "relevance": "Pertinence",
+      "newest": "Plus récents",
+      "oldest": "Plus anciens",
+      "az": "A–Z",
+      "region": "Par région"
+    },
+    "timeFrame": {
+      "any": "À tout moment",
+      "year": "Année passée",
+      "threeYears": "3 dernières années",
+      "fiveYears": "5 dernières années",
+      "month": "Dernier mois",
+      "threeMonths": "3 derniers mois"
+    },
+    "facet": {
+      "region": "Région",
+      "topic": "Thème",
+      "tags": "Étiquettes",
+      "language": "Langue",
+      "source": "Source",
+      "agendaType": "Type",
+      "workType": "Type de travail",
+      "expertise": "Expertise",
+      "openToTalk": "Ouvert à échanger"
+    }
+  },
+  "collaboration": {
+    "pageTitle": "Collaborations",
+    "pageDescription": "Espaces partagés pour travailler ensemble.",
+    "breadcrumbHome": "Espaces de travail",
+    "create": "Nouvel espace",
+    "createTitle": "Créer un espace",
+    "titleLabel": "Nom",
+    "descriptionLabel": "Description",
+    "visibilityLabel": "Visibilité",
+    "visibilityMembers": "Membres uniquement",
+    "visibilityPublic": "Public",
+    "signInToCreate": "Connectez-vous pour créer",
+    "empty": "Aucun espace pour le moment.",
+    "public": "Public",
+    "members": "Membres uniquement",
+    "untitledWorkspace": "Espace sans titre",
+    "addDescription": "Ajouter une description…",
+    "open": "Ouvrir",
+    "storageNotConfigured": "Le stockage est en cours de configuration — les fichiers apparaîtront bientôt ici.",
+    "roleUpdated": "Rôle mis à jour.",
+    "backToThreads": "Retour aux fils",
+    "threadTitlePlaceholder": "Titre du fil…",
+    "createThread": "Créer",
+    "newThread": "Nouveau fil",
+    "noThreads": "Aucun fil pour le moment.",
+    "nav": {
+      "overview": "Aperçu",
+      "plan": "Plan",
+      "threads": "Fils",
+      "files": "Fichiers",
+      "media": "Médias",
+      "members": "Membres",
+      "sections": "Sections",
+      "docs": "Documents",
+      "outputs": "Productions"
+    },
+    "role": {
+      "OWNER": "Propriétaire",
+      "EDITOR": "Éditeur",
+      "COMMENTER": "Commentateur",
+      "VIEWER": "Observateur"
+    },
+    "uploadFile": "Téléverser",
+    "uploading": "Téléversement…",
+    "uploaded": "Fichier téléversé.",
+    "uploadFailed": "Échec du téléversement.",
+    "noFiles": "Aucun fichier pour le moment.",
+    "openPdf": "Ouvrir",
+    "download": "Télécharger",
+    "loadingPdf": "Chargement du PDF…",
+    "notesOn": "Notes : activées",
+    "notesOff": "Notes",
+    "youtubeUrlPlaceholder": "Lien YouTube…",
+    "mediaTitlePlaceholder": "Titre (facultatif)",
+    "addMedia": "Ajouter",
+    "noMedia": "Aucun média pour le moment.",
+    "emptyState": {
+      "docsTitle": "Aucun document pour le moment",
+      "docsBody": "Rédigez ensemble des notes, des briefs et des comptes rendus. Créez votre premier document pour commencer.",
+      "threadsTitle": "Aucune discussion pour le moment",
+      "threadsBody": "Lancez un fil pour débattre de décisions, partager des nouvelles ou poser une question au groupe.",
+      "filesTitle": "Aucun fichier pour le moment",
+      "filesBody": "Téléversez les PDF et documents dont l'équipe a besoin. Glissez un fichier ici ou utilisez le bouton de téléversement.",
+      "mediaTitle": "Aucun média pour le moment",
+      "mediaBody": "Ajoutez des vidéos YouTube pour partager des présentations, des démos ou des enregistrements avec l'espace de travail."
+    },
+    "mediaConsentRequired": "Cette vidéo nécessite le consentement aux cookies.",
+    "dropToUpload": "Glissez un fichier ici ou",
+    "viewPublicPage": "View public page",
+    "attention": {
+      "title": "Ce qui vous attend",
+      "subtitle": "Tâches, révisions et réponses en attente de vous",
+      "open": "Ouvrir →",
+      "task": "tâche · {detail}",
+      "output": "révision demandée",
+      "notification": "{detail}"
+    },
+    "invitePeople": "Inviter des personnes",
+    "inviteSearchPlaceholder": "Cherchez des membres par nom…",
+    "inviteAction": "Inviter",
+    "invitedLabel": "Invité",
+    "inviteSent": "Invitation envoyée.",
+    "inviteNoResults": "Aucun membre ne correspond.",
+    "removeMember": "Retirer",
+    "removeConfirm": "Confirmer ?",
+    "memberRemoved": "Membre retiré.",
+    "archiveThread": "Archiver",
+    "archiveConfirm": "Confirmer ?",
+    "threadArchived": "Fil archivé.",
+    "leaveWorkspace": "Quitter",
+    "leaveConfirm": "Confirmer le départ",
+    "archiveWorkspace": "Archiver",
+    "archived": "Espace archivé",
+    "readOnlyNotice": "Vous consultez cet espace en lecture seule.",
+    "readOnlyJoinLink": "À propos de ce projet et comment le rejoindre",
+    "fileUnavailable": "Fichier indisponible",
+    "makePublic": "Rendre public",
+    "makePrivate": "Rendre privé",
+    "visibilityConfirm": "Confirmer le changement",
+    "nowPublic": "L'espace est désormais public — chacun peut l'explorer en lecture seule.",
+    "nowPrivate": "L'espace est désormais réservé aux membres.",
+    "acceptCookies": "Acceptez les cookies pour lire",
+    "delete": "Supprimer",
+    "taskStatus": {
+      "TODO": "À faire",
+      "IN_PROGRESS": "En cours",
+      "DONE": "Terminé"
+    },
+    "errors": {
+      "tooLong": "Ce champ doit faire moins de {max} caractères.",
+      "empty": "Ce champ ne peut pas être vide."
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "empty": "Aucune conversation pour le moment.",
+    "selectConversation": "Sélectionnez une conversation.",
+    "unknownUser": "Membre",
+    "unread": "Non lu",
+    "back": "Retour",
+    "typeMessage": "Écrire un message…",
+    "send": "Envoyer",
+    "messageButton": "Message",
+    "delete": "Supprimer",
+    "report": "Signaler",
+    "reported": "Signalé.",
+    "messageDeleted": "Message supprimé"
+  },
+  "reader": {
+    "chapters": "Chapitres",
+    "onThisPage": "Sur cette page",
+    "footnotes": "Notes de bas de page",
+    "backToReference": "Retour à la référence {number}",
+    "documentTitle": "Agenda mondial de recherche et d'action",
+    "title": "Lecteur"
+  },
+  "atlas": {
+    "title": "Atlas",
+    "description": "Explorez les études de cas, les expériences vécues, les personnes et plus encore dans les sept régions.",
+    "show": "Afficher",
+    "explore": "Explorer {region}",
+    "empty": "Aucun {layer} ici pour l’instant.",
+    "untitled": "Sans titre",
+    "theme": "Thème",
+    "searchPlaceholder": "Rechercher dans l'atlas…",
+    "clearSearch": "Effacer la recherche",
+    "openIn": "Ouvrir dans {label}",
+    "pinItems": "{count} ici",
+    "locator": "Position de {region} sur la carte du monde",
+    "close": "Fermer",
+    "embedTitle": "Explorer cette région",
+    "openFullAtlas": "Ouvrir l'Atlas complet",
+    "countryBreakdown": "Où dans la région",
+    "lastLayer": "Au moins une couche reste sélectionnée",
+    "tapHint": "Touchez une région pour voir ses histoires",
+    "latestEverywhere": "Les dernières histoires de toutes les régions",
+    "aroundTheRegions": "À travers les régions",
+    "viewAllType": "Voir tout : {label}",
+    "region": "Région",
+    "allRegions": "Toutes les régions",
+    "when": "Quand",
+    "when_y1": "Cette année",
+    "when_y3": "3 dernières années",
+    "when_older": "Plus ancien",
+    "regionalSpotlight": "Pleins feux sur la région",
+    "inThisView": "{count} dans cette vue",
+    "visitCommunity": "Visiter la page de la communauté",
+    "followTheme": "Suivre ce thème"
+  },
+  "docs": {
+    "title": "Documents",
+    "empty": "Aucun document pour le moment.",
+    "newDoc": "Nouveau document",
+    "deleteDoc": "Supprimer le document",
+    "backToDocs": "Retour aux documents",
+    "untitled": "Sans titre",
+    "startWriting": "Commencez à écrire…"
+  },
+  "home": {
+    "peopleTitle": "Personnes dans votre région",
+    "peopleEmpty": "Aucun membre à afficher pour l’instant.",
+    "aMember": "Un membre",
+    "seeking": "Recherche"
+  },
+  "researchOutputs": {
+    "backToResearch": "Retour à Recherche et Action",
+    "featured": "À la une",
+    "documents": "Documents",
+    "download": "Télécharger",
+    "pages": "pages",
+    "atAGlance": "En bref",
+    "type": "Type",
+    "published": "Publié",
+    "organizations": "Organisations",
+    "relatedContent": "Contenu lié",
+    "pageTitle": "Productions de recherche",
+    "pageDescription": "Rapports, boîtes à outils, synthèses et autres productions de la communauté Connecting Climate Minds.",
+    "empty": "Aucune production de recherche publiée pour le moment.",
+    "metaNotFound": "Production de recherche introuvable",
+    "metaFallbackTitle": "Production de recherche"
+  },
+  "outputs": {
+    "title": "Productions",
+    "subtitle": "Le contenu du hub que cet espace produit.",
+    "whatMaking": "Que créez-vous ?",
+    "addOutput": "Ajouter une production",
+    "createNew": "Créer un brouillon",
+    "linkExisting": "Lier un brouillon existant",
+    "pickType": "Choisir un type",
+    "empty": "Aucune production pour l’instant. Ajoutez l’étude de cas, l’expérience vécue ou le résultat de recherche sur lequel cet espace travaille.",
+    "statusDraft": "Brouillon",
+    "statusPending": "En révision",
+    "statusRevision": "À corriger",
+    "statusApproved": "Publié",
+    "remove": "Retirer",
+    "removeConfirm": "Retirer cette production de l’espace ? Le brouillon n’est pas supprimé.",
+    "pendingHint": "Le lien apparaîtra ici après publication",
+    "continueEditing": "Continuer la rédaction →",
+    "removeArmed": "Confirmer le retrait"
+  },
+  "projectPublic": {
+    "aboutHeading": "About this project",
+    "teamHeading": "The team",
+    "outputsHeading": "Published outputs",
+    "outputsEmpty": "No published outputs yet.",
+    "follow": "Follow",
+    "following": "Following",
+    "requestToJoin": "Request to join",
+    "messageLead": "Message the lead",
+    "signInToJoin": "Sign in to request to join",
+    "openWorkspace": "Open workspace",
+    "privateNotice": "This is a private workspace.",
+    "requestModalTitle": "Request to join {title}",
+    "requestModalHint": "Tell the lead how you’d like to contribute (optional).",
+    "requestModalPlaceholder": "I’d like to help with…",
+    "requestModalSubmit": "Send request",
+    "requestSent": "Request sent — the lead will review it.",
+    "requestCancel": "Cancel",
+    "statusDraft": "Forming",
+    "statusActive": "Active",
+    "statusArchived": "Completed",
+    "exploreWorkspace": "Explorer l'espace de travail"
+  },
+  "placePicker": {
+    "searchLabel": "Où cela s'est-il passé ?",
+    "searchPlaceholder": "Cherchez une ville, un village, une région ou un pays…",
+    "searching": "Recherche…",
+    "noResults": "Aucun lieu trouvé. Essayez la ville la plus proche, le pays ou la région.",
+    "hint": "Introuvable ? Cherchez plutôt le pays ou la région.",
+    "displayLabel": "Comment nommer ce lieu ?",
+    "change": "Modifier",
+    "kind": {
+      "exact": "Lieu",
+      "city": "Ville ou village",
+      "region": "Région",
+      "country": "Pays"
+    },
+    "clear": "Retirer le lieu"
+  },
+  "editor": {
+    "hint": "Tapez / pour insérer des blocs : titres, images, vidéo et plus",
+    "charCountSuffix": "caractères",
+    "link": {
+      "promptUrl": "Saisissez une URL"
+    },
+    "image": {
+      "insertLabel": "Insérer une image",
+      "uploadFailed": "Échec du téléversement de l'image. Veuillez réessayer.",
+      "altLabel": "Texte alternatif",
+      "altPlaceholder": "Décrivez l'image pour les lecteurs d'écran",
+      "altRequiredHint": "Ajoutez un texte alternatif pour que tout le monde puisse comprendre l'image.",
+      "captionLabel": "Légende",
+      "captionPlaceholder": "Ajoutez une légende (facultatif)"
+    },
+    "slashMenu": {
+      "label": "Insérer un bloc",
+      "empty": "Aucun bloc ne correspond à votre recherche",
+      "groupInsert": "Insérer",
+      "items": {
+        "heading2": {
+          "label": "Titre 2",
+          "hint": "Grand titre de section"
+        },
+        "heading3": {
+          "label": "Titre 3",
+          "hint": "Titre de section moyen"
+        },
+        "heading4": {
+          "label": "Titre 4",
+          "hint": "Petit titre de section"
+        },
+        "bulletList": {
+          "label": "Liste à puces",
+          "hint": "Une liste simple à puces"
+        },
+        "orderedList": {
+          "label": "Liste numérotée",
+          "hint": "Une liste numérotée"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Téléversez une image avec légende"
+        },
+        "youtube": {
+          "label": "YouTube",
+          "hint": "Intégrez une vidéo YouTube"
+        },
+        "quote": {
+          "label": "Citation",
+          "hint": "Mettez une citation en valeur"
+        },
+        "infoBox": {
+          "label": "Encadré",
+          "hint": "Encadré pour conseils ou avertissements"
+        },
+        "break": {
+          "label": "Séparateur de section",
+          "hint": "Séparateur visuel entre les sections"
+        },
+        "timeline": {
+          "label": "Chronologie",
+          "hint": "Moments clés sur une frise datée"
+        },
+        "chart": {
+          "label": "Graphique",
+          "hint": "Graphique en barres, en courbes ou circulaire à partir de vos données"
+        },
+        "mermaid": {
+          "label": "Diagramme",
+          "hint": "Diagramme de flux ou de processus (Mermaid)"
+        }
+      },
+      "groupData": "Données et récit"
+    },
+    "toolbar": {
+      "label": "Options du bloc",
+      "delete": "Supprimer le bloc",
+      "placement": {
+        "full": "Pleine largeur",
+        "wide": "Large",
+        "start": "Aligner au début",
+        "end": "Aligner à la fin",
+        "center": "Centré"
+      }
+    },
+    "youtube": {
+      "urlPlaceholder": "Collez un lien YouTube…",
+      "confirm": "Ajouter la vidéo",
+      "invalidUrl": "Cela ne ressemble pas à un lien YouTube. Essayez l'URL complète de la vidéo.",
+      "captionLabel": "Légende",
+      "captionPlaceholder": "Ajoutez une légende (facultatif)"
+    },
+    "infoBox": {
+      "variantLabel": "Style de l'encadré",
+      "variant": {
+        "info": "Information",
+        "warning": "Avertissement",
+        "success": "Succès"
+      }
+    },
+    "break": {
+      "styleLabel": "Style du séparateur",
+      "style": {
+        "hr": "Ligne",
+        "readMore": "Points",
+        "section": "Section",
+        "chapter": "Chapitre"
+      }
+    },
+    "timeline": {
+      "blockLabel": "Chronologie",
+      "addItem": "Ajouter un moment",
+      "removeItem": "Supprimer ce moment",
+      "dateLabel": "Date",
+      "datePlaceholder": "p. ex. 2021",
+      "titleLabel": "Titre",
+      "titlePlaceholder": "Ce qui s'est passé",
+      "textLabel": "Description",
+      "textPlaceholder": "Racontez cette partie de l'histoire…"
+    },
+    "chart": {
+      "typeLabel": "Type de graphique",
+      "type": {
+        "bar": "Barres",
+        "line": "Courbes",
+        "pie": "Circulaire",
+        "groupedBar": "Groupé",
+        "stackedBar": "Empilé",
+        "area": "Aires",
+        "donut": "Anneau",
+        "regionMap": "Carte régionale"
+      },
+      "titleLabel": "Titre du graphique",
+      "titlePlaceholder": "Donnez un titre au graphique (facultatif)",
+      "labelLabel": "Libellé",
+      "labelPlaceholder": "Libellé",
+      "valueLabel": "Valeur",
+      "addRow": "Ajouter une ligne",
+      "removeRow": "Supprimer la ligne",
+      "rendering": "Génération du graphique…",
+      "renderFailed": "Impossible de tracer ce graphique. Vérifiez les lignes et réessayez.",
+      "renderFailedLastGood": "Impossible de mettre à jour le graphique — la dernière version correcte est affichée.",
+      "previewEmpty": "Ajoutez des données pour voir l'aperçu du graphique",
+      "defaultSeries": "Valeur",
+      "dataStep": "Données — collez n'importe quoi ou saisissez dans la grille",
+      "labelColumn": "Libellé",
+      "seriesName": "Nom de la série",
+      "highlightSeries": "Mettre en avant comme série principale",
+      "highlightHint": "Ambre avec étiquette directe — la série qui porte l'histoire",
+      "removeSeries": "Supprimer la série",
+      "addSeries": "Ajouter une série",
+      "pasteHint": "⌘V une plage de tableur, un CSV ou \"Gazi 72, Vanga 64\"",
+      "suggested": "suggéré",
+      "unitPlaceholder": "Unité (%, ménages…)",
+      "captionPlaceholder": "Légende — ce que le lecteur doit remarquer",
+      "sourcePlaceholder": "Source (qui a collecté les données)",
+      "sourceUrlPlaceholder": "Lien de la source (DOI / URL)",
+      "altPlaceholder": "Texte alternatif — ce que montre le graphique",
+      "annotationAt": "Épingler la note à",
+      "annotationPlaceholder": "Note épinglée à cette catégorie (ex. Arrivée du cyclone)",
+      "removeAnnotation": "Supprimer la note",
+      "addAnnotation": "Épingler une note",
+      "thresholdLabel": "Seuil",
+      "thresholdName": "ex. Objectif",
+      "edit": "Modifier le graphique",
+      "done": "Terminé",
+      "sourceLabel": "Source"
+    },
+    "mermaid": {
+      "blockLabel": "Diagramme",
+      "codeLabel": "Source du diagramme",
+      "codePlaceholder": "graph TD; A-->B",
+      "rendering": "Génération du diagramme…",
+      "renderFailed": "Impossible de tracer ce diagramme. Vérifiez la syntaxe et réessayez.",
+      "renderFailedLastGood": "Impossible de mettre à jour le diagramme — la dernière version correcte est affichée.",
+      "previewEmpty": "Écrivez du code Mermaid pour voir l'aperçu"
+    }
+  },
+  "submitStoryBanner": {
+    "title": "Partagez votre histoire",
+    "subtitle": "Votre expérience vécue peut contribuer à orienter la recherche et l'action sur le climat et la santé mentale.",
+    "cta": "Envoyez votre histoire"
+  },
+  "collabSpace": {
+    "header": "Trouvez des personnes, des projets et des événements",
+    "projectsTab": "Projets",
+    "peopleTab": "Personnes",
+    "eventsTab": "Événements",
+    "publicChip": "Public",
+    "memberCount": "{count, plural, one {# membre} other {# membres}}",
+    "openWorkspace": "Ouvrir l'espace de travail",
+    "viewProject": "Voir le projet →",
+    "noProjects": "Pas encore de projets publics — lancez-en un et invitez des collaborateurs.",
+    "message": "Message",
+    "connect": "Se connecter",
+    "requested": "Demandé ✓",
+    "connected": "En contact ✓"
+  },
+  "regionalCommunity": {
+    "kicker": "Communauté régionale de pratique",
+    "intro": "Un espace connecté qui réunit la recherche, les expériences vécues, les événements et les personnes de la région engagées sur le climat et la santé mentale.",
+    "getInvolved": "Participer",
+    "statMembers": "Membres",
+    "statCaseStudies": "Études de cas",
+    "statLived": "Expériences vécues",
+    "reportsTitle": "Rapports et Ordres du Jour Régionaux",
+    "reportsDescription": "Accédez aux derniers rapports, résultats de recherche et ordres du jour des réunions de notre communauté régionale.",
+    "viewAllReports": "Voir Tous les Rapports"
+  },
+  "researchOutputSubmission": {
+    "pageTitle": "Soumettre une production de recherche",
+    "pageDescription": "Partagez un rapport, une boîte à outils, une note de données ou un guide. Un éditeur le relira avant publication.",
+    "about": {
+      "title": "À propos de cette production",
+      "description": "Ce que c'est et ce que ça couvre."
+    },
+    "fields": {
+      "title": "Titre",
+      "titlePlaceholder": "p. ex. Chaleur et santé mentale dans les villes côtières — rapport 2026",
+      "type": "Type de production",
+      "region": "Région",
+      "regionPlaceholder": "Choisissez une région (facultatif)",
+      "excerpt": "Résumé",
+      "excerptPlaceholder": "Quelques phrases sur ce que les lecteurs y trouveront…",
+      "excerptHelp": "Affiché sur les cartes et en haut de la page.",
+      "bodyPlaceholder": "Lecture facultative sur le hub — résultats clés, graphiques, contexte…",
+      "themes": "Thèmes",
+      "tags": "Mots-clés",
+      "tagsHelp": "Jusqu'à 6.",
+      "communities": "Communautés régionales"
+    },
+    "types": {
+      "report": "Rapport",
+      "toolkit": "Boîte à outils",
+      "dataset-brief": "Note de données",
+      "guideline": "Guide"
+    },
+    "docs": {
+      "title": "Documents",
+      "description": "Les fichiers téléchargeables — ajoutez le rapport complet, un résumé, des traductions ou des diapositives.",
+      "addFile": "Ajouter un document",
+      "fileHint": "PDF, Word, Excel ou PowerPoint · jusqu'à 50MB",
+      "remove": "Retirer",
+      "kind": "Type de document",
+      "language": "Langue du document",
+      "fileWrongType": "Ce type de fichier n'est pas pris en charge. Utilisez PDF, Word, Excel ou PowerPoint.",
+      "fileTooLarge": "Ce fichier dépasse 50MB."
+    },
+    "kinds": {
+      "summary": "Résumé",
+      "full": "Rapport complet",
+      "brief": "Synthèse",
+      "deck": "Diapositives"
+    },
+    "reading": {
+      "title": "À lire sur le hub",
+      "description": "Facultatif : racontez cette production directement sur la page — résultats, graphiques, citations."
+    },
+    "context": {
+      "title": "Contexte"
+    },
+    "validation": {
+      "titleMin": "Ajoutez un titre",
+      "titleMax": "Le titre doit comporter au maximum 200 caractères",
+      "excerptMax": "Le résumé doit comporter au maximum 600 caractères"
+    },
+    "cancel": "Annuler",
+    "submit": "Soumettre pour relecture",
+    "success": "Merci — votre production de recherche a été soumise pour relecture.",
+    "submitError": "Nous n'avons pas pu envoyer votre production de recherche. Veuillez réessayer.",
+    "regions": {
+      "ssa": "Afrique subsaharienne",
+      "nawa": "Afrique du Nord et Asie occidentale",
+      "csa": "Asie centrale et du Sud",
+      "esea": "Asie de l'Est et du Sud-Est",
+      "lac": "Amérique latine et Caraïbes",
+      "oce": "Océanie",
+      "enam": "Europe et Amérique du Nord"
+    },
+    "themes": {
+      "displacement": "Déplacements",
+      "livelihoods": "Moyens de subsistance",
+      "youth": "Jeunesse",
+      "indigenous": "Peuples autochtones"
+    }
+  },
+  "editorReview": {
+    "status": {
+      "draft": "Brouillon — pas encore soumis",
+      "pending": "En relecture",
+      "revision": "Modifications demandées"
+    },
+    "hint": {
+      "draft": "Terminez-le et soumettez quand c'est prêt.",
+      "pending": "Un éditeur le relit. Resoumettre remplace la version en relecture.",
+      "revision": "Un éditeur a demandé des modifications — répondez aux notes puis resoumettez."
+    }
+  },
+  "typedCards": {
+    "type": {
+      "caseStudy": "Étude de cas",
+      "livedExperience": "Expérience vécue",
+      "newsPost": "Actualités",
+      "researchOutput": "Production de recherche",
+      "event": "Événement",
+      "person": "Membre",
+      "region": "Communauté régionale",
+      "report": "Rapport",
+      "project": "Projet"
+    },
+    "untitled": "Sans titre",
+    "new": "Nouveau",
+    "freshHeading": "Nouveautés sur le hub",
+    "exploreAtlas": "Explorer dans l'Atlas"
+  },
+  "blog": {
+    "pageTitle": "Blog",
+    "pageDescription": "Histoires, actualités et réflexions de la communauté Connecting Climate Minds.",
+    "noPosts": "Pas encore d’articles",
+    "noPostsDescription": "Revenez bientôt — de nouvelles histoires arrivent."
+  },
+  "researchAndAction": {
+    "pageDescription": "Explorez les agendas, études de cas, résultats et outils produits par le réseau Connecting Climate Minds."
+  },
+  "communitiesIndex": {
+    "pageTitle": "Communautés régionales",
+    "pageDescription": "Sept communautés régionales de pratique relient chercheurs, praticiens et personnes ayant une expérience vécue à travers le monde.",
+    "explore": "Explorer la communauté"
+  },
+  "issueReport": {
+    "trigger": "Signaler un problème",
+    "title": "Signaler un problème",
+    "description": "Nous joindrons la page où vous êtes, votre navigateur et la taille de votre écran — inutile de les saisir.",
+    "summaryLabel": "Quel est le problème ?",
+    "summaryPlaceholder": "La carte est vide sur mon téléphone",
+    "whatHappenedLabel": "Que s'est-il passé ?",
+    "whatHappenedPlaceholder": "Ce que vous avez fait et ce que vous avez vu. Recopiez tout message d'erreur mot pour mot.",
+    "whatShouldHappenLabel": "Que devrait-il se passer ? (facultatif)",
+    "whatShouldHappenPlaceholder": "La carte avec les repères des communautés",
+    "urgencyLabel": "Quel degré d'urgence pour vous ?",
+    "urgency": {
+      "blocking": "Cela me bloque",
+      "annoying": "Gênant",
+      "minor": "Mineur",
+      "idea": "Juste une idée"
+    },
+    "areaLabel": "Où dans le hub ?",
+    "areas": {
+      "home": "Page d'accueil",
+      "map": "La carte",
+      "stories": "Expériences vécues (récits)",
+      "story-submit": "Soumettre un récit",
+      "case-studies": "Études de cas",
+      "research-outputs": "Résultats de recherche",
+      "communities": "Communautés",
+      "collaborations": "Collaborations / espaces de travail",
+      "events": "Événements",
+      "news": "Actualités",
+      "blog": "Blog",
+      "reader": "Lecteur",
+      "search": "Recherche",
+      "profiles": "Profils des membres",
+      "dashboard": "Mon tableau de bord",
+      "messages": "Messages",
+      "comments": "Commentaires",
+      "notifications": "Notifications",
+      "auth": "Connexion / inscription",
+      "onboarding": "Inscription des nouveaux membres",
+      "studio": "Sanity Studio",
+      "cms": "Le CMS (administration Payload)",
+      "navigation": "Menu, en-tête ou pied de page",
+      "whole-site": "Tout le site",
+      "other": "Je ne sais pas"
+    },
+    "signedInLabel": "Étiez-vous connecté ?",
+    "signedInYes": "Connecté",
+    "signedInNo": "Déconnecté",
+    "screenshotLabel": "Capture d'écran",
+    "screenshotAdd": "Ajouter une capture",
+    "screenshotCapture": "Capturer cette page",
+    "screenshotHint": "Faites une capture, puis collez-la ici. Vous pouvez aussi glisser une image.",
+    "screenshotHintCapture": "Capturez cette page (votre navigateur demandera quel onglet partager : choisissez celui-ci), ou collez ou glissez une image.",
+    "screenshotRemove": "Retirer la capture",
+    "screenshotTooBig": "Cette image dépasse {mb} Mo. Essayez-en une plus petite.",
+    "screenshotWrongType": "Utilisez un PNG, JPEG, WebP ou GIF.",
+    "screenshotFailed": "Impossible de lire cette image.",
+    "screenshotCaptureFailed": "La page n'a pas pu être capturée. Ajoutez plutôt une capture d'écran.",
+    "contextNote": "Nous envoyons aussi :",
+    "cancel": "Annuler",
+    "submit": "Envoyer le signalement",
+    "submitting": "Envoi…",
+    "successTitle": "Signalement envoyé",
+    "successBody": "Merci — nous prenons le relais.",
+    "errorGeneric": "Votre signalement n'a pas été envoyé. Veuillez réessayer."
+  },
+  "moderation": {
+    "broadcast": {
+      "messageLabel": "Message",
+      "audience": "Audience",
+      "everyone": "Tout le monde",
+      "aCommunity": "Une communauté",
+      "aRegion": "Une région",
+      "community": "Communauté",
+      "region": "Région",
+      "selectPlaceholder": "Sélectionner…",
+      "pickCommunity": "Choisissez une communauté.",
+      "pickRegion": "Choisissez une région.",
+      "sentTo": "{count, plural, one {Envoyé à # membre.} other {Envoyé à # membres.}}",
+      "send": "Envoyer la notification",
+      "title": "Envoyer une notification",
+      "description": "Prévenez une personne, une communauté, une région ou tout le monde. Les destinataires reçoivent une notification dans l'application (et un e-mail s'ils ne l'ont pas désactivé)."
+    },
+    "queue": {
+      "tabPending": "En attente (anonymes)",
+      "tabFlagged": "Marqués",
+      "tabReported": "Signalés",
+      "done": "Terminé",
+      "failed": "Échec",
+      "empty": "Rien à examiner ici.",
+      "reports": "{count, plural, one {# signalement} other {# signalements}}",
+      "approve": "Approuver",
+      "remove": "Supprimer",
+      "dismissReport": "Rejeter le signalement",
+      "title": "Modération"
+    }
+  },
+  "requests": {
+    "errors": {
+      "cooldown": "Ce membre a récemment refusé votre demande. Merci de patienter avant de réessayer.",
+      "rateLimit": "Vous avez envoyé beaucoup de demandes en peu de temps. Réessayez dans quelques instants.",
+      "unavailable": "Cette fonctionnalité n'est pas encore disponible."
+    }
   }
 }

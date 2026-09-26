@@ -104,6 +104,12 @@ export default defineType({
       },
     }),
 
+    // NOTE: stored documents carry _type: "cta-1" while this field is declared
+    // hero-1. The declaration is correct and must NOT be "fixed" to cta-1 —
+    // the stored field set is hero-1's, including `image` (24 docs) and
+    // `imagePosition` (20 docs), which cta-1 does not declare. Sanity strips
+    // undeclared fields on save, so redeclaring would drop those images.
+    // The stored _type is normalised in the Payload importer. See spec §7.1.
     defineField({
       name: "whyJoinCTA",
       title: "Why Join Regional Community Hero",
@@ -136,11 +142,14 @@ export default defineType({
           name: "mode",
           title: "Content Mode",
           type: "string",
+          description:
+            "How this section is filled. Dynamic modes update automatically as new content is published for this region — you don't have to touch the page. 'Dynamic + pinned' lets you feature a few hand-picked items at the top while the rest auto-fill.",
           options: {
             list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+              { title: "Manual selection only — you choose every item", value: "manual" },
+              { title: "Dynamic — featured items first, then recent", value: "dynamic-featured" },
+              { title: "Dynamic — most recent first", value: "dynamic-recent" },
+              { title: "Dynamic + pinned — your picks first, then auto-fill", value: "dynamic-with-pinned" },
             ],
             layout: "radio",
           },
@@ -223,8 +232,9 @@ export default defineType({
           title: "Manual Agenda Selection",
           type: "array",
           of: [{ type: "grid-agenda" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific agendas to display",
+          hidden: ({ parent }) => parent?.mode !== "manual" && parent?.mode !== "dynamic-with-pinned",
+          description:
+            "In 'Manual' mode these are the only agendas shown. In 'Dynamic + pinned' mode these are featured first, then the regional feed fills the rest.",
         },
       ],
     }),
@@ -251,11 +261,14 @@ export default defineType({
           name: "mode",
           title: "Content Mode",
           type: "string",
+          description:
+            "How this section is filled. Dynamic modes update automatically as new content is published for this region — you don't have to touch the page. 'Dynamic + pinned' lets you feature a few hand-picked items at the top while the rest auto-fill.",
           options: {
             list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+              { title: "Manual selection only — you choose every item", value: "manual" },
+              { title: "Dynamic — featured items first, then recent", value: "dynamic-featured" },
+              { title: "Dynamic — most recent first", value: "dynamic-recent" },
+              { title: "Dynamic + pinned — your picks first, then auto-fill", value: "dynamic-with-pinned" },
             ],
             layout: "radio",
           },
@@ -338,8 +351,9 @@ export default defineType({
           title: "Manual Case Studies Selection",
           type: "array",
           of: [{ type: "grid-case-study" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific case studies to display",
+          hidden: ({ parent }) => parent?.mode !== "manual" && parent?.mode !== "dynamic-with-pinned",
+          description:
+            "In 'Manual' mode these are the only case studies shown. In 'Dynamic + pinned' mode these are featured first, then the regional feed fills the rest.",
         },
       ],
     }),
@@ -366,11 +380,14 @@ export default defineType({
           name: "mode",
           title: "Content Mode",
           type: "string",
+          description:
+            "How this section is filled. Dynamic modes update automatically as new content is published for this region — you don't have to touch the page. 'Dynamic + pinned' lets you feature a few hand-picked items at the top while the rest auto-fill.",
           options: {
             list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+              { title: "Manual selection only — you choose every item", value: "manual" },
+              { title: "Dynamic — featured items first, then recent", value: "dynamic-featured" },
+              { title: "Dynamic — most recent first", value: "dynamic-recent" },
+              { title: "Dynamic + pinned — your picks first, then auto-fill", value: "dynamic-with-pinned" },
             ],
             layout: "radio",
           },
@@ -453,8 +470,9 @@ export default defineType({
           title: "Manual News Selection",
           type: "array",
           of: [{ type: "grid-news" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific news posts to display",
+          hidden: ({ parent }) => parent?.mode !== "manual" && parent?.mode !== "dynamic-with-pinned",
+          description:
+            "In 'Manual' mode these are the only news posts shown. In 'Dynamic + pinned' mode these are featured first, then the regional feed fills the rest.",
         },
       ],
     }),
@@ -481,11 +499,14 @@ export default defineType({
           name: "mode",
           title: "Content Mode",
           type: "string",
+          description:
+            "How this section is filled. Dynamic modes update automatically as new content is published for this region — you don't have to touch the page. 'Dynamic + pinned' lets you feature a few hand-picked items at the top while the rest auto-fill.",
           options: {
             list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+              { title: "Manual selection only — you choose every item", value: "manual" },
+              { title: "Dynamic — featured items first, then recent", value: "dynamic-featured" },
+              { title: "Dynamic — most recent first", value: "dynamic-recent" },
+              { title: "Dynamic + pinned — your picks first, then auto-fill", value: "dynamic-with-pinned" },
             ],
             layout: "radio",
           },
@@ -528,8 +549,9 @@ export default defineType({
           title: "Manual Lived Experiences Selection",
           type: "array",
           of: [{ type: "grid-lived-experience" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific lived experiences to display",
+          hidden: ({ parent }) => parent?.mode !== "manual" && parent?.mode !== "dynamic-with-pinned",
+          description:
+            "In 'Manual' mode these are the only lived experiences shown. In 'Dynamic + pinned' mode these are featured first, then the regional feed fills the rest.",
         },
       ],
     }),
@@ -577,7 +599,7 @@ export default defineType({
               to: [{ type: "author" }],
             },
           ],
-          hidden: ({ parent }) => parent?.mode !== "manual",
+          hidden: ({ parent }) => parent?.mode !== "manual" && parent?.mode !== "dynamic-with-pinned",
           description: "Manually select team members to display",
         },
         {
@@ -639,6 +661,44 @@ export default defineType({
 
     defineField({
       name: "divider_after_team",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
+    // Region-scoped atlas embed (spec A4): the atlas engine locked to this
+    // page's region. The region itself is derived from the page's slug at
+    // render time, not stored here.
+    defineField({
+      name: "atlasEmbed",
+      title: "Atlas Embed (this region)",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      description: "Embed the region-locked Atlas explorer on this page",
+      fields: [
+        {
+          name: "enabled",
+          title: "Show the atlas embed",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "showBreakdown",
+          title: "Show the country breakdown list",
+          type: "boolean",
+          initialValue: true,
+          hidden: ({ parent }) => !Boolean(parent?.enabled),
+        },
+      ],
+    }),
+
+    defineField({
+      name: "divider_after_atlas",
       title: "─────────────────",
       type: "string",
       group: "template",

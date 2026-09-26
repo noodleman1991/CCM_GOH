@@ -67,15 +67,10 @@ export function formatDateShort(date: string | Date, locale: string = 'en-US'): 
 /**
  * Get language-specific text from localized object
  */
-export function getLocalizedText(
-    localizedText: Record<string, string> | undefined,
-    locale: string,
-    fallback: string = ''
-): string {
-    if (!localizedText) return fallback;
-
-    return localizedText[locale] || localizedText.en || fallback;
-}
+// One implementation for the whole app (Slice 15): lib/localization-utils.ts.
+// It also falls back to any available language before the fallback text.
+import { getLocalizedText } from '@/lib/localization-utils';
+export { getLocalizedText };
 
 /**
  * Validate file type for reports

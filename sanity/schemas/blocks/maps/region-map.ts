@@ -14,12 +14,6 @@ export default defineType({
   icon: Map,
   fields: [
     defineField({ name: "padding", type: "section-padding" }),
-    defineField({
-      name: "colorVariant",
-      type: "color-variant",
-      title: "Color Variant",
-      description: "Select a background color variant",
-    }),
     defineField({ name: "title", type: "string" }),
     defineField({ name: "description", type: "text", rows: 2 }),
     defineField({

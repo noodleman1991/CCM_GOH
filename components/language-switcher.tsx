@@ -3,7 +3,7 @@
 
 import React, { useCallback, useTransition } from "react"
 import { useRouter, usePathname } from "@/i18n/navigation"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Check, ChevronDown, Globe, Languages, Loader2, X } from "lucide-react"
@@ -31,6 +31,7 @@ const arabicFontStyle = { fontFamily: 'var(--font-tajawal), sans-serif' }
 
 export function LanguageSwitcher() {
     const router = useRouter()
+    const t = useTranslations("common")
     const pathname = usePathname()
     const currentLocale = useLocale()
     const isMobile = useIsMobile()
@@ -51,17 +52,20 @@ export function LanguageSwitcher() {
     if (isMobile) {
         return (
             <Drawer>
+                {/* Same SidebarMenuButton chrome as the desktop dropdown trigger,
+                    so the switcher reads as part of the sidebar footer on every
+                    device (was a stray outline button that clashed with it). */}
                 <DrawerTrigger asChild>
-                    <Button variant="outline" className={cn("flex items-center gap-2", isPending && "opacity-70")}>
-                        {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Globe className="h-5 w-5" />}
-                        <span>{currentLocale.toUpperCase()}</span>
-                        <ChevronDown className="h-4 w-4" />
-                    </Button>
+                    <SidebarMenuButton size="lg" className={cn(isPending && "opacity-70")}>
+                        {isPending ? <Loader2 className="size-4 animate-spin" /> : <Globe className="size-4" />}
+                        <span className="truncate font-bold">{currentLanguage.name}</span>
+                        <ChevronDown className="size-4 ms-auto" />
+                    </SidebarMenuButton>
                 </DrawerTrigger>
                 <DrawerContent>
                     <div className="grid gap-4 p-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-medium">Select Language</h3>
+                            <h3 className="text-lg font-medium">{t("selectLanguage")}</h3>
                             <DrawerClose asChild>
                                 <Button variant="ghost" size="icon" className="h-8 w-8">
                                     <X className="h-5 w-5" />

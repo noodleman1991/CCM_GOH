@@ -1,0 +1,334 @@
+# Sanity → Payload migration — design
+
+**Date:** 2026-09-02
+**Status:** In execution. Phase 0 complete; Phase 1 in progress.
+
+| Phase | Plan | State |
+|---|---|---|
+| 0 — Prerequisites | `docs/superpowers/plans/2026-09-02-payload-phase-0-prerequisites.md` | **Complete.** 5 tasks, all reviewed clean, final whole-branch review clean after one fix wave |
+| 1 — Content layer | `docs/superpowers/plans/2026-09-02-payload-phase-1-content-layer.md` | **Complete.** 17 tasks (11 planned + 6 added as coverage gaps surfaced), all reviewed clean; final whole-branch review clean after one fix wave |
+| 2 — Build Payload | not yet written | Blocked on Phase 1 |
+| 3 — Swap | not yet written | Blocked on Phase 2 |
+| 4 — Decommission | not yet written | Blocked on Phase 3 |
+**Scope:** Replace Sanity as the content system with self-hosted Payload CMS, across content, backend, admin and search.
+
+---
+
+## 1. Why
+
+Three drivers, in the user's priority order:
+
+1. **Cost and quota control.** The 2026-07-28 outage — Sanity's live API returning `402 plan_limit_reached` — took down every content page *and* the Studio simultaneously. Self-hosted Payload on Postgres we already pay for has no per-request ceiling and no vendor plan to exhaust.
+2. **Ownership and data control.** The public-dataset exposure (13 non-approved case studies plus reviewer notes readable anonymously) was a consequence of Sanity's dataset-level ACL model. Payload access control is per-collection code we own, enforced server-side by default.
+3. **Authoring experience.** The moderation workflow, submissions and localization all deserve a better admin than the Studio gives us. Payload's admin is React we can extend directly.
+
+Explicitly *not* a driver: putting content and application data in one database. This matters — see §4.
+
+---
+
+## 2. What exists today
+
+Measured against the live `production_2` dataset on 2026-09-02.
+
+### Content
+
+| | |
+|---|---|
+| Published content documents | 438 |
+| Content drafts | 30 |
+| **Total documents to migrate** | **468** |
+| Images | 347 (223 MB) |
+| Files | 48 (395 MB) |
+| Registered document types | 31 (21 hold data) |
+| Registered block schemas | 45 (12 hold data) |
+
+Published counts by type:
+
+`author` 95 · `tag` 67 · `page` 36 · `livedExperience` 35 · `agenda` 29 ·
+`researchOutput` 29 · `regionalCommunityPage` 28 · `caseStudy` 27 · `organization` 24 ·
+`testimonial` 20 · `docsChapter` 12 · `regionalCommunity` 7 · `workType` 6 ·
+`expertiseArea` 5 · `newsPost` 4 · `homepage` 4 · `onboardingContent` 4 ·
+`profilePrompt` 3 · `caseStudyDraft` 1 · `externalSource` 1 · `siteAnnouncement` 1
+
+Not migrated: 8 `translation.metadata` documents (a Sanity mechanism with no Payload
+equivalent — see §6), 3 `sanity.previewUrlSecret`, and the `system.*` documents.
+
+Note for anyone reconciling counts against the archive manifest: that manifest reports
+**446** published, because it excludes only `sanity.*` and `system.*` and therefore counts
+the 8 `translation.metadata` documents. 446 is what the archive holds; 438 is what Phase 2
+imports.
+
+Zero documents (10): `post`, `event`, `dataset`, `project`, `report`, `category`, `faq`,
+`fundingApplication`, `moderationSettings`, `hubIllustrations`.
+
+**Update (Phase 0 executed):** `post` has since been deleted from the schema along with the
+`/blog` routes (§7.4), so the registered count is now **30**, with 9 empty types remaining.
+The figures above are the pre-migration measurement and are kept as the baseline the
+migration is verified against.
+
+Of the 21 types holding data, 19 become Payload collections and 2 (`homepage`,
+`onboardingContent`) become globals.
+
+### Code surface
+
+The content copy is the small part. The application backend is the project.
+
+| Surface | Size | Today | Becomes |
+|---|---|---|---|
+| Reading content | 37 query modules, 62 pages/components, 22 API routes | GROQ queries | Payload Local API |
+| Writing content | 16 files | Member submissions (case study, lived experience, research output, event), image upload, workspace publishing, GDPR deletion — all write into Sanity | Payload Local API `create`/`update` |
+| Moderation workflow | 5 action files | Approve / request-revision / reject buttons inside the Studio, with email side effects | Payload collection hooks + custom admin buttons |
+| Images | 38 files | `urlFor(image)` builds transforms off Sanity's CDN | Payload uploads + `sharp` sizes + R2 |
+| Rich text | 36 files | `<PortableText>` renders Sanity blocks | Lexical, behind a compatibility adapter |
+| Types | 29 files | `sanity.types.ts`, 15,156 generated lines | `payload-types.ts` |
+| Search + cache | 9 routes | Sanity webhooks → revalidate, sync Algolia | Payload `afterChange` hooks, in-process |
+
+Roughly 180 code files, against ~500 documents.
+
+### Localization — two conflicting models
+
+**Lane A — document-level** (`@sanity/document-internationalization`): one document per language, joined by `translation.metadata`. Applies to `page`, `regionalCommunityPage`, `homepage`, `onboardingContent`, `post`.
+
+**Lane B — field-level**: `createLocalizedField` produces `{en,es,fr,ar}` objects on a single document; plus `internationalizedArrayString` / `internationalizedArrayText`. Applies to `caseStudy` and others.
+
+Payload is field-level only. Lane B maps one-to-one. Lane A collapses:
+
+| Type | Sanity | Payload |
+|---|---|---|
+| `page` | 36 (9 slugs × 4 langs) | 9 |
+| `regionalCommunityPage` | 28 (7 slugs × 4 langs) | 7 |
+| `homepage` | 4 | 1 global |
+| `onboardingContent` | 4 | 1 global |
+
+Both sets are complete — every one of the 9 page slugs and 7 region slugs has a full
+`ar/en/es/fr` set, with no orphans. All 27 published case studies are fully translated
+across all four languages.
+
+### Rich text surface
+
+Across the entire dataset, Portable Text uses only:
+
+- **Node types:** `block`, `image`, `youtube`
+- **Styles:** `normal`, `h1`, `h2`, `h3`, `h4`, `blockquote`
+- **Custom marks:** `link`, `footnote`
+
+This is the complete conversion surface. Portable Text → Lexical is normally the hardest part of leaving Sanity; here it is one deterministic converter, testable against 100% of real documents.
+
+### Cross-system references
+
+How much of Postgres points at Sanity document IDs:
+
+| Reference | Rows |
+|---|---|
+| `User.sanityPersonId` | 0 |
+| `Comment` on content | 0 (both existing comments are on collaboration threads) |
+| `Reaction` | 0 |
+| `Rsvp` | 0 |
+| `report_metadata.sanityId` | 0 |
+| `WorkspaceOutput.sanityId` | 2 |
+| `ProfilePromptAnswer.promptId` | 6 |
+
+**Eight rows.** Engagement data has not yet accumulated against content. Migrating now is dramatically cheaper than migrating later.
+
+**Sanity document IDs are mixed, and this corrects an earlier error in this spec.** A 26-document sample suggested they were all UUIDs. A full census says otherwise:
+
+| Shape | Count |
+|---|---|
+| UUID (`0f917694-2050-…`) | 136 |
+| Slug-like (`tag-farmers`, `regional-community-page-oceania`) | **310** |
+| `drafts.*` | 30 |
+| Containing `/` or `.` outside the `drafts.` prefix | **0** |
+
+An earlier draft of this spec specified `idType: 'uuid'` on the Postgres adapter. **That would have rejected 310 of the 446 published documents** on the first import run. Payload's custom text ID field accepts both shapes; its only constraint is that a text ID must not contain `/` or `.`, and none of them do. The 30 `drafts.*` ids never become Payload ids — drafts import as draft *versions* of their published document (§6, Drafts), so the dot in that prefix is stripped, not stored.
+
+---
+
+## 3. Decisions
+
+| # | Decision | Rationale |
+|---|---|---|
+| D1 | Payload 3.85.x installed **into this Next.js app**, `(payload)` route group, `withPayload()` on `next.config.mjs` | Payload is Next-native; no separate service to deploy or secure |
+| D2 | **Separate Postgres database in the same Neon project** | See §4 |
+| D3 | **Custom text ID field on every collection** (`{ name: 'id', type: 'text' }`), with the Sanity `_id` preserved verbatim | Import becomes idempotent and re-runnable; the 8 existing cross-references survive untouched; document IDs in URLs and logs stay valid |
+| D4 | **Clerk remains the sole identity system.** Payload admin authenticates via a custom strategy reading the Clerk session | One identity system; the 3 promoted `team_editor` users work immediately; no second credential set to provision or revoke |
+| D5 | Assets to **Cloudflare R2** via `@payloadcms/storage-r2` | R2 is already in use (`lib/r2.ts`) |
+| D6 | **Insulate first, then swap** (§5) | Every phase independently shippable and reversible; matches the established slice-with-checkpoints cadence |
+| D7 | Convert stored Portable Text → Lexical at import; ship a **Lexical → Portable Text render adapter** so all 36 render sites keep working; migrate renderers natively in cleanup | Editors get a real editor on day one without a 36-file UI rewrite inside the cutover |
+| D8 | Port only the live set; **archive everything** | The full Sanity export keeps every dropped schema recoverable |
+| D9 | **Homepage and regional pages are remodelled during import**, not after | See §6 |
+| D10 | Dormant-type and dead-block dispositions **decided before porting** | Nothing gets built in Payload that we already know we are removing |
+
+---
+
+## 4. Database placement
+
+Rejected: sharing Prisma's database, whether by separate schema or table prefix.
+
+- On Neon, databases on a branch share one compute endpoint. A separate database costs **nothing extra** and is covered by the same branch backup and point-in-time restore.
+- Prisma's `migrate` and Drizzle's `push` never see each other. No collision risk, and no dependence on Payload's `schemaName`, which the docs still label **experimental**.
+- Decisive: `prisma migrate reset` — wired here as an MCP tool — drops the schema it manages. Co-locating Payload would put all 468 content documents one routine dev reset away from deletion. Given the prior "recover the 28 users the migration dropped" incident, that risk is not worth a join we do not need.
+
+The cost is no cross-database SQL joins. With only 8 loose references, and Payload's Local API callable from the same request as Prisma, this costs nothing in practice.
+
+---
+
+## 5. Phases
+
+### Phase 0 — Prerequisites
+
+1. **Upgrade Next.js `16.1.1` → `≥16.2.6`.** Payload's supported range is `15.2.9–15.4.x` and `16.2.6+`; 16.1.x is excluded. Hard blocker, and its own shippable slice.
+2. **Full archival export.** `sanity dataset export` — all 479 documents (468 content, plus translation metadata and preview secrets) and 620 MB of assets — to R2, with a manifest committed to the repo. This is the rollback floor for everything that follows.
+3. **Fix the four data defects** (§7). Item D4.3 blocks the import outright.
+
+Nothing is deleted before Phase 4.
+
+### Phase 1 — Insulate
+
+Build `lib/content/*` with return types we own (not `sanity.types.ts`), and route every read (37 query modules, 62 components, 22 API routes) and all 16 write paths through it. Sanity remains the backend; the site is byte-identical.
+
+Shippable on its own, and worth having regardless of whether Payload ever lands.
+
+### Phase 2 — Build Payload in parallel
+
+- Collections, globals, blocks (§6), uploads, Clerk auth strategy, access control.
+- The idempotent, ID-preserving import script.
+- Portable Text → Lexical converter, plus the Lexical → Portable Text render adapter.
+
+Nothing user-facing changes in this phase.
+
+### Phase 3 — Swap
+
+Flip `lib/content/*` internals to Payload one domain at a time behind an environment flag, with a **rendered-page comparison at each checkpoint** — a green build is not validation. Then re-point the 16 write paths, convert the four moderation workflows from Studio actions to Payload hooks plus admin buttons, and move Algolia sync from webhooks to in-process `afterChange` hooks.
+
+### Phase 4 — Decommission
+
+Remove Sanity dependencies, the Studio route, `sanity.types.ts`, and dead scripts. Replace the Portable Text adapter with native Lexical renderers. Set the Sanity project read-only rather than deleting it; keep the archived export.
+
+Side effect: the `sanity typegen` hazard (running it renames exported types and breaks `tsc`) disappears — Payload generates `payload-types.ts` as an ordinary build step.
+
+---
+
+## 6. Content model
+
+### Collections
+
+**Live (19):** `caseStudy`, `livedExperience`, `researchOutput`, `agenda`, `docsChapter`,
+`newsPost`, `page`, `regionalCommunityPage`, `regionalCommunity`, `author`, `organization`,
+`tag`, `testimonial`, `workType`, `expertiseArea`, `profilePrompt`, `externalSource`,
+`caseStudyDraft`, `siteAnnouncement`.
+
+**Empty but code-backed (2):** `event`, `project` — an unlaunched Events feature with live submission and moderation code (17 and 7 references).
+
+**Globals:** `homepage`, `onboardingContent`, `moderationSettings`, `hubIllustrations`.
+
+### Dormant type dispositions
+
+| Disposition | Types | Basis |
+|---|---|---|
+| Delete | `dataset`, `category`, `faq`, `fundingApplication` | 0 documents, 0 code references |
+| Retire as legacy | `report` | 0 documents; already folded into `researchOutput` via `migratedFromReport` |
+| **Delete — needs sign-off** | `post` | 0 documents; superseded by `newsPost`. See §7.5 |
+| Keep | `event`, `project`, `moderationSettings`, `hubIllustrations` | Live code references |
+
+### Blocks
+
+Port the 12 that carry data: `hero-1`, `split-row` (→ `split-content`, `split-image`), `cta-1`, `section-header`, `logo-cloud-1`, `grid-row` (→ `grid-card`, `grid-agenda`, `grid-news`), `carousel-2`.
+
+Drop the 33 unauthored block *schemas*, in three groups:
+
+- **Keep the component, drop the block registration (4).** `region-map`, `atlas-embed`, `people-widget`, `events-calendar` — these render via their own routes, not as blocks.
+- **Delete entirely (23).** `hero-2`, `split-card`, `split-info`, `split-info-list`, `split-cards-list`, `grid-post`, `grid-report`, `grid-lived-experience`, `timeline-row`, `timelines-1`, `carousel-1`, `lived-experiences-carousel`, `team-grid`, `faqs`, `form-newsletter`, `all-posts`, `fresh-content`, `submit-story-banner`, `manual-content-insert`, `dynamic-content-insert`, `separator-block`, `regional-community-list`, `document-reference-list`.
+
+> **Correction, 2026-09-04 (Phase 2 final review, finding 11).** `grid-case-study` was listed here as unauthored and is not: it carries **80 real authored instances**, all inside `regionalCommunityPage.caseStudiesGrid.manualItems`. The census behind this list walked `page.blocks[]` only, and the regional community page keeps its blocks in six *named slots* (`caseStudiesGrid`, `newsGrid`, …) rather than in a `blocks[]` array, so every instance was invisible to it. Phase 2 ported the block correctly — `payload/blocks/grid-case-study.ts`, consumed by `content-grid.ts` — so the build is right and this line was wrong; the count above is corrected from 24 to 23.
+>
+> **The traversal error is the part worth carrying forward.** This is the third time in this project that a census missed content by walking one array and not the named slots beside it; assume any "zero instances" claim about a block is unproven until the query has covered `regionalCommunityPage`'s named slots and the homepage's eleven, not just `page.blocks[]`.
+
+**Ported despite zero usage (5).** `break`, `info-box`, `story-timeline`, `story-chart` and `story-mermaid` are registered as Portable Text embeds but appear in **zero** documents — real data uses only `block`, `image` and `youtube`. The three `story-*` blocks were recent deliberate work ("Data & story", task E8): a feature built and not yet authored, not legacy residue. They carry across as Lexical blocks via `BlocksFeature`, which the converter needs anyway for `image` and `youtube`.
+
+This means the Lexical converter must handle **8** embedded types, not 3 — the 3 in real data plus these 5, which have no documents to test against. Their converters are therefore verified by unit test and by authoring one of each in the Payload admin, not by comparison against migrated content.
+
+### Localization
+
+Locales `en` (default), `es`, `fr`, `ar` (`rtl: true`), `fallback: true`. Lane A collapses per the table in §2; Lane B maps directly onto `localized: true`.
+
+**Lane A grouping keys on `slug`, not `translation.metadata`** — only 1 of 9 `page` groups has metadata, and it links just 2 of 4 languages. Slug grouping is complete: all 9 page slugs and all 7 region slugs have a full `ar/en/es/fr` set.
+
+### Drafts
+
+Sanity stores unpublished edits as a parallel `drafts.<id>` document. There are 30, and
+they are not incidental:
+
+| Type | Drafts | State |
+|---|---|---|
+| `livedExperience` | 21 | Unpublished edits to published documents |
+| `author` | 3 | Unpublished edits |
+| `caseStudy`, `newsPost`, `regionalCommunityPage` | 1 each | Unpublished edits |
+| `author`, `tag`, `testimonial` | 1 each | **Never published** |
+
+The 21 lived-experience drafts are in-flight moderation work and must not be lost.
+
+Payload collections therefore enable `versions: { drafts: true }`, and the import runs in
+two passes per collection: publish the `_id` document first, then apply any `drafts.<id>`
+counterpart as a draft version on top. The three never-published documents import directly
+as `_status: 'draft'`.
+
+### Page composition — remodelled at import (D9)
+
+**Homepage.** The remodel is already written and tested but never executed: `lib/homepage/blocks-from-fields.ts` maps all 11 fixed slots to an ordered block array (pure, unit-tested in `lib/__tests__/homepage-blocks-migration.test.ts`); `scripts/migrate-homepage-to-blocks.mjs` is idempotent and explicitly refuses `production_2`; the `homepage` schema already declares a `blocks` array. All four documents still have `blocks: null` and 11 filled slots, and nothing imports the adapter at runtime.
+
+The import runs `blocksFromFields` and the homepage lands in Payload already remodelled. Deferring would mean modelling 11 fixed slots into Payload and migrating them again later — the same work twice, against a transform that already exists.
+
+**Regional community pages.** The six grid slots — `agendasGrid`, `caseStudiesGrid`, `newsGrid`, `livedExperiencesCarousel`, `teamGrid`, `testimonialsBlock` — repeat the same ~15 fields (`mode`, `gridColumns`, `maxItems`, `initialDisplayCount`, `showTitle`/`title`/`subtitle`, `showDescription`/`description`, `headerImage`, `manualItems`). They collapse into one parameterised `contentGrid` block, taking most of the 849-line schema with them.
+
+Also dropped: the six `divider_*` fields (Studio-only spacers rendering `input: () => null`; Payload has real UI grouping) and `useTemplate`, which is `true` on every regional page, making its false branch dead code.
+
+---
+
+## 7. Data defects
+
+Resolve in Phase 0, before export.
+
+1. **`whyJoinCTA` type mismatch — normalised at import, not in Sanity.** The field is declared `type: "hero-1"`; every `regionalCommunityPage` document stores `_type: "cta-1"`. Sanity tolerates this and the frontend works because renderers read the stored `_type`, not the declared one. Payload cannot: a field typed as one block cannot hold another.
+
+   **The declaration is the correct half.** The stored field set is hero-1's: `image` in 24 of 28 documents and `imagePosition` in 20, neither of which `cta-1` declares. `sanity.types.ts` also generates `whyJoinCTA?: Hero1`, and the GROQ projection selects hero-1 fields. Redeclaring the field as `cta-1` would hide `image` and `imagePosition` from the Studio's editing UI for those documents. (A precision, verified in review: Sanity does not silently auto-drop unknown fields on save — the Studio surfaces them with a remove affordance. The exposure is an editor being invited to delete data they can no longer see in context, not an automatic strip. The conclusion is unchanged; the mechanism is stated accurately here so nobody dismisses the warning after checking it.)
+
+   **Resolution:** leave Sanity untouched. The Phase 2 importer maps `whyJoinCTA._type === "cta-1"` onto the hero-1 Payload block. Rewriting `_type` on 28 production documents to tidy a system being decommissioned is risk without benefit. Phase 0 pins the mismatch with a test and a schema comment so nobody reconciles it the wrong way.
+
+2. ~~**Malformed lived-experience tags.**~~ **Already resolved — verified 2026-09-02.** All 56 lived-experience documents (published and draft) hold correctly shaped reference tags; `malformed: 0`. The "33 of 35" figure in an earlier draft of this spec came from a 2026-07-28 note rather than a live query, and the fix has since been applied. `scripts/fix-lived-experience-tags.mjs` confirms independently: "Would patch 0/56 documents."
+
+   Phase 0 still hardens that script, which defaults to `production_2` and gates writes only behind `--execute`, dropping unmapped tag strings in `map` mode — an accidental run is destructive.
+
+3. **Missing translation metadata.** Only 1 of 9 `page` groups has a `translation.metadata` document, and it links 2 of 4 languages. *Mitigated by design* — grouping keys on slug, which is complete for every group (§6). No data fix needed.
+
+4. **`/blog` is a live route to an empty type.** `/blog` queries `post` (0 documents) and **is linked from both the header and the footer** — a dead navigation link in production today, independent of this migration. **Approved 2026-09-02:** delete the `post` type, drop `app/[locale]/(main)/blog/`, and repoint the header (`components/header/index.tsx`) and footer (`components/footer.tsx`) links to `/news`. Also remove the `post` branches in `app/sitemap.ts`, `app/api/webhooks/sanity/route.ts` and the `contentType` union in `lib/algolia.ts`. User-visible, so it ships as its own slice with a rendered check.
+
+### Withdrawn
+
+An earlier draft of this spec recorded a duplicate English `central-and-southern-asia`
+page. It was not a duplicate — the second document was that page's unpublished draft
+(`drafts.regional-community-page-…`), surfaced by a query that did not exclude drafts.
+Published regional pages are exactly 28 = 7 slugs × 4 languages, with no orphans. The
+underlying observation was still useful: it is what surfaced the draft-handling
+requirement in §6.
+
+---
+
+## 8. Out of scope
+
+- Launching the Events feature as a product. The types, submission route, moderation actions and RSVP wiring are all carried across (§9), but shipping the feature — content, editorial process, announcement — is separate work.
+- Any redesign of page templates beyond the structural remodel in §6.
+- Migrating `Comment.bodyRich`, which stores sanitized Portable Text in Postgres. It is Prisma-side, unaffected by the CMS swap, and only relevant if comment rendering is later unified on Lexical.
+
+---
+
+## 9. Resolved questions
+
+All resolved 2026-09-02. No open questions remain; this design is ready for an
+implementation plan.
+
+| Question | Resolution |
+|---|---|
+| `/blog` and the empty `post` type | **Delete.** Repoint header and footer to `/news` (§7.4) |
+| Five never-authored Portable Text embeds | **Port all five.** The `story-*` blocks are an unlaunched feature, not residue (§6) |
+| Next.js 16.1.1 → 16.2.6+ | **Phase 0, shipped independently** of any Payload work, so a Next regression is diagnosable on its own (§5) |
+| Events feature (`event` / `project`) | **Carry across in full** — collections plus submission route, moderation actions and RSVP wiring — so launching needs no second migration |

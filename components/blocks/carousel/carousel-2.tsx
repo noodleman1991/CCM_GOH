@@ -1,5 +1,4 @@
 import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
 import {
   Carousel,
   CarouselContent,
@@ -10,30 +9,53 @@ import {
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
+import type { SectionPadding } from "@/components/ui/section-container";
 
-type Carousel2Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "carousel-2" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface Carousel2Testimonial {
+  _id: string;
+  name?: string | null;
+  image?: {
+    asset?: {
+      _id?: string;
+      metadata?: {
+        lqip?: string | null;
+        dimensions?: { width?: number | null; height?: number | null } | null;
+      } | null;
+    } | null;
+  } | null;
+  rating?: number | null;
+  title?: LocalizedText;
+  quote?: unknown;
+  organization?: { name?: string | null } | null;
+  relatedCommunity?: { name?: string | null } | null;
+}
+
+interface Carousel2Props {
+  title?: LocalizedText;
+  description?: LocalizedText;
+  padding?: SectionPadding | null;
+  testimonial?: Carousel2Testimonial[] | null;
   locale?: string;
-};
+}
 
 export default function Carousel2({
   title,
   description,
   padding,
-  colorVariant,
   testimonial,
   locale = "en",
 }: Carousel2Props) {
-  const color = stegaClean(colorVariant);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -46,8 +68,8 @@ export default function Carousel2({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer color={color} padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer padding={padding}>
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         <div className="flex flex-col space-y-6 overflow-hidden">
           {localizedTitle && (
             <div className="text-center">
@@ -55,7 +77,7 @@ export default function Carousel2({
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="mt-4 text-base @content-md/page:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}
@@ -65,7 +87,16 @@ export default function Carousel2({
         <Carousel>
           <CarouselContent>
             {testimonial.map((item) => {
-              const it = item as any;
+              // Narrow view of the testimonial item for the fields rendered below.
+              // `relatedCommunity.name` is a localized object in the query result,
+              // but the render expression treats it like the org name string — keep
+              // the exact runtime expression and type it accordingly.
+              const it = item as unknown as {
+                title?: string | Record<string, string> | null;
+                quote?: unknown;
+                organization?: { name?: string | null } | null;
+                relatedCommunity?: { name?: string | null } | null;
+              };
               const jobTitle = typeof it.title === 'string'
                 ? it.title
                 : getLocalizedField(it.title, supportedLocale, '');
@@ -75,7 +106,7 @@ export default function Carousel2({
               return (
               <CarouselItem
                 key={item._id}
-                className="ps-2 md:ps-4 md:basis-1/2 lg:basis-1/3 min-w-0"
+                className="ps-2 @content-md/page:ps-4 @content-md/page:basis-1/2 @content-lg/page:basis-1/3 min-w-0"
               >
                 <Card className="h-full overflow-hidden">
                   <CardContent className="flex flex-col justify-between p-6 h-full">
@@ -84,7 +115,7 @@ export default function Carousel2({
                         <Avatar className="w-10 h-10 me-3">
                           {item.image && (
                             <AvatarImage
-                              src={urlForCropped(item.image, 80, 80).url()}
+                              src={imageUrl(item.image, { width: 80, height: 80, crop: true })}
                               alt={item.name ?? ""}
                             />
                           )}
@@ -92,9 +123,9 @@ export default function Carousel2({
                             {item.name?.slice(0, 2)}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <h3 className="text-sm font-semibold">{item.name}</h3>
-                          <p className="text-xs text-muted-foreground">
+                        <div className="min-w-0">
+                          <h3 className="truncate text-sm font-semibold" title={item.name ?? undefined}>{item.name}</h3>
+                          <p className="truncate text-xs text-muted-foreground" title={jobTitle ?? undefined}>
                             {jobTitle}
                           </p>
                           {(it.organization?.name || it.relatedCommunity?.name) && (
@@ -119,11 +150,11 @@ export default function Carousel2({
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"
-            className="-start-3 md:-start-8 xl:-start-12"
+            className="-start-3 @content-md/page:-start-8 @content-xl/page:-start-12"
           />
           <CarouselNext
             variant="secondary"
-            className="-end-3 md:-end-8 xl:-end-12"
+            className="-end-3 @content-md/page:-end-8 @content-xl/page:-end-12"
           />
           <div className="w-full flex justify-center">
             <CarouselDots />

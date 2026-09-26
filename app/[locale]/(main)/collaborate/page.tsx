@@ -2,12 +2,25 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { CollaboratePageClient } from './page-client'
+import { CollabTabs } from '@/components/collaborate/collab-tabs'
+import { ProjectCard } from '@/components/collaborate/project-card'
+import { getPublicProjects } from '@/lib/collaboration/public-list'
+import { fetchApprovedEvents } from '@/lib/events'
+import { EventCard } from '@/components/events/event-card'
+import { CreateCollaborationButton } from '@/components/collaboration/create-collaboration-button'
+import { PageContainer } from '@/components/ui/page-container'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/i18n/navigation'
+import { Plus } from 'lucide-react'
+import { FEATURES } from '@/lib/features'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
-import type { SupportedLocale } from '@/types/prisma'
+import { getContactStatuses } from '@/lib/requests/contact-status'
+import type { LocalizedUser, SupportedLocale } from '@/types/prisma'
 
 /**
  * Collaborate Page - Server Component
@@ -24,6 +37,7 @@ interface CollaboratePageProps {
     workTypes?: string
     expertiseAreas?: string
     communities?: string
+    tab?: string
   }>
 }
 
@@ -49,12 +63,77 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'digest' in error) throw error
     console.error('Collaborate page auth error:', error)
-    redirect(`/${locale}/sign-in?redirect=/collaborate`)
+    redirect({ href: "/sign-in?redirect=/collaborate", locale })
   }
 
   if (!userId) {
-    redirect(`/${locale}/sign-in?redirect=/collaborate`)
+    redirect({ href: "/sign-in?redirect=/collaborate", locale })
   }
+
+  // §4.6 collab space: Projects and Events panels (People keeps its own
+  // data path below). Both degrade to empty lists on fetch failure.
+  const [tCollab, tEvents, projects, events] = await Promise.all([
+    getTranslations({ locale, namespace: 'collabSpace' }),
+    getTranslations({ locale, namespace: 'events' }),
+    getPublicProjects().catch(() => []),
+    FEATURES.engagement ? fetchApprovedEvents(12).catch(() => []) : Promise.resolve([]),
+  ])
+
+  const eventLabels = {
+    community: tEvents('scopeCommunity'),
+    project: tEvents('scopeProject'),
+    modeOnline: tEvents('modeOnline'),
+    modeInPerson: tEvents('modeInPerson'),
+    modeHybrid: tEvents('modeHybrid'),
+  }
+
+  const projectsPanel = (
+    <div className="space-y-6">
+      {projects.length === 0 ? (
+        <Card className="p-10 text-center text-sm text-muted-foreground">{tCollab('noProjects')}</Card>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
+  const eventsPanel = (
+    <div className="space-y-4">
+      {FEATURES.engagement && (
+        <div className="flex justify-end">
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/collaborate/events/new">
+              <Plus className="size-4" />
+              {tEvents('submit')}
+            </Link>
+          </Button>
+        </div>
+      )}
+      {events.length === 0 ? (
+        <Card className="p-10 text-center text-sm text-muted-foreground">{tEvents('empty')}</Card>
+      ) : (
+        events.map((e) => <EventCard key={e._id} event={e} signedIn={!!userId} labels={eventLabels} />)
+      )}
+    </div>
+  )
+
+  const shell = (peoplePanel: React.ReactNode) => (
+    <PageContainer>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-heading text-3xl font-bold text-balance text-ccm-midnight md:text-4xl">
+            {tCollab('header')}
+          </h1>
+        </div>
+        {FEATURES.engagement && <CreateCollaborationButton />}
+      </div>
+      <CollabTabs projects={projectsPanel} people={peoplePanel} events={eventsPanel} />
+    </PageContainer>
+  )
 
   try {
     // Parse filter params via the shared codec (INCLUSION model):
@@ -95,7 +174,9 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
     // Optimized: Fetch ALL users with filters in a single query (not N+1)
     // Then group them by community on the server side
-    const communityUsersMap: Record<string, any[]> = {}
+    // Sliced users for display + the TRUE pre-slice match count per community,
+    // so carousel headers never claim a number the slice cap made up.
+    const communityUsersMap: Record<string, { users: LocalizedUser[]; total: number }> = {}
 
     // Build single query with the decoded filters (empty array = no filter).
     const result = await UserService.getUsersForCollaborate(
@@ -107,7 +188,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
         communityIds: communitiesFilter.length ? communitiesFilter : undefined
       },
       1,
-      200, // Fetch more users since we're grouping them
+      1000, // Whole-pool fetch (≈700 users today) so per-community counts are true
       {
         locale,
         isAuthenticated: true
@@ -123,12 +204,17 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
         const communityName = community.regionalName || community.name
         const usersInCommunity = allUsers.filter(user => {
           // Type assertion: transformToLocalizedUser includes relations via spread
-          const userWithRelations = user as any
-          return userWithRelations.communityMemberships?.some((m: any) => m.communityId === community.id)
+          const userWithRelations = user as LocalizedUser & {
+            communityMemberships?: Array<{ communityId: string }>
+          }
+          return userWithRelations.communityMemberships?.some((m) => m.communityId === community.id)
         })
 
         if (usersInCommunity.length > 0) {
-          communityUsersMap[communityName] = usersInCommunity.slice(0, 20) // Limit to 20 per carousel
+          communityUsersMap[communityName] = {
+            users: usersInCommunity.slice(0, 20), // Limit to 20 per carousel
+            total: usersInCommunity.length,
+          }
         }
       }
     }
@@ -158,15 +244,31 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     }
 
     if (noCommunityResult?.success && noCommunityResult.data.data.length > 0) {
-      communityUsersMap['No Regional Community'] = noCommunityResult.data.data
+      communityUsersMap['No Regional Community'] = {
+        users: noCommunityResult.data.data,
+        total: noCommunityResult.data.total ?? noCommunityResult.data.data.length,
+      }
     }
 
-    return (
+    // Seed each card's Connect button with the viewer's existing request so a
+    // reload does not offer a fresh button (M7). One query over the visible
+    // members; a failure here must not take the page down, so it degrades to
+    // "no known status" and the action remains the source of truth on click.
+    const contactStatuses = await getContactStatuses(
+      userId,
+      Object.values(communityUsersMap).flatMap((group) => group.users.map((u) => u.id))
+    ).catch((error: unknown) => {
+      console.error('Collaborate page contact-status fetch error:', error)
+      return {}
+    })
+
+    return shell(
       <Suspense fallback={<CollaborateSkeleton />}>
         <CollaboratePageClient
           initialCommunityUsers={communityUsersMap}
           communities={sortedCommunities}
           userCommunityIds={userCommunityIds}
+          contactStatuses={contactStatuses}
           locale={locale}
           initialSearch={search}
           initialFilters={{
@@ -174,13 +276,14 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
             expertiseAreas: expertiseFilter,
             communities: communitiesFilter
           }}
+          embedded
         />
       </Suspense>
     )
   } catch (error) {
     console.error('Collaborate page data fetch error:', error)
     // Return a minimal page with empty data so the client can still render
-    return (
+    return shell(
       <Suspense fallback={<CollaborateSkeleton />}>
         <CollaboratePageClient
           initialCommunityUsers={{}}
@@ -193,6 +296,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
             expertiseAreas: null,
             communities: null
           }}
+          embedded
         />
       </Suspense>
     )

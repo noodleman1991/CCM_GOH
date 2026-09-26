@@ -3,18 +3,10 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Search, Filter, X, MapPin, Tag as TagIcon, ArrowUpDown } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { Video } from 'lucide-react'
+import { Link } from '@/i18n/navigation'
+import { heading } from '@/lib/design-tokens'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { FilterChip, RemovableChip } from '@/components/ui/filter-chip'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
@@ -22,11 +14,14 @@ import Image from "next/image";
 import SectionContainer from "@/components/ui/section-container";
 import { ScrollRow } from "@/components/ui/scroll-row";
 import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-card";
+import { ContentFilters } from "@/components/ui/content-filters";
+import type { LivedExperience } from "@/lib/content/lived-experiences";
+import type { ContentRegion, ContentTag } from "@/lib/content/types";
 
 interface LivedExperiencesPageClientProps {
-  initialCommunityVideos: Record<string, any[]>
-  communities: any[]
-  allTags: string[]
+  initialCommunityVideos: Record<string, LivedExperience[]>
+  communities: ContentRegion[]
+  allTags: ContentTag[]
   locale: string
   initialSearch: string
   initialFilters: {
@@ -48,8 +43,6 @@ export default function LivedExperiencesPageClient({
   const isRTL = rtlLocales.includes(locale)
 
   const [searchQuery, setSearchQuery] = useState(initialSearch)
-  const [showFilters, setShowFilters] = useState(false)
-  const [sortBy, setSortBy] = useState<'default' | 'az'>('default')
 
   // Inclusion model: empty selection = show everything; selecting narrows.
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialFilters.regions)
@@ -68,7 +61,7 @@ export default function LivedExperiencesPageClient({
 
   // Filter videos. Inclusion: no region/tag selected = no filter on that axis.
   const filteredCommunityVideos = useMemo(() => {
-    const filtered: Record<string, any[]> = {}
+    const filtered: Record<string, LivedExperience[]> = {}
 
     for (const [communityName, videos] of Object.entries(initialCommunityVideos)) {
       const community = communities.find(c => {
@@ -83,18 +76,22 @@ export default function LivedExperiencesPageClient({
 
       const filteredVideos = videos.filter(video => {
         // Tag filter (inclusion): if any tags selected, the video must match one.
+        // Tags are now dereferenced docs — match on value (fall back to _id).
         if (selectedTags.length > 0) {
-          const hasMatchingTag = video.tags?.some((tag: string) => selectedTags.includes(tag))
+          const hasMatchingTag = video.tags?.some((tag) =>
+            selectedTags.includes(tag?.value as string) || selectedTags.includes(tag?.id)
+          )
           if (!hasMatchingTag) return false
         }
 
         // Check search query
         if (searchQuery) {
           const query = searchQuery.toLowerCase()
-          const titleMatch = video.title?.en?.toLowerCase().includes(query) ||
-            video.title?.es?.toLowerCase().includes(query) ||
-            video.title?.fr?.toLowerCase().includes(query) ||
-            video.title?.ar?.toLowerCase().includes(query)
+          const title = typeof video.title === 'string' ? undefined : video.title
+          const titleMatch = title?.en?.toLowerCase().includes(query) ||
+            title?.es?.toLowerCase().includes(query) ||
+            title?.fr?.toLowerCase().includes(query) ||
+            title?.ar?.toLowerCase().includes(query)
 
           if (!titleMatch) return false
         }
@@ -132,24 +129,10 @@ export default function LivedExperiencesPageClient({
     selectedRegions.length > 0 ||
     selectedTags.length > 0
 
-  // Sort the rows: 'default' keeps the CMS order (by region order, newest videos
-  // first within each row); 'az' alphabetises the rows by community name.
-  const sortedEntries = useMemo(() => {
-    const entries = Object.entries(filteredCommunityVideos)
-    if (sortBy === 'az') {
-      return [...entries].sort(([a], [b]) => a.localeCompare(b, locale))
-    }
-    return entries
-  }, [filteredCommunityVideos, sortBy, locale])
+  // Rows keep the CMS order (region order, newest videos first within each row).
+  const sortedEntries = Object.entries(filteredCommunityVideos)
 
   const totalVideos = Object.values(filteredCommunityVideos).flat().length
-
-  // Label a region slug for the active-filter summary chips.
-  const regionLabel = (slug: string) => {
-    const c = communities.find(cm => cm.slug === slug)
-    if (!c) return slug
-    return typeof c.name === 'string' ? c.name : getLocalizedText(c.name, locale, c.name)
-  }
 
   return (
     <div className="py-8 space-y-8">
@@ -160,13 +143,23 @@ export default function LivedExperiencesPageClient({
                 className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
             >
                 {/* Text Content - Always first in DOM */}
-                <div className="flex flex-col justify-start min-w-0 w-full space-y-2 text-center lg:text-start">
-                    <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
-                        {t("title")}
-                    </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                        {t("description")}
-                    </p>
+                <div className="flex flex-col justify-start min-w-0 w-full space-y-4 text-center lg:text-start">
+                    <div className="space-y-2">
+                        <h1 className={cn("font-bold font-heading tracking-tight text-balance text-ccm-midnight", heading('xl'))}>
+                            {t("title")}
+                        </h1>
+                        <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0">
+                            {t("description")}
+                        </p>
+                    </div>
+                    <div className="flex justify-center lg:justify-start">
+                        <Button asChild>
+                            <Link href="/lived-experiences/submit" className="gap-2">
+                                <Video className="w-4 h-4" />
+                                {t("shareCta")}
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Image */}
@@ -187,133 +180,45 @@ export default function LivedExperiencesPageClient({
 
       {/* Search, Filters, and Results Container */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Search and Filters */}
-        <div className="space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className={cn(
-            "pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 text-muted-foreground",
-            isRTL ? "right-3" : "left-3"
-          )} />
-          <Input
-            placeholder={t('searchPlaceholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={cn(isRTL ? "pr-10" : "pl-10")}
+        {/* Unified content filters — collapsed, multi-select (shared with news
+            + case studies). Sort + count sit alongside. */}
+        <div className="space-y-3">
+          <ContentFilters
+            search={{ value: searchQuery, onChange: setSearchQuery, placeholder: t('searchPlaceholder') }}
+            onClearAll={clearFilters}
+            groups={[
+              {
+                id: 'regions',
+                label: t('filterByRegion'),
+                selected: selectedRegions,
+                onToggle: toggleRegion,
+                options: communities.map((community) => ({
+                  value: community.slug,
+                  label: typeof community.name === 'string'
+                    ? community.name
+                    : getLocalizedText(community.name, locale, community.name as unknown as string),
+                })),
+              },
+              {
+                id: 'tags',
+                label: t('filterByTag'),
+                selected: selectedTags,
+                // De-surface the 'Other' tag from the chips.
+                options: allTags
+                  .filter((tag) => (tag.value || tag.id) !== 'other')
+                  .map((tag) => ({
+                    value: tag.value || tag.id,
+                    label: getLocalizedText(tag.label, locale, tag.value || tag.id),
+                  })),
+                onToggle: toggleTag,
+              },
+            ]}
           />
-        </div>
-
-        {/* Filter toggle + sort + clear */}
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2"
-          >
-            <Filter className="w-4 h-4" />
-            {t('filters')}
-            {hasActiveFilters && (
-              <Badge variant="secondary" className="ms-1">
-                {selectedRegions.length + selectedTags.length}
-              </Badge>
-            )}
-          </Button>
-
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'default' | 'az')}>
-            <SelectTrigger size="sm" className="w-auto gap-2">
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-              <SelectValue placeholder={t('sortBy')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">{t('sortNewest')}</SelectItem>
-              <SelectItem value="az">{t('sortAZ')}</SelectItem>
-            </SelectContent>
-          </Select>
 
           <span className="text-sm text-muted-foreground">
-            {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
+            {t('videoCount', { count: totalVideos })}
           </span>
-
-          {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="ms-auto flex items-center gap-2"
-            >
-              <X className="w-4 h-4" />
-              {t('clearFilters')}
-            </Button>
-          )}
         </div>
-
-        {/* Active-filter summary chips (click × to remove) */}
-        {(selectedRegions.length > 0 || selectedTags.length > 0) && (
-          <div className="flex flex-wrap gap-2">
-            {selectedRegions.map((slug) => (
-              <RemovableChip
-                key={`r-${slug}`}
-                label={regionLabel(slug)}
-                icon={MapPin}
-                onRemove={() => toggleRegion(slug)}
-                removeLabel={t('clearFilters')}
-              />
-            ))}
-            {selectedTags.map((tag) => (
-              <RemovableChip
-                key={`t-${tag}`}
-                label={tag}
-                icon={TagIcon}
-                onRemove={() => toggleTag(tag)}
-                removeLabel={t('clearFilters')}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Filters Panel — inclusion model: nothing selected shows everything */}
-        {showFilters && (
-          <div className="border rounded-lg p-6 space-y-6 bg-card">
-            {/* Regions Filter */}
-            <div className="space-y-3">
-              <h3 className="font-semibold">{t('filterByRegion')}</h3>
-              <div className="flex flex-wrap gap-2">
-                {communities.map((community) => {
-                  const communityName = typeof community.name === 'string'
-                    ? community.name
-                    : getLocalizedText(community.name, locale, community.name)
-                  return (
-                    <FilterChip
-                      key={community._id}
-                      label={communityName}
-                      active={selectedRegions.includes(community.slug)}
-                      onClick={() => toggleRegion(community.slug)}
-                    />
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Tags Filter */}
-            {allTags.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="font-semibold">{t('filterByTag')}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {allTags.map((tag) => (
-                    <FilterChip
-                      key={tag}
-                      label={tag}
-                      active={selectedTags.includes(tag)}
-                      onClick={() => toggleTag(tag)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
 
       {/* Results */}
       <div className="space-y-12">
@@ -327,15 +232,24 @@ export default function LivedExperiencesPageClient({
               key={communityName}
               isRTL={isRTL}
               title={communityName}
-              subtitle={`${videos.length} ${videos.length === 1 ? t('video') : t('videos')}`}
+              subtitle={t('videoCount', { count: videos.length })}
             >
               {videos.map((video) => (
                 <LivedExperienceVideoCard
-                  key={video._id}
-                  title={getLocalizedText(video.title, locale, video.title)}
+                  key={video.id}
+                  title={getLocalizedText(video.title, locale, video.title as string)}
                   videoUrl={video.videoUrl}
                   thumbnailUrl={video.thumbnailUrl}
-                  tags={video.tags}
+                  // LivedExperienceVideoCard still speaks the raw CMS tag
+                  // shape (`_id`) — adapt at this one boundary rather than
+                  // change that component's (out of scope) prop type.
+                  tags={video.tags.map((tag) => ({
+                    _id: tag.id,
+                    label: tag.label,
+                    value: tag.value,
+                    color: tag.color,
+                  }))}
+                  format={video.format}
                 />
               ))}
             </ScrollRow>

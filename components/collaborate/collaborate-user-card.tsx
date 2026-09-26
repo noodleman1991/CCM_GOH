@@ -7,18 +7,34 @@
  * Respects privacy settings and supports RTL
  */
 
-import { Link } from '@/i18n/navigation'
+import { useState, useSyncExternalStore, useTransition } from 'react'
+import { useUser } from '@clerk/nextjs'
+import { toast } from 'sonner'
+import { Link, useRouter } from '@/i18n/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { MapPin, Briefcase, Clock, FileText } from 'lucide-react'
+import { MapPin, Briefcase, Clock, FileText, MessageCircle, UserPlus } from 'lucide-react'
+import { startConversation } from '@/lib/actions/messaging'
+import { requestContact } from '@/lib/actions/requests'
 import type { LocalizedUser } from '@/types/prisma'
+import type { RequestStatus } from '@/generated/prisma'
+import { FEATURES } from '@/lib/features'
 
 interface CollaborateUserCardProps {
+  /**
+   * The viewer's existing contact request with this member, read on the
+   * server (lib/requests/contact-status.ts) so a reload keeps showing
+   * "Requested" / "Connected" instead of a fresh Connect button.
+   */
+  contactStatus?: RequestStatus | null
   user: LocalizedUser & {
     lastLoginAt?: Date | null
+    headline?: string | null
+    openToCollaboration?: boolean | null
     communityMemberships?: Array<{
       community: {
         name: string
@@ -38,12 +54,59 @@ interface CollaborateUserCardProps {
   className?: string
 }
 
-export function CollaborateUserCard({ user, className }: CollaborateUserCardProps) {
+// Stable helpers for the useSyncExternalStore mounted idiom below.
+const subscribeNoop = () => () => {}
+const snapshotTrue = () => true
+const snapshotFalse = () => false
+
+export function CollaborateUserCard({ user, contactStatus, className }: CollaborateUserCardProps) {
   const t = useTranslations('collaborate.userCard')
+  const tCollab = useTranslations('collabSpace')
+  // Root-scoped: server actions return message-catalogue keys (with a `code`)
+  // for expected outcomes such as the decline cooldown.
+  const tRoot = useTranslations()
   const tWorkTypes = useTranslations('profile.work.types')
   const tExpertise = useTranslations('profile.work.expertise')
   const locale = useLocale()
   const isRTL = locale === 'ar'
+  const router = useRouter()
+  const { isSignedIn } = useUser()
+  const [pending, startAction] = useTransition()
+  // Seeded from the server-read status. A DECLINED request deliberately shows
+  // a fresh button: the action enforces the cooldown and answers with a
+  // translatable key, so the member is told why rather than silently blocked.
+  const [contactState, setContactState] = useState<'PENDING' | 'ACCEPTED' | null>(
+    contactStatus === 'PENDING' || contactStatus === 'ACCEPTED' ? contactStatus : null
+  )
+  // Auth-dependent UI mounts client-only: this card streams inside a Suspense
+  // boundary where the SSR pass has rendered signed-out while the client
+  // hydrates signed-in (observed 2026-08-05), producing a structural hydration
+  // mismatch that regenerates the whole tree. useSyncExternalStore's
+  // server/client snapshots give a hydration-safe "mounted" without an effect:
+  // false during SSR + hydration render, true immediately after.
+  const mounted = useSyncExternalStore(subscribeNoop, snapshotTrue, snapshotFalse)
+
+  // Both handlers live inside the profile <Link>, so they must suppress the
+  // card navigation. Self-targeting is rejected server-side ("That's you.").
+  const handleMessage = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    startAction(async () => {
+      const res = await startConversation(user.id)
+      if (res.ok) router.push(`/messages?c=${res.id}`)
+      else toast.error(res.error)
+    })
+  }
+  const handleConnect = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    startAction(async () => {
+      const res = await requestContact(user.id)
+      if (res.ok) setContactState(res.status)
+      // `code` marks `error` as a catalogue key; legacy failures are sentences.
+      else toast.error(res.code ? tRoot(res.error) : res.error)
+    })
+  }
 
   // Map work type enum values to translation keys
   const getWorkTypeKey = (workType: string): string => {
@@ -91,31 +154,45 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
   }
 
   return (
-    <Link href={`/profiles/${user.username}`}>
+    <Link href={`/profiles/${user.username}`} className="group block h-full">
       <Card className={cn(
-        'h-full hover:shadow-lg transition-shadow cursor-pointer',
-        'border-2 hover:border-primary/50',
+        'h-full cursor-pointer overflow-hidden rounded-2xl border bg-card transition-all duration-200',
+        'hover:-translate-y-0.5 hover:border-ccm-sea/40 hover:shadow-lg',
         className
       )}>
-        <CardContent className="p-4">
-          <div className="flex flex-col gap-4">
-            {/* Header: Avatar + Name */}
-            <div className="flex items-start gap-3">
-              <Avatar className="h-12 w-12 flex-shrink-0">
-                {user.image && <AvatarImage src={user.image} alt={user.displayName} />}
-                <AvatarFallback>{user.initials}</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base truncate">
-                  {user.displayName}
-                </h3>
-                {user.username && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    @{user.username}
-                  </p>
-                )}
-              </div>
+        {/* Brand gradient band — gives the card a warmer, more engaging top. */}
+        <div className="relative h-16 bg-gradient-to-br from-ccm-sky/50 to-ccm-water/30">
+          {user.openToCollaboration && (
+            <span className="absolute end-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium text-ccm-sea">
+              <MessageCircle className="size-3" aria-hidden="true" />
+              {t('openToCollaborate')}
+            </span>
+          )}
+        </div>
+
+        <CardContent className="-mt-8 flex flex-col gap-3 p-4">
+          {/* Avatar overlapping the band */}
+          <div className="flex items-end gap-3">
+            <Avatar className="size-16 shrink-0 ring-4 ring-card transition-transform duration-200 group-hover:scale-105">
+              {user.image && <AvatarImage src={user.image} alt={user.displayName} />}
+              <AvatarFallback className="bg-ccm-sea/15 text-ccm-sea font-semibold">{user.initials}</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1 pb-1">
+              <h3 className="truncate font-heading font-semibold text-ccm-midnight transition-colors group-hover:text-primary">
+                {user.displayName}
+              </h3>
+              {user.username && (
+                <p className="truncate text-sm text-muted-foreground">@{user.username}</p>
+              )}
             </div>
+          </div>
+
+          {/* Headline — the at-a-glance "what I'm about" line */}
+          {user.headline && (
+            <p className="line-clamp-2 text-sm font-medium text-ccm-sea">
+              {user.headline}
+            </p>
+          )}
 
             {/* Affiliation */}
             {user.showWorkDetails && (user.organization || user.position) && (
@@ -193,15 +270,42 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
             )}
 
             {/* Footer: Last Active */}
-            <div className="space-y-2 pt-2 border-t">
-              {user.lastLoginAt && (
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>{t('lastActive', { time: getLastActiveText(user.lastLoginAt) })}</span>
-                </div>
-              )}
-            </div>
-          </div>
+            {user.lastLoginAt && (
+              <div className="flex items-center gap-1.5 border-t pt-2 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                <span>{t('lastActive', { time: getLastActiveText(user.lastLoginAt) })}</span>
+              </div>
+            )}
+
+            {/* Actions: Message + Connect (§4.6) — signed-in only */}
+            {mounted && isSignedIn && FEATURES.engagement && (
+              <div className="flex gap-2 border-t pt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="min-h-[44px] flex-1 gap-1.5"
+                  disabled={pending}
+                  onClick={handleMessage}
+                >
+                  <MessageCircle className="size-3.5" aria-hidden />
+                  {tCollab('message')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="min-h-[44px] flex-1 gap-1.5"
+                  disabled={pending || contactState !== null}
+                  onClick={handleConnect}
+                >
+                  <UserPlus className="size-3.5" aria-hidden />
+                  {contactState === 'ACCEPTED'
+                    ? tCollab('connected')
+                    : contactState === 'PENDING'
+                      ? tCollab('requested')
+                      : tCollab('connect')}
+                </Button>
+              </div>
+            )}
         </CardContent>
       </Card>
     </Link>

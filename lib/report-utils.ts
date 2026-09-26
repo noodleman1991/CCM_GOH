@@ -12,18 +12,10 @@ import {
 /**
  * Get localized text from a LocalizedString object
  */
-export function getLocalizedText(
-    text: LocalizedString | string | undefined,
-    locale: string, // Changed from SupportedLanguage to string
-    fallback: string = ''
-): string {
-    if (!text) return fallback;
-    if (typeof text === 'string') return text;
-
-    // Cast locale to SupportedLanguage for indexing, with fallback
-    const supportedLocale = locale as SupportedLanguage;
-    return text[supportedLocale] || text.en || fallback;
-}
+// One implementation for the whole app (Slice 15): lib/localization-utils.ts.
+// It also falls back to any available language before the fallback text.
+import { getLocalizedText } from '@/lib/localization-utils';
+export { getLocalizedText };
 
 /**
  * Get available file languages for a report
@@ -198,14 +190,15 @@ export async function downloadFile(
 /**
  * Validate report data structure
  */
-export function validateReport(report: any): report is Report {
+export function validateReport(report: unknown): report is Report {
     if (!report || typeof report !== 'object') return false;
-    if (!report._id || !report.title || !report.slug) return false;
-    if (!report.files || !Array.isArray(report.files)) return false;
-    if (report.files.length === 0) return false;
+    const candidate = report as Partial<Report>;
+    if (!candidate._id || !candidate.title || !candidate.slug) return false;
+    if (!candidate.files || !Array.isArray(candidate.files)) return false;
+    if (candidate.files.length === 0) return false;
 
     // Validate at least one file has a valid asset
-    const hasValidFile = report.files.some((file: any) =>
+    const hasValidFile = candidate.files.some((file) =>
         file.file?.asset?.url
     );
 

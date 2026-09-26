@@ -8,22 +8,15 @@ import {
     AGENDA_TYPE_LABELS,
     DownloadTrackingData
 } from '@/types/agenda';
+import { track } from '@/lib/analytics/events';
 
 /**
  * Get localized text from a LocalizedString object
  */
-export function getLocalizedText(
-    text: LocalizedString | string | undefined,
-    locale: string, // Changed from SupportedLanguage to string
-    fallback: string = ''
-): string {
-    if (!text) return fallback;
-    if (typeof text === 'string') return text;
-
-    // Cast locale to SupportedLanguage for indexing, with fallback
-    const supportedLocale = locale as SupportedLanguage;
-    return text[supportedLocale] || text.en || fallback;
-}
+// One implementation for the whole app (Slice 15): lib/localization-utils.ts.
+// It also falls back to any available language before the fallback text.
+import { getLocalizedText } from '@/lib/localization-utils';
+export { getLocalizedText };
 
 /**
  * Get available file languages for an agenda
@@ -174,6 +167,7 @@ export async function downloadFile(
     };
 
     trackDownload(trackingData).catch(console.error);
+    void track('report_downloaded', { kind: 'agenda', content_id: agendaId, file_language: file.language });
 
     // Start download by opening URL
     const fileName = getFileName(file);
@@ -198,14 +192,15 @@ export async function downloadFile(
 /**
  * Validate agenda data structure
  */
-export function validateAgenda(agenda: any): agenda is Agenda {
+export function validateAgenda(agenda: unknown): agenda is Agenda {
     if (!agenda || typeof agenda !== 'object') return false;
-    if (!agenda._id || !agenda.title || !agenda.slug) return false;
-    if (!agenda.files || !Array.isArray(agenda.files)) return false;
-    if (agenda.files.length === 0) return false;
+    const candidate = agenda as Partial<Agenda>;
+    if (!candidate._id || !candidate.title || !candidate.slug) return false;
+    if (!candidate.files || !Array.isArray(candidate.files)) return false;
+    if (candidate.files.length === 0) return false;
 
     // Validate at least one file has a valid asset
-    const hasValidFile = agenda.files.some((file: any) =>
+    const hasValidFile = candidate.files.some((file) =>
         file.file?.asset?.url
     );
 

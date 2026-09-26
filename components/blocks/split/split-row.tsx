@@ -1,21 +1,25 @@
 import { cn } from "@/lib/utils";
-import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import SplitContent from "./split-content";
 import SplitCardsList from "./split-cards-list";
 import SplitImage from "./split-image";
 import SplitInfoList from "./split-info-list";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitColumn = NonNullable<NonNullable<SplitRow["splitColumns"]>[number]>;
+/** A split column, in its raw CMS shape (`_type`/`_key` discriminant plus
+ *  whatever fields that column type carries). Loose by design — SplitRow just
+ *  dispatches on `_type` and spreads the rest into the matching child
+ *  component, which owns its own precise prop type. Same pattern as
+ *  GridRow's column dispatch (components/blocks/grid/grid-row.tsx). */
+type SplitColumn = { _type: string; _key: string } & Record<string, unknown>;
 
-const componentMap: {
-  [K in SplitColumn["_type"]]: React.ComponentType<
-    Extract<SplitColumn, { _type: K }> & { locale?: string }
-  >;
-} = {
+interface SplitRowProps {
+  padding?: SectionPadding | null;
+  noGap?: boolean;
+  splitColumns?: SplitColumn[] | null;
+  locale?: string;
+}
+
+const componentMap: Record<string, React.ElementType> = {
   "split-content": SplitContent,
   "split-cards-list": SplitCardsList,
   "split-image": SplitImage,
@@ -24,25 +28,25 @@ const componentMap: {
 
 export default function SplitRow({
   padding,
-  colorVariant,
   noGap,
   splitColumns,
   locale = "en",
-}: SplitRow & { locale?: string }) {
-  const color = stegaClean(colorVariant);
+}: SplitRowProps) {
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <div className="overflow-x-hidden">
         {splitColumns && splitColumns?.length > 0 && (
           <div
           className={cn(
-            "grid grid-cols-1 lg:grid-cols-2 items-center",
-            noGap ? "gap-0" : "gap-6 md:gap-8 lg:gap-12"
+            "grid grid-cols-1 @content-md/page:grid-cols-2 items-center",
+            noGap ? "gap-0" : "gap-6 @content-md/page:gap-8 @content-lg/page:gap-12"
           )}
         >
           {splitColumns?.map((column) => {
-            const Component = componentMap[column._type];
+            // Widen to ElementType: the map is keyed by the column's _type, but
+            // TS can't correlate the union member with its component here.
+            const Component: React.ElementType = componentMap[column._type];
             if (!Component) {
               // Fallback for development/debugging of new component types
               console.warn(
@@ -55,8 +59,8 @@ export default function SplitRow({
               // vertically centred against a taller text column.
               <div key={column._key} className="flex h-full min-w-0 flex-col justify-center">
                 <Component
-                  {...(column as any)}
-                  color={color}
+                  {...column}
+
                   noGap={noGap}
                   locale={locale}
                 />

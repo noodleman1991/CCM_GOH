@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useCallback } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
+import { Placeholder } from '@tiptap/extensions';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
     Bold,
@@ -17,259 +19,48 @@ import {
     LinkIcon,
     ImageIcon,
     Undo,
-    Redo
+    Redo,
+    Loader2
 } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+import { tiptapToPortableText, portableTextToTiptap } from '@/components/forms/editor/pt-convert';
+import { SlashMenu } from '@/components/forms/editor/slash-menu';
+import { DEFAULT_SLASH_MENU_ITEMS, type SlashMenuItemId } from '@/components/forms/editor/slash-menu-list';
+import { EditorImage } from '@/components/forms/editor/nodes/image-node';
+import { Youtube } from '@/components/forms/editor/nodes/youtube-node';
+import { InfoBox } from '@/components/forms/editor/nodes/info-box-node';
+import { Break } from '@/components/forms/editor/nodes/break-node';
+import { StoryTimeline } from '@/components/forms/editor/nodes/timeline-node';
+import { StoryChart } from '@/components/forms/editor/nodes/chart-node';
+import { StoryMermaid } from '@/components/forms/editor/nodes/mermaid-node';
+import { uploadEditorImage, ImageUploadError } from '@/components/forms/editor/upload';
+import { markdownToTiptap } from '@/components/forms/editor/markdown-paste';
+
+export { tiptapToPortableText, portableTextToTiptap };
 
 interface PortableTextEditorProps {
-    value: any[]; // Portable Text array
-    onChangeAction: (value: any[]) => void;
+    value: unknown[]; // Portable Text array
+    onChangeAction: (value: unknown[]) => void;
     placeholder?: string;
     language?: string;
     maxLength?: number;
-}
-
-/**
- * Convert Tiptap JSON to Sanity Portable Text
- */
-function tiptapToPortableText(doc: any): any[] {
-    if (!doc || !doc.content) return [];
-
-    const portableText: any[] = [];
-
-    doc.content.forEach((node: any) => {
-        if (node.type === 'paragraph') {
-            const block: any = {
-                _type: 'block',
-                _key: uuidv4(),
-                style: 'normal',
-                children: [],
-                markDefs: []
-            };
-
-            if (node.content) {
-                node.content.forEach((child: any) => {
-                    if (child.type === 'text') {
-                        const marks: string[] = [];
-                        if (child.marks) {
-                            child.marks.forEach((mark: any) => {
-                                if (mark.type === 'bold') marks.push('strong');
-                                if (mark.type === 'italic') marks.push('em');
-                                if (mark.type === 'link') {
-                                    const markDef = {
-                                        _key: uuidv4(),
-                                        _type: 'link',
-                                        href: mark.attrs.href
-                                    };
-                                    block.markDefs.push(markDef);
-                                    marks.push(markDef._key);
-                                }
-                            });
-                        }
-
-                        block.children.push({
-                            _type: 'span',
-                            _key: uuidv4(),
-                            text: child.text || '',
-                            marks
-                        });
-                    } else if (child.type === 'image') {
-                        // Handle inline images
-                        portableText.push({
-                            _type: 'image',
-                            _key: uuidv4(),
-                            asset: {
-                                _type: 'reference',
-                                _ref: child.attrs.src // This will be the temporary URL, needs to be uploaded
-                            },
-                            alt: child.attrs.alt || ''
-                        });
-                    }
-                });
-            }
-
-            if (block.children.length > 0) {
-                portableText.push(block);
-            }
-        } else if (node.type === 'heading') {
-            const level = node.attrs.level;
-            const style = level === 2 ? 'h2' : level === 3 ? 'h3' : level === 4 ? 'h4' : 'normal';
-
-            const block: any = {
-                _type: 'block',
-                _key: uuidv4(),
-                style,
-                children: [],
-                markDefs: []
-            };
-
-            if (node.content) {
-                node.content.forEach((child: any) => {
-                    if (child.type === 'text') {
-                        const marks: string[] = [];
-                        if (child.marks) {
-                            child.marks.forEach((mark: any) => {
-                                if (mark.type === 'bold') marks.push('strong');
-                                if (mark.type === 'italic') marks.push('em');
-                            });
-                        }
-
-                        block.children.push({
-                            _type: 'span',
-                            _key: uuidv4(),
-                            text: child.text || '',
-                            marks
-                        });
-                    }
-                });
-            }
-
-            portableText.push(block);
-        } else if (node.type === 'bulletList') {
-            node.content?.forEach((listItem: any) => {
-                const block: any = {
-                    _type: 'block',
-                    _key: uuidv4(),
-                    style: 'normal',
-                    listItem: 'bullet',
-                    children: [],
-                    markDefs: []
-                };
-
-                listItem.content?.forEach((para: any) => {
-                    para.content?.forEach((child: any) => {
-                        if (child.type === 'text') {
-                            block.children.push({
-                                _type: 'span',
-                                _key: uuidv4(),
-                                text: child.text || '',
-                                marks: []
-                            });
-                        }
-                    });
-                });
-
-                portableText.push(block);
-            });
-        } else if (node.type === 'orderedList') {
-            node.content?.forEach((listItem: any) => {
-                const block: any = {
-                    _type: 'block',
-                    _key: uuidv4(),
-                    style: 'normal',
-                    listItem: 'number',
-                    children: [],
-                    markDefs: []
-                };
-
-                listItem.content?.forEach((para: any) => {
-                    para.content?.forEach((child: any) => {
-                        if (child.type === 'text') {
-                            block.children.push({
-                                _type: 'span',
-                                _key: uuidv4(),
-                                text: child.text || '',
-                                marks: []
-                            });
-                        }
-                    });
-                });
-
-                portableText.push(block);
-            });
-        } else if (node.type === 'image') {
-            portableText.push({
-                _type: 'image',
-                _key: uuidv4(),
-                asset: {
-                    _type: 'reference',
-                    _ref: node.attrs.src
-                },
-                alt: node.attrs.alt || ''
-            });
-        }
-    });
-
-    return portableText;
-}
-
-/**
- * Convert Sanity Portable Text to Tiptap JSON
- */
-function portableTextToTiptap(portableText: any): any {
-    // Defensive check: ensure input is actually an array
-    if (!portableText || !Array.isArray(portableText) || portableText.length === 0) {
-        return {
-            type: 'doc',
-            content: []
-        };
-    }
-
-    const content: any[] = [];
-
-    portableText.forEach((block: any) => {
-        if (block._type === 'block') {
-            let nodeType = 'paragraph';
-            const attrs: any = {};
-
-            if (block.style === 'h2') {
-                nodeType = 'heading';
-                attrs.level = 2;
-            } else if (block.style === 'h3') {
-                nodeType = 'heading';
-                attrs.level = 3;
-            } else if (block.style === 'h4') {
-                nodeType = 'heading';
-                attrs.level = 4;
-            }
-
-            const children: any[] = [];
-
-            block.children?.forEach((child: any) => {
-                if (child._type === 'span') {
-                    const marks: any[] = [];
-
-                    child.marks?.forEach((mark: string) => {
-                        if (mark === 'strong') marks.push({ type: 'bold' });
-                        if (mark === 'em') marks.push({ type: 'italic' });
-                        // Handle link marks
-                        const linkMark = block.markDefs?.find((def: any) => def._key === mark);
-                        if (linkMark && linkMark._type === 'link') {
-                            marks.push({
-                                type: 'link',
-                                attrs: { href: linkMark.href }
-                            });
-                        }
-                    });
-
-                    children.push({
-                        type: 'text',
-                        text: child.text,
-                        marks: marks.length > 0 ? marks : undefined
-                    });
-                }
-            });
-
-            content.push({
-                type: nodeType,
-                attrs,
-                content: children.length > 0 ? children : undefined
-            });
-        } else if (block._type === 'image') {
-            content.push({
-                type: 'image',
-                attrs: {
-                    src: block.asset._ref,
-                    alt: block.alt || ''
-                }
-            });
-        }
-    });
-
-    return {
-        type: 'doc',
-        content
-    };
+    /** Which slash-menu blocks to offer. Defaults to all five insert-group items (headings/lists count as baseline, not gated). */
+    enabledBlocks?: SlashMenuItemId[];
+    /** Passed to the upload endpoint so it can authorize against a workspace membership (workspace docs only). */
+    collaborationId?: string;
+    /**
+     * Visual shell. "default" keeps the bordered card look used by workspace
+     * docs; "canvas" (Task E3) drops the card chrome for an open editorial
+     * canvas — floating pill toolbar, borderless body, quiet footer.
+     */
+    variant?: 'default' | 'canvas';
+    /** Id of the editable area, so a label, an error link or "focus the first problem" can reach it. */
+    id?: string;
+    /** Id of the visible label naming the editable area. */
+    labelledBy?: string;
+    /** `aria-invalid` / `aria-describedby` for the editable area, from the form's error system. */
+    describedBy?: { 'aria-invalid'?: true; 'aria-describedby'?: string };
+    /** Shown but not editable (e.g. while the form's saved draft is loading). */
+    readOnly?: boolean;
 }
 
 export default function PortableTextEditor({
@@ -277,27 +68,64 @@ export default function PortableTextEditor({
     onChangeAction,
     placeholder,
     language = 'en',
-    maxLength = 20000
+    maxLength = 20000,
+    enabledBlocks = DEFAULT_SLASH_MENU_ITEMS,
+    collaborationId,
+    variant = 'default',
+    id,
+    labelledBy,
+    describedBy,
+    readOnly = false
 }: PortableTextEditorProps) {
+    const t = useTranslations('editor');
     const isRTL = language === 'ar';
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
+    // handlePaste runs inside useEditor's options, before `editor` is in scope.
+    const editorRef = useRef<Editor | null>(null);
 
     const editor = useEditor({
         immediatelyRender: false, // Prevents SSR hydration errors in Next.js
+        editable: !readOnly,
         extensions: [
             StarterKit.configure({
+                // Level 1 is what `# ` produces; it is stored as the page's
+                // section heading (h2) — the title is the page's only h1.
                 heading: {
-                    levels: [2, 3, 4]
+                    levels: [1, 2, 3, 4]
                 }
             }),
-            Image.configure({
-                inline: true,
-                allowBase64: true
+            EditorImage.configure({
+                inline: false,
+                allowBase64: false
             }),
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
                     class: 'text-ccm-water underline'
                 }
+            }),
+            Youtube,
+            InfoBox,
+            Break,
+            // "Data & story" blocks (Task E8). Always registered so existing
+            // content renders; whether they're OFFERED is per-surface via
+            // `enabledBlocks` (lived experiences exclude them).
+            StoryTimeline,
+            StoryChart,
+            StoryMermaid,
+            // Renders the `placeholder` prop as ghost text on the empty editor
+            // (the prop was previously passed to EditorContent as a no-op DOM
+            // attribute). Styled via `.is-editor-empty` in globals.css.
+            Placeholder.configure({
+                placeholder: placeholder ?? ''
+            }),
+            SlashMenu.configure({
+                enabledBlocks,
+                labels: Object.fromEntries(
+                    enabledBlocks.map((id) => [id, t(`slashMenu.items.${id}.label`)])
+                ),
+                onInsertImage: () => fileInputRef.current?.click()
             })
         ],
         content: portableTextToTiptap(value),
@@ -308,25 +136,100 @@ export default function PortableTextEditor({
         },
         editorProps: {
             attributes: {
-                class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4',
-                dir: isRTL ? 'rtl' : 'ltr'
+                class: variant === 'canvas'
+                    ? 'prose max-w-none focus:outline-none min-h-[420px] py-4'
+                    : 'prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4',
+                dir: isRTL ? 'rtl' : 'ltr',
+                lang: language,
+                role: 'textbox',
+                'aria-multiline': 'true',
+                ...(id ? { id } : {}),
+                ...(labelledBy ? { 'aria-labelledby': labelledBy } : {})
+            },
+            // Plain-text markdown (from a notes app, a chat, a README) becomes
+            // real headings/lists/quotes/code blocks. Rich HTML pastes keep
+            // tiptap's own handling, and ordinary prose is left alone.
+            handlePaste: (view, event) => {
+                // Inside a code block the paste IS code (`# comment`, `- item`): leave it verbatim.
+                if (view.state.selection.$from.parent.type.spec.code) return false;
+                const text = event.clipboardData?.getData('text/plain') ?? '';
+                const hasHtml = Boolean(event.clipboardData?.getData('text/html'));
+                if (hasHtml) return false;
+                const doc = markdownToTiptap(text);
+                if (!doc || !editorRef.current) return false;
+                editorRef.current.chain().focus().insertContent(doc.content).run();
+                return true;
             }
         }
     });
+    editorRef.current = editor;
 
-    const addImage = useCallback(() => {
-        const url = window.prompt('Enter image URL:');
-        if (url && editor) {
-            editor.chain().focus().setImage({ src: url }).run();
-        }
-    }, [editor]);
+    const insertUploadedImage = useCallback(
+        async (file: File) => {
+            if (!editor) return;
+            setUploading(true);
+            try {
+                const uploaded = await uploadEditorImage(file, collaborationId);
+                editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                        src: uploaded.url,
+                        // @ts-expect-error -- EditorImage's extra attrs aren't in tiptap's base SetImageOptions type
+                        assetRef: uploaded.assetRef,
+                        width: uploaded.width,
+                        height: uploaded.height,
+                        lqip: uploaded.lqip
+                    })
+                    .run();
+            } catch (err) {
+                const message = err instanceof ImageUploadError ? err.message : t('image.uploadFailed');
+                toast.error(message);
+            } finally {
+                setUploading(false);
+            }
+        },
+        [editor, collaborationId, t]
+    );
+
+    const onFileChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            e.target.value = ''; // allow re-selecting the same file
+            if (file) void insertUploadedImage(file);
+        },
+        [insertUploadedImage]
+    );
 
     const setLink = useCallback(() => {
-        const url = window.prompt('Enter URL:');
+        const url = window.prompt(t('link.promptUrl'));
         if (url && editor) {
             editor.chain().focus().setLink({ href: url }).run();
         }
-    }, [editor]);
+    }, [editor, t]);
+
+    // Error attributes change after the editor exists; ProseMirror leaves
+    // attributes it did not set alone, so they are applied to its node directly.
+    const invalid = describedBy?.['aria-invalid'];
+    const errorLink = describedBy?.['aria-describedby'];
+    useEffect(() => {
+        let dom: HTMLElement | undefined;
+        try {
+            dom = editor?.view.dom; // throws while the view is not mounted yet
+        } catch {
+            return;
+        }
+        if (!dom) return;
+        if (invalid) dom.setAttribute('aria-invalid', 'true');
+        else dom.removeAttribute('aria-invalid');
+        if (errorLink) dom.setAttribute('aria-describedby', errorLink);
+        else dom.removeAttribute('aria-describedby');
+    }, [editor, invalid, errorLink]);
+    useEffect(() => {
+        // false: unlocking is not an edit, so it must not fire onUpdate (that
+        // would autosave a freshly loaded, untouched form).
+        if (editor && editor.isEditable === readOnly) editor.setEditable(!readOnly, false);
+    }, [editor, readOnly]);
 
     if (!editor) {
         return null;
@@ -334,10 +237,27 @@ export default function PortableTextEditor({
 
     const charCount = editor.state.doc.textContent.length;
 
+    const isCanvas = variant === 'canvas';
+
     return (
-        <div className="border rounded-lg overflow-hidden">
-            {/* Toolbar */}
-            <div className="border-b bg-muted/30 p-2 flex flex-wrap gap-1">
+        <div className={isCanvas ? '' : 'border rounded-lg overflow-hidden'} lang={language}>
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={onFileChange}
+                aria-hidden="true"
+                tabIndex={-1}
+            />
+            {/* Toolbar — floating pill in canvas mode, card header otherwise */}
+            <div
+                className={
+                    isCanvas
+                        ? 'flex w-fit flex-wrap gap-1 rounded-full border border-border/70 bg-background/95 px-2 py-1 shadow-sm'
+                        : 'border-b bg-muted/30 p-2 flex flex-wrap gap-1'
+                }
+            >
                 <Button
                     type="button"
                     variant="ghost"
@@ -423,9 +343,11 @@ export default function PortableTextEditor({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={addImage}
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    aria-label={t('image.insertLabel')}
                 >
-                    <ImageIcon className="w-4 h-4" />
+                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                 </Button>
 
                 <div className="w-px h-6 bg-border mx-1" />
@@ -451,13 +373,19 @@ export default function PortableTextEditor({
             </div>
 
             {/* Editor */}
-            <EditorContent editor={editor} placeholder={placeholder} />
+            <EditorContent editor={editor} />
 
             {/* Footer */}
-            <div className="border-t p-2 text-xs text-muted-foreground flex justify-between">
-                <span>Use the toolbar to format your content</span>
+            <div
+                className={
+                    isCanvas
+                        ? 'pt-1 text-xs text-muted-foreground flex justify-between'
+                        : 'border-t p-2 text-xs text-muted-foreground flex justify-between'
+                }
+            >
+                <span>{t('hint')}</span>
                 <span className={charCount > maxLength ? 'text-destructive' : ''}>
-                    {charCount}/{maxLength} characters
+                    {charCount}/{maxLength} {t('charCountSuffix')}
                 </span>
             </div>
         </div>

@@ -10,7 +10,7 @@ import type {
 
 interface Community {
   id: string
-  name: any
+  name: Record<string, string> | string
   type: string
   regionalName: string | null
 }
@@ -160,8 +160,10 @@ export function useUserProfile(): UseUserProfileReturn {
           const result: ApiResponse = await response.json()
           if (result.details) {
             // Handle validation errors
-            const errorMessages = result.details.map(d => `${d.field}: ${d.message}`).join(', ')
-            throw new Error(`Validation errors: ${errorMessages}`)
+            // The messages already say which field and what to change; the raw
+            // field path ("recentWork.0.link") is developer-speak.
+            const errorMessages = [...new Set(result.details.map(d => d.message))].join(' ')
+            throw new Error(errorMessages || result.error || 'Some details need a change before we can save.')
           }
           throw new Error(result.error || 'Failed to update profile')
         } catch (parseError) {

@@ -6,12 +6,11 @@
  * Supports i18n and RTL layouts
  */
 
-import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { cn } from '@/lib/utils'
-import { ChevronDown, X } from 'lucide-react'
+import { X } from 'lucide-react'
 
 export interface CommunityFiltersState {
   communities: string[]
@@ -33,13 +32,13 @@ interface CommunityFiltersProps {
 
 // Map regional name enum values to translation keys
 const REGIONAL_NAME_TO_TRANSLATION_KEY: Record<string, string> = {
-  'SUB_SAHARAN_AFRICA': 'subSaharanAfrica',
-  'NORTHERN_AFRICA_AND_WESTERN_ASIA': 'northernAfricaWesternAsia',
-  'CENTRAL_AND_SOUTHERN_ASIA': 'centralSouthernAsia',
-  'EASTERN_AND_SOUTH_EASTERN_ASIA': 'easternSouthEasternAsia',
-  'LATIN_AMERICA_AND_THE_CARIBBEAN': 'latinAmericaCaribbean',
-  'OCEANIA': 'oceania',
-  'EUROPE_AND_NORTH_AMERICA': 'europeNorthAmerica'
+  'ssa': 'subSaharanAfrica',
+  'nawa': 'northernAfricaWesternAsia',
+  'csa': 'centralSouthernAsia',
+  'esea': 'easternSouthEasternAsia',
+  'lac': 'latinAmericaCaribbean',
+  'oce': 'oceania',
+  'enam': 'europeNorthAmerica'
 }
 
 const WORK_TYPES = [
@@ -64,11 +63,6 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   const tNav = useTranslations('navigation')
   const tWorkTypes = useTranslations('profile.edit.workTypes')
   const tExpertise = useTranslations('profile.edit.expertise')
-
-  // One filter group can be open at a time on this horizontal bar.
-  const [openGroup, setOpenGroup] = useState<string | null>(null)
-  const toggleGroup = (group: string) =>
-    setOpenGroup(prev => (prev === group ? null : group))
 
   // Inclusion model: toggling a value adds/removes it from the active selection.
   const toggleValue = (key: keyof CommunityFiltersState, value: string) => {
@@ -104,71 +98,37 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   ]
 
   return (
-    <div className={cn('w-full', className)} dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Filter group triggers — a horizontal, wrapping, mobile-friendly row */}
-      <div className="flex flex-wrap items-center gap-2">
-        {groups.map(group => {
-          const count = filters[group.key].length
-          const isOpen = openGroup === group.id
-          return (
-            <button
-              key={group.id}
-              type="button"
-              onClick={() => toggleGroup(group.id)}
-              aria-expanded={isOpen}
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                count > 0
-                  ? 'border-[var(--color-ccm-sea)]/40 bg-[var(--color-ccm-sea)]/10 text-[var(--color-ccm-sea)]'
-                  : 'border-border bg-background text-foreground/80 hover:bg-muted'
-              )}
-            >
-              <span>{group.label}</span>
-              {count > 0 && (
-                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] px-1.5 text-xs font-semibold text-white">
-                  {count}
-                </span>
-              )}
-              <ChevronDown
-                className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')}
+    <div className={cn('w-full space-y-4', className)} dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* All groups shown inline (no collapse) — each is a labelled row of
+          multi-select pills. */}
+      {groups.map(group => (
+        <div key={group.id} className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {group.label}
+          </span>
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 sm:[&>*]:flex-auto sm:[&>*]:flex-none">
+            {group.options.map(opt => (
+              <FilterChip
+                key={opt.value}
+                label={opt.label}
+                active={filters[group.key].includes(opt.value)}
+                onClick={() => toggleValue(group.key, opt.value)}
               />
-            </button>
-          )
-        })}
-
-        {activeCount > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAll}
-            className="h-9 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4 me-1.5" />
-            {t('clearFilters')}
-          </Button>
-        )}
-      </div>
-
-      {/* Expanded options for the open group — pills under the triggers */}
-      {openGroup && (
-        <div className="mt-3 rounded-xl border bg-muted/30 p-3">
-          <div className="flex flex-wrap gap-2">
-            {groups
-              .find(g => g.id === openGroup)!
-              .options.map(opt => {
-                const group = groups.find(g => g.id === openGroup)!
-                return (
-                  <FilterChip
-                    key={opt.value}
-                    label={opt.label}
-                    active={filters[group.key].includes(opt.value)}
-                    onClick={() => toggleValue(group.key, opt.value)}
-                  />
-                )
-              })}
+            ))}
           </div>
         </div>
+      ))}
+
+      {activeCount > 0 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearAll}
+          className="h-9 text-muted-foreground hover:text-foreground"
+        >
+          <X className="me-1.5 size-4" />
+          {t('clearFilters')}
+        </Button>
       )}
     </div>
   )

@@ -1,4 +1,4 @@
-import { defineField } from "sanity";
+import { defineField, type ObjectRule, type Rule } from "sanity";
 
 /**
  * Shared supported languages for field-level localized objects ({en,es,fr,ar}).
@@ -25,6 +25,9 @@ interface LocalizedFieldOptions {
   description?: string;
   /** Require the default-language (English) value. */
   required?: boolean;
+  /** Soft length cap: warn (never block) when a language value exceeds it —
+   *  frontend cards clamp overflowing text, so longer values get cut off. */
+  maxWarn?: number;
 }
 
 /**
@@ -40,10 +43,26 @@ export function createLocalizedField(
   type: string = "string",
   options: LocalizedFieldOptions = {}
 ) {
-  const { group, description, required = false } = options;
+  const { group, description, required = false, maxWarn } = options;
   const requireDefault = required
-    ? (Rule: any) => Rule.required()
+    ? (rule: ObjectRule) => rule.required()
     : undefined;
+
+  const subValidation = (isDefault: boolean | undefined) => {
+    const needsRequired = Boolean(isDefault && required);
+    if (!needsRequired && !maxWarn) return undefined;
+    return (rule: Rule) => {
+      const rules = [];
+      if (needsRequired) rules.push(rule.required());
+      if (maxWarn)
+        rules.push(
+          rule.max(maxWarn).warning(
+            `Keep under ${maxWarn} characters — longer text is cut off on cards.`
+          )
+        );
+      return rules.length === 1 ? rules[0] : rules;
+    };
+  };
 
   return defineField({
     name,
@@ -55,7 +74,7 @@ export function createLocalizedField(
       name: lang.id,
       title: lang.title,
       type,
-      validation: lang.isDefault && required ? requireDefault : undefined,
+      validation: subValidation(lang.isDefault),
     })),
     validation: required ? requireDefault : undefined,
   });

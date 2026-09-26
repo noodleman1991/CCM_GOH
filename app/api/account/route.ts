@@ -3,6 +3,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { deleteUserData } from "@/lib/account-deletion"
 import { z } from "zod"
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const UpdateAccountSchema = z.object({
   action: z.enum(["update_email", "update_phone", "change_password", "delete_account"]),
@@ -16,6 +17,9 @@ const UpdateAccountSchema = z.object({
  * Account management operations (email, phone, password, delete)
  */
 export async function PUT(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "account:update", { limit: 10, windowSeconds: 3600 });
+  if (limited) return limited;
+
   try {
     const { userId } = await auth()
     

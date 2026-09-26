@@ -1,21 +1,23 @@
 "use client";
-import { cn } from "@/lib/utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type TimelineRow = Extract<Block, { _type: "timeline-row" }>;
-type Timeline1 = NonNullable<NonNullable<TimelineRow["timelines"]>>[number];
+/** Fields one timeline entry carries. Exported so timeline-row.tsx (the array
+ *  owner) can type its `timelines` prop against the same shape rather than
+ *  redeclaring it. */
+export interface Timeline1Fields {
+  title?: string | null;
+  tagLine?: string | null;
+  body?: PortableTextBlock[] | null;
+}
 
-interface Timeline1Props extends Timeline1 {
-  color?: ColorVariant;
+interface Timeline1Props extends Timeline1Fields {
   locale?: string;
 }
 
 export default function Timeline1({
-  color,
   title,
   tagLine,
   body,
@@ -24,10 +26,12 @@ export default function Timeline1({
   const ref = useRef(null);
   const isInView = useInView(ref);
 
+  // Entrance (fade/rise) is handled once by the shared BlockReveal wrapper;
+  // the timeline keeps only its internal rail-dot fill animation.
   return (
-    <div ref={ref} className="relative border-s-2 ps-12 lg:ps-28 py-8">
+    <div ref={ref} className="relative border-s-2 ps-12 @content-lg/page:ps-28 py-8">
       <motion.div
-        className="absolute w-8 h-8 rounded-full top-[3.5rem] lg:top-[3.75rem] start-[-1.1rem] border-8"
+        className="absolute w-8 h-8 rounded-full top-[3.5rem] @content-lg/page:top-[3.75rem] start-[-1.1rem] border-8"
         initial={{
           backgroundColor: "hsl(var(--background))",
           opacity: 0.3,
@@ -44,59 +48,12 @@ export default function Timeline1({
           delay: 0.6,
         }}
       />
-      <div className={cn(color === "primary" ? "text-background" : undefined)}>
+      <div>
         <h3 className="flex justify-between items-center font-semibold mb-4">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={
-              isInView && {
-                opacity: 1,
-                y: 0,
-              }
-            }
-            transition={{
-              duration: 0.8,
-              ease: [0.21, 0.45, 0.27, 0.9],
-              delay: 0.6,
-            }}
-          >
-            {title}
-          </motion.span>
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={
-              isInView && {
-                opacity: 1,
-                y: 0,
-              }
-            }
-            transition={{
-              duration: 0.8,
-              ease: [0.21, 0.45, 0.27, 0.9],
-              delay: 0.6,
-            }}
-          >
-            {tagLine}
-          </motion.span>
+          <span>{title}</span>
+          <span>{tagLine}</span>
         </h3>
-        {body && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={
-              isInView && {
-                opacity: 1,
-                y: 0,
-              }
-            }
-            transition={{
-              duration: 0.8,
-              ease: [0.21, 0.45, 0.27, 0.9],
-              delay: 0.7,
-            }}
-          >
-            <PortableTextRenderer value={body} locale={locale} />
-          </motion.div>
-        )}
+        {body && <PortableTextRenderer value={body} locale={locale} />}
       </div>
     </div>
   );

@@ -5,68 +5,19 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import SectionContainer from "@/components/ui/section-container";
+import { SectionHeader } from "@/components/ui/section-header";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Calendar, User } from "lucide-react";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
-import { stegaClean } from "next-sanity";
+import { imageUrl } from "@/lib/content/images";
 import { BackgroundOptionType } from "@/types/background-option";
-import { SectionPadding } from "@/sanity.types";
+import { SectionPadding } from "@/components/ui/section-container";
 import { VideoModal } from "@/components/blocks/video-modal";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { normalizeTagColor, sortedTags } from "@/lib/tags";
+import type { LivedExperienceCarouselItem } from "@/lib/content/lived-experiences";
 
-interface LivedExperience {
-  _id: string;
-  _type: string;
-  title?: {
-    en?: string;
-    es?: string;
-    fr?: string;
-    ar?: string;
-  };
-  description?: {
-    en?: string;
-    es?: string;
-    fr?: string;
-    ar?: string;
-  };
-  videoLink?: string;
-  thumbnail?: any;
-  duration?: string;
-  publishedAt?: string;
-  author?: {
-    _id: string;
-    name: string;
-    image?: any;
-    organizationalAffiliation?: string;
-  };
-  relatedCommunity?: {
-    _id: string;
-    name?: {
-      en?: string;
-      es?: string;
-      fr?: string;
-      ar?: string;
-    };
-    slug?: {
-      current: string;
-    };
-  };
-  tags?: Array<{
-    _id: string;
-    label?: {
-      en?: string;
-      es?: string;
-      fr?: string;
-      ar?: string;
-    };
-    color?: string;
-  }>;
-  featured?: boolean;
-  slug?: {
-    current: string;
-  };
-}
+type LivedExperience = LivedExperienceCarouselItem;
 
 interface LivedExperiencesCarouselProps {
   title?: string;
@@ -129,13 +80,22 @@ function LivedExperienceCard({
   };
 
   const thumbnailUrl = experience.thumbnail?.asset?._id
-    ? urlFor(experience.thumbnail).width(800).url()
+    ? imageUrl(experience.thumbnail, { width: 800 })
     : getYouTubeThumbnail(experience.videoLink);
 
   return (
     <div
-      className="group relative bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
+      role="button"
+      tabIndex={0}
+      aria-label={`${t('watchExperience')}: ${title}`}
+      className="group relative bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ccm-water"
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       {/* Thumbnail with Play Button Overlay */}
       <div className="relative aspect-video bg-muted flex-shrink-0">
@@ -190,9 +150,9 @@ function LivedExperienceCard({
         {/* Metadata */}
         <div className="space-y-2 text-sm text-muted-foreground flex-grow">
           {experience.author && (
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span>{experience.author.name}</span>
+            <div className="flex min-w-0 items-center gap-2">
+              <User className="w-4 h-4 shrink-0" />
+              <span className="min-w-0 truncate">{experience.author.name}</span>
               {experience.author.organizationalAffiliation && (
                 <span className="text-muted-foreground">
                   • {experience.author.organizationalAffiliation}
@@ -215,38 +175,40 @@ function LivedExperienceCard({
           )}
         </div>
 
-        {/* Tags - Show 2 tags + count */}
-        {experience.tags && experience.tags.length > 0 && (
+        {/* Tags - Show 2 tags + count (sorted, on-brand colours) */}
+        {(() => {
+          const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+          const tags = sortedTags(experience.tags, supportedLocale);
+          if (tags.length === 0) return null;
+          return (
           <div className="flex flex-wrap gap-2 mt-4">
-            {experience.tags
-              .filter((tag) => tag && tag.label && tag.color) // Filter out null tags and tags without color
-              .slice(0, 2)
-              .map((tag) => {
-              const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+            {tags.slice(0, 2).map((tag) => {
+              const color = normalizeTagColor(tag.color);
               const tagLabel = typeof tag.label === 'string'
                 ? tag.label
-                : getLocalizedField(tag.label, supportedLocale, "Tag");
+                : getLocalizedField(tag.label as never, supportedLocale, "Tag");
               return (
                 <span
                   key={tag._id}
                   className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2"
                   style={{
-                    borderColor: tag.color,
-                    color: tag.color,
-                    backgroundColor: `${tag.color}10`
+                    borderColor: color,
+                    color,
+                    backgroundColor: `${color}10`
                   }}
                 >
                   {tagLabel}
                 </span>
               );
             })}
-            {experience.tags.filter((tag) => tag && tag.label && tag.color).length > 2 && (
+            {tags.length > 2 && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                +{experience.tags.filter((tag) => tag && tag.label && tag.color).length - 2}
+                +{tags.length - 2}
               </span>
             )}
           </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );
@@ -264,6 +226,7 @@ export default function LivedExperiencesCarousel({
   locale = "en",
 }: LivedExperiencesCarouselProps) {
   const t = useTranslations('regional');
+  const tCommon = useTranslations('common');
   const [itemsPerView, setItemsPerView] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<LivedExperience | null>(null);
   const [scrollContainerRef, setScrollContainerRef] = useState<HTMLDivElement | null>(null);
@@ -313,17 +276,8 @@ export default function LivedExperiencesCarousel({
       <SectionContainer background={background} padding={padding}>
         <div className="w-full">
           {(title || subtitle) && (
-            <div className="mb-12">
-              {title && (
-                <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
-                  {title}
-                </h2>
-              )}
-              {subtitle && (
-                <p className="text-lg text-muted-foreground max-w-2xl">
-                  {subtitle}
-                </p>
-              )}
+            <div className="mb-6 @content-md/page:mb-8">
+              <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
             </div>
           )}
           <div className="text-center py-12 text-muted-foreground">
@@ -340,26 +294,22 @@ export default function LivedExperiencesCarousel({
       <div className="w-full">
         {/* Header */}
         {(title || subtitle) && (
-          <div className="mb-12">
-            {title && (
-              <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
-                {title}
-              </h2>
-            )}
-            {subtitle && (
-              <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
-                {subtitle}
-              </p>
-            )}
+          <div className="mb-6 @content-md/page:mb-8">
+            <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
           </div>
         )}
 
         {/* Carousel Container with Native Scroll */}
         <div className="relative">
-          {/* Carousel Content with Horizontal Scroll */}
+          {/* Carousel Content with Horizontal Scroll.
+              tabIndex + role/aria-label make the scroll region reachable and
+              operable by keyboard (arrow keys scroll a focused region). */}
           <div
             ref={setScrollContainerRef}
-            className="overflow-x-auto scrollbar-hide pb-4"
+            tabIndex={0}
+            role="region"
+            aria-label={title || t('noLivedExperiences')}
+            className="overflow-x-auto scrollbar-hide pb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ccm-water rounded-lg"
             style={{
               scrollSnapType: 'x mandatory',
               WebkitOverflowScrolling: 'touch'
@@ -374,7 +324,7 @@ export default function LivedExperiencesCarousel({
                 return (
                   <div
                     key={experience._id}
-                    className="flex-none w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+                    className="flex-none w-full @content-md/page:w-[calc(50%-0.75rem)] @content-lg/page:w-[calc(33.333%-1rem)]"
                     style={{ scrollSnapAlign: 'start' }}
                   >
                     <LivedExperienceCard
@@ -395,6 +345,7 @@ export default function LivedExperiencesCarousel({
                 variant="outline"
                 size="icon"
                 onClick={scrollToPrev}
+                aria-label={tCommon('previous')}
                 className="rounded-full"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -404,6 +355,7 @@ export default function LivedExperiencesCarousel({
                 variant="outline"
                 size="icon"
                 onClick={scrollToNext}
+                aria-label={tCommon('next')}
                 className="rounded-full"
               >
                 <ChevronRight className="w-4 h-4" />

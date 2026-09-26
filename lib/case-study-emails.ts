@@ -1,6 +1,5 @@
-import { Resend } from "resend"
 import { prisma } from "@/lib/prisma"
-import { writeClient } from "@/sanity/lib/write-client"
+import { escapeHtml, sendEmail, type TransportResult } from "@/lib/email/send"
 
 /**
  * Sends a transactional email to a case-study submitter when their submission's
@@ -15,9 +14,10 @@ import { writeClient } from "@/sanity/lib/write-client"
  * every edit, so without this we'd spam the submitter.
  */
 
-// Resend requires a verified sender. Falls back to onboarding@resend.dev for
-// local/dev where no custom domain is configured.
-const FROM = process.env.CASE_STUDY_EMAIL_FROM || "Connecting Climate Minds <onboarding@resend.dev>"
+// The sender address and the provider result both live in lib/email/send.ts:
+// `emailFrom()` (CASE_STUDY_EMAIL_FROM, else Resend's sandbox address, which
+// delivers only to the account owner) and `sendEmail()`, which reads Resend's
+// `{ error }` result instead of assuming a resolved promise means delivered.
 
 type NotifiableStatus = "approved" | "rejected" | "revision"
 
@@ -131,12 +131,6 @@ function buildStatusEmail({ locale = "en", title, status, reviewNotes, siteUrl }
   return { subject: c.subject, html, text }
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (ch) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch] as string)
-  )
-}
-
 interface NotifyInput {
   caseStudyId: string
   status: string
@@ -148,8 +142,59 @@ interface NotifyInput {
   siteUrl: string
 }
 
+export interface StatusEmailMessage {
+  from: string
+  to: string
+  subject: string
+  html: string
+  text: string
+}
+
+/**
+ * The two effects this function has on the world, made injectable.
+ *
+ * Both default to what they have always been, so every existing caller — the
+ * Sanity webhook route, and the six tests that pass no second argument — is
+ * unchanged.
+ *
+ * `sendEmail` exists because **delivery is not a usable success signal here**:
+ * the Resend sending domain is unverified, so every recipient but one is
+ * rejected with a 403 and status mail has been failing silently in production.
+ * A caller that needs to know the send was *attempted*, with which arguments,
+ * injects its own.
+ *
+ * `markNotified` exists because the default routes through
+ * `lib/content/case-studies.ts`, which follows `CONTENT_BACKEND`. Payload's
+ * `afterChange` hook is Payload-side by construction and must not write its
+ * bookkeeping into Sanity because a flag somewhere says `sanity`, so it passes
+ * a Payload-local writer.
+ */
+export interface NotifyDeps {
+  sendEmail?: (message: StatusEmailMessage) => Promise<TransportResult>
+  markNotified?: (caseStudyId: string, status: NotifiableStatus) => Promise<void>
+}
+
+/**
+ * The default bookkeeping writer: the seam's `updateCaseStudy`, imported
+ * **dynamically**.
+ *
+ * It used to be a top-level import, which made this module — three functions
+ * and some copy — drag the whole of `lib/content/` behind it, including
+ * `pages.ts` at 8,550 lines and the `server-only` guard that comes with it. The
+ * cost only showed up once Payload's `afterChange` hook started importing this
+ * module: outside the Next bundler `server-only` does not resolve, so the
+ * notifier could not even be loaded in a plain Node process, and the hook's own
+ * try/catch turned that into `email: "error"` on every transition. Deferring it
+ * to the one line that needs it costs nothing and makes the module loadable
+ * anywhere.
+ */
+async function defaultMarkNotified(caseStudyId: string, status: NotifiableStatus): Promise<void> {
+  const { updateCaseStudy } = await import("@/lib/content/case-studies")
+  await updateCaseStudy(caseStudyId, { notifiedStatus: status })
+}
+
 /** Returns a short result describing what happened (for webhook logging). */
-export async function notifyCaseStudyStatusChange(input: NotifyInput): Promise<string> {
+export async function notifyCaseStudyStatusChange(input: NotifyInput, deps: NotifyDeps = {}): Promise<string> {
   const { caseStudyId, status, notifiedStatus, submittedBy, title, reviewNotes, locale, siteUrl } = input
 
   if (!isNotifiableStatus(status)) return "skipped: status not notifiable"
@@ -163,7 +208,8 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput): Promise<s
   })
   if (!user?.email) return "skipped: submitter has no email on file"
 
-  if (!process.env.RESEND_API_KEY) return "skipped: RESEND_API_KEY not configured"
+  // Only the default sender needs the key; an injected one is its own transport.
+  if (!deps.sendEmail && !process.env.RESEND_API_KEY) return "skipped: RESEND_API_KEY not configured"
 
   const { subject, html, text } = buildStatusEmail({
     locale,
@@ -173,12 +219,24 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput): Promise<s
     siteUrl,
   })
 
-  // Instantiate lazily so importing this module never constructs a client.
-  const resend = new Resend(process.env.RESEND_API_KEY)
-  await resend.emails.send({ from: FROM, to: user.email, subject, html, text })
+  // An injected sender (tests, the fake-store harness) is the transport; the
+  // default is Resend, constructed lazily inside sendEmail. Either way the
+  // result is read: a rejected message returns `failed:` and does NOT mark the
+  // document notified, so the next status write can try again.
+  const result = await sendEmail(
+    { kind: "case-study-status", to: user.email, subject, html, text },
+    deps.sendEmail
+      ? { transport: (message) => deps.sendEmail!({ from: message.from, to: message.to, subject: message.subject, html: message.html, text: message.text }) }
+      : {},
+  )
+  if (!result.ok) return `failed: ${result.reason}`
 
   // Mark as notified so subsequent edits don't re-send for the same status.
-  await writeClient.patch(caseStudyId).set({ notifiedStatus: status }).commit({ visibility: "async" })
+  // Note: the seam's updateDocument commits synchronously (no `visibility:
+  // "async"` option) — a slightly slower webhook response than before, not a
+  // behaviour change to anything rendered or read.
+  const markNotified = deps.markNotified ?? defaultMarkNotified
+  await markNotified(caseStudyId, status)
 
   return `sent: ${status} -> ${user.email}`
 }

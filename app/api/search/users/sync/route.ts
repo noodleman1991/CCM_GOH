@@ -1,26 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
-import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser, type UserSearchRecord, writeIndexName } from '@/lib/algolia'
+import { authorizeSearchSync, refuseUnlessLiveIndexWritesAllowed } from '@/lib/auth/search-sync-gate'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check internal secret auth or Clerk auth
-    const authHeader = request.headers.get('authorization')
-    const internalSecret = process.env.INTERNAL_SYNC_SECRET
-    const { userId } = await auth()
-
-    // Allow if either internal secret matches OR user is authenticated
-    if (authHeader !== `Bearer ${internalSecret}` && !userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Internal bearer or staff actor; 401 anonymous, 403 member. The check this
+    // replaced let any signed-in user re-index and matched `Bearer undefined`
+    // when the secret was unset (hub audit 2026-09-16, H3).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
 
     // Check if Algolia client is available
     if (!algoliaClient) {
-      return NextResponse.json({ 
-        error: 'Search service not available - missing Algolia configuration' 
+      return NextResponse.json({
+        error: 'Search service not available - missing Algolia configuration'
       }, { status: 503 })
     }
+
+    // Never write to the live index from dev, preview or CI.
+    const refused = refuseUnlessLiveIndexWritesAllowed()
+    if (refused) return refused
 
     const { type = 'full', userIds = [] } = await request.json()
 
@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
       const users = await prisma.user.findMany({
         where: {
           isSearchable: true,
+          // Only PUBLIC profiles are indexed (lib/algolia.ts shouldIndexUser).
+          profileVisibility: 'PUBLIC',
           username: { not: null },
           OR: [
             { firstName: { not: null } },
@@ -69,13 +71,13 @@ export async function POST(request: NextRequest) {
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
-          indexName: ALGOLIA_INDICES.USERS,
-          objects: records as any[]
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
+          objects: records
         })
 
         // Wait for indexing to complete
         if (Array.isArray(response) && response[0]?.taskID) {
-          await algoliaClient.waitForTask({ indexName: ALGOLIA_INDICES.USERS, taskID: response[0].taskID })
+          await algoliaClient.waitForTask({ indexName: writeIndexName(ALGOLIA_INDICES.USERS), taskID: response[0].taskID })
         }
         
         console.log(`✅ Successfully indexed ${records.length} users`)
@@ -115,7 +117,7 @@ export async function POST(request: NextRequest) {
         }
       })
 
-      const toIndex: any[] = []
+      const toIndex: UserSearchRecord[] = []
       const toDelete: string[] = []
 
       for (const user of users) {
@@ -134,7 +136,7 @@ export async function POST(request: NextRequest) {
       // Index users who should be searchable
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objects: toIndex
         })
       }
@@ -142,7 +144,7 @@ export async function POST(request: NextRequest) {
       // Remove users who shouldn't be searchable
       if (toDelete.length > 0) {
         await algoliaClient.deleteObjects({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objectIDs: toDelete
         })
       }
@@ -169,9 +171,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET endpoint to check sync status or get search statistics  
-export async function GET() {
+// GET endpoint to check sync status or get search statistics
+export async function GET(request: NextRequest) {
   try {
+    // Same gate as POST: this used to return user-table counts to anyone
+    // (hub audit 2026-09-16, H3c).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
+
     // Check if Algolia client is available
     if (!algoliaClient) {
       return NextResponse.json({ 
@@ -183,7 +190,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as any).getStats?.({ indexName: ALGOLIA_INDICES.USERS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: writeIndexName(ALGOLIA_INDICES.USERS) })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)

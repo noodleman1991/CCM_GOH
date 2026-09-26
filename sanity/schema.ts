@@ -2,9 +2,13 @@ import { type SchemaTypeDefinition } from "sanity";
 
 // documents
 import homepage from "./schemas/documents/homepage";
+import siteAnnouncement from "./schemas/documents/site-announcement";
+import moderationSettings from "./schemas/documents/moderation-settings";
+import hubIllustrations from "./schemas/documents/hub-illustrations";
+import docsChapter from "./schemas/documents/docs-chapter";
+import profilePrompt from "./schemas/documents/profile-prompt";
 import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
-import post from "./schemas/documents/post";
 import report from "./schemas/documents/report";
 import agenda from "./schemas/documents/agenda";
 import author from "./schemas/documents/author";
@@ -21,6 +25,10 @@ import externalSource from "./schemas/documents/external-source";
 import caseStudy from "./schemas/documents/case-study";
 import caseStudyDraft from "./schemas/documents/case-study-draft";
 import livedExperience from "./schemas/documents/lived-experience";
+import event from "./schemas/documents/event";
+import researchOutput from "./schemas/documents/research-output";
+import dataset from "./schemas/documents/dataset";
+import fundingApplication from "./schemas/documents/funding-application";
 import onboardingContent from "./schemas/documents/onboarding-content";
 import workType from "./schemas/documents/work-type";
 import expertiseArea from "./schemas/documents/expertise-area";
@@ -33,7 +41,9 @@ import link from "./schemas/blocks/shared/link";
 // New block types for portable text
 import breakBlock from "./schemas/blocks/break";
 import infoBox from "./schemas/blocks/info-box";
-import { colorVariant } from "./schemas/blocks/shared/color-variant";
+import storyTimeline from "./schemas/blocks/story-timeline";
+import storyChart from "./schemas/blocks/story-chart";
+import storyMermaid from "./schemas/blocks/story-mermaid";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import { backgroundOption } from "./schemas/blocks/shared/background-option";
@@ -41,6 +51,12 @@ import { backgroundOption } from "./schemas/blocks/shared/background-option";
 // Internationalized objects
 import internationalizedArrayString from "./schemas/objects/internationalized-array-string";
 import internationalizedArrayText from "./schemas/objects/internationalized-array-text";
+// Content connections (cross-content linking)
+import connection from "./schemas/objects/connection";
+// Output document versions (kind × language)
+import documentVersion from "./schemas/objects/document-version";
+// Reusable geotag (spec A2): coordinate + display text + precision + ISO country code
+import place from "./schemas/objects/place";
 
 // Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
@@ -73,6 +89,11 @@ import faqs from "./schemas/blocks/faqs";
 import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
 import regionMap from "./schemas/blocks/maps/region-map";
+import atlasEmbed from "./schemas/blocks/maps/atlas-embed";
+import peopleWidget from "./schemas/blocks/people/people-widget";
+import eventsCalendar from "./schemas/blocks/events/events-calendar";
+import freshContent from "./schemas/blocks/fresh-content";
+import submitStoryBanner from "./schemas/blocks/cta/submit-story-banner";
 
 // Insert blocks for structured content pattern
 import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert";
@@ -90,8 +111,12 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     types: [
         // documents
         homepage,
+        siteAnnouncement,
+        moderationSettings,
+        hubIllustrations,
+        docsChapter,
+        profilePrompt,
         page,
-        post,
         author,
         category,
         faq,
@@ -104,6 +129,10 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         caseStudy,
         caseStudyDraft,
         livedExperience,
+        event,
+        researchOutput,
+        dataset,
+        fundingApplication,
         regionalCommunity,
         report,
         agenda,
@@ -120,13 +149,21 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         // portable text block types
         breakBlock,
         infoBox,
-        colorVariant,
+        // "Data & story" blocks (Task E8)
+        storyTimeline,
+        storyChart,
+        storyMermaid,
         buttonVariant,
         sectionPadding,
         backgroundOption,
         // internationalized objects
         internationalizedArrayString,
         internationalizedArrayText,
+        // content connections
+        connection,
+        documentVersion,
+        // geo
+        place,
         // blocks
         hero1,
         hero2,
@@ -158,6 +195,11 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         newsletter,
         allPosts,
         regionMap,
+        atlasEmbed,
+        peopleWidget,
+        eventsCalendar,
+        freshContent,
+        submitStoryBanner,
         // insert blocks
         manualContentInsert,
         dynamicContentInsert,

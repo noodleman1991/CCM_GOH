@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aggregateRegionData, FACETS, type FacetId } from "../region-facets";
+import { aggregateRegionData, atlasDestination, DEFAULT_LAYERS, FACETS, FALLBACK_THEMES, parseLayers, type FacetId } from "../region-facets";
 import { REGION_CODES } from "../region-codes";
 
 const zero = () =>
@@ -18,23 +18,98 @@ describe("aggregateRegionData", () => {
 
   it("scales intensity to the max value (max → 1)", () => {
     const counts = zero();
-    counts.OCEANIA = 5;
-    counts.EUROPE_AND_NORTH_AMERICA = 10;
+    counts.oce = 5;
+    counts.enam = 10;
     const data = aggregateRegionData(counts, "memberCount");
-    const oce = data.find((d) => d.code === "OCEANIA")!;
-    const eur = data.find((d) => d.code === "EUROPE_AND_NORTH_AMERICA")!;
+    const oce = data.find((d) => d.code === "oce")!;
+    const eur = data.find((d) => d.code === "enam")!;
     expect(eur.intensity).toBe(1);
     expect(oce.intensity).toBeCloseTo(0.5);
   });
 
-  it("exposes the three facets", () => {
+  it("exposes the content facets", () => {
     const ids = FACETS.map((f) => f.id).sort();
     expect(ids).toEqual(
-      (["caseStudyCount", "memberCount", "newsCount"] as FacetId[]).sort()
+      ([
+        "caseStudyCount",
+        "livedExpCount",
+        "memberCount",
+        "newsCount",
+        "researchOutputCount",
+      ] as FacetId[]).sort()
     );
   });
 
   it("throws on an unknown facet", () => {
     expect(() => aggregateRegionData(zero(), "nope" as FacetId)).toThrow();
+  });
+});
+
+describe("themes + destinations", () => {
+  it("defines the four fallback theme slugs", () => {
+    expect(FALLBACK_THEMES.map((t) => t.slug)).toEqual(["displacement", "livelihoods", "youth", "indigenous"]);
+  });
+  it("gives every fallback theme a label in all 4 locales", () => {
+    for (const theme of FALLBACK_THEMES) {
+      expect(theme.label.en).toBeTruthy();
+      expect(theme.label.es).toBeTruthy();
+      expect(theme.label.fr).toBeTruthy();
+      expect(theme.label.ar).toBeTruthy();
+    }
+  });
+  it("routes each facet to its listing", () => {
+    expect(atlasDestination("caseStudyCount", "sub-saharan-africa"))
+      .toBe("/research-and-action/case-studies?communities=sub-saharan-africa");
+    expect(atlasDestination("livedExpCount", "oceania")).toBe("/lived-experiences?regions=oceania");
+  });
+});
+
+describe("parseLayers", () => {
+  it("defaults to every content type when null", () => {
+    expect(parseLayers(null)).toEqual(DEFAULT_LAYERS);
+  });
+
+  it("defaults to every content type when empty string", () => {
+    expect(parseLayers("")).toEqual(DEFAULT_LAYERS);
+  });
+
+  it("parses a comma list of valid facet ids", () => {
+    expect(parseLayers("caseStudyCount,livedExpCount")).toEqual(["caseStudyCount", "livedExpCount"]);
+  });
+
+  it("dedupes repeated ids", () => {
+    expect(parseLayers("caseStudyCount,caseStudyCount,livedExpCount")).toEqual([
+      "caseStudyCount",
+      "livedExpCount",
+    ]);
+  });
+
+  it("drops invalid/unknown ids", () => {
+    expect(parseLayers("caseStudyCount,nope,livedExpCount")).toEqual(["caseStudyCount", "livedExpCount"]);
+  });
+
+  it("falls back to the default when every id is invalid", () => {
+    expect(parseLayers("nope,alsoNope")).toEqual(DEFAULT_LAYERS);
+  });
+
+  it("never returns an empty array", () => {
+    expect(parseLayers(",,,")).toEqual(DEFAULT_LAYERS);
+  });
+
+  it("caps at 6 facets (all defined facets fit)", () => {
+    const all = FACETS.map((f) => f.id).join(",");
+    expect(parseLayers(all)).toHaveLength(FACETS.length);
+  });
+
+  it("trims whitespace around ids", () => {
+    expect(parseLayers(" caseStudyCount , livedExpCount ")).toEqual(["caseStudyCount", "livedExpCount"]);
+  });
+});
+
+describe("legacy layer aliases (agendas/reports merge)", () => {
+  it("maps old agendaCount/reportCount bookmarks to researchOutputCount", async () => {
+    const { parseLayers } = await import("../region-facets");
+    expect(parseLayers("agendaCount")).toEqual(["researchOutputCount"]);
+    expect(parseLayers("reportCount,caseStudyCount")).toEqual(["researchOutputCount", "caseStudyCount"]);
   });
 });

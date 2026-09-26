@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
+import type { ComponentProps } from "react";
 import Image from "next/image";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import PortableText from "@/components/portable-text-renderer";
-import { fetchRegionalCommunityTeamMembers } from "@/sanity/queries/regional-community-team";
+import { getRegionalCommunityTeamMembers } from "@/lib/content/pages";
 import { getTranslations } from "next-intl/server";
+
+type PortableTextValue = ComponentProps<typeof PortableText>["value"];
 
 interface TeamMember {
   _id: string;
@@ -41,14 +44,14 @@ interface TeamGridBlockProps {
   manualMembers?: TeamMember[];
   regionalCommunity?: {
     _id: string;
-    name: any;
+    name: unknown;
     slug: { current: string };
   };
   gridColumns?: string;
   showTitle?: boolean;
   title?: string;
   showDescription?: boolean;
-  description?: any;
+  description?: PortableTextValue;
   displayRole?: boolean;
   displayAffiliation?: boolean;
   locale?: string;
@@ -65,7 +68,7 @@ interface TeamGridTemplateProps {
     showTitle?: boolean;
     title?: string;
     showDescription?: boolean;
-    description?: any;
+    description?: PortableTextValue;
     displayRole?: boolean;
     displayAffiliation?: boolean;
   };
@@ -88,7 +91,7 @@ export default async function TeamGrid(props: TeamGridProps) {
   let showTitle = true;
   let title = "";
   let showDescription = false;
-  let description: any = null;
+  let description: PortableTextValue | null | undefined = null;
   let displayRole = true;
   let displayAffiliation = true;
   let regionalCommunityId: string | undefined;
@@ -113,7 +116,7 @@ export default async function TeamGrid(props: TeamGridProps) {
     } else if (mode === 'dynamic' && props.regionalCommunity?._id) {
       // Fetch dynamic members (Server Component - Next.js 15)
       try {
-        const dynamicMembers = await fetchRegionalCommunityTeamMembers({
+        const dynamicMembers = await getRegionalCommunityTeamMembers({
           communityId: props.regionalCommunity._id,
           limit: 20
         });
@@ -163,11 +166,11 @@ export default async function TeamGrid(props: TeamGridProps) {
   };
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 @content-sm/page:py-16 @content-lg/page:py-20 bg-background">
+      <div className="max-w-7xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         {/* Section Header */}
         {showTitle && (
-          <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
+          <div className="mb-6 @content-md/page:mb-8 text-center">
             <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance mb-4", heading('lg'))}>
               {title}
             </h2>
@@ -182,11 +185,11 @@ export default async function TeamGrid(props: TeamGridProps) {
         {/* Team Grid */}
         <div
           className={cn(
-            "grid gap-6 sm:gap-8 lg:gap-10",
-            gridColumns === "grid-cols-2" && "grid-cols-1 sm:grid-cols-2",
-            gridColumns === "grid-cols-3" && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-            gridColumns === "grid-cols-4" && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
-            gridColumns === "grid-cols-5" && "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+            "grid gap-6 @content-sm/page:gap-8 @content-lg/page:gap-10",
+            gridColumns === "grid-cols-2" && "grid-cols-1 @content-sm/page:grid-cols-2",
+            gridColumns === "grid-cols-3" && "grid-cols-1 @content-sm/page:grid-cols-2 @content-lg/page:grid-cols-3",
+            gridColumns === "grid-cols-4" && "grid-cols-1 @content-sm/page:grid-cols-2 @content-lg/page:grid-cols-3 @content-xl/page:grid-cols-4",
+            gridColumns === "grid-cols-5" && "grid-cols-2 @content-sm/page:grid-cols-3 @content-lg/page:grid-cols-4 @content-xl/page:grid-cols-5"
           )}
         >
           {members.map((member) => {
@@ -199,10 +202,10 @@ export default async function TeamGrid(props: TeamGridProps) {
               >
                 {/* Avatar */}
                 <div className="mb-4 relative">
-                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-muted ring-4 ring-background shadow-lg transition-all duration-300 group-hover:ring-primary group-hover:shadow-xl">
+                  <div className="w-32 h-32 @content-sm/page:w-40 @content-sm/page:h-40 rounded-full overflow-hidden bg-muted ring-4 ring-background shadow-lg transition-all duration-300 group-hover:ring-primary group-hover:shadow-xl">
                     {member.image?.asset?._id ? (
                       <Image
-                        src={urlForCropped(member.image, 320, 320).url()}
+                        src={imageUrl(member.image, { width: 320, height: 320, crop: true })}
                         alt={member.image.alt || member.name}
                         placeholder={member.image?.asset?.metadata?.lqip ? "blur" : undefined}
                         blurDataURL={member.image?.asset?.metadata?.lqip || ""}
@@ -214,7 +217,7 @@ export default async function TeamGrid(props: TeamGridProps) {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-primary/10">
-                        <span className="text-4xl sm:text-5xl font-bold text-primary">
+                        <span className="text-4xl @content-sm/page:text-5xl font-bold text-primary">
                           {member.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -223,20 +226,20 @@ export default async function TeamGrid(props: TeamGridProps) {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                <h3 className="text-lg @content-sm/page:text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
                   {member.name}
                 </h3>
 
                 {/* Role */}
                 {displayRole && role && (
-                  <p className="text-sm sm:text-base font-medium text-primary mb-1">
+                  <p className="text-sm @content-sm/page:text-base font-medium text-primary mb-1">
                     {role}
                   </p>
                 )}
 
                 {/* Affiliation */}
                 {displayAffiliation && member.organizationalAffiliation && (
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <p className="text-xs @content-sm/page:text-sm text-muted-foreground">
                     {member.organizationalAffiliation}
                   </p>
                 )}

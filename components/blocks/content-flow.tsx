@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { QueryType } from "@/lib/dynamic-queries-types";
 import { fetchDynamicContent } from "@/lib/dynamic-queries-client";
 // Remove Blocks import - handle server components in parent
 import { ManualContentBlock } from "./inserts/manual-content-block";
 import { DynamicContentBlock } from "./inserts/dynamic-content-block";
 import { SeparatorBlock } from "./inserts/separator-block";
+import { BlockReveal } from "./block-reveal";
 
 interface ContentFlowProps {
   sections: ContentSection[];
@@ -63,24 +65,43 @@ interface ContentSectionProps {
 }
 
 function ContentSection({ section, locale, userId, communitySlug }: ContentSectionProps) {
+  const t = useTranslations("blocks");
   const [dynamicData, setDynamicData] = useState<unknown[] | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  // Derived during render instead of mirrored into state in the effect
+  // (react-hooks/set-state-in-effect): a missing queryType is knowable
+  // synchronously from props.
+  const error =
+    section._type === "dynamicContentInsert" && !section.queryType
+      ? t("noQueryType")
+      : fetchError;
+
+  // Adjust-state-during-render pattern: when the inputs of the fetch change,
+  // flip to the loading state during render instead of synchronously inside
+  // the effect (react-hooks/set-state-in-effect). The effect below only kicks
+  // off the request; its async callbacks store the result.
+  const [prevRequest, setPrevRequest] = useState<{
+    section: ContentSection;
+    communitySlug: string;
+  } | null>(null);
+  if (
+    section._type === "dynamicContentInsert" &&
+    section.queryType &&
+    (prevRequest?.section !== section || prevRequest?.communitySlug !== communitySlug)
+  ) {
+    setPrevRequest({ section, communitySlug });
+    setLoading(true);
+    setFetchError(null);
+  }
 
   useEffect(() => {
-    if (section._type === "dynamicContentInsert") {
+    if (section._type === "dynamicContentInsert" && section.queryType) {
       const params = {
         communitySlug,
         count: section.itemCount || 6,
       };
-
-      if (!section.queryType) {
-        setError("No query type specified");
-        return;
-      }
-
-      setLoading(true);
-      setError(null);
 
       fetchDynamicContent(section.queryType as QueryType, params)
         .then((data) => {
@@ -89,30 +110,32 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
         })
         .catch((err) => {
           console.error("Error loading dynamic content:", err);
-          setError("Failed to load content");
+          setFetchError(t("contentLoadFailed"));
           setLoading(false);
         });
     }
-  }, [section, communitySlug]);
+  }, [section, communitySlug, t]);
 
   // Handle different section types
   switch (section._type) {
     case "manualContentInsert":
       return (
+        <BlockReveal key={section._key}>
         <ManualContentBlock
           title={section.title}
           content={section.content}
-          image={section.image as any}
+          image={section.image as React.ComponentProps<typeof ManualContentBlock>["image"]}
           layout={section.layout as "left-image" | "right-image" | "full-width" | "content-above" | "image-above"}
           backgroundColor={section.backgroundColor as "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary"}
           padding={section.padding as "none" | "small" | "medium" | "large"}
           locale={locale}
-          key={section._key}
         />
+        </BlockReveal>
       );
 
     case "dynamicContentInsert":
       return (
+        <BlockReveal key={section._key}>
         <DynamicContentBlock
           section={section}
           data={dynamicData}
@@ -121,16 +144,15 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
           locale={locale}
           userId={userId}
           communitySlug={communitySlug}
-          key={section._key}
         />
+        </BlockReveal>
       );
 
     case "separatorBlock":
       return (
-        <SeparatorBlock
-          {...section}
-          key={section._key}
-        />
+        <BlockReveal key={section._key}>
+        <SeparatorBlock {...(section as React.ComponentProps<typeof SeparatorBlock>)} />
+        </BlockReveal>
       );
 
     // Handle existing block types - these should be rendered by parent server component

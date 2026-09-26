@@ -5,6 +5,20 @@ export interface LocalizedString {
     ar?: string;
 }
 
+/**
+ * Hand-maintained mirror of the `place` Sanity object (spec A2): one
+ * coordinate + display text + author-owned precision + ISO alpha-3 country
+ * code. Adopted on livedExperience, event, organization, newsPost. Do NOT
+ * regenerate via `sanity typegen` — hand-edit this alongside schema changes
+ * (see sanity/schemas/objects/place.ts).
+ */
+export interface SanityPlace {
+    point?: { lat: number; lng: number } | null;
+    text?: string | null;
+    precision?: "exact" | "city" | "country" | "region" | null;
+    countryCode?: string | null;
+}
+
 export interface CaseStudyAuthor {
     userId?: string;
     name: string;
@@ -37,6 +51,7 @@ export interface Organization {
         };
         alt?: string;
     };
+    place?: SanityPlace | null;
 }
 
 export interface Project {
@@ -88,7 +103,8 @@ export interface CaseStudy {
     _id: string;
     title: LocalizedString; // Field-level localized object
     excerpt?: LocalizedString; // Field-level localized object
-    content?: any; // Portable Text content (styled-block-content)
+    content?: Array<{ _type: string; _key?: string; [key: string]: unknown }>; // Portable Text content (styled-block-content)
+    layout?: 'story' | 'feature' | 'report'; // Detail-page archetype (§4.12)
     slug: { current: string };
     status: 'pending' | 'approved' | 'rejected' | 'revision';
     publishedAt?: string;
@@ -106,7 +122,29 @@ export interface CaseStudy {
         lng: number;
         alt?: number;
     };
+    // Scalars read by GROQ consumers alongside studyLocation/locationText to
+    // build the legacy-case-study "place" alias (no data migration — see
+    // sanity/schemas/documents/case-study.ts).
+    locationPrecision?: 'exact' | 'city' | 'country' | 'region' | null;
+    locationCountryCode?: string | null;
+    locationDisplayText?: string | null;
+    locationText?: { city?: string | null; country?: string | null } | null;
+    originalLanguage?: SupportedLanguage | null;
+    contentLanguage?: SupportedLanguage | null;
     studyAreas?: StudyArea[];
+    // Cross-content links (connection[] — see RELATED_CONTENT_PROJECTION)
+    relatedContent?: Array<{
+        relation?: string;
+        target?: {
+            _type: string;
+            _id: string;
+            slug?: string;
+            title?: unknown;
+            excerpt?: unknown;
+            image?: { asset?: { url?: string }; alt?: string };
+            status?: string;
+        } | null;
+    }>;
     // SEO fields
     seoTitle?: string;
     seoDescription?: string;

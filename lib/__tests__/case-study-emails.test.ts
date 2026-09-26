@@ -4,19 +4,18 @@ const sendMock = vi.fn().mockResolvedValue({ id: 'email_1' })
 vi.mock('resend', () => ({
   // Must be `new`-able — use a real class so `new Resend()` works.
   Resend: class {
-    emails = { send: (...a: any[]) => sendMock(...a) }
+    emails = { send: (...a: unknown[]) => sendMock(...a) }
   },
 }))
 
 const prismaFindUnique = vi.fn()
 vi.mock('@/lib/prisma', () => ({
-  prisma: { user: { findUnique: (...a: any[]) => prismaFindUnique(...a) } },
+  prisma: { user: { findUnique: (...a: unknown[]) => prismaFindUnique(...a) } },
 }))
 
-const patchSet = vi.fn().mockReturnValue({ commit: vi.fn().mockResolvedValue({}) })
-const patchMock = vi.fn().mockReturnValue({ set: patchSet })
-vi.mock('@/sanity/lib/write-client', () => ({
-  writeClient: { patch: (...a: any[]) => patchMock(...a) },
+const updateCaseStudyMock = vi.fn().mockResolvedValue(undefined)
+vi.mock('@/lib/content/case-studies', () => ({
+  updateCaseStudy: (...a: unknown[]) => updateCaseStudyMock(...a),
 }))
 
 import { isNotifiableStatus, notifyCaseStudyStatusChange } from '@/lib/case-study-emails'
@@ -49,8 +48,7 @@ describe('notifyCaseStudyStatusChange — idempotency & guards', () => {
   it('sends and records notifiedStatus on a fresh terminal status', async () => {
     const r = await notifyCaseStudyStatusChange(base)
     expect(sendMock).toHaveBeenCalledTimes(1)
-    expect(patchMock).toHaveBeenCalledWith('cs1')
-    expect(patchSet).toHaveBeenCalledWith({ notifiedStatus: 'approved' })
+    expect(updateCaseStudyMock).toHaveBeenCalledWith('cs1', { notifiedStatus: 'approved' })
     expect(r).toMatch(/^sent: approved/)
   })
 
@@ -82,7 +80,34 @@ describe('notifyCaseStudyStatusChange — idempotency & guards', () => {
   it('re-sends when the status changes to a different terminal value', async () => {
     const r = await notifyCaseStudyStatusChange({ ...base, status: 'revision', notifiedStatus: 'approved' })
     expect(sendMock).toHaveBeenCalledTimes(1)
-    expect(patchSet).toHaveBeenCalledWith({ notifiedStatus: 'revision' })
+    expect(updateCaseStudyMock).toHaveBeenCalledWith('cs1', { notifiedStatus: 'revision' })
     expect(r).toMatch(/^sent: revision/)
+  })
+})
+
+describe('notifyCaseStudyStatusChange — the provider result is read', () => {
+  it('does not mark notified when Resend rejects the message, and says so', async () => {
+    // Resend 4.x resolves `{ data: null, error }` on a 403 — it does not throw.
+    // Until 2026-09-17 this path returned "sent:" and burned notifiedStatus, so
+    // the submitter was never told and could never be told again.
+    sendMock.mockResolvedValueOnce({ data: null, error: { message: 'sandbox sender', name: 'validation_error' } })
+    const r = await notifyCaseStudyStatusChange(base)
+    expect(r).toBe('failed: sandbox sender')
+    expect(updateCaseStudyMock).not.toHaveBeenCalled()
+  })
+
+  it('does not mark notified when the transport throws', async () => {
+    sendMock.mockRejectedValueOnce(new Error('fetch failed'))
+    const r = await notifyCaseStudyStatusChange(base)
+    expect(r).toBe('failed: fetch failed')
+    expect(updateCaseStudyMock).not.toHaveBeenCalled()
+  })
+
+  it('an injected sendEmail that reports an error is a failure too', async () => {
+    const r = await notifyCaseStudyStatusChange(base, {
+      sendEmail: async () => ({ data: null, error: { message: 'nope', name: 'validation_error' } }) as never,
+    })
+    expect(r).toBe('failed: nope')
+    expect(updateCaseStudyMock).not.toHaveBeenCalled()
   })
 })

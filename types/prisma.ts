@@ -115,9 +115,8 @@ export interface CommunityQueryResult extends PaginatedResult<LocalizedCommunity
 }
 
 // Analytics and reporting types
-export interface DownloadAnalytics extends DownloadEvent {
-  // Extended analytics data can be added here as needed
-}
+// Extended analytics data can be added here as needed
+export type DownloadAnalytics = DownloadEvent
 
 export interface UserAnalytics {
   profileViews: number
@@ -152,13 +151,30 @@ export interface UserProfileUpdateData {
   showLocation?: boolean
   communityIds?: string[]
   recentWork?: Array<{
+    id?: string
     title: string
     description: string
     link?: string
     startDate: string
     endDate?: string
     isOngoing?: boolean
+    role?: string | null
+    collaborators?: string | null
+    outcome?: string | null
+    imageUrl?: string | null
   }>
+  // Domain-rich fields (K4)
+  headline?: string | null
+  pronouns?: string | null
+  languages?: string[]
+  focusTopics?: string[]
+  motivation?: string | null
+  openToCollaboration?: boolean
+  lookingFor?: string[]
+  collaborationInterests?: string | null
+  livedExperienceStatement?: string | null
+  showLivedExperience?: boolean
+  orcidId?: string | null
 }
 
 export interface CommunityCreateData {
@@ -173,7 +189,7 @@ export interface CommunityCreateData {
 export type DatabaseError = {
   code: string
   message: string
-  meta?: Record<string, any>
+  meta?: Record<string, unknown>
 }
 
 export type DatabaseResult<T> = {

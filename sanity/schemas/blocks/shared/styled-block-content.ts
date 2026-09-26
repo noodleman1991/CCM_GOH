@@ -71,10 +71,29 @@ export default defineType({
                                 name: "reference",
                                 type: "reference",
                                 to: [
-                                    { type: "post" },
                                     { type: "page" },
                                     { type: "caseStudy" },
+                                    { type: "agenda" },
+                                    { type: "report" },
+                                    { type: "docsChapter" },
                                 ],
+                            },
+                        ],
+                    },
+                    {
+                        // Marks a span as a footnote reference; the text it holds
+                        // is rendered as a superscript number with the note shown
+                        // in a collapsible footnotes section at the end.
+                        title: "Footnote",
+                        name: "footnote",
+                        type: "object",
+                        fields: [
+                            {
+                                title: "Note",
+                                name: "text",
+                                type: "text",
+                                rows: 3,
+                                description: "The footnote content (shown in the footnotes accordion).",
                             },
                         ],
                     },
@@ -88,6 +107,17 @@ export default defineType({
         // Info boxes (replaced the old style-based approach)
         defineArrayMember({
             type: "infoBox",
+        }),
+        // "Data & story" blocks (Task E8): timeline renders natively as HTML;
+        // chart/mermaid carry a server-sanitized renderedSvg + renderStatus.
+        defineArrayMember({
+            type: "storyTimeline",
+        }),
+        defineArrayMember({
+            type: "storyChart",
+        }),
+        defineArrayMember({
+            type: "storyMermaid",
         }),
         defineArrayMember({
             type: "image",
@@ -115,7 +145,90 @@ export default defineType({
                         { name: "ar", title: "العربية", type: "string" },
                     ],
                 },
+                {
+                    // Editorial photo credit ("Photo courtesy of …"), rendered as
+                    // the em-dashed line under the caption. Single string: credits
+                    // are proper names, not translated copy.
+                    name: "credit",
+                    title: "Credit",
+                    type: "string",
+                    description: "Who took or provided the image (shown after the caption).",
+                },
+                {
+                    name: "placement",
+                    title: "Placement",
+                    type: "string",
+                    description: "How the figure sits in the text column.",
+                    options: {
+                        list: [
+                            { title: "Full width (default)", value: "full" },
+                            { title: "Float inline-start (text wraps)", value: "start" },
+                            { title: "Float inline-end (text wraps)", value: "end" },
+                            { title: "Centered, intrinsic size", value: "center" },
+                        ],
+                        layout: "radio",
+                    },
+                    initialValue: "full",
+                },
             ],
+        }),
+        // Editorial pull-quote with attribution — the amber-bar treatment.
+        // Distinct from the "Quote" block style (which stays for light quoting
+        // inside running text).
+        defineArrayMember({
+            name: "pullQuote",
+            type: "object",
+            title: "Pull quote",
+            fields: [
+                {
+                    name: "text",
+                    title: "Quote",
+                    type: "text",
+                    rows: 3,
+                    validation: (Rule) => Rule.required().max(300),
+                },
+                {
+                    name: "attribution",
+                    title: "Attribution",
+                    type: "string",
+                    description: "Who said it (name, role) — optional.",
+                },
+            ],
+            preview: {
+                select: { title: "text", subtitle: "attribution" },
+            },
+        }),
+        // Numbered references section ("References" at the end of research
+        // content). Inline superscript markers keep using the footnote
+        // annotation; this object is the visible bibliography.
+        defineArrayMember({
+            name: "references",
+            type: "object",
+            title: "References",
+            fields: [
+                {
+                    name: "items",
+                    title: "References",
+                    type: "array",
+                    of: [
+                        {
+                            type: "object",
+                            name: "referenceItem",
+                            fields: [
+                                { name: "text", title: "Citation", type: "text", rows: 2 },
+                                { name: "url", title: "Link (DOI / URL)", type: "url" },
+                            ],
+                            preview: { select: { title: "text" } },
+                        },
+                    ],
+                },
+            ],
+            preview: {
+                select: { items: "items" },
+                prepare({ items }: { items?: unknown[] }) {
+                    return { title: `References (${items?.length ?? 0})` };
+                },
+            },
         }),
         defineArrayMember({
             name: "youtube",

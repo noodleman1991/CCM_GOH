@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { transformUserForIndex } from '@/lib/algolia'
+import { INDEX_SETTINGS, shouldIndexUser, transformUserForIndex } from '@/lib/algolia'
 
 const baseUser = {
   id: 'u1',
@@ -56,9 +56,39 @@ describe('transformUserForIndex — privacy at index time', () => {
   })
 
   it('treats missing show* flags as "show" (default-true, matches schema defaults)', () => {
-    const { showLocation, showWorkDetails, ...noFlags } = baseUser as any
-    const r = transformUserForIndex(noFlags)
+    // baseUser deliberately omits the show* flags entirely
+    const r = transformUserForIndex({ ...baseUser })
     expect(r.city).toBe('Nairobi')
     expect(r.organization).toBe('Climate Org')
+  })
+})
+
+describe('profile visibility is enforced at index time (2026-09-17)', () => {
+  // The browser search key is search-only but can read every record in the
+  // index; the "MEMBERS"/"PRIVATE" filter lived only in the client. So a
+  // members-only or private profile was one query away from anyone. Only
+  // PUBLIC profiles are indexed now; members-only people search is the
+  // Prisma-backed endpoint, not Algolia.
+  const publicUser = { id: 'u1', username: 'ana', firstName: 'Ana', lastName: 'B', isSearchable: true, role: 'community_member', createdAt: new Date() } as const
+
+  it('shouldIndexUser refuses MEMBERS and PRIVATE, and an unset visibility', () => {
+    expect(shouldIndexUser({ ...publicUser, profileVisibility: 'PUBLIC' })).toBe(true)
+    expect(shouldIndexUser({ ...publicUser, profileVisibility: 'MEMBERS' })).toBe(false)
+    expect(shouldIndexUser({ ...publicUser, profileVisibility: 'PRIVATE' })).toBe(false)
+    expect(shouldIndexUser({ ...publicUser })).toBe(false)
+  })
+
+  it('transformUserForIndex throws for a non-public profile, so no caller can index one by accident', () => {
+    expect(() => transformUserForIndex({ ...publicUser, profileVisibility: 'MEMBERS' })).toThrow(/public/i)
+    expect(() => transformUserForIndex({ ...publicUser, profileVisibility: 'PUBLIC' })).not.toThrow()
+  })
+
+  it('the users index never returns the privacy flags themselves', () => {
+    const settings = INDEX_SETTINGS.users as { unretrievableAttributes?: string[] }
+    // showWorkDetails stays retrievable: grouped-search reads it to decide
+    // whether to render position/organisation on a hit.
+    for (const attr of ['isSearchable', 'showEmail', 'showSocialLinks', 'showLocation']) {
+      expect(settings.unretrievableAttributes, attr).toContain(attr)
+    }
   })
 })

@@ -12,6 +12,28 @@
     --breakpoint-xl: 1280px;
     --breakpoint-2xl: 1536px;
 
+    /* Content-area breakpoints (container queries) ---------------------------
+       Blocks inside the app shell must respond to the width the CONTENT gets,
+       not the window: the open sidebar takes ~282px, so viewport breakpoints
+       fired a stop too dense and produced cramped columns.
+
+       These pair with `@container/page` on the main panel (see the (main)
+       layout) and are used as `@content-lg/page:grid-cols-3` etc.
+
+       Deliberately LOWER than the viewport breakpoints of the same name: a
+       768px-wide *content box* is roomier than a 768px-wide window, which also
+       has to pay for the sidebar and page gutters. Calibrated so the common
+       sidebar-open desktop widths keep the layout they should:
+         1024 viewport open ->  726px content -> content-md (2 up)
+         1280 viewport open ->  982px content -> content-lg (3 up)
+         1440 viewport open -> 1142px content -> content-lg (3 up, was a
+                               cramped 4 up at 261px/col before this change)
+         1440 collapsed      -> 1424px content -> content-xl (4 up) */
+    --container-content-sm: 35rem;  /* 560px */
+    --container-content-md: 40rem;  /* 640px */
+    --container-content-lg: 60rem;  /* 960px */
+    --container-content-xl: 75rem;  /* 1200px */
+
     /* Direction-aware font aliases — overridden in [dir="rtl"] below.
        Actual font files are loaded via next/font/google CSS variables
        (--font-poppins, --font-lato, --font-lalezar, --font-tajawal). */
@@ -23,6 +45,19 @@
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
     --animate-fade-up: fade-up 0.7s ease-out forwards;
+    /* One slow organic morph for the hero/section blob accent (redesign §1.6). */
+    --animate-ccmblob: ccmblob 18s ease-in-out infinite;
+    /* Gentle "alive" wiggle echoing the organic CCM brand feel — subtle, with a
+       long rest between nudges so it's noticeable but never distracting. Runs on
+       a 2-minute cycle: the label types itself out, then a small wiggle nudge. */
+    --animate-ccmwiggle: ccmwiggle 120s ease-in-out infinite;
+    /* Search-pill label "typewriter": reveals "Search…" char-by-char near the
+       start of each 2-minute cycle, then holds. The discrete typing feel comes
+       from the per-glyph keyframe stops; the timing function stays linear so the
+       reveal actually advances (steps(1) would freeze it on the first frame).
+       The caret blinks only while typing. */
+    --animate-ccmtype: ccmtype 120s linear infinite;
+    --animate-ccmcaret: ccmcaret 120s linear infinite;
 }
 
 @keyframes accordion-down {
@@ -51,6 +86,88 @@
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Gentle search-pill wiggle. Mostly at rest; a small rotation nudge ~every cycle
+   so it feels "alive" / on-brand without pulling focus. Damped by the global
+   prefers-reduced-motion block below. */
+@keyframes ccmwiggle {
+    0%, 82%, 100% { transform: rotate(0deg); }
+    86% { transform: rotate(-1.1deg); }
+    90% { transform: rotate(0.9deg); }
+    94% { transform: rotate(-0.6deg); }
+    98% { transform: rotate(0.3deg); }
+}
+
+/* Typewriter reveal for the search-pill label. Over a 120s cycle the first
+   ~2.5% (~3s) types the word out in discrete steps; it then stays fully shown
+   for the rest of the cycle. `ch` units track the label's character count so the
+   reveal lands exactly on glyph boundaries. Drives `max-width` on the label. */
+/* "Search..." typed out one glyph at a time. Each glyph holds (plateau) then
+   snaps to the next — the discrete jumps are the typing feel. The hold lengths
+   are deliberately UNEVEN (a human types in bursts with little pauses), and the
+   word starts after a short "thinking" beat, which reads far more convincingly
+   than a metronome. 8 glyphs ("Search.."), reveal finishing ~3.4s into the 120s
+   cycle (2.8%), then it rests fully shown until the next cycle. */
+@keyframes ccmtype {
+    0%,    0.50% { max-width: 0; }      /* brief pause before the first key */
+    0.55%, 0.72% { max-width: 1ch; }    /* S */
+    0.78%, 1.05% { max-width: 2ch; }    /* e (small stutter) */
+    1.10%, 1.28% { max-width: 3ch; }    /* a */
+    1.34%, 1.74% { max-width: 4ch; }    /* r (longer pause) */
+    1.80%, 1.98% { max-width: 5ch; }    /* c */
+    2.04%, 2.20% { max-width: 6ch; }    /* h */
+    2.26%, 2.55% { max-width: 7ch; }    /* . */
+    2.62%, 100%  { max-width: 12ch; }   /* .. settle, fully shown */
+}
+
+/* Caret blinks steadily while typing (≈2 blinks/sec across the ~3.4s reveal),
+   then fades out for the long rest so the pill sits quiet. */
+@keyframes ccmcaret {
+    0%, 0.4%, 1.2%, 2.0%, 2.8% { opacity: 1; }
+    0.8%, 1.6%, 2.4%           { opacity: 0; }
+    3.4%, 100%                 { opacity: 0; }
+}
+
+/* Organic "blob" accent (redesign §1.5/§1.6): a soft shape that slowly morphs
+   its border-radius and drifts. Decorative only — aria-hidden in the component,
+   and damped to a static end-state by the prefers-reduced-motion block below. */
+@keyframes ccmblob {
+    0%, 100% {
+        border-radius: 58% 42% 55% 45% / 52% 48% 52% 48%;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    33% {
+        border-radius: 45% 55% 42% 58% / 48% 55% 45% 52%;
+        transform: translate(2%, -3%) rotate(8deg) scale(1.04);
+    }
+    66% {
+        border-radius: 52% 48% 58% 42% / 55% 45% 52% 48%;
+        transform: translate(-2%, 2%) rotate(-6deg) scale(0.98);
+    }
+}
+
+/* A5 — unified reduced-motion respect. The hero blocks use `animate-fade-up`
+   together with `opacity-0`, so an element is invisible until the animation
+   runs. If the user prefers reduced motion we must NOT just disable the
+   animation (that would leave content stuck invisible) — we force the
+   end-state instead: visible, no transform, no movement. This also damps the
+   "who is involved" marquee and other long animations globally, so every block
+   shares one reduced-motion behavior without per-component guards. */
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-up {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
     }
 }
 
@@ -91,7 +208,7 @@
     --sidebar-foreground: #ffffff;
     --sidebar-primary: #ffffff;
     --sidebar-primary-foreground: var(--color-ccm-midnight);
-    --sidebar-accent: rgba(255, 255, 255, 0.1);
+    --sidebar-accent: rgba(255, 255, 255, 0.15);
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: rgba(255, 255, 255, 0.2);
     --sidebar-ring: #ffffff;
@@ -130,7 +247,7 @@
     --sidebar-foreground: #ffffff;
     --sidebar-primary: #ffffff;
     --sidebar-primary-foreground: var(--color-ccm-midnight);
-    --sidebar-accent: rgba(255, 255, 255, 0.1);
+    --sidebar-accent: rgba(255, 255, 255, 0.15);
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: rgba(255, 255, 255, 0.2);
     --sidebar-ring: #ffffff;
@@ -177,6 +294,10 @@
     --color-ccm-water: #4186C3;
     --color-ccm-sea: #205596;
     --color-ccm-midnight: #0B3160;
+    /* Accent tokens (redesign TAXONOMY §16): amber = attention/in-review/seeking,
+       slate = neutral/draft/muted secondary text. Pair status colour with a label. */
+    --color-ccm-amber: #E0A53F;
+    --color-ccm-slate: #8595AC;
 }
 
 /* RTL: Override font aliases to Arabic fonts loaded via next/font */
@@ -361,6 +482,17 @@
     text-align: right;
 }
 
+/* Tiptap Placeholder extension (Task E3): ghost text on the empty editor.
+   `float: inline-start` keeps it RTL-safe (the editor sets dir per language). */
+.tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--color-muted-foreground);
+    opacity: 0.7;
+    float: inline-start;
+    height: 0;
+    pointer-events: none;
+}
+
 /* Hide scrollbar for carousel */
 .scrollbar-hide {
     -ms-overflow-style: none;
@@ -369,3 +501,70 @@
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
+
+/* Clerk sign-in / sign-up theming that the `appearance` prop can't reliably win.
+   Targets Clerk's stable `.cl-*` classes so it applies in BOTH the dedicated
+   /sign-in page and the modal (SignInButton mode="modal"). */
+
+/* Fonts: headings/labels/buttons in Poppins (→ Lalezar under the `ar` block via
+   --font-heading); everything else in the body font (Lato / Tajawal). Forced
+   with !important because Clerk sets its own font-family on these nodes. */
+.cl-card,
+.cl-formFieldInput,
+.cl-footer,
+.cl-dividerText {
+    font-family: var(--font-body) !important;
+}
+.cl-headerTitle,
+.cl-formFieldLabel,
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton,
+.cl-socialButtonsBlockButtonText,
+.cl-footerActionText,
+.cl-footerActionLink {
+    font-family: var(--font-heading) !important;
+}
+
+/* Footer: strip the faint gradient fill + the 1px divider on its inner "Secured
+   by" strip so the borderless form sits fully flush. (The diagonal "Development
+   mode" banner is a dev-instance indicator and only renders on the dev key.) */
+.cl-footer,
+.cl-footer * {
+    background-image: none !important;
+    background-color: transparent !important;
+    border-top: 0 !important;
+}
+
+/* Modal variant (SignInButton/SignUpButton mode="modal"): opaque white card over
+   the overlay, responsive width, centered. The CARD scrolls internally when its
+   content is taller than the viewport (the sign-up form is tall) — capped to the
+   viewport minus padding so it's never clipped below the fold. */
+.cl-modalBackdrop {
+    padding: 1rem !important;              /* never let the card touch screen edges */
+}
+.cl-modalContent {
+    width: 100% !important;
+    max-width: 28rem !important;           /* ~max-w-md, matches the page form */
+    /* Zero Clerk's default 64px top/bottom margins so the card can use the full
+       padded viewport height (otherwise the bottom is pushed off-screen). */
+    margin: 0 auto !important;
+}
+.cl-modalContent .cl-cardBox {
+    max-height: calc(100dvh - 2rem) !important;
+    overflow-y: auto !important;           /* scroll the tall sign-up form */
+    overscroll-behavior: contain !important;
+    background-color: #fff !important;     /* opaque so the overlay can't show through */
+}
+.cl-modalContent .cl-card {
+    background-color: #fff !important;
+}
+
+/* Poppins weight: the app uses bold for buttons; titles read better at semibold.
+   Pin them so the brand weight is consistent (Clerk ships its own font-weights). */
+.cl-headerTitle {
+    font-weight: 600 !important;           /* semibold title */
+    white-space: pre-line !important;      /* honour the \n -> two-line heading */
+}
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton { font-weight: 700 !important; }  /* bold buttons, like app */
+.cl-formFieldLabel { font-weight: 500 !important; }

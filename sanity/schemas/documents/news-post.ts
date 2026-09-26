@@ -1,6 +1,7 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileText } from "lucide-react";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
+import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "@/lib/content/taxonomy-options";
 
 export default defineType({
     name: "newsPost",
@@ -78,7 +79,11 @@ export default defineType({
             type: "slug",
             group: "settings",
             options: {
-                source: (doc: any) => doc.title?.[doc.language || 'en'] || doc.title?.en,
+                source: (doc: SanityDocument) => {
+                    const title = doc.title as Record<string, string> | undefined;
+                    const language = (doc.language as string | undefined) || 'en';
+                    return title?.[language] || title?.en || '';
+                },
                 maxLength: 96,
                 isUnique: isUniqueOtherThanLanguage,
             },
@@ -170,6 +175,32 @@ export default defineType({
             to: [{ type: "regionalCommunity" }],
             description: "Regional community this news post belongs to (optional)",
         }),
+
+        // Phase 6 fixed taxonomy (additive; region OPTIONAL on news per spec).
+        defineField({
+            name: "region",
+            title: "Region",
+            type: "string",
+            group: "affiliations",
+            options: { list: [...REGION_OPTIONS] },
+            description: "Fixed-7 region code (optional for news; backfilled from the related community).",
+        }),
+        defineField({
+            name: "themes",
+            title: "Themes",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...THEME_OPTIONS] },
+            group: "affiliations",
+        }),
+        defineField({
+            name: "populations",
+            title: "Populations",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...POPULATION_OPTIONS] },
+            group: "affiliations",
+        }),
         // Location using Google Maps plugins
         defineField({
             name: "location",
@@ -177,6 +208,12 @@ export default defineType({
             type: "geopoint",
             group: "metadata",
             description: "Primary location related to this news",
+        }),
+        defineField({
+            name: "place",
+            title: "Place",
+            type: "place",
+            group: "metadata",
         }),
         defineField({
             name: "locationDetails",
@@ -215,8 +252,9 @@ export default defineType({
                 layout: "tags",
                 sortable: true,
             },
-            validation: (Rule) => Rule.max(15),
-            description: "Type to search existing tags or create new ones.",
+            validation: (Rule) =>
+                Rule.max(6).warning("Aim for 3–4 tags; more than 6 dilutes them."),
+            description: "Type to search existing tags or create new ones. 3–4 focused tags work best (6 max).",
         }),
         defineField({
             name: "sources",

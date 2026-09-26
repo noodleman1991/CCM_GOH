@@ -1,66 +1,166 @@
 import { NextRequest, NextResponse } from "next/server";
-import { client } from "@/sanity/lib/client";
 import { prisma, safeQuery } from "@/lib/prisma";
-import { REGION_CODES, RC_SLUG_TO_REGION } from "@/lib/maps/region-codes";
-import { aggregateRegionData, FACETS, type FacetId } from "@/lib/maps/region-facets";
+import { REGION_CODES, RC_SLUG_TO_REGION, isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
+import { aggregateRegionData, FACET_TO_CONTENT_TYPE, parseLayers, type FacetId } from "@/lib/maps/region-facets";
+import { getThemeOptions } from "@/lib/maps/themes";
+import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
+import { isoToRegion } from "@/lib/maps/iso-to-region";
+import { getRegionFacetCounts } from "@/lib/content/regions";
 
 // Counts change slowly; cache for 5 minutes.
-export const revalidate = 300;
+// `export const revalidate` on a route handler that reads `searchParams` is
+// dead — the request is dynamic — so nothing was cached and no Cache-Control
+// was sent. The CDN caches these for five minutes now, serving stale for ten
+// more while it refreshes.
+const PUBLIC_CACHE = { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" };
 
 function emptyCounts(): Record<string, number> {
   return Object.fromEntries(REGION_CODES.map((c) => [c, 0]));
 }
 
 /**
- * Faceted region counts for the map. `?facet=caseStudyCount|memberCount|newsCount`.
- * Content counts come from Sanity (grouped by the regionalCommunity's
- * `regionalName` enum); member counts from Prisma. On any failure we return
- * zeroed counts so the map still renders.
+ * Per-facet region counts (Sanity for content facets, Prisma for members),
+ * PLUS the facet's global total (independent of region — see `total` below).
+ * Isolated so `GET` can fetch it once per requested facet and sum the results.
  */
-export async function GET(req: NextRequest) {
-  const facet = (req.nextUrl.searchParams.get("facet") || "caseStudyCount") as FacetId;
-  if (!FACETS.some((f) => f.id === facet)) {
-    return NextResponse.json({ error: "Unknown facet" }, { status: 400 });
-  }
-
+async function countsForFacet(
+  facet: FacetId,
+  theme: string | null,
+  q: string,
+  when: WhenFilter
+): Promise<{ byRegion: Record<string, number>; total: number }> {
   const counts = emptyCounts();
-
-  try {
-    if (facet === "caseStudyCount" || facet === "newsCount") {
-      const type = facet === "caseStudyCount" ? "caseStudy" : "newsPost";
-      const statusFilter = facet === "caseStudyCount" ? ' && status == "approved"' : "";
-      // For each regional community, count the content that references it. The
-      // Sanity RC doc has no region enum, so we key by its slug and translate to
-      // a region code via RC_SLUG_TO_REGION.
-      const rows: { slug: string | null; count: number }[] = await client.fetch(
-        `*[_type == "regionalCommunity" && defined(slug.current)]{
-           "slug": slug.current,
-           "count": count(*[_type == "${type}"${statusFilter} && references(^._id)])
-         }`
-      );
-      for (const r of rows) {
-        const region = r.slug ? RC_SLUG_TO_REGION[r.slug] : undefined;
-        if (region) counts[region] += r.count;
+  const type = FACET_TO_CONTENT_TYPE[facet];
+  let total = 0;
+  if (type) {
+    // The GROQ itself (shared status/theme/q predicates, no region predicate —
+    // `rows.length` doubles as the facet's GLOBAL total, L2, the chip total
+    // that must include region-less docs no bucket sums) now lives in
+    // `getRegionFacetCounts` (lib/content/regions.ts, Phase 1 content-layer
+    // migration, Task 7). Region attribution mirrors region-items'/
+    // region-pins' regionMatchFilter: a doc belongs to a region via its
+    // `region` short code, any referenced community (singular
+    // `relatedCommunity` or plural `relatedCommunities[]`), OR —
+    // country-derived branch, 2026-08-05 — a country code that implies a
+    // region via `isoToRegion` when the doc carries no ref at all (the 35
+    // livedExperience docs backfilled with a country but never given a
+    // `relatedCommunity`). A doc counting in several regions appears in each
+    // region's cards, so it counts in each.
+    const rows = await getRegionFacetCounts(type, { theme, q, when });
+    total = rows.length;
+    for (const r of rows) {
+      const regions = new Set<RegionCode>();
+      if (r.code && isRegionCode(r.code)) regions.add(r.code);
+      const slugRegion = r.rcSlug ? RC_SLUG_TO_REGION[r.rcSlug] : undefined;
+      if (slugRegion) regions.add(slugRegion);
+      for (const slug of r.rcSlugs ?? []) {
+        const reg = slug ? RC_SLUG_TO_REGION[slug] : undefined;
+        if (reg) regions.add(reg);
       }
-    } else if (facet === "memberCount") {
-      const result = await safeQuery(() =>
-        prisma.community.findMany({
-          where: { type: "REGIONAL", regionalName: { not: null } },
-          select: { regionalName: true, _count: { select: { members: true } } },
-        })
-      );
-      if (result.success) {
-        for (const c of result.data) {
-          if (c.regionalName && c.regionalName in counts) {
-            counts[c.regionalName] += c._count.members;
-          }
+      if (r.countryCode3) {
+        const countryRegion = isoToRegion(r.countryCode3);
+        if (countryRegion) regions.add(countryRegion);
+      }
+      for (const region of regions) counts[region] += 1;
+    }
+  } else if (facet === "memberCount") {
+    // Member counts ignore theme/q (members have no tags/title to filter on).
+    const result = await safeQuery(() =>
+      prisma.community.findMany({
+        where: { type: "REGIONAL", regionalName: { not: null } },
+        select: { regionalName: true, _count: { select: { members: true } } },
+      })
+    );
+    if (result.success) {
+      for (const c of result.data) {
+        total += c._count.members;
+        if (c.regionalName && c.regionalName in counts) {
+          counts[c.regionalName] += c._count.members;
         }
       }
     }
-  } catch (e) {
-    console.error("[region-data] aggregation failed:", e);
-    // fall through with zero counts — the map still renders
+  }
+  return { byRegion: counts, total };
+}
+
+/**
+ * Faceted region counts for the map. `?facets=caseStudyCount,livedExpCount&theme=&q=`
+ * (comma list, ≤6, validated/deduped/never-empty via `parseLayers`). Back-compat:
+ * the old singular `?facet=` still works for one release — if `facets` is absent
+ * and `facet` is present, it's treated as a single-item `facets` list; if both
+ * are present, `facets` wins. Response: `{ facets, data }` where each datum's
+ * `value` is the SUM across requested facets and `byFacet` is the per-facet
+ * breakdown. On any failure we return zeroed counts so the map still renders.
+ */
+export async function GET(req: NextRequest) {
+  const sp = req.nextUrl.searchParams;
+  const facetsParam = sp.get("facets");
+  const legacyFacet = sp.get("facet");
+  const facets = parseLayers(facetsParam ?? legacyFacet);
+
+  const themeParam = sp.get("theme");
+  let theme: string | null = null;
+  if (themeParam) {
+    const themeOptions = await getThemeOptions();
+    if (!themeOptions.some((t) => t.slug === themeParam)) {
+      return NextResponse.json({ error: "Unknown theme" }, { status: 400 });
+    }
+    theme = themeParam;
   }
 
-  return NextResponse.json({ facet, data: aggregateRegionData(counts, facet) });
+  const qParam = sp.get("q") ?? "";
+  if (qParam.length > 100) {
+    return NextResponse.json({ error: "q too long" }, { status: 400 });
+  }
+  const q = qParam.trim();
+
+  // "When" date facet. Only applies to dated content facets; member counts have
+  // no publish date, so they're intentionally left unfiltered by date (a doc
+  // with no date can't be asserted to fall in a bounded window — see
+  // date-filter.ts). Computed once per request against a single `now`.
+  const when = whenFilter(parseWhen(sp.get("when")), new Date());
+
+  // Fetch every requested facet's counts in parallel (mirrors region-pins'
+  // Promise.all fan-out) and isolate failures PER FACET: one facet's query
+  // throwing (e.g. a Sanity timeout) must not zero out the other, independent
+  // facets that would have succeeded — each settles on its own.
+  const byFacetCounts: Partial<Record<FacetId, Record<string, number>>> = {};
+  // Global (region-less) total per facet (L2 — the chip total): summing the
+  // per-region buckets misses docs with no region/community ref AND no
+  // mappable country, so this is fetched alongside, not derived from the
+  // buckets. See `countsForFacet`'s `total`.
+  const byFacetTotals: Partial<Record<FacetId, number>> = {};
+  const settled = await Promise.allSettled(facets.map((facet) => countsForFacet(facet, theme, q, when)));
+  settled.forEach((result, i) => {
+    const facet = facets[i];
+    if (result.status === "fulfilled") {
+      byFacetCounts[facet] = result.value.byRegion;
+      byFacetTotals[facet] = result.value.total;
+    } else {
+      console.error(`[region-data] aggregation failed for facet "${facet}":`, result.reason);
+      byFacetCounts[facet] = emptyCounts();
+      byFacetTotals[facet] = 0;
+    }
+  });
+
+  const summedCounts = emptyCounts();
+  for (const facet of facets) {
+    const counts = byFacetCounts[facet]!;
+    for (const code of REGION_CODES) {
+      summedCounts[code] += counts[code] ?? 0;
+    }
+  }
+
+  const data = aggregateRegionData(summedCounts, facets[0]).map((datum) => ({
+    ...datum,
+    byFacet: Object.fromEntries(
+      facets.map((facet) => [facet, byFacetCounts[facet]![datum.code] ?? 0])
+    ) as Record<FacetId, number>,
+  }));
+
+  return NextResponse.json({
+    facets,
+    data,
+    totals: byFacetTotals as Record<FacetId, number>,
+  }, { headers: PUBLIC_CACHE });
 }

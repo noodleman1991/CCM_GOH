@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import SearchInterface from '@/components/search/search-interface'
+import GroupedSearch from '@/components/search/grouped-search'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getHubIllustrations } from '@/lib/content/illustrations'
+import { HeaderIllustration } from '@/components/ui/header-illustration'
 
 // Force dynamic rendering to prevent SSR caching issues with search state
 export const dynamic = "force-dynamic"
@@ -73,16 +75,18 @@ function SearchSkeleton() {
 
 export default async function SearchPage() {
   const t = await getTranslations('search')
+  const { searchHeader } = await getHubIllustrations()
 
   return (
     <div className="container mx-auto py-8 max-w-6xl">
-      <div className="mb-8">
+      <div className={searchHeader ? "relative mb-8 pe-20 sm:pe-28 lg:pe-40" : "mb-8"}>
+        <HeaderIllustration image={searchHeader} />
         <h1 className="text-3xl font-bold mb-2">{t('pageTitle')}</h1>
         <p className="text-muted-foreground">{t('pageDescription')}</p>
       </div>
 
       <Suspense fallback={<SearchSkeleton />}>
-        <SearchInterface />
+        <GroupedSearch />
       </Suspense>
     </div>
   )

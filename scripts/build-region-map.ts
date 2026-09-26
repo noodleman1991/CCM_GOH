@@ -19,6 +19,7 @@ import { merge } from "topojson-client";
 import countriesLib from "i18n-iso-countries";
 import { isoToRegion } from "../lib/maps/iso-to-region";
 import { REGION_CODES } from "../lib/maps/region-codes";
+import { bandPath, smoothPath } from "../lib/maps/smooth-geometry";
 
 const require = createRequire(import.meta.url);
 const world = require("world-atlas/countries-110m.json");
@@ -47,10 +48,11 @@ const projection = geoNaturalEarth1().fitSize(
 // visible quality loss, but it roughly halves the committed JSON size.
 const path = geoPath(projection).digits(1);
 
-const out: { viewBox: string; regions: Record<string, { d: string }> } = {
-  viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`,
-  regions: {},
-};
+const out: {
+  viewBox: string;
+  projection?: { scale: number; translate: [number, number] };
+  regions: Record<string, { d: string }>;
+} = { viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`, regions: {} };
 
 for (const code of REGION_CODES) {
   const members = allGeoms.filter((g: any) => {
@@ -70,9 +72,69 @@ for (const code of REGION_CODES) {
   out.regions[code] = { d };
 }
 
+// Serialize the fitted projection so runtime code can project points
+// WITHOUT re-fitting (identical frame guaranteed).
+const projectionConstants = {
+  scale: projection.scale(),
+  translate: projection.translate() as [number, number],
+};
+out.projection = projectionConstants;
+
+// ── Per-country geometry (LocaleMap + atlas country breakdown) ──────────────
+const countriesOut: {
+  viewBox: string;
+  projection: typeof projectionConstants;
+  countries: Record<string, { d: string; region: string | null }>;
+} = { viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`, projection: projectionConstants, countries: {} };
+
+for (const g of allGeoms) {
+  const a3 = numericToAlpha3(String(g.id));
+  if (!a3) continue;
+  const mergedCountry = merge(world, [g]);
+  const d = path(mergedCountry as any);
+  if (!d) continue;
+  countriesOut.countries[a3] = { d, region: isoToRegion(a3) ?? null };
+}
+
+const countryTarget = join(__dirname, "../components/maps/country-geometry.json");
+writeFileSync(countryTarget, JSON.stringify(countriesOut));
+console.log(`✅ Wrote ${countryTarget} with ${Object.keys(countriesOut.countries).length} countries`);
+
 const target = join(__dirname, "../components/maps/region-geometry.json");
 writeFileSync(target, JSON.stringify(out));
 console.log(
   `✅ Wrote ${target} with ${Object.keys(out.regions).length} regions:`,
   Object.keys(out.regions)
 );
+
+// ── Illustration-style variant (mock v6 §3) ────────────────────────────────
+// The same regions blob-smoothed (small islands drop, coastlines simplify +
+// round) plus the two ocean contour bands derived by dilating the big rings.
+// This is what region-choropleth.tsx actually renders; the raw file above
+// stays the projection source of truth (pins/countries still project on it).
+const soft: {
+  viewBox: string;
+  projection: typeof projectionConstants;
+  regions: Record<string, { d: string }>;
+  bands: { outer: string; inner: string };
+} = {
+  viewBox: out.viewBox,
+  projection: projectionConstants,
+  regions: {},
+  bands: { outer: "", inner: "" },
+};
+for (const [code, { d }] of Object.entries(out.regions)) {
+  soft.regions[code] = { d: smoothPath(d) };
+}
+const softDs = Object.values(soft.regions).map((r) => r.d);
+// Chunky, artwork-style contour bands: the brand region art draws its
+// bathymetric rings BROAD (each ~4–12% of the canvas width), so the offsets
+// are generous rather than a tight coastline hug. Only continent-scale rings
+// get a halo (min area 800) — per-islet halos read as noise, and the artwork
+// wraps whole archipelagos in one blob instead.
+soft.bands.outer = bandPath(softDs, 58, 800);
+soft.bands.inner = bandPath(softDs, 26, 800);
+
+const softTarget = join(__dirname, "../components/maps/region-geometry-soft.json");
+writeFileSync(softTarget, JSON.stringify(soft));
+console.log(`✅ Wrote ${softTarget} (${JSON.stringify(soft).length} bytes)`);

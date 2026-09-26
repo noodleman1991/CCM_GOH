@@ -1,0 +1,334 @@
+/*
+ * The hub's look inside the Payload admin (2026-09-22).
+ *
+ * Payload ships its own design tokens (--theme-*); this file leaves the
+ * editing surfaces alone and brands the two places an editor meets first:
+ * the login page and the nav's mark. Palette and type are the site's
+ * (app/globals.css): midnight #0B3160, sea #205596, water #4186C3, Poppins
+ * for headings, Lato for body. The fonts come from Google Fonts, which
+ * next.config.mjs allows in the admin's Content Security Policy only.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lato:wght@400;700&display=swap");
+
+:root {
+  --ccm-midnight: #0b3160;
+  --ccm-sea: #205596;
+  --ccm-water: #4186c3;
+  --ccm-mist: #eef4fb;
+  --ccm-radius: 0.625rem;
+  --ccm-font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --ccm-font-body: "Lato", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------- login */
+
+.template-minimal {
+  min-height: 100vh;
+  background: var(--ccm-mist);
+  font-family: var(--ccm-font-body);
+  color: var(--ccm-midnight);
+
+  /* Payload's own wrapper becomes an invisible frame; the card below owns
+     the layout. Its logo slot is hidden here (the card carries the mark);
+     the nav still uses the Icon slot. */
+  .template-minimal__wrap {
+    background: transparent;
+    padding: 1rem;
+    max-width: 62rem;
+    width: 100%;
+  }
+  .graphic-logo,
+  .ccm-brand-logo,
+  form,
+  .login__form,
+  a[href$="/forgot"] {
+    display: none;
+  }
+}
+
+.ccm-login {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 60px -32px rgba(11, 49, 96, 0.35), 0 1px 0 rgba(11, 49, 96, 0.06);
+  overflow: hidden;
+  min-height: 34rem;
+
+  &__aside {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2.25rem;
+    background: linear-gradient(160deg, #e6f0fb 0%, #f4f8fd 60%, #fff 100%);
+    border-inline-end: 1px solid rgba(11, 49, 96, 0.08);
+  }
+  &__logo {
+    height: 3rem;
+    width: auto;
+    align-self: flex-start;
+  }
+  &__art {
+    width: 100%;
+    max-width: 22rem;
+    height: auto;
+    margin: auto;
+    display: block;
+  }
+  &__features {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+    color: var(--ccm-sea);
+    font-size: 0.9rem;
+    font-weight: 700;
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      &::before {
+        content: "";
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 999px;
+        background: var(--ccm-water);
+        flex: none;
+      }
+    }
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 3rem 2.5rem;
+  }
+  &__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ccm-water);
+    font-weight: 700;
+  }
+  &__title {
+    margin: 0 0 0.75rem;
+    font-family: var(--ccm-font-heading);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 2.4vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    color: var(--ccm-midnight);
+  }
+  &__lead {
+    margin: 0 0 2rem;
+    max-width: 38ch;
+    color: #3b5578;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.95rem 1.5rem;
+    border-radius: var(--ccm-radius);
+    background: var(--ccm-sea);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 150ms ease, transform 150ms ease;
+    &:hover { background: var(--ccm-midnight); }
+    &:focus-visible { outline: 3px solid var(--ccm-water); outline-offset: 2px; }
+    &:active { transform: translateY(1px); }
+    &--secondary {
+      background: var(--ccm-mist);
+      color: var(--ccm-midnight);
+      &:hover { background: #dbe7f5; }
+    }
+  }
+  &__foot {
+    margin: 1.25rem 0 0;
+    font-size: 0.9rem;
+    color: #6b7f99;
+    a { color: var(--ccm-sea); font-weight: 700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  }
+
+  @media (max-width: 47.9rem) {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    &__aside { padding: 1.5rem; gap: 1rem; }
+    &__art { max-width: 14rem; }
+    &__features { display: none; }
+    &__panel { padding: 1.75rem 1.5rem 1.5rem; }
+  }
+}
+
+/* ------------------------------------------------------------------ nav */
+
+.nav .graphic-icon,
+.ccm-brand-icon {
+  height: 1.75rem;
+  width: auto;
+}
+
+/* Headings across the admin pick up the site's heading face; everything
+   else keeps Payload's spacing and controls. */
+.template-default h1,
+.template-default h2,
+.template-default h3 {
+  font-family: var(--ccm-font-heading);
+}
+
+/* ------------------------------------------------------- report a problem */
+/* payload/components/report-issue-bubble.tsx. Surfaces use Payload's theme
+   tokens so the panel follows the admin's light/dark setting; the site's sea
+   blue marks the actions, as on the login page. */
+
+.ccm-report__trigger {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 999px;
+  background: var(--theme-elevation-0);
+  color: var(--theme-text);
+  font: 700 0.85rem/1 var(--ccm-font-body);
+  box-shadow: 0 10px 30px -12px rgba(11, 49, 96, 0.35);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+  &:hover { border-color: var(--ccm-water); color: var(--ccm-sea); }
+  &:focus-visible { outline: 3px solid var(--ccm-water); outline-offset: 2px; }
+  @media (max-width: 40rem) {
+    padding: 0.65rem;
+    .ccm-report__trigger-label { display: none; }
+  }
+}
+
+.ccm-report {
+  width: min(36rem, calc(100vw - 2rem));
+  max-height: 88dvh;
+  padding: 0;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 1rem;
+  background: var(--theme-elevation-0);
+  color: var(--theme-text);
+  box-shadow: 0 24px 60px -24px rgba(11, 49, 96, 0.45);
+  &::backdrop { background: rgba(11, 49, 96, 0.35); }
+
+  &__panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    font-family: var(--ccm-font-body);
+  }
+  &__header {
+    position: relative;
+    padding-inline-end: 2rem;
+    h2 { margin: 0 0 0.35rem; font-size: 1.25rem; }
+    p { margin: 0; color: var(--theme-elevation-600); font-size: 0.9rem; line-height: 1.5; }
+  }
+  &__close {
+    position: absolute;
+    inset-block-start: -0.25rem;
+    inset-inline-end: -0.25rem;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--theme-elevation-600);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    &:hover { background: var(--theme-elevation-100); }
+  }
+  &__field {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+    > span, legend { font-weight: 700; font-size: 0.85rem; padding: 0; }
+    small { color: var(--theme-elevation-600); font-size: 0.78rem; line-height: 1.45; }
+    input:not([type="file"]), textarea, select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--theme-elevation-150);
+      border-radius: var(--ccm-radius);
+      background: var(--theme-input-bg, var(--theme-elevation-0));
+      color: var(--theme-text);
+      font: inherit;
+      font-size: 0.95rem;
+      &:focus { outline: 2px solid var(--ccm-water); outline-offset: 0; border-color: transparent; }
+    }
+    textarea { resize: vertical; }
+  }
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  &__chip {
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--theme-text);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    &:hover { border-color: var(--ccm-water); }
+    &[aria-pressed="true"] { background: var(--ccm-sea); border-color: var(--ccm-sea); color: #fff; }
+    &:disabled { opacity: 0.55; cursor: progress; }
+  }
+  &__shot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--ccm-radius);
+    img { width: 6rem; height: 4rem; object-fit: cover; border-radius: 0.4rem; }
+    span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem; color: var(--theme-elevation-600); }
+    button { border: 0; background: transparent; color: var(--theme-elevation-600); font-size: 1.3rem; cursor: pointer; }
+  }
+  &__context {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--ccm-radius);
+    background: var(--theme-elevation-50);
+    color: var(--theme-elevation-600);
+    font-size: 0.78rem;
+  }
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    @media (max-width: 40rem) { flex-direction: column-reverse; }
+  }
+  &__primary, &__secondary {
+    padding: 0.7rem 1.2rem;
+    border: 0;
+    border-radius: var(--ccm-radius);
+    font: 700 0.9rem/1 var(--ccm-font-body);
+    cursor: pointer;
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    &:focus-visible { outline: 3px solid var(--ccm-water); outline-offset: 2px; }
+  }
+  &__primary { background: var(--ccm-sea); color: #fff; &:hover:not(:disabled) { background: var(--ccm-midnight); } }
+  &__secondary { background: transparent; color: var(--theme-text); &:hover:not(:disabled) { background: var(--theme-elevation-100); } }
+}

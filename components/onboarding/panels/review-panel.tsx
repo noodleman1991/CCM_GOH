@@ -1,43 +1,46 @@
 "use client"
 
 import React from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
-import { format } from "date-fns"
 import { User, Briefcase, Globe, Shield, Calendar, ExternalLink } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProfilePromptsEditor } from "@/components/profile/profile-prompts-editor"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
+
+/** A Sanity label: either an already-resolved string or an internationalized array. */
+type SanityLabel = string | Array<{ _key?: string; value?: string }> | null | undefined
 
 interface ReviewPanelProps {
-  form: any
-  content?: any
-  workTypes?: Array<{ _id: string; label: any }>
-  expertiseAreas?: Array<{ _id: string; label: any }>
+  form: OnboardingForm
+  content?: OnboardingContent | null
+  workTypes?: Array<{ _id: string; label?: SanityLabel }>
+  expertiseAreas?: Array<{ _id: string; label?: SanityLabel }>
   isSubmitting?: boolean
 }
 
 export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = [] }: ReviewPanelProps) {
   const t = useTranslations("onboarding.steps.review")
+  const tPrompts = useTranslations("profile.prompts")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
   const formData = form.watch()
 
-  const getLocalizedText = (labelArray: any, fallback: string) => {
+  const getLocalizedText = (labelArray: SanityLabel, fallback: string) => {
     if (!labelArray) return fallback
     if (typeof labelArray === 'string') return labelArray
 
     // Sanity returns: [{_key: 'en', value: 'Label'}, {_key: 'es', value: 'Etiqueta'}]
     if (Array.isArray(labelArray)) {
-      const localizedItem = labelArray.find((item: any) => item._key === locale)
+      const localizedItem = labelArray.find((item) => item._key === locale)
       if (localizedItem?.value) return localizedItem.value
 
-      const enItem = labelArray.find((item: any) => item._key === 'en')
+      const enItem = labelArray.find((item) => item._key === 'en')
       if (enItem?.value) return enItem.value
 
       if (labelArray[0]?.value) return labelArray[0].value
@@ -46,25 +49,13 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
     return fallback
   }
 
-  const getWorkTypeTitle = (id: any) => {
-    const workType = workTypes.find((wt: any) => wt._id === id)
-    return workType ? getLocalizedText(workType.label, `Work Type ${id}`) : id
-  }
-
-  const getExpertiseAreaTitle = (id: any) => {
-    const area = expertiseAreas.find((ea: any) => ea._id === id)
-    return area ? getLocalizedText(area.label, `Expertise ${id}`) : id
-  }
-
   const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "MMM yyyy")
-    } catch {
-      return dateString
-    }
+    const date = new Date(dateString)
+    if (Number.isNaN(date.getTime())) return dateString
+    return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric" }).format(date)
   }
 
-  const getVisibilityText = (visibility: string) => {
+  const getVisibilityText = (visibility: string | undefined) => {
     switch (visibility) {
       case "PUBLIC": return t("visibility.public")
       case "MEMBERS": return t("visibility.members")
@@ -95,7 +86,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* Basic Information */}
         <Card>
           <CardHeader>
-            <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+            <CardTitle className={cn("flex items-center gap-2")}>
               <User className="h-5 w-5 text-primary" />
               {content?.reviewFieldLabels?.basicInfo || t("basicInfo")}
             </CardTitle>
@@ -145,7 +136,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* Work Information */}
         <Card>
           <CardHeader>
-            <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+            <CardTitle className={cn("flex items-center gap-2")}>
               <Briefcase className="h-5 w-5 text-primary" />
               {content?.reviewFieldLabels?.workInfo || t("workInfo")}
             </CardTitle>
@@ -154,17 +145,17 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             {/* Work Types */}
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.workTypes || t("workTypes")}</p>
-              <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex flex-wrap gap-2")}>
                 {[...new Set(formData.workInfo.workTypes)]
-                  .map((id: any, index: number) => {
-                    const workType = workTypes.find((wt: any) => wt._id === id)
+                  .map((id, index) => {
+                    const workType = workTypes.find((wt) => wt._id === id)
                     if (!workType) return null
                     const title = getLocalizedText(workType.label, "")
                     if (!title) return null
                     return { id, title, index }
                   })
-                  .filter(Boolean)
-                  .map((item: any) => (
+                  .filter((item): item is { id: string; title: string; index: number } => Boolean(item))
+                  .map((item) => (
                     <Badge key={`${item.id}-${item.index}`} variant="secondary">
                       {item.title}
                     </Badge>
@@ -176,17 +167,17 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             {/* Expertise Areas */}
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.expertiseAreas || t("expertiseAreas")}</p>
-              <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex flex-wrap gap-2")}>
                 {[...new Set(formData.workInfo.expertiseAreas)]
-                  .map((id: any, index: number) => {
-                    const area = expertiseAreas.find((ea: any) => ea._id === id)
+                  .map((id, index) => {
+                    const area = expertiseAreas.find((ea) => ea._id === id)
                     if (!area) return null
                     const title = getLocalizedText(area.label, "")
                     if (!title) return null
                     return { id, title, index }
                   })
-                  .filter(Boolean)
-                  .map((item: any) => (
+                  .filter((item): item is { id: string; title: string; index: number } => Boolean(item))
+                  .map((item) => (
                     <Badge key={`${item.id}-${item.index}`} variant="outline">
                       {item.title}
                     </Badge>
@@ -232,7 +223,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       href={formData.workInfo.linkedinProfile}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                      className={cn("flex items-center gap-2 text-primary hover:underline")}
                     >
                       <ExternalLink className="h-4 w-4" />
                       LinkedIn
@@ -243,10 +234,10 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       href={formData.workInfo.personalWebsite}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                      className={cn("flex items-center gap-2 text-primary hover:underline")}
                     >
                       <ExternalLink className="h-4 w-4" />
-                      Website
+                      {t("websiteLink")}
                     </a>
                   )}
                   {formData.workInfo.otherSocialLinks?.map((link: {platform: string, url: string}, index: number) => (
@@ -256,7 +247,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                        className={cn("flex items-center gap-2 text-primary hover:underline")}
                       >
                         <ExternalLink className="h-4 w-4" />
                         {link.platform}
@@ -273,18 +264,18 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {formData.recentWork && formData.recentWork.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <CardTitle className={cn("flex items-center gap-2")}>
                 <Globe className="h-5 w-5 text-primary" />
                 {content?.reviewFieldLabels?.recentWork || t("recentWork")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {formData.recentWork.map((work: any, index: number) => (
+                {formData.recentWork.map((work, index) => (
                   <div key={index} className="border rounded-lg p-4">
-                    <div className={cn("flex items-start justify-between mb-2", isRTL && "flex-row-reverse")}>
+                    <div className={cn("flex items-start justify-between mb-2")}>
                       <h4 className="font-medium">{work.title}</h4>
-                      <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                      <div className={cn("flex items-center gap-2 text-sm text-muted-foreground")}>
                         <Calendar className="h-4 w-4" />
                         <span>
                           {formatDate(work.startDate)} - {work.isOngoing ? (content?.reviewFieldLabels?.ongoing || t("ongoing")) : formatDate(work.endDate || "")}
@@ -297,7 +288,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                         href={work.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                        className={cn("inline-flex items-center gap-1 text-primary hover:underline")}
                       >
                         <ExternalLink className="h-4 w-4" />
                         {content?.reviewFieldLabels?.viewProject || t("viewProject")}
@@ -313,7 +304,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* Privacy Settings */}
         <Card>
           <CardHeader>
-            <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+            <CardTitle className={cn("flex items-center gap-2")}>
               <Shield className="h-5 w-5 text-primary" />
               {content?.reviewFieldLabels?.privacySettings || t("privacySettings")}
             </CardTitle>
@@ -333,35 +324,35 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             <Separator />
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showEmail ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showEmail || t("showEmail")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showPhoneNumber ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showPhone || t("showPhone")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showWorkDetails ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showWork || t("showWork")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showSocialLinks ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showSocial || t("showSocial")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showLocation ? "bg-green-500" : "bg-gray-300"
@@ -373,6 +364,17 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         </Card>
       </div>
 
+      {/* Profile prompts (K5) — an inviting last step; saved independently. */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{tPrompts("title")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">{tPrompts("description")}</p>
+          <ProfilePromptsEditor />
+        </CardContent>
+      </Card>
+
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl space-y-2">
         <h3 className="font-semibold text-foreground">
           {content?.reviewFieldLabels?.readyToSubmit || t("readyToSubmit")}
@@ -383,7 +385,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* No separate confirmation checkbox: pressing the Complete button below
             IS the confirmation. The review above is the user's chance to check. */}
         <p className="text-xs text-muted-foreground">
-          You can always update your profile from the dashboard.
+          {t("updateLater")}
         </p>
       </div>
     </div>

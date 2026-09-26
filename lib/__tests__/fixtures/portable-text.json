@@ -1,0 +1,2839 @@
+{
+ "caseStudy": {
+  "_id": "case-study-20",
+  "field": "content",
+  "blocks": [
+   {
+    "_key": "block-csr89nszd",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-lbwka5m4d",
+      "_type": "span",
+      "marks": [],
+      "text": "Climate Change and Health in Vietnam"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-ef44jclle",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-9sqsk2b4z",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "Consultation on the Disease Prevention Law, which covers climate change and mental health, with local stakeholders from Ha Tinh province, one of Vietnam’s most climate-vulnerable regions (Photo courtesy of To Thi Lien)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-ijbgkau4t",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-k2qboyx79",
+      "_type": "span",
+      "marks": [],
+      "text": "Vietnam is a low-middle-income country in Southeast Asia, with an area of 331,700 km2, a coastline of 3,444 km and a population of around 100 million, making it the world's fifteenth-most populous country. Being one of the countries most vulnerable to the risk of climate change impacts (1), Vietnam has been suffering from extreme weather events such as storms and cyclones that lead to disastrous events such as floods and landslides. Vietnam also faces increasing heat, air pollution, clean water scarcity, food security and safety, vector and ecology distribution and sea level rise."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-b6q1ivgjw",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-q0tb27z9g",
+      "_type": "span",
+      "marks": [],
+      "text": "Approximately 70% of residents live in coastal communities with high exposure to storms and floods. Each year, floods affect an estimated 930,000 people with a Gross Domestic Product (GDP) loss of USD 2.6 billion. In recent years, most regions have witnessed droughts, heat waves, and extreme cold successively. As temperature rises, the increase in heat stress on the Vietnamese population is expected to lead to negative health outcomes, particularly for poorer communities and outdoor laborers (2). Meanwhile, most of the extensive low-lying coastline and delta regions in Vietnam are highly vulnerable to rising sea levels, which also are expected to bring about a wide range of socioeconomic and public health impacts (3)."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-db31tmrmy",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-5x5q537b8",
+      "_type": "span",
+      "marks": [],
+      "text": "Mental Health Impacts of Climate Change"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-clmuixlux",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-o9cdd5lqg",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "The Vietnam Environment Management Agency (VIHEMA) acknowledges mental and psychosocial health as climate-related health outcomes. People affected by climate-related hazards do develop symptoms of anxiety and depression and are diagnosed with post-traumatic stress disorder. They often relive the situation that caused them trauma with panic. According to a survey assessing the socio-psychological impact of storms and floods in Central Vietnam, people's psychology is affected before, during and after the events, but most notable immediately after (first week), and these effects normally last for the first 2 weeks, but in some special cases they can last for months. Children, women, the elderly, people from low socio-economic backgrounds and the disabled are the most psychologically affected by these events (4). Box 1 presents some direct quotes capturing lived experiences of climate change and mental health in Vietnam."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-yddrx2da4",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-w3af2eo10",
+      "_type": "span",
+      "marks": [
+       "strong",
+       "em"
+      ],
+      "text": "Box 1. Lived experiences of climate change and mental health in Vietnam \"After Storm No. 5/2020 and severe flooding, we received a number of cases (mostly women) coming to the clinic due to anxiety and depression. They said the symptoms often appear and get worse when it rains heavily or hear news about storms and floods. People in the areas of the central provinces have continuously experienced natural disasters, storms upon storms, floods upon floods, landslides... it haunts them.\" - Dr. Tran Nhu Minh Hang, Head of Mental Health and Psychotherapy Clinic and Department of Psychiatry, University of Medicine and Pharmacy, Hue University “This place is a village, houses and fields are growing crops and rice. Now all that remains is stone. The entire road of more than ten kilometers is full of rocks and ruins. My beloved daughter couldn't run in time and died. The house is no longer there. Now move, I don't know how I will live. I haven't had a good night's sleep since that day.\" - Lo Van Dieu, male victim of a 2017 flood from Hua Nam village, Son La province"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-16czc6mkj",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-0ing1tcbi",
+      "_type": "span",
+      "marks": [],
+      "text": "Climate Change in Vietnam’s Proposed Mental Health Policy"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-hjftvx07s",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-temzdllz8",
+      "_type": "span",
+      "marks": [],
+      "text": "Mental health issues in Vietnam are becoming more common and widely recognized, including climate-related mental disorders. In Vietnam, it is mainly psychiatric specialties that provide mental health care services. Vietnam currently has 605 psychiatrists, reaching 0.62 doctors/100,000 people, lower than the global average (1.7), and they are usually focused on patients with obvious mental illnesses. Meanwhile, as for mental health nurses, the country only has 3 per 100,000 people, while the global average is 3.8, and high -income countries is 29 (5). When it comes to mental health treatment, the emphasis is still on pharmacological interventions, while psychotherapy and non-pharmacological measures are not yet fully developed. Ultimately, there is an urgent need to develop a comprehensive mental health care system that emphasizes primary health care."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-ucc2e5a34",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-z2tmi4zzy",
+      "_type": "span",
+      "marks": [],
+      "text": "In January 2022, the Government of Vietnam issued the \"National Plan to Prevent and Control Non-communicable Diseases and Mental Health Disorders for the Period 2022-2025.\" One of its important goals is \"to strengthen risk factors for disease, promote prevention measures, early detection and treatment management of diseases and mental disorders to contribute to protecting, caring for and improving the health of people and economic and social development of the country.\" To achieve this goal, a comprehensive chapter on mental health disorder prevention is also included by the Vietnamese Ministry of Health in the draft law on Disease Prevention."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-cyopuwrao",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-08gl3gm8h",
+      "_type": "span",
+      "marks": [
+       "strong",
+       "em"
+      ],
+      "text": "Considering the World Health Organization’s recommendations on addressing the nexus of climate change and mental health (6), VIHEMA’s experts (with the support from the Asian Development Bank) participated in the drafting of environmental health contentsthat will be included in the law. Box 2 shows the details of the proposed law’s Article 73, which acknowledges the emerging impacts of climate change on health, including mental health. Key stakeholders also resolved to add a reference to climate change to several provisions of the law related to mental health."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-g3lvv7f4p",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-8mua8639c",
+      "_type": "span",
+      "marks": [
+       "strong",
+       "em"
+      ],
+      "text": "Box 2. Climate change and mental health in the draft Disease Prevention Law of VietnamArticle 73: Preventing risk factors affecting health due to climate change1. Climate change increases the frequency and severity of extreme and unusual weather such as floods, droughts, hurricanes, sea level rise, saltwater intrusion, heat waves and other risk factors that affect human health (including physical, mental and social).2. Measures to prevent risk factors include:a) Develop a monitoring and warning system of risk factors affecting health due to climate change;b) Sharing data on climate change;c) Improve the capacity of the health system in monitoring, detecting, preventing, providing first aid, and treating diseases and other health problems caused by climate change;d) Strengthen inter-sectoral coordination, community mobilization and international cooperation in preventing risk factors and responding to health problems caused by climate change."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-60679ivp8",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-yuklma2by",
+      "_type": "span",
+      "marks": [],
+      "text": "Challenges in Climate Change and Mental Health Policymaking"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-a4z7tdcjc",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-5mdw5h6tx",
+      "_type": "span",
+      "marks": [],
+      "text": "There are two main obstacles encountered in developing and advocating for an integrated climate change and mental health policy. First, there is not enough data and scholarship on the effects of climate change on mental health problems in Vietnam. Therefore, it was challenging to advocate for greater integration of climate change into the country’s mental health policy."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-4wabxzfnh",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-k6gje76dj",
+      "_type": "span",
+      "marks": [],
+      "text": "Second, the mental healthcare delivery system in Vietnam remains very limited. Human resources for mental health care, especially non-psychiatrists, continue to be lacking. Facilities with mental health care services are concentrated at central and provincial levels, while the district level hardly can provide inpatient mental health examination and treatment services. There is still no integration of mental health into primary health care; this needs to be addressed, because many of the climate-driven mental health impacts can be addressed at the level of primary care."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-pdnqcayv2",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-oi7oh0v7v",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "Different stakeholders, including the Ministry of Health, discussing proposed policies related to climate change and human health (including mental health) at a consultation held on November 2023 in Da Nang City (Photo courtesy of To Thi Lien)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-cv9q85ohe",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-iadl9ggwm",
+      "_type": "span",
+      "marks": [],
+      "text": "Recommendations"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-74qwvn78y",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-m143cn7gr",
+      "_type": "span",
+      "marks": [],
+      "text": "Other countries that are considering developing integrated climate change and mental health policies can learn a lot from Vietnam’s early experience. Below are some recommendations that can help in achieving this goal:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-xudege2gl",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-r9atm459a",
+      "_type": "span",
+      "marks": [],
+      "text": "Begin by strengthening basic Mental Health and Psychosocial Support (MHPSS), especially at the primary care level, and integrate it within policies and programs that deal with climate change and/or health;"
+     },
+     {
+      "_key": "span-0nzewdz8q",
+      "_type": "span",
+      "marks": [],
+      "text": "Integrate climate change considerations into policies and programs for mental health, and vice versa – mental health into climate change policies and programs;"
+     },
+     {
+      "_key": "span-asoqgnexg",
+      "_type": "span",
+      "marks": [],
+      "text": "Identify champions with expertise, credibility, and lived experience – not necessarily psychiatrists alone – who can navigate both climate change and mental health policy spaces;"
+     },
+     {
+      "_key": "span-e9b2cn607",
+      "_type": "span",
+      "marks": [],
+      "text": "Invest in local climate change and mental health research to generate evidence that will support policy formulation and implementation;"
+     },
+     {
+      "_key": "span-of98jcl0w",
+      "_type": "span",
+      "marks": [],
+      "text": "Ensure effective communication and rapid dissemination of new knowledge generated from research and pilot projects to aid policymaking and implementation scale-up;"
+     },
+     {
+      "_key": "span-lbucup8we",
+      "_type": "span",
+      "marks": [],
+      "text": "Adopt a multisectoral, community-based, and participatory approach to the development and implementation of climate change and mental health policies and programs;"
+     },
+     {
+      "_key": "span-5ww8t3g5c",
+      "_type": "span",
+      "marks": [],
+      "text": "Address gaps in funding and human resources, both for mental health care provision and for responding to the wider healthand social impacts of climate change;"
+     },
+     {
+      "_key": "span-ie1iz4k2q",
+      "_type": "span",
+      "marks": [],
+      "text": "Put equity at the center of climate change and mental health policymaking, with special attention to vulnerable and marginalized communities;"
+     },
+     {
+      "_key": "span-2z7uo729h",
+      "_type": "span",
+      "marks": [],
+      "text": "Involve young people in the policymaking process, as they are passionate about both climate change and mental health – two pressing issues that affect them, and;"
+     },
+     {
+      "_key": "span-9zxnhn89k",
+      "_type": "span",
+      "marks": [],
+      "text": "Build upon global commitments such as the Sustainable Development Goals (SDGs), Paris Agreement (and other climate change-related policy instruments), and Sendai Framework for Disaster Risk Reduction, among others."
+     }
+    ],
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-slnb6niq8",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-dd8v7spme",
+      "_type": "span",
+      "marks": [],
+      "text": "References"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-9kq7ntn0u",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-ihxs51sb2",
+      "_type": "span",
+      "marks": [],
+      "text": "1.Eckstein D, Künzel V, Schäfer L, Winges M. GLOBAL CLIMATE RISK INDEX 2020 (2020). Who Suffers Most from Extreme Weather Events? Weather-Related Loss Events in 2018 and 1999 to 2018. Available here: https://www.germanwatch.org/sites/germanwatch.org/files/20-2-01e%20Global%20Climate%20Risk%20Index%202020_13.pdf"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-12raejeze",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-q502jcojk",
+      "_type": "span",
+      "marks": [],
+      "text": "2. World Bank Group (2021). CLIMATE RISK COUNTRY PROFILE: VIETNAM. Available here:https://climateknowledgeportal.worldbank.org/sites/default/files/2021-04/15077-Vietnam%20Country%20Profile-WEB.pdf"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-znwv6nsr9",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-9n22wkufs",
+      "_type": "span",
+      "marks": [],
+      "text": "3. Tran NQL, et al. Climate change and human health in Vietnam: a systematic review and additional analyses on current impacts, future risk, and adaptation. The Lancet Regional Health - Western Pacific 2023;40, Page: 100943."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "block-s4nobh5rs",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-u1t66kmjf",
+      "_type": "span",
+      "marks": [],
+      "text": "4. Suckhoedoisong (2014). Nạn nhân sau thảm hoạ sẽ được chăm sóc về sức khoẻ tâm thần. Available here: https://suckhoedoisong.vn/nan-nhan-sau-tham-hoa-se-duoc-cham-soc-ve-suc-khoe-tam-than-16986035.htm"
+     }
+    ],
+    "markDefs": [],
+    "style": "h1"
+   },
+   {
+    "_key": "block-y95fbfevx",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-te2qeuvzo",
+      "_type": "span",
+      "marks": [],
+      "text": "5. Suckhoedoisong (2023). Gần 15 triệu người Việt mắc ít nhất một rối loạn tâm thần. Available here:https://suckhoedoisong.vn/gan-15-trieu-nguoi-viet-mac-it-nhat-mot-roi-loan-tam-than-169231010132121304.htm"
+     }
+    ],
+    "markDefs": [],
+    "style": "h1"
+   },
+   {
+    "_key": "block-mxlmi6orn",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-riym976a8",
+      "_type": "span",
+      "marks": [],
+      "text": "6.WHO (2022). Mental health and Climate Change: Policy Brief. Available here:https://www.who.int/publications/i/item/9789240045125"
+     }
+    ],
+    "markDefs": [],
+    "style": "h1"
+   },
+   {
+    "_key": "block-725h5z1c1",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-y93k224om",
+      "_type": "span",
+      "marks": [],
+      "text": "Written by"
+     }
+    ],
+    "markDefs": [],
+    "style": "h2"
+   },
+   {
+    "_key": "block-0o041fvtu",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "span-1dl4a4lxq",
+      "_type": "span",
+      "marks": [],
+      "text": "To Thi Lien"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   }
+  ]
+ },
+ "docsChapterExecutiveSummary": {
+  "_id": "docsChapter-global-agenda-executive-summary",
+  "field": "body",
+  "blocks": [
+   {
+    "_key": "01e496cb",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "62c3b8dd",
+      "_type": "span",
+      "marks": [],
+      "text": "Executive Summary"
+     },
+     {
+      "_key": "364aa856",
+      "_type": "span",
+      "marks": [
+       "134830a4"
+      ],
+      "text": "​"
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "134830a4",
+      "_type": "link",
+      "href": "#executive-summary"
+     }
+    ],
+    "style": "h2"
+   },
+   {
+    "_key": "7a8c237e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "88799d88",
+      "_type": "span",
+      "marks": [],
+      "text": "The climate crisis negatively impacts mental health, and increases the risk of poor health for people already living with mental health challenges."
+     },
+     {
+      "_key": "b2ee58d5",
+      "_type": "span",
+      "marks": [
+       "806880d4"
+      ],
+      "text": "i"
+     },
+     {
+      "_key": "631711cc",
+      "_type": "span",
+      "marks": [],
+      "text": ","
+     },
+     {
+      "_key": "55c83683",
+      "_type": "span",
+      "marks": [
+       "36c70232"
+      ],
+      "text": "1"
+     },
+     {
+      "_key": "626a5092",
+      "_type": "span",
+      "marks": [],
+      "text": ","
+     },
+     {
+      "_key": "401139c4",
+      "_type": "span",
+      "marks": [
+       "8b704d12"
+      ],
+      "text": "2"
+     },
+     {
+      "_key": "54e094a8",
+      "_type": "span",
+      "marks": [],
+      "text": " Conversely, climate actions (such as climate adaptation and mitigation strategies) create opportunities to support good mental health."
+     },
+     {
+      "_key": "e3b71803",
+      "_type": "span",
+      "marks": [
+       "3ab7eb9a"
+      ],
+      "text": "2"
+     },
+     {
+      "_key": "72404c6f",
+      "_type": "span",
+      "marks": [],
+      "text": ","
+     },
+     {
+      "_key": "6fa91f2d",
+      "_type": "span",
+      "marks": [
+       "0e6b1ab1"
+      ],
+      "text": "3"
+     },
+     {
+      "_key": "d04175ae",
+      "_type": "span",
+      "marks": [],
+      "text": " The climate change and mental health research field needs a clear, inclusive and aligned vision, with research supporting practice and vice versa. This is the purpose of the Connecting Climate Minds Global Research and Action Agenda. This agenda outlines priority areas for climate and mental health research, highlighting the need for a truly transdisciplinary field. It is primarily targeted to help researchers and research funders to generate evidence for decision-makers, in ways that best respond to the needs of people living with the mental health consequences of climate change. It also provides a strategy for implementing and translating research into action, calling for active participation of all sectors (e.g. policymakers, practitioners and civil society).\nThe agenda was developed through a global process that included a wide range of disciplines, knowledge systems, lived experiences, sectors, cultures and nations. It represents the perspectives of 960+ contributors from 90 countries gathered through dialogues, surveys and a global event. It synthesises insights from seven Regional Research and Action Agendas"
+     },
+     {
+      "_key": "632382a6",
+      "_type": "span",
+      "marks": [
+       "46ab056b"
+      ],
+      "text": "4"
+     },
+     {
+      "_key": "b42fc59e",
+      "_type": "span",
+      "marks": [],
+      "text": "-"
+     },
+     {
+      "_key": "1d2fa2fa",
+      "_type": "span",
+      "marks": [
+       "6958cbbe"
+      ],
+      "text": "10"
+     },
+     {
+      "_key": "367c175f",
+      "_type": "span",
+      "marks": [],
+      "text": " developed by the Connecting Climate Minds Communities of Practice across the Sustainable Development Goal"
+     },
+     {
+      "_key": "14130de7",
+      "_type": "span",
+      "marks": [
+       "aa6e448c"
+      ],
+      "text": "ii"
+     },
+     {
+      "_key": "7732a518",
+      "_type": "span",
+      "marks": [],
+      "text": " global regions, and from Lived Experience Research and Action Agendas developed with and for youth,"
+     },
+     {
+      "_key": "0825d399",
+      "_type": "span",
+      "marks": [
+       "13378619"
+      ],
+      "text": "11"
+     },
+     {
+      "_key": "a1691aa6",
+      "_type": "span",
+      "marks": [],
+      "text": " Indigenous communities,"
+     },
+     {
+      "_key": "b27b67a5",
+      "_type": "span",
+      "marks": [
+       "fa6308e9"
+      ],
+      "text": "12"
+     },
+     {
+      "_key": "15b35d09",
+      "_type": "span",
+      "marks": [],
+      "text": " and small farmers and fisher peoples."
+     },
+     {
+      "_key": "0ce45e05",
+      "_type": "span",
+      "marks": [
+       "55b00961"
+      ],
+      "text": "13"
+     },
+     {
+      "_key": "989db476",
+      "_type": "span",
+      "marks": [],
+      "text": " These agendas should be consulted before applying this global agenda in these specific contexts. The global agenda consists of two intertwined components: 1) a research agenda to generate evidence that will support decision-makers responding to emerging challenges in mental health and climate change, and 2) an action agenda, to guide how research is conducted and ensure evidence translates into policy and practice.\nThe research agenda proposes priorities across four high-level categories identified as areas of critical research need. Each category contains a set of priority research topics and questions. Some may have been previously researched in some settings (but critically not others), and others reflect experiences heard in Connecting Climate Minds for which there is currently little to no research evidence. These categories and the top research question within them (selected via a global survey of experts)  are listed below:"
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "806880d4",
+      "_type": "footnote",
+      "text": "Mental health is defined by the World Health Organization as \"a state of mental well-being that enables people to cope with the stresses of life, realize their abilities, learn well and work well, and contribute to their community.\""
+     },
+     {
+      "_key": "36c70232",
+      "_type": "footnote",
+      "text": "Corvalan C, Gray B, Villalobos E, Sena A, Hanna F, Campbell-Lendrum D. Mental health and Climate Change: Policy Brief. World Health Organization. 2022. Available from: https://www.who.int/publications/i/item/9789240045125"
+     },
+     {
+      "_key": "8b704d12",
+      "_type": "footnote",
+      "text": "IPCC, 2022: Climate Change 2022: Impacts, Adaptation and Vulnerability. Contribution of Working Group II to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change [H.-O. Pörtner, D.C. Roberts, M. Tignor, E.S. Poloczanska, K. Mintenbeck, A. Alegría, M. Craig, S. Langsdorf, S. Löschke, V. Möller, A. Okem, B. Rama (eds.)]. Cambridge University Press. Cambridge University Press, Cambridge, UK and New York, NY, USA, 3056 pp., doi:10.1017/9781009325844."
+     },
+     {
+      "_key": "3ab7eb9a",
+      "_type": "footnote",
+      "text": "IPCC, 2022: Climate Change 2022: Impacts, Adaptation and Vulnerability. Contribution of Working Group II to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change [H.-O. Pörtner, D.C. Roberts, M. Tignor, E.S. Poloczanska, K. Mintenbeck, A. Alegría, M. Craig, S. Langsdorf, S. Löschke, V. Möller, A. Okem, B. Rama (eds.)]. Cambridge University Press. Cambridge University Press, Cambridge, UK and New York, NY, USA, 3056 pp., doi:10.1017/9781009325844."
+     },
+     {
+      "_key": "0e6b1ab1",
+      "_type": "footnote",
+      "text": "Nasar S, Alam W, Alam MT, Enash A, Prabhakaran P, Duishobekova K, Wangmo K, Singh Kabir I, Shir Rashik J, Misha F. Connecting Climate Minds Regional Research and Action Agenda: Central and South Asia. Connecting Climate Minds. 2024. Available from: https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CSA%20(summary)_compressed.pdf?t=2024-03-19T10%3A38%3A03.981Z"
+     },
+     {
+      "_key": "46ab056b",
+      "_type": "footnote",
+      "text": "Guinto RR, Aruta JJBR, Esteban KT, Sunglao JA, Co GS, Cunanan DJ, Sablay ALR, Sugawara J, Igarashi NH. Connecting Climate Minds Regional Research and Action Agenda: East and South-Eastern Asia. Connecting Climate Minds. 2024. Available from: https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/ESEA%20(summary)_compressed.pdf?t=2024-03-19T10%3A48%3A44.216Z"
+     },
+     {
+      "_key": "6958cbbe",
+      "_type": "footnote",
+      "text": "Wright S, Lekwa H, Uchendu J, Chigozie Onye-Sanya S, Olude A, Ogbodum M. Connecting Climate Minds Youth Research and Action Agenda. Connecting Climate Minds. 2024. Available from: https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Youth%20(summary)_v2_compressed.pdf?t=2024-04-18T16%3A23%3A36.652Z"
+     },
+     {
+      "_key": "aa6e448c",
+      "_type": "footnote",
+      "text": "The United Nations Sustainable Development Goals (SDGs) are a collection of 17 interlinked global goals designed to be a \"blueprint to achieve a better and more sustainable future for all\". The SDGs were set up in 2015 by the United Nations General Assembly and are intended to be achieved by the year 2030."
+     },
+     {
+      "_key": "13378619",
+      "_type": "footnote",
+      "text": "Faciolince Martina M, Zeitz L, Upward K, Kelliher A, Warne D, Yongabi Anchang K, Ridzuan F, Hill KX, Duncan S. Connecting Climate Minds Indigenous Communities Research and Action Agenda. Connecting Climate Minds. 2024. Available from: https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Indigenous%20(summary)_v2_compressed.pdf?t=2024-04-18T16%3A24%3A03.085Z"
+     },
+     {
+      "_key": "fa6308e9",
+      "_type": "footnote",
+      "text": "Zeitz L, Lawrance E, Newberry Le Vay J, Thompson D, Newman S. Connecting Climate Minds Small Farmer and Fisher Peoples Research and Action Agenda. Connecting Climate Minds. 2024. Available from: https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Farmers%20(summary)_v2_compressed.pdf?t=2024-04-18T16%3A23%3A49.783Z"
+     },
+     {
+      "_key": "55b00961",
+      "_type": "footnote",
+      "text": "Lawrance EL, Massazza A, Pantelidou I, Newberry Le Vay J, El Omrani O. Connecting Climate Minds: a shared vision for the climate change and mental health field. Nat Ment Health. 2024;2:121–5."
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "024a7f70",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "1d96946f",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Category 1: Impacts of climate change on mental health, and factors"
+     },
+     {
+      "_key": "6093f351",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "iii"
+     },
+     {
+      "_key": "1294b218",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": " that may increase risk for or be protective against these impacts."
+     },
+     {
+      "_key": "dd6efe26",
+      "_type": "span",
+      "marks": [],
+      "text": "\nTop question: What factors increase or reduce the risk of climate change-related impacts on mental health (e.g. gender, livelihood, or early intervention)? Which factors are unique to the context of climate change and/or what known risk and protective factors for mental health challenges are compounded by climate change?"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "fca6e912",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "4c02f75c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Category 2: Pathways and mechanisms"
+     },
+     {
+      "_key": "1bed1409",
+      "_type": "span",
+      "marks": [
+       "strong",
+       "d87b4231"
+      ],
+      "text": "iv"
+     },
+     {
+      "_key": "5958b35e",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": " through which climate change impacts mental health."
+     },
+     {
+      "_key": "3c11d856",
+      "_type": "span",
+      "marks": [],
+      "text": "\nTop question: How do pathways and mechanisms by which climate change affects mental health challenges - which may be psychological, social, cultural, environmental, behavioural, biological, political and commercial - interact with and compound one another?"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [
+     {
+      "_key": "d87b4231",
+      "_type": "footnote",
+      "text": "Factors that increase risk for, or are protective against, mental health impacts of climate change are characteristics or conditions that make it more or less likely that an individual or group will experience negative mental health outcomes as a result of climate change."
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "ced1c9ed",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "4584cc50",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Category 3: Mental health benefits and risks of climate action."
+     },
+     {
+      "_key": "0b398b1c",
+      "_type": "span",
+      "marks": [],
+      "text": "\nTop question: What are the best-buy"
+     },
+     {
+      "_key": "b16360ea",
+      "_type": "span",
+      "marks": [
+       "f7446c8d"
+      ],
+      "text": "v"
+     },
+     {
+      "_key": "2ee85bff",
+      "_type": "span",
+      "marks": [],
+      "text": " interventions at national and local levels to enable sustained climate action and transformative societal change that also strengthen or leverage good mental health (e.g. building widespread psychological resilience and agency, cultivating social capital)?"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [
+     {
+      "_key": "f7446c8d",
+      "_type": "footnote",
+      "text": "Pathways and mechanisms refer to the processes by which climate change affects mental health. These can be direct (e.g., extreme weather events causing trauma) or indirect (e.g., economic instability due to climate change leading to stress and anxiety)."
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "39319efd",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "fb205b32",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Category 4: Mental health interventions in the context of climate change."
+     },
+     {
+      "_key": "e578f515",
+      "_type": "span",
+      "marks": [],
+      "text": "\nTop question: What are the best-buy interventions to implement before, during and after extreme weather and climate events to protect mental health and respond to resulting mental health challenges?"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "f3f941cd",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "90999456",
+      "_type": "span",
+      "marks": [],
+      "text": "Developing this agenda highlighted the ongoing need to establish foundational understandings in climate and mental health research. This includes developing shared understandings of key concepts, appropriate methods and metrics, and learning from existing knowledge and practices across disciplines and cultures. Enacting this agenda will require adaptation of research questions to local contexts and consideration of the unique vulnerabilities and strengths of different population groups; their expertise and leadership must be at the centre of research."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "7965c0d9",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "1ff5d301",
+      "_type": "span",
+      "marks": [],
+      "text": "Agenda contributors emphasised that "
+     },
+     {
+      "_key": "7fe1bfa1",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "how"
+     },
+     {
+      "_key": "0a6d676d",
+      "_type": "span",
+      "marks": [],
+      "text": " research is done is almost more important than "
+     },
+     {
+      "_key": "bd8c2e39",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "what"
+     },
+     {
+      "_key": "32fc1ce1",
+      "_type": "span",
+      "marks": [],
+      "text": " research is done. They were wary of perpetuating existing harms (e.g. extractive research practices or mental health stigma) and envisioned a decolonised, connected global community. This will require investment to support capacity-building and the development of networks to share learnings among those living with and responding to these impacts around the world; the value of which has been "
+     },
+     {
+      "_key": "0680f372",
+      "_type": "span",
+      "marks": [
+       "aea0fdec"
+      ],
+      "text": "seen throughout Connecting Climate Minds"
+     },
+     {
+      "_key": "1542c7ff",
+      "_type": "span",
+      "marks": [],
+      "text": "."
+     },
+     {
+      "_key": "33ba6c02",
+      "_type": "span",
+      "marks": [
+       "f57f3e83"
+      ],
+      "text": "14"
+     },
+     {
+      "_key": "723c0c4c",
+      "_type": "span",
+      "marks": [],
+      "text": " Contributors also emphasised the need to centre different cultural perspectives"
+     },
+     {
+      "_key": "2670fadc",
+      "_type": "span",
+      "marks": [
+       "897e4714"
+      ],
+      "text": "15"
+     },
+     {
+      "_key": "7d78aed4",
+      "_type": "span",
+      "marks": [],
+      "text": " in how mental health is conceptualised, understood and practised in this field, including an understanding of the interdependence of mental health with the health of our environment"
+     },
+     {
+      "_key": "6c101112",
+      "_type": "span",
+      "marks": [
+       "cee8e956"
+      ],
+      "text": "16"
+     },
+     {
+      "_key": "e37fef48",
+      "_type": "span",
+      "marks": [],
+      "text": ". As one Indigenous contributor stated, \"when the land is well, we are well\". The action agenda presents five key components of the desired vision for the climate and mental health field, which include:"
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "aea0fdec",
+      "_type": "link",
+      "href": "/research-and-action/impact-reports"
+     },
+     {
+      "_key": "f57f3e83",
+      "_type": "footnote",
+      "text": "Martin K, Mirraboopa B. Ways of knowing, being and doing: A theoretical framework and methods for indigenous and indigenist research. J Aust Stud. 2003;27:203–14."
+     },
+     {
+      "_key": "897e4714",
+      "_type": "footnote",
+      "text": "Polemiti E, Hese S, Schepanski K, Yuan J, Schumann G. How does the macroenvironment influence brain and behaviour – a review of current status and future perspectives. medRxiv. 2023;2023.10.09.23296785."
+     },
+     {
+      "_key": "cee8e956",
+      "_type": "footnote",
+      "text": "Intergovernmental Panel on Climate Change Sixth Assessment Report Working Group II. Fact Sheet Health: Climate Change Impacts and Risks. 2023. Intergovernmental Panel on Climate Change. Available from: https://www.ipcc.ch/report/ar6/wg2/downloads/outreach/IPCC_AR6_WGII_FactSheet_Health.pdf"
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "1f9108f4",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "bdb2bd56",
+      "_type": "span",
+      "marks": [],
+      "text": "Transdisciplinary approaches that combine and equally value multiple forms of expertise"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "a3d281a7",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "a32fcf0e",
+      "_type": "span",
+      "marks": [],
+      "text": "Inclusive, non-extractive and co-creative approaches"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "164bc481",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "1ac1ffab",
+      "_type": "span",
+      "marks": [],
+      "text": "Political and policymaking environments that enable integrated climate and mental health policies, practices and frameworks"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "2e114fd7",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "7571dd1a",
+      "_type": "span",
+      "marks": [],
+      "text": "Awareness of climate change and mental health impacts among key actors (e.g. researchers, research funders, policymakers, practitioners, educators and civil society) and what actions they can take to better understand and respond to these impacts"
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "30a29f9a",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "7dd98584",
+      "_type": "span",
+      "marks": [],
+      "text": "Improved research infrastructure, capacity, methods and data to support transdisciplinary, inclusive and comparable approaches to climate change and mental health research."
+     }
+    ],
+    "level": 1,
+    "listItem": "number",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "6f418c6a",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "254436d4",
+      "_type": "span",
+      "marks": [],
+      "text": "Connecting Climate Minds brought together contributors across many forms of expertise, who collectively called for this agenda to promote connection across sectors and disciplines. We urge readers to view the different parts of this agenda as interlinked, and to contribute their diverse expertise to this growing transdisciplinary field. By working and acting together, we can better protect people's mental health from the compounding burdens of a changing climate, and achieve mental health benefits from actions for a safer climate future. We, the 960+ contributors to this agenda, hope you will join us."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   }
+  ]
+ },
+ "docsChapterActionAgenda": {
+  "_id": "docsChapter-global-agenda-global-action-agenda",
+  "field": "body",
+  "blocks": [
+   {
+    "_key": "5e41610a",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "482b62de",
+      "_type": "span",
+      "marks": [],
+      "text": "The Global Action Agenda"
+     },
+     {
+      "_key": "8f461d86",
+      "_type": "span",
+      "marks": [
+       "04907714"
+      ],
+      "text": "​"
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "04907714",
+      "_type": "link",
+      "href": "#the-global-action-agenda"
+     }
+    ],
+    "style": "h2"
+   },
+   {
+    "_key": "aa21a45a",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "f529a415",
+      "_type": "span",
+      "marks": [],
+      "text": "A vision for implementing and translating climate and mental health research"
+     },
+     {
+      "_key": "72d7d5fa",
+      "_type": "span",
+      "marks": [
+       "e2d5bbb5"
+      ],
+      "text": "​"
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "e2d5bbb5",
+      "_type": "link",
+      "href": "#a-vision-for-implementing-and-translating-climate-and-mental-health-research"
+     }
+    ],
+    "style": "h3"
+   },
+   {
+    "_key": "5808b5f2",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "09071b89",
+      "_type": "span",
+      "marks": [],
+      "text": "Contributors to this agenda emphasised that "
+     },
+     {
+      "_key": "30b254f7",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "how"
+     },
+     {
+      "_key": "1d754f67",
+      "_type": "span",
+      "marks": [],
+      "text": " research is done matters, at least as much as "
+     },
+     {
+      "_key": "3a2533ee",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "what"
+     },
+     {
+      "_key": "21dd5cba",
+      "_type": "span",
+      "marks": [],
+      "text": " research is done. This action agenda outlines how climate and mental health research can be better implemented, and how to link this research with action to ensure evidence is translated into policy and practice. It sets out:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "ed06b0dd",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "90619540",
+      "_type": "span",
+      "marks": [],
+      "text": "A vision for climate and mental health research, grounded in the reflections of the CCM community and structured into five components (Table 5, Figure 6)."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "9fbd1dca",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "0a9f229d",
+      "_type": "span",
+      "marks": [],
+      "text": "Challenges currently holding back progress to achieving this vision (Table 5)."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "23244ac9",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "05c8ea8f",
+      "_type": "span",
+      "marks": [],
+      "text": "Example actions that key actors can take to achieve this vision."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "6d1031f8",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "5a9facac",
+      "_type": "span",
+      "marks": [],
+      "text": "‘Key actors’ is used to refer to: researchers and research funders across disciplines, policymakers and practitioners across sectors, educators and civil society (encompassing communities, community-based organisations, non-governmental organisations etc)."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "0fbc280c",
+    "_type": "image",
+    "asset": {
+     "_ref": "image-0417fa8842f6d3d5a1723f2426ccf8f0281a92bb-1732x1098-png",
+     "_type": "reference"
+    },
+    "placement": "center"
+   },
+   {
+    "_key": "95d21051",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "7d69c459",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "Table 5: Five key components of the vision for climate and mental health research, and challenges holding back progress"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "23c86442",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "f198f220",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Vision"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "33af0d0e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "d0e70068",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Challenges holding back progress towards this vision"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "c99ae065",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "5e3a8d2e",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Hearing from the CCM community"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "6b084c59",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "a1598dce",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Research infrastructure, capacity, methods and data:"
+     },
+     {
+      "_key": "88e4ee5b",
+      "_type": "span",
+      "marks": [],
+      "text": " Consistent climate change and mental health methods and metrics exist, enabled by robust, available and appropriate data, with shared understandings of key climate change and mental health concepts. These are developed and applied with consideration of diverse wisdoms across disciplines, cultures, contexts and communities, reflecting both the need for comparison across contexts and the importance of adaptation to local understandings. Researchers across disciplines are supported to build systems thinking skills and engage in climate and mental health research as a primary focus or as an important component of work in their relevant discipline, and to do so in ways that support their own wellbeing. Such approaches enable  inclusive, accessible, culturally sensitive, and policy-relevant research to be prioritised and implemented."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "09147e13",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "8870e23e",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lack of consistent and standardised methods, metrics and terminology"
+     },
+     {
+      "_key": "fd81a713",
+      "_type": "span",
+      "marks": [],
+      "text": " for climate change and mental health. There is a tension between the need for standardisation for comparison, and for adaptation to local contexts that reflect cultural and linguistic diversity in how climate change-related mental health challenges are conceptualised, understood and experienced. Good quality and consistent data is often unavailable and inaccessible, particularly for mental health population and surveillance data.  "
+     },
+     {
+      "_key": "b63ca726",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lack of data sharing"
+     },
+     {
+      "_key": "7a135aaa",
+      "_type": "span",
+      "marks": [],
+      "text": ": Weak and fragmented health and research information systems can impact data management, knowledge sharing and collaboration, and big gaps remain particularly for global mental health data. Security issues regarding public sharing of national and global data on climate change and mental health may also lead to lack of trust among potential participants. "
+     },
+     {
+      "_key": "4bf59dcc",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lack of research and institutional capacities"
+     },
+     {
+      "_key": "81af17d7",
+      "_type": "span",
+      "marks": [],
+      "text": " in climate change and mental health across relevant knowledge and skills, personnel and funding, including to enable people from diverse backgrounds to come into the space. Lack of capacity may be worsened by burnout as a response to psychologically difficult work in climate, mental health and related fields without appropriate support. Politicisation of climate and mental health issues may also hold back researchers from getting involved or being able to secure funding."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "1f470a97",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "557ef26f",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "\"We need to learn from the community how they express their understanding of what’s going on. It may not be the same as us, as researchers.\" (Central and Southern Asia Dialogue participant) “By recognising and valuing these interconnected dimensions held by some Indigenous communities for what Western paradigms call mental health and/or mental wellbeing, we can move beyond the limitations of such dominant frameworks, fostering culturally responsive approaches that aligns with the rich tapestry of Indigenous wisdom and knowledge.”  (Indigenous Research and Action Agenda)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "6a1f9c46",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "896d82d8",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Transdisciplinary approaches that combine and equally value multiple forms of expertise"
+     },
+     {
+      "_key": "ac370ebd",
+      "_type": "span",
+      "marks": [],
+      "text": " across disciplines, sectors, communities and contexts. Deep, sustained relationships  are built at 'the speed of trust' (ie. with appropriate investment of time and continuous relationship building that is responsive to needs). These relationships and approaches enable diverse narratives and understandings to coexist and learn from each other. Embedded systems thinking enables climate and mental health to learn from and connect what is already known (e.g. in other research fields, other responses to societal challenges that require urgent and collective responses, and community-based knowledge and practices). Such approaches underpin how knowledge is generated, shared and translated into action."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "8631e110",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "27268b0c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Disconnections"
+     },
+     {
+      "_key": "1ed2451e",
+      "_type": "span",
+      "marks": [],
+      "text": " between key actors and silos within these groups.  "
+     },
+     {
+      "_key": "9a338f12",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Research funding structures"
+     },
+     {
+      "_key": "3ee95066",
+      "_type": "span",
+      "marks": [],
+      "text": " that may inhibit participation from multiple disciplines, cultures and/or countries being valued equally. Investment in sustainable field building for climate and mental health is critically needed, but is held back by challenges in funding research networks and in quantifying their follow-on impact. "
+     },
+     {
+      "_key": "a7ffa424",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Research funding timescales"
+     },
+     {
+      "_key": "0eb8f423",
+      "_type": "span",
+      "marks": [],
+      "text": " with short term funding and/or one-off funding limiting the building of trust and sustained relationships forming and surviving.  "
+     },
+     {
+      "_key": "4f82b07d",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Restrictive scopes and limited resources"
+     },
+     {
+      "_key": "ae11928e",
+      "_type": "span",
+      "marks": [],
+      "text": " that hold back dissemination of transdisciplinary research, such as the siloed scope of many academic journals, and limited funding, career incentives or allowances, time, and channels for knowledge sharing."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "5f7a747e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "0060fea0",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“We need collaborative research that is transdisciplinary, cross-sectoral, international and multigenerational; it must be anchored in equity, justice and a deep commitment to applying research findings and lessons learned to inform policies and practices.”"
+     },
+     {
+      "_key": "7832b699",
+      "_type": "span",
+      "marks": [],
+      "text": " (Eastern and South-Eastern Asia Research and Action Agenda)  "
+     },
+     {
+      "_key": "b5af90ab",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“Systems for academic advancement are not well aligned with transdisciplinary research or translational science, further preventing collaboration. These reward systems need to be overhauled to encourage transdisciplinary and inclusive climate-mental health research.”"
+     },
+     {
+      "_key": "dea3bbfe",
+      "_type": "span",
+      "marks": [],
+      "text": " (Europe and Northern America Research and Action Agenda)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "532b00e6",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "3a9eba74",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Inclusive, non-extractive and co-creative approaches:"
+     },
+     {
+      "_key": "24e1cb5e",
+      "_type": "span",
+      "marks": [],
+      "text": "  Research elevates, empowers and centres community and lived experience leadership, supported by research and funding structures that enable - and mandate - these approaches. Research considers and practically implements ways to avoid perpetuating the harms caused by the extractive, colonial, and unjust roots of both the causes and consequences of climate change (which currently perpetuate existing inequities and vulnerabilities and compound mental health impacts of climate change). Research ensures clear and tangible benefits for involved communities."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "9677db87",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "ff7e8ad3",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Extractive research practices"
+     },
+     {
+      "_key": "8c0a9db7",
+      "_type": "span",
+      "marks": [],
+      "text": " 1) at the community level (e.g. lack of research impact or benefit for communities, lack of ownership and data sovereignty for involved communities) leads to participant fatigue, distrust in research, and limited pathways to impact; 2) by Global North researchers and institutions towards Global South researchers and participants, rooted in historical and current injustices.  "
+     },
+     {
+      "_key": "2853a1c9",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Exclusion of lived experience voices"
+     },
+     {
+      "_key": "5abed338",
+      "_type": "span",
+      "marks": [],
+      "text": ", "
+     },
+     {
+      "_key": "27896b0f",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "groups most affected by climate change, and of Global South expertise"
+     },
+     {
+      "_key": "5d1269c5",
+      "_type": "span",
+      "marks": [],
+      "text": " in research and the development of policies and interventions.   "
+     },
+     {
+      "_key": "31264455",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Inequity and inaccessibility of funding"
+     },
+     {
+      "_key": "5f8f6cda",
+      "_type": "span",
+      "marks": [],
+      "text": ", with processes that often favour Global North researchers and institutions, including in definitions of climate change and mental health concepts and terminology. "
+     },
+     {
+      "_key": "5984d9f3",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Compounding challenges"
+     },
+     {
+      "_key": "aeb8b6af",
+      "_type": "span",
+      "marks": [],
+      "text": " in areas with limited access to advanced technology, electricity and internet outages, infrastructure, competing pressures and priorities, and mental health stigma."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "d7c83ec0",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "7e902bbf",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“To decolonise and reindigenise research means to value Indigenous ways of knowing, being and doing as equal to Western ontologies and epistemologies.”"
+     },
+     {
+      "_key": "42f057de",
+      "_type": "span",
+      "marks": [],
+      "text": " (Oceania Research and Action Agenda)  "
+     },
+     {
+      "_key": "051dd249",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“Youth should also be involved at decision-making levels designing agendas and research. They should be in the room to make their voices heard. Yet, this also needs to come from adults and decision makers realising they need to provide this space for young people to even participate.” (Youth dialogue participant)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "6e1b5281",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "dc8bae31",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Political and policymaking environments that enable integrated climate and mental health policies, practices and frameworks:"
+     },
+     {
+      "_key": "d3e20984",
+      "_type": "span",
+      "marks": [],
+      "text": " Researchers are equipped with the skills to advise and learn from policymakers, inform evidence-based climate and health public narratives, and leverage growing momentum in the climate and health space to ensure that mental health is embedded in discourse and action. Policymakers from relevant sectors are able to connect across existing siloes to integrate mental health into relevant climate and health policies, practices and frameworks (and vice versa)."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "cf0b5a3e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "e52c01e6",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Siloed decision making, governance mechanisms and budgets"
+     },
+     {
+      "_key": "1d84702f",
+      "_type": "span",
+      "marks": [],
+      "text": " between sectors and government structures (e.g. across climate change and mental health) holding back research, multi-sectoral collaboration and integrated policies.  "
+     },
+     {
+      "_key": "7965f1ef",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lack of political will or prioritisation"
+     },
+     {
+      "_key": "3f84da71",
+      "_type": "span",
+      "marks": [],
+      "text": " of climate change, mental health and the intersection. This may be exacerbated by competing priorities, crises, conflicting interests, or politicisation of climate change, as well as mental health stigma in some contexts.  "
+     },
+     {
+      "_key": "d1fd46da",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Reactive policy making"
+     },
+     {
+      "_key": "1cf23923",
+      "_type": "span",
+      "marks": [],
+      "text": " around climate change and mental health (rather than being proactive and strategic), with urgency of the issues outpacing research and action. "
+     },
+     {
+      "_key": "552c37f4",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Under resourced systems with little capacity"
+     },
+     {
+      "_key": "7751c892",
+      "_type": "span",
+      "marks": [],
+      "text": " to integrate additional considerations (e.g. health systems)."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "1c63be3d",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "4a1dfa25",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“Realising demonstrable progress requires dedicated leadership, resources and political will alongside sustained, inclusive participation from all sectors of society.”"
+     },
+     {
+      "_key": "3d162449",
+      "_type": "span",
+      "marks": [],
+      "text": " (Northern Africa and Western Asia Research and Action Agenda)  "
+     },
+     {
+      "_key": "e72f25d5",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“Mental health is an under-prioritised issue for many governments. This relates to an overall lack of political will for action on climate-mental health, perhaps due to stigma, political risk and/or pressure, or the siloed nature of government preventing ministries from taking action.”"
+     },
+     {
+      "_key": "3ffbb88e",
+      "_type": "span",
+      "marks": [],
+      "text": "  (Europe and Northern America Research and Action Agenda)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "4d3c1a74",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "d9413794",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Awareness among key actors of climate change and mental health impacts and what actions they can take to better understand and respond to these impacts:"
+     },
+     {
+      "_key": "5624a031",
+      "_type": "span",
+      "marks": [],
+      "text": " Key actors are aware of the multiple aspects and impacts of the climate change and mental health intersection, and are equipped with the knowledge, tools and capacity to respond effectively, appropriately and collaboratively. Climate change and mental health communication and awareness raising (e.g. terminology) is culturally contextualised, aligns with community understandings, and actively works towards de-stigmatisation of mental health in the context of climate change."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "a31e67c7",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "b340a26c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lack of awareness, understanding and education"
+     },
+     {
+      "_key": "e910bc9e",
+      "_type": "span",
+      "marks": [],
+      "text": " on the intersection of climate change and mental health across key actors, including the different ways these issues manifest across cultures and communities. This includes inappropriate or misapplied awareness-raising that may lead to pathologising of healthy experiences (such as being concerned about climate change) or to more distress about being distressed"
+     },
+     {
+      "_key": "c55266e8",
+      "_type": "span",
+      "marks": [
+       "a61e36c3"
+      ],
+      "text": "45"
+     },
+     {
+      "_key": "3db0660b",
+      "_type": "span",
+      "marks": [],
+      "text": ". "
+     },
+     {
+      "_key": "f678103a",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Attitudes and beliefs"
+     },
+     {
+      "_key": "1529c6b0",
+      "_type": "span",
+      "marks": [],
+      "text": " around mental health and climate change (e.g. stigma, scepticism and denialism), and social, cultural and religious norms that may not align with interest in the issues or enabling research and implementing climate change and mental health solutions. "
+     },
+     {
+      "_key": "80330cb8",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lack of clarity"
+     },
+     {
+      "_key": "6db8742e",
+      "_type": "span",
+      "marks": [],
+      "text": " in the climate change and mental health field and/or mental health practitioners concerning the distinction and relationship between the wellbeing space (e.g. emotional responses to climate change) and clinical mental health considerations.  "
+     },
+     {
+      "_key": "5adb8afa",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Disproportionate media attention"
+     },
+     {
+      "_key": "79126f81",
+      "_type": "span",
+      "marks": [],
+      "text": " that certain constructs (e.g., climate anxiety) receive, can make it challenging to convey the multiple aspects of the interconnections between climate change and mental health to the public, policymakers, funders, and philanthropists."
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "a61e36c3",
+      "_type": "footnote",
+      "text": "Foulkes L, Andrews JL. Are mental health awareness efforts contributing to the rise in reported mental health problems? A call to test the prevalence inflation hypothesis. New Ideas Psychol. 2023;69:101010."
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "c6483a51",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "76426477",
+      "_type": "span",
+      "marks": [
+       "em"
+      ],
+      "text": "“Addressing the topic of mental health is something very serious. You can't keep saying it anywhere, anytime, anytime. And even associating it with the issue of climate change is even more complex….People are always saying, ‘We need to talk about it.’ Until recently, we couldn't even talk about suicide, for example. We couldn't even talk about depression.” (Latin America and the Caribbean Dialogue Participant)"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "0c9002ad",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "57023b3a",
+      "_type": "span",
+      "marks": [],
+      "text": "Recommendations for action"
+     },
+     {
+      "_key": "7f2e2553",
+      "_type": "span",
+      "marks": [
+       "b345ccc9"
+      ],
+      "text": "​"
+     }
+    ],
+    "markDefs": [
+     {
+      "_key": "b345ccc9",
+      "_type": "link",
+      "href": "#recommendations-for-action"
+     }
+    ],
+    "style": "h3"
+   },
+   {
+    "_key": "d7fb2c37",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "6cff0014",
+      "_type": "span",
+      "marks": [],
+      "text": "Key actors all have a role to play to implement this agenda. Example practical actions are outlined below. Some of these may be unique to the climate and mental health field. Others are applicable across research fields, but included as they emerged through CCM as foundational for field building in climate and mental health."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "07437359",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "d46f7494",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Researchers should:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "cd7f206e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "265eb381",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Prioritise inclusion of communities and groups most affected by climate change and its mental health consequences"
+     },
+     {
+      "_key": "1e9aecca",
+      "_type": "span",
+      "marks": [],
+      "text": " in research teams and projects, to improve alignment between research aims, outcomes and benefits to communities. Build these relationships over time and be led by the needs of these communities. Support civil society to translate research findings into action, for example by ensuring relevance and accessibility of research to communities."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "ea81b80c",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "19039b06",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Convene experts to establish conceptual frameworks for climate and mental health, and consistent indicators, metrics and methods"
+     },
+     {
+      "_key": "54c8aded",
+      "_type": "span",
+      "marks": [],
+      "text": " to measure the mental health impacts of climate change and of climate action, that are appropriate for different local contexts, and that can be disaggregated across relevant population groups."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "75952353",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "a086fba4",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Build, maintain and seek funding for relevant networks (and platforms)"
+     },
+     {
+      "_key": "72355b70",
+      "_type": "span",
+      "marks": [],
+      "text": " to share best practice, elevate existing knowledge (e.g. held in communities) and improve shared understandings across disciplines of relevant climate and mental health concepts, terminology, methods and dissemination, that allow multiple forms of knowledge and narratives to exist in parallel."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "5f6f4f41",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "4b2afe1f",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Leverage existing areas of research interest, data and capacity"
+     },
+     {
+      "_key": "0391f277",
+      "_type": "span",
+      "marks": [],
+      "text": " where mental health impacts of climate change could be integrated (e.g. growing interest in climate change and (physical) health; impacts of heat exposure, food security) and build relationships with decision makers, to elevate awareness of the full scope and importance of the climate and mental health field and ensure equal status between physical and mental health in climate and health work."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "09c306cc",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "0ccfaa22",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Establish (in partnership with communities) open data security, privacy and sharing protocols"
+     },
+     {
+      "_key": "5a928861",
+      "_type": "span",
+      "marks": [],
+      "text": " which encourage data sharing and increase trust in research for potential participants, translated into multiple languages. Link with existing principles and protocols for data collection, management and sharing, such as data sovereignty"
+     },
+     {
+      "_key": "cffa6338",
+      "_type": "span",
+      "marks": [
+       "b18cc60f"
+      ],
+      "text": "46"
+     },
+     {
+      "_key": "ec42a5d0",
+      "_type": "span",
+      "marks": [],
+      "text": ","
+     },
+     {
+      "_key": "49eaae3e",
+      "_type": "span",
+      "marks": [
+       "05dfc942"
+      ],
+      "text": "47"
+     },
+     {
+      "_key": "bb303d18",
+      "_type": "span",
+      "marks": [],
+      "text": " and the Findable, Accessible, Interoperable and Reusable (FAIR) guiding principles"
+     },
+     {
+      "_key": "ba1d0431",
+      "_type": "span",
+      "marks": [
+       "038ca3ae"
+      ],
+      "text": "48"
+     },
+     {
+      "_key": "108faae6",
+      "_type": "span",
+      "marks": [],
+      "text": "."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [
+     {
+      "_key": "b18cc60f",
+      "_type": "footnote",
+      "text": "Kukutai T, Taylor J. Data sovereignty for indigenous peoples: current practice and future needs. In: Kukutai T, Taylor J, editors. Indigenous Data Sovereignty. ANU Press; 2016. doi:10.22459/CAEPR38.11.2016.01."
+     },
+     {
+      "_key": "05dfc942",
+      "_type": "footnote",
+      "text": "Smith D. Governing data and data for governance: the everyday practice of Indigenous sovereignty. In: Kukutai T, Taylor J, editors. Indigenous Data Sovereignty. ANU Press; 2016. doi:10.22459/CAEPR38.11.2016.07."
+     },
+     {
+      "_key": "038ca3ae",
+      "_type": "footnote",
+      "text": "Wilkinson MD, Dumontier M, Aalbersberg IJJ, Appleton G, Axton M, Baak A et al. The FAIR Guiding Principles for scientific data management and stewardship. Sci Data. 2016;3:160018."
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "76fc12e0",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "f91155cf",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Research funders should:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "c9c45ac7",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "4c38e807",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Collaborate with other funders from different disciplines"
+     },
+     {
+      "_key": "c3bfe838",
+      "_type": "span",
+      "marks": [],
+      "text": ", such as health and environmental funders (e.g. establishing or joining cross-issue networks, leveraging existing funding structures that do prioritise transdisciplinary climate and mental health research)."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "6abafd08",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "497fe4b8",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Fund platforms"
+     },
+     {
+      "_key": "1b30dad5",
+      "_type": "span",
+      "marks": [],
+      "text": " where relevant aggregated data for both climate change and mental health (and on subgroups), research methodologies, literatures, initiatives, potential emerging interventions, and organisations are placed and updated annually and can be tailored to specific contexts."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "fcc0b49d",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "2073cf4c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Fund capacity and field building initiatives."
+     },
+     {
+      "_key": "0f090369",
+      "_type": "span",
+      "marks": [],
+      "text": " This includes the development and maintenance of transdisciplinary climate and mental health research networks to enable collaboration and shared learning (e.g. across Global South and Global North), establishing conceptual frameworks and consistent climate and mental health metrics, capacity building in countries with less climate and mental health research to date, and in establishing the follow-on impact of such connective and capacity-building activities."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "b76a2f15",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "984d5e05",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Increase access to and inclusivity of funding"
+     },
+     {
+      "_key": "b698dad5",
+      "_type": "span",
+      "marks": [],
+      "text": " across geographies and types of expertise relevant to climate and mental health, including access to in-country and direct civil society funding to allow true ownership of the research."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "8d3327f1",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "3d553a0b",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Mandate inclusion of communities and community-based organisations"
+     },
+     {
+      "_key": "ae7f5a7d",
+      "_type": "span",
+      "marks": [],
+      "text": " in climate and mental health research funding applications, with clear and tangible benefits back to the communities involved based on their stated desires and needs."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "203aa288",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "a587a9ba",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Policymakers and practitioners should:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "53edaca4",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "43e77a7c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Integrate mental health and psychosocial considerations into relevant climate and health policies, practices and frameworks (and vice versa)"
+     },
+     {
+      "_key": "c521207b",
+      "_type": "span",
+      "marks": [],
+      "text": ". This includes, but is not limited to, National Adaptation Plans and Nationally Determined Contributions, disaster risk reduction and preparedness activities, climate-informed mental health surveillance systems, climate change and health vulnerability and adaptation assessments, heat action plans, inclusion of climate considerations in mental health system planning. Identify and learn from evidence-based case studies where this is already happening, and highlight these as examples of what works (e.g. see CCM "
+     },
+     {
+      "_key": "f35bc709",
+      "_type": "span",
+      "marks": [
+       "ebb1dd85"
+      ],
+      "text": "case studies"
+     },
+     {
+      "_key": "d38f40b7",
+      "_type": "span",
+      "marks": [],
+      "text": ")."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [
+     {
+      "_key": "ebb1dd85",
+      "_type": "link",
+      "href": "/research-and-action/case-studies"
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "d92d7562",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "cd04f9ab",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Connect across decision-making silos"
+     },
+     {
+      "_key": "dacb08be",
+      "_type": "span",
+      "marks": [],
+      "text": " to explore how climate and mental health funding and strategic decisions across sectors can take into account relevant costs, trade offs and benefits of climate action for mental health (e.g. ensuring appropriate support for people moving out of the fossil fuel industry to other careers, accounting for the mental health benefits of reduced fossil fuel use through improvements to air pollution and reduction in climate risks)."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "518c8b1e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "7e17c3fc",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Educators should:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "3dc075fd",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "294f8e43",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Incorporate climate change and mental health into relevant educational curricula"
+     },
+     {
+      "_key": "19c3f717",
+      "_type": "span",
+      "marks": [],
+      "text": " (in schools, universities and continuing professional development) across various disciplines to encourage systems thinking and collaboration (e.g. medicine, public health, climate and environmental science, policy, psychology), to build capacity to recognise and respond to the mental health impacts of climate change. These programs should be robustly evaluated in terms of their impact and appropriateness."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "fd2791c4",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "62cacf5c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Civil society should:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "1c22b7c5",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "0615d514",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Empower the co-creation of climate and mental health research and practice"
+     },
+     {
+      "_key": "e61b2478",
+      "_type": "span",
+      "marks": [],
+      "text": " by exploring ways to connect with other community-led organisations or NGOs working on climate change and/or mental health, and through platforms such as the "
+     },
+     {
+      "_key": "87ef5c6d",
+      "_type": "span",
+      "marks": [
+       "f26cba94"
+      ],
+      "text": "CCM Global Online Hub Collaboration Area"
+     },
+     {
+      "_key": "ab6a70b1",
+      "_type": "span",
+      "marks": [],
+      "text": " and the "
+     },
+     {
+      "_key": "3c8347ab",
+      "_type": "span",
+      "marks": [
+       "8d94020a"
+      ],
+      "text": "Regional Communities of Practice"
+     },
+     {
+      "_key": "5e423f69",
+      "_type": "span",
+      "marks": [],
+      "text": ". Share knowledge on best practice and current solutions being implemented by civil society with others through participation in such networks/platforms."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [
+     {
+      "_key": "f26cba94",
+      "_type": "link",
+      "href": "/collaborate"
+     },
+     {
+      "_key": "8d94020a",
+      "_type": "link",
+      "href": "/"
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "88d51b2e",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "b2a96f4c",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Work with researchers to incorporate relevant evidence and research outputs into advocacy efforts and relevant work on the ground"
+     },
+     {
+      "_key": "a19a4e44",
+      "_type": "span",
+      "marks": [],
+      "text": ". This includes incorporating mental health considerations into climate and health or climate mitigation and adaptation activities being led by civil society (and vice versa)."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "7acf6b53",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "7810edcf",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Lead on effective climate and mental health monitoring and communication mechanisms"
+     },
+     {
+      "_key": "c435742c",
+      "_type": "span",
+      "marks": [],
+      "text": " to gather information on quickly moving challenges on the ground and have that data feed into research priorities and policy and practice processes."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "c39a63b4",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "f2475964",
+      "_type": "span",
+      "marks": [],
+      "text": "Resources developed through CCM can help guide and inspire those seeking to enact this agenda and include:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "82138e74",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "61e67d09",
+      "_type": "span",
+      "marks": [
+       "1575563a"
+      ],
+      "text": "Case studies"
+     },
+     {
+      "_key": "dde4cb40",
+      "_type": "span",
+      "marks": [],
+      "text": " showcasing existing climate and mental health research, interventions and policies"
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [
+     {
+      "_key": "1575563a",
+      "_type": "link",
+      "href": "/research-and-action/case-studies"
+     }
+    ],
+    "style": "normal"
+   },
+   {
+    "_key": "9a84b9a6",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "0576e43d",
+      "_type": "span",
+      "marks": [],
+      "text": "Lived experience stories from around the world"
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "fdaf3a68",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "f94232a5",
+      "_type": "span",
+      "marks": [],
+      "text": "Toolkits for "
+     },
+     {
+      "_key": "951ea353",
+      "_type": "span",
+      "marks": [
+       "268a7d99"
+      ],
+      "text": "researchers"
+     },
+     {
+      "_key": "aa43ffd7",
+      "_type": "span",
+      "marks": [
+       "0a7fe62e"
+      ],
+      "text": ","
+     },
+     {
+      "_key": "322bf62a",
+      "_type": "span",
+      "marks": [],
+      "text": " "
+     },
+     {
+      "_key": "9d73d291",
+      "_type": "span",
+      "marks": [
+       "a8e2c6b0"
+      ],
+      "text": "humanitarian decision makers"
+     },
+     {
+      "_key": "53844d9d",
+      "_type": "span",
+      "marks": [],
+      "text": " and on "
+     },
+     {
+      "_key": "c7eae55e",
+      "_type": "span",
+      "marks": [
+       "c58773f0"
+      ],
+      "text": "lived experience engagement"
+     },
+     {
+      "_key": "397bbbf0",
+      "_type": "span",
+      "marks": [
+       "4eba6b36"
+      ],
+      "text": "."
+     }
+    ],
+    "level": 1,
+    "listItem": "bullet",
+    "markDefs": [
+     {
+      "_key": "268a7d99",
+      "_type": "link",
+      "href": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Research%20Toolkit_compressed.pdf?t=2024-03-19T11%3A22%3A26.397Z",
+      "target": true
+     },
+     {
+      "_key": "0a7fe62e",
+      "_type": "link",
+      "href": "/lived-experiences"
+     },
+     {
+      "_key": "a8e2c6b0",
+      "_type": "link",
+      "href": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Humanitarian_Toolkit_v2_compressed.pdf?t=2024-06-06T16%3A28%3A13.868Z",
+      "target": true
+     },
+     {
+      "_key": "c58773f0",
+      "_type": "link",
+      "href": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/LE%20Toolkit_compressed.pdf?t=2024-03-19T11%3A22%3A51.639Z",
+      "target": true
+     },
+     {
+      "_key": "4eba6b36",
+      "_type": "link",
+      "href": "/lived-experiences"
+     }
+    ],
+    "style": "normal"
+   }
+  ]
+ },
+ "newsPost": {
+  "_id": "622112d8-27f3-4072-8310-0ae2ea9cb74c",
+  "field": "content",
+  "blocks": [
+   {
+    "_key": "852fa728e499",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "776ef4001a2d",
+      "_type": "span",
+      "marks": [],
+      "text": "A new international research agenda on climate change and mental health is warning that the climate crisis is rapidly becoming a psychological and social crisis as well.\nThe report, developed through the Connecting Climate Minds initiative with contributors from 126 countries, argues that climate change is affecting far more than physical health and infrastructure. Across global consultations, people described rising anxiety, despair, exhaustion, displacement, and grief tied to environmental destruction and uncertain futures.\nOne farmer described how climate shocks can trap families in cycles of poverty and emotional collapse:"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "d0fd7f86b542",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "b68d19488c7e",
+      "_type": "span",
+      "marks": [],
+      "text": ""
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "f104945502d1",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "776ef4001a2d",
+      "_type": "span",
+      "marks": [],
+      "text": "“Families have no income and turn to cutting trees to make charcoal and get income. Cutting trees worsens climate change. This vicious cycle leads to depression, trauma, and hopelessness.”\nYoung people repeatedly described climate change as a force limiting their futures and daily lives.\n“My country is currently experiencing excruciating impacts of climate change across society, and the environment is not conducive to learning,” one student shared. “It limits the possibilities, wellbeing, and educational capacity in the classroom.”"
+     }
+    ],
+    "markDefs": [],
+    "style": "blockquote"
+   },
+   {
+    "_key": "7e8282fea42d",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "776ef4001a2d",
+      "_type": "span",
+      "marks": [],
+      "text": "\nAnother youth contributor spoke of “sleepless nights and overwhelming stress” caused by fears over climate survival.\nThe report argues these experiences go far beyond what is commonly labelled “eco-anxiety.” Contributors described repeated disasters, displacement, crop loss, rising heat, and economic insecurity as chronic pressures reshaping emotional wellbeing over time.\nFor Indigenous communities, contributors emphasized that environmental loss is often inseparable from cultural and spiritual loss.\n“Without our kelp, I feel that we are losing the veins and arteries of the sea country body,” said one Indigenous woman describing the collapse of marine ecosystems connected to her community’s identity and traditions."
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   },
+   {
+    "_key": "42a89d97c638",
+    "_type": "image",
+    "alt": {
+     "en": "Mental Health Illustration"
+    },
+    "asset": {
+     "_ref": "image-4808835b193451a77f9f87fd3cccd1d686805cbe-1200x630-jpg",
+     "_type": "reference"
+    },
+    "crop": {
+     "_type": "sanity.imageCrop",
+     "bottom": 0.09311949974196831,
+     "left": 0.2725038799793069,
+     "right": 0.2770305225038799,
+     "top": 0
+    },
+    "hotspot": {
+     "_type": "sanity.imageHotspot",
+     "height": 0.8913605836343704,
+     "width": 0.385281945162959,
+     "x": 0.5049793067770304,
+     "y": 0.46120020844084647
+    }
+   },
+   {
+    "_key": "0171b71b3885",
+    "_type": "block",
+    "children": [
+     {
+      "_key": "776ef4001a2d",
+      "_type": "span",
+      "marks": [],
+      "text": "Another contributor described the emotional burden of anticipating future losses before they fully occur:\n“You’re already anticipating grieving even before things actually manifest.”\nThe report also criticizes global climate and mental health policy for lagging behind reality. According to the research, only 17% of national climate adaptation plans currently include mental health actions, despite mounting evidence linking climate change to depression, trauma, suicide risk, and social instability.\nResearchers involved in the agenda stress that solutions cannot rely solely on individual therapy or medical systems.\n“People working together is critical to this, rather than individual therapy and individual solutions,” one contributor from Oceania explained. “The problem is political and systemic.”\nExamples of community-led responses emerged throughout the consultations. Farmworker groups in Florida described community gardens not only as food support systems, but as sources of emotional stability and collective care.\n“Mentally it was helpful for farm workers — being without stress.”\nThe report ultimately calls for governments, researchers, and international institutions to treat climate and mental health as deeply interconnected challenges. It urges greater investment in community-led research, culturally grounded mental health approaches, and policies that recognize the emotional and social consequences of climate disruption.\n"
+     },
+     {
+      "_key": "36857f4487e5",
+      "_type": "span",
+      "marks": [
+       "strong"
+      ],
+      "text": "Its central warning is clear: climate change is not only threatening ecosystems and economies, but also people’s sense of safety, belonging, dignity, and future."
+     },
+     {
+      "_key": "f9234373f818",
+      "_type": "span",
+      "marks": [],
+      "text": "\n"
+     }
+    ],
+    "markDefs": [],
+    "style": "normal"
+   }
+  ]
+ },
+ "testimonial": {
+  "_id": "0a2d0180-6147-4a2c-b419-006d68b5087c",
+  "field": "body",
+  "blocks": [
+   {
+    "_key": "22784726aae7",
+    "_type": "youtube",
+    "videoId": "https://www.youtube.com/watch?v=mKBYOfBsfVs"
+   }
+  ]
+ }
+}

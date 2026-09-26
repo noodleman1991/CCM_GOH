@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { FileEdit } from "lucide-react";
-import { topicOptions } from "../shared/topic-options";
+import { topicOptions } from "@/lib/content/taxonomy-options";
 
 // Re-use the same configuration as the main case study schema
 const supportedLanguages = [
@@ -17,7 +17,7 @@ const authorRoles = [
     { title: "Advisor", value: "advisor" },
 ];
 
-// topicOptions imported from shared/topic-options
+// topicOptions imported from lib/content/taxonomy-options
 
 // Helper function for localized fields
 const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) => {

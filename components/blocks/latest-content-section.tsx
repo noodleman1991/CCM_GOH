@@ -9,17 +9,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NewsPostCard from "@/components/ui/news-post-card";
 import CaseStudyCard from "@/components/ui/case-study-card";
 import ExternalSourceCard from "@/components/ui/external-source-card";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Calendar, Tag, Globe, Building, Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CONTAINER_WIDTH, SECTION_SPACING_Y } from "@/lib/design-tokens";
+import type { ComponentProps } from "react";
 import { useTranslations } from 'next-intl';
 
+/** Loosely-typed content item from the page's Sanity queries — only the fields
+ *  this section reads are modeled here; everything else passes through to the
+ *  typed cards (cast at the spread sites below). */
+type ContentItem = {
+    _id: string;
+    publishedAt: string;
+    slug: { current: string };
+    tags?: Array<{ _id: string }> | null;
+    regionalCommunities?: Array<{ _id: string }> | null;
+    organizations?: Array<{ regionalCommunity?: { _id: string } | null }> | null;
+} & Record<string, unknown>;
+
+type TagDoc = {
+    _id: string;
+    label: Record<string, string | undefined>;
+} & Record<string, unknown>;
+
+type RegionDoc = {
+    _id: string;
+    name: Record<string, string | undefined>;
+} & Record<string, unknown>;
+
 interface LatestContentProps {
-    newsPosts: any[];
-    caseStudies: any[];
-    externalSources: any[];
-    tags: any[];
-    regionalCommunities: any[];
+    newsPosts: ContentItem[];
+    caseStudies: ContentItem[];
+    externalSources: ContentItem[];
+    tags: TagDoc[];
+    regionalCommunities: RegionDoc[];
     locale: string;
 }
 
@@ -71,13 +95,13 @@ export default function LatestContentSection({
         }
 
         // Tag filter
-        if (tagFilter && !item.tags?.some((tag: any) => tag._id === tagFilter)) return false;
+        if (tagFilter && !item.tags?.some((tag) => tag._id === tagFilter)) return false;
 
         // Region filter
         if (regionFilter) {
             const hasRegion =
-                item.regionalCommunities?.some((rc: any) => rc._id === regionFilter) ||
-                item.organizations?.some((org: any) => org.regionalCommunity?._id === regionFilter);
+                item.regionalCommunities?.some((rc) => rc._id === regionFilter) ||
+                item.organizations?.some((org) => org.regionalCommunity?._id === regionFilter);
             if (!hasRegion) return false;
         }
 
@@ -91,7 +115,7 @@ export default function LatestContentSection({
                 .flatMap(item => item.tags || [])
                 .map(tag => tag._id)
         )
-    ).map(id => tags.find(tag => tag._id === id)).filter(Boolean);
+    ).map(id => tags.find(tag => tag._id === id)).filter((tag): tag is TagDoc => Boolean(tag));
 
     const clearFilters = () => {
         setDateFilter("all");
@@ -102,8 +126,8 @@ export default function LatestContentSection({
     const hasActiveFilters = dateFilter !== "all" || tagFilter || regionFilter;
 
     return (
-        <section className="py-16">
-            <div className="container">
+        <section className={`mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
+            <div>
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h2 className="text-3xl font-bold mb-2">{t('title')}</h2>
@@ -114,7 +138,7 @@ export default function LatestContentSection({
                         onClick={() => setShowFilters(!showFilters)}
                         className={cn(showFilters && "bg-accent")}
                     >
-                        <Filter className="w-4 h-4 mr-2" />
+                        <Filter className="w-4 h-4 me-2" />
                         {t('filters')}
                     </Button>
                 </div>
@@ -123,10 +147,10 @@ export default function LatestContentSection({
                 {showFilters && (
                     <Card className="mb-6">
                         <CardContent className="pt-6">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 @content-lg/page:grid-cols-3 gap-4">
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
-                                        <Calendar className="w-4 h-4 inline mr-1" />
+                                        <Calendar className="w-4 h-4 inline me-1" />
                                         {t('dateRange')}
                                     </label>
                                     <Select value={dateFilter} onValueChange={setDateFilter}>
@@ -144,7 +168,7 @@ export default function LatestContentSection({
 
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
-                                        <Tag className="w-4 h-4 inline mr-1" />
+                                        <Tag className="w-4 h-4 inline me-1" />
                                         {t('tags')}
                                     </label>
                                     <Select value={tagFilter || "all"} onValueChange={(value) => setTagFilter(value === "all" ? null : value)}>
@@ -164,7 +188,7 @@ export default function LatestContentSection({
 
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
-                                        <Globe className="w-4 h-4 inline mr-1" />
+                                        <Globe className="w-4 h-4 inline me-1" />
                                         {t('region')}
                                     </label>
                                     <Select value={regionFilter || "all"} onValueChange={(value) => setRegionFilter(value === "all" ? null : value)}>
@@ -190,7 +214,7 @@ export default function LatestContentSection({
                                     onClick={clearFilters}
                                     className="mt-4"
                                 >
-                                    <X className="w-4 h-4 mr-2" />
+                                    <X className="w-4 h-4 me-2" />
                                     {t('clearFilters')}
                                 </Button>
                             )}
@@ -215,23 +239,23 @@ export default function LatestContentSection({
                         </TabsTrigger>
                     </TabsList>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 gap-6">
                         {filteredContent.slice(0, 9).map((item) => {
                             if (item.contentType === 'news') {
                                 return (
                                     <Link key={item._id} href={`/news/${item.slug.current}`}>
-                                        <NewsPostCard {...item} locale={locale} />
+                                        <NewsPostCard {...(item as unknown as ComponentProps<typeof NewsPostCard>)} locale={locale} />
                                     </Link>
                                 );
                             } else if (item.contentType === 'case-study') {
                                 return (
-                                    <Link key={item._id} href={`/case-studies/${item.slug.current}`}>
-                                        <CaseStudyCard {...item} locale={locale} />
+                                    <Link key={item._id} href={`/research-and-action/case-studies/${item.slug.current}`}>
+                                        <CaseStudyCard {...(item as unknown as ComponentProps<typeof CaseStudyCard>)} locale={locale} />
                                     </Link>
                                 );
                             } else {
                                 return (
-                                    <ExternalSourceCard key={item._id} {...item} locale={locale} />
+                                    <ExternalSourceCard key={item._id} {...(item as unknown as ComponentProps<typeof ExternalSourceCard>)} locale={locale} />
                                 );
                             }
                         })}

@@ -1,18 +1,29 @@
 import { cn } from "@/lib/utils";
-import { SanityButton } from "@/components/ui/sanity-button";
-import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
+import { type BackgroundOptionType } from "@/types/background-option";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
+import { cleanText } from "@/lib/content/text";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 import { heading } from "@/lib/design-tokens";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Cta1Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "cta-1" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface Cta1Props {
+  padding?: SectionPadding | null;
+  background?: unknown;
+  sectionWidth?: "default" | "narrow" | string | null;
+  stackAlign?: "left" | "center" | string | null;
+  tagLine?: LocalizedText;
+  title?: LocalizedText;
+  body?: PortableTextBlock[] | Record<string, unknown> | null;
+  links?: SanityLinkData[] | null;
   locale?: string;
-};
+}
 
 export default function Cta1({
   padding,
@@ -25,8 +36,8 @@ export default function Cta1({
   links,
   locale = "en",
 }: Cta1Props) {
-  const isNarrow = stegaClean(sectionWidth) === "narrow";
-  const align = stegaClean(stackAlign);
+  const isNarrow = cleanText(sectionWidth) === "narrow";
+  const align = cleanText(stackAlign);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -43,7 +54,7 @@ export default function Cta1({
     : getLocalizedPortableText(body, supportedLocale);
 
   return (
-    <SectionContainer background={background as any} padding={padding}>
+    <SectionContainer background={background as BackgroundOptionType | null} padding={padding}>
         <div
           className={cn(
             align === "center" ? "max-w-3xl text-center mx-auto" : undefined,
@@ -73,7 +84,7 @@ export default function Cta1({
             {links &&
               links.length > 0 &&
               links.map((link) => (
-                <SanityButton key={link.title} link={link as any} locale={locale} />
+                <SanityButton key={link.title} link={link as SanityLinkData} locale={locale} />
               ))}
           </div>
         )}

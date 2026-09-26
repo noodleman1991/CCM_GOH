@@ -1,55 +1,42 @@
 import { MetadataRoute } from "next";
-import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { getSitemapEntries } from "@/lib/content/system";
 
-async function getPagesSitemap(): Promise<MetadataRoute.Sitemap[]> {
-  const pagesQuery = groq`
-    *[_type == 'page'] | order(slug.current) {
-      'url': $baseUrl + select(slug.current == 'index' => '', '/' + slug.current),
-      'lastModified': _updatedAt,
-      'changeFrequency': 'daily',
-      'priority': select(
-        slug.current == 'index' => 1,
-        0.5
-      )
-    }
-  `;
+const LOCALES = ["en", "es", "fr", "ar"] as const;
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://connectingclimateminds.org";
 
-  const { data } = await sanityFetch({
-    query: pagesQuery,
-    params: {
-      baseUrl: process.env.NEXT_PUBLIC_SITE_URL,
-    },
-  });
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const cmsEntries = await getSitemapEntries();
 
-  return data;
-}
+  // Static top-level public routes per locale. Weekly-changing index/landing
+  // pages; legal pages change rarely (monthly, lower priority).
+  const WEEKLY_PATHS = [
+    "",
+    "/news",
+    "/lived-experiences",
+    "/collaborate",
+    "/reader",
+    "/research-and-action/case-studies",
+    "/research-and-action/global-agenda",
+    "/research-and-action/regional-agendas",
+    "/research-and-action/community-agendas",
+    "/research-and-action/toolkits",
+    "/research-and-action/impact-reports",
+  ];
+  const MONTHLY_PATHS = ["/legal/terms", "/legal/privacy"];
 
-async function getPostsSitemap(): Promise<MetadataRoute.Sitemap[]> {
-  const postsQuery = groq`
-    *[_type == 'post'] | order(_updatedAt desc) {
-      'url': $baseUrl + '/blog/' + slug.current,
-      'lastModified': _updatedAt,
-      'changeFrequency': 'weekly',
-      'priority': 0.7
-    }
-  `;
-
-  const { data } = await sanityFetch({
-    query: postsQuery,
-    params: {
-      baseUrl: process.env.NEXT_PUBLIC_SITE_URL,
-    },
-  });
-
-  return data;
-}
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap[]> {
-  const [pages, posts] = await Promise.all([
-    getPagesSitemap(),
-    getPostsSitemap(),
+  const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) => [
+    ...WEEKLY_PATHS.map((p) => ({
+      url: `${BASE}/${locale}${p}`,
+      changeFrequency: "weekly" as const,
+      priority: p === "" ? 1 : 0.6,
+    })),
+    ...MONTHLY_PATHS.map((p) => ({
+      url: `${BASE}/${locale}${p}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    })),
   ]);
 
-  return [...pages, ...posts];
+  return [...staticRoutes, ...(cmsEntries as unknown as MetadataRoute.Sitemap)];
+  // NOTE: gated regional news/blog sections (Track 6) are intentionally excluded.
 }

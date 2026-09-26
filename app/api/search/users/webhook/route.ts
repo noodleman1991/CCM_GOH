@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser } from '@/lib/algolia'
+import { bearerMatches } from '@/lib/auth/bearer'
+import { syncUserSearchRecord } from '@/lib/algolia-user-sync'
 
-const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
-
-// This webhook will be called whenever user data changes
-// It can be triggered from profile updates, Clerk webhooks, etc.
+// The HTTP face of a user's search-index update, for external callers. The
+// in-process callers (Clerk webhook, profile route, onboarding route) call
+// `syncUserSearchRecord` directly inside `after()` instead of fetching this
+// route from themselves — see the note on that function.
+//
+// Internal callers only (no Sanity leg for users), so the bearer is the one
+// credential. bearerMatches() refuses when the secret is unset and compares
+// in constant time (hub audit 2026-09-16, H3 family).
 export async function POST(request: NextRequest) {
-  // Verify internal webhook secret
-  const authHeader = request.headers.get('authorization')
-  if (!SEARCH_WEBHOOK_SECRET || authHeader !== `Bearer ${SEARCH_WEBHOOK_SECRET}`) {
+  if (!bearerMatches(request.headers.get('authorization'), process.env.SEARCH_WEBHOOK_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -17,111 +19,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { userId, action = 'update' } = body
 
-    if (!userId) {
+    if (!userId || typeof userId !== 'string') {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 })
     }
 
-    // Check if Algolia client is available
-    if (!algoliaClient) {
-      console.warn('Algolia not configured - skipping search index update')
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Search indexing skipped - service not configured' 
-      })
-    }
+    const outcome = await syncUserSearchRecord(userId, action === 'delete' ? 'delete' : 'update')
 
-    // Algolia v5: No longer need to initIndex, use client directly
-
-    if (action === 'delete') {
-      // Remove user from search index
-      await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.USERS,
-        objectID: userId
-      })
-      console.log(`🗑️ Removed user ${userId} from search index`)
-      
+    if (outcome === 'skipped') {
       return NextResponse.json({
         success: true,
-        message: 'User removed from search index'
+        message: 'Search indexing skipped - service not configured or live writes not allowed here',
       })
     }
 
-    // Get updated user data
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        communityMemberships: {
-          include: {
-            community: {
-              select: {
-                name: true,
-                type: true
-              }
-            }
-          }
-        }
-      }
+    return NextResponse.json({
+      success: true,
+      action: outcome,
+      message: outcome === 'indexed' ? 'User updated in search index' : 'User removed from search index',
     })
-
-    if (!user) {
-      // User doesn't exist, remove from index if present
-      await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.USERS,
-        objectID: userId
-      })
-      return NextResponse.json({
-        success: true,
-        message: 'User not found, removed from index'
-      })
-    }
-
-    // Check if user should be indexed
-    if (shouldIndexUser(user)) {
-      try {
-        const record = transformUserForIndex(user)
-        await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.USERS,
-          objects: [record]
-        })
-
-        console.log(`✅ Updated user ${userId} in search index`)
-        
-        return NextResponse.json({
-          success: true,
-          message: 'User updated in search index',
-          action: 'indexed'
-        })
-      } catch (error) {
-        console.warn(`Failed to index user ${userId}: ${error}`)
-        // Remove from index if transformation failed
-        await algoliaClient.deleteObject({
-          indexName: ALGOLIA_INDICES.USERS,
-          objectID: userId
-        })
-        
-        return NextResponse.json({
-          success: true,
-          message: 'User removed from search index due to indexing error',
-          action: 'removed',
-          reason: error instanceof Error ? error.message : 'Unknown error'
-        })
-      }
-    } else {
-      // User should not be indexed, remove if present
-      await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.USERS,
-        objectID: userId
-      })
-      
-      console.log(`🔒 Removed user ${userId} from search index (privacy settings)`)
-      
-      return NextResponse.json({
-        success: true,
-        message: 'User removed from search index (privacy settings)',
-        action: 'removed'
-      })
-    }
-
   } catch (error) {
     console.error('Search webhook failed:', error)
     return NextResponse.json(

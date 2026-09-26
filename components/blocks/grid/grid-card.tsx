@@ -1,25 +1,36 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { stegaClean } from "next-sanity";
+import type { ComponentProps } from "react";
+import { cleanText } from "@/lib/content/text";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { urlForCropped } from "@/sanity/lib/image";
-import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
+import { imageUrl } from "@/lib/content/images";
+import type { SanityLinkData } from "@/components/ui/sanity-button";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type GridRow = Extract<Block, { _type: "grid-row" }>;
-type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
-type GridCard = Extract<GridColumn, { _type: "grid-card" }>;
+interface GridCardImage {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
 
-interface GridCardProps extends Omit<GridCard, "_type" | "_key"> {
-  color?: string; //todo: what is the issue with colorVariant?
+interface GridCardProps {
+  title?: string | null;
+  excerpt?: string | null;
+  image?: GridCardImage | null;
+  link?: SanityLinkData | null;
   cardVariant?: string;
   imageSizes?: string;
 }
 
+type ButtonProps = ComponentProps<typeof Button>;
+
 export default function GridCard({
-  color,
   title,
   excerpt,
   image,
@@ -40,16 +51,14 @@ export default function GridCard({
       <div
         className={cn(
           "flex w-full flex-col justify-between overflow-hidden transition ease-in-out border rounded-3xl p-6",
-          color === "primary"
-            ? "group-hover:border-primary-foreground/50"
-            : "group-hover:border-primary"
+          "group-hover:border-primary"
         )}
       >
         <div className="w-full min-w-0">
           {image && image.asset?._id && (
             <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full", aspectRatioClass)}>
               <Image
-                src={urlForCropped(image, 800, isWide ? 450 : 533).url()}
+                src={imageUrl(image, { width: 800, height: isWide ? 450 : 533, crop: true })}
                 alt={image.alt || ""}
                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                 blurDataURL={image?.asset?.metadata?.lqip || ""}
@@ -59,9 +68,7 @@ export default function GridCard({
               />
             </div>
           )}
-          <div
-            className={cn("break-words", color === "primary" ? "text-background" : undefined)}
-          >
+          <div className="break-words">
             {title && (
               <div className="flex justify-between items-start mb-4">
                 <h3 className="font-bold text-2xl text-balance break-words line-clamp-3">{title}</h3>
@@ -72,9 +79,9 @@ export default function GridCard({
         </div>
         <Button
           className="mt-6"
-          variant={stegaClean((link?.buttonVariant as any)?.variant)}
-          size={stegaClean((link?.buttonVariant as any)?.size) || "default"}
-          stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
+          variant={cleanText(link?.buttonVariant?.variant) as ButtonProps["variant"]}
+          size={(cleanText(link?.buttonVariant?.size) || "default") as ButtonProps["size"]}
+          stroke={cleanText(link?.buttonVariant?.stroke)}
           asChild
         >
           <div>{link?.title ?? t("learnMore")}</div>

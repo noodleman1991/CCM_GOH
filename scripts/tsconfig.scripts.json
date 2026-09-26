@@ -1,0 +1,22 @@
+{
+  // A tsconfig for `tsx` only — never for `tsc`, `next build` or vitest.
+  //
+  // `lib/content/**` carries `import "server-only"`, which under pnpm resolves
+  // from the Next bundler and from nowhere else: a plain Node process cannot
+  // even load the module. That is the guard doing its job. A script that has to
+  // exercise those readers against the real database — `search-sync-parity-check`
+  // — points `tsx --tsconfig scripts/tsconfig.scripts.json` at this file, which
+  // aliases the marker to the same no-op stub vitest already uses.
+  //
+  // Deliberately NOT in the root tsconfig: Next resolves modules through
+  // tsconfig `paths` too, so adding it there would neuter the boundary for the
+  // whole application.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../*"],
+      "@payload-config": ["../payload.config.ts"],
+      "server-only": ["../lib/__tests__/stubs/server-only.ts"]
+    }
+  }
+}

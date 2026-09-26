@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileDown } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 
@@ -41,7 +41,12 @@ export default defineType({
             type: "slug",
             group: "metadata",
             options: {
-                source: "title.en",
+                // Fall back to the first available localized title so the slug
+                // can still be generated when there is no English title.
+                source: (doc: SanityDocument) => {
+                    const t = (doc?.title || {}) as Record<string, string>;
+                    return t.en || t.es || t.fr || t.ar || "";
+                },
                 maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
@@ -244,7 +249,9 @@ export default defineType({
                 layout: "tags",
                 sortable: true,
             },
-            validation: (Rule) => Rule.max(15),
+            validation: (Rule) =>
+                Rule.max(6).warning("Aim for 3–4 tags; more than 6 dilutes them."),
+            description: "3–4 focused tags work best (6 max).",
         }),
 
         // ANALYTICS FIELDS

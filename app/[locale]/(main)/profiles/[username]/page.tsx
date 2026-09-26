@@ -10,11 +10,30 @@ import { Card, CardContent } from "@/components/ui/card"
 import Markdown from "react-markdown"
 import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
+import { cn } from "@/lib/utils"
+import { RecentWorkOwnerControls } from "@/components/profile/recent-work-owner-controls"
+import { heading } from "@/lib/design-tokens"
+import { ProfileVisibilityNotice } from "@/components/profile/visibility-notice"
+import { MessageCircle } from "lucide-react"
+import { MessageUserButton } from "@/components/messaging/message-user-button"
+import { FollowButton } from "@/components/follow/follow-button"
+import { listPublicWorkspacesForUser } from "@/lib/collaboration/service"
+import { regionLabel, specialCommunityLabel } from "@/lib/labels"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
+import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
+import { RegionSectionSpine } from "@/components/regions/region-section-spine"
+import { PromptsBlock } from "@/components/blocks/profile/prompts-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
+import { Suspense } from "react"
+import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
+import { siteUrl } from '@/lib/seo/site-url'
 
 const BLUR_FADE_DELAY = 0.04
+
+// Owner-curation flags present on the runtime recentWork rows (the RecentWork
+// table has them) but not yet declared on ProfileData's recentWork item type.
+type WorkCurationFlags = { pinned?: boolean; hidden?: boolean }
 
 interface ProfilePageProps {
     params: Promise<{
@@ -24,17 +43,18 @@ interface ProfilePageProps {
 }
 
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
-    const { username } = await params
+    const { username, locale } = await params
     const user = await getUserProfile(username)
+    const t = await getTranslations({ locale, namespace: 'profiles' })
 
-    if (!user) return { title: 'Profile Not Found' }
+    if (!user) return { title: t('metaNotFound') }
 
     const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
-    const title = fullName || user.username || 'Profile'
+    const title = fullName || user.username || t('unnamed')
 
     return {
-        title: `${title} - Profile`,
-        description: `View ${title}'s profile`
+        title: t('metaProfileTitle', { name: title }),
+        description: t('metaProfileDescription', { name: title })
     }
 }
 
@@ -59,6 +79,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     const { username, locale } = await params
     const t = await getTranslations('profile')
     const tNav = await getTranslations('navigation')
+    const tRegions = await getTranslations('navigation.regions')
+    const tSpecial = await getTranslations('navigation.specialCommunities')
     const tTypesRaw = await getTranslations('profile.work.types')
     const tExpertiseRaw = await getTranslations('profile.work.expertise')
     // Translate an enum value, falling back to a humanized form if unmapped.
@@ -79,6 +101,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         notFound()
     }
     const isOwnProfile = await checkProfileOwnership(user.id)
+    const publicWorkspaces = await listPublicWorkspacesForUser(user.id)
 
     // Calculate profile completeness
     const profileSections = {
@@ -92,6 +115,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
     return (
         <div className="container max-w-6xl py-8">
+            <JsonLd
+                data={personJsonLd({
+                    name: user.displayName,
+                    url: `${siteUrl()}/${locale}/profiles/${user.username}`,
+                    image: user.image ?? null,
+                    jobTitle: user.headline ?? null,
+                    affiliation: user.organization ?? null,
+                })}
+            />
             <PageBreadcrumb
                 className="mb-6"
                 items={[
@@ -103,23 +135,72 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             {/* Profile Header */}
             <div className="mb-8">
                 <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-6">
-                    {/* Avatar beside the identity, like a standard profile */}
+                    {/* Avatar beside the identity, like a standard profile.
+                        When the person is open to talk, the avatar wears a CCM
+                        ring + a chat-bubble badge as a quiet signal. */}
                     <BlurFade delay={BLUR_FADE_DELAY * 3}>
-                        <Avatar className="h-24 w-24 sm:h-28 sm:w-28 shrink-0">
-                            <AvatarImage alt={user.displayName} src={user.image || undefined} />
-                            <AvatarFallback className="text-2xl">{user.initials}</AvatarFallback>
-                        </Avatar>
+                        <div className="relative shrink-0 w-24 sm:w-28">
+                            <Avatar className={cn(
+                                "h-24 w-24 sm:h-28 sm:w-28",
+                                user.openToCollaboration && "ring-2 ring-[var(--color-ccm-sea)] ring-offset-2 ring-offset-background"
+                            )}>
+                                <AvatarImage alt={user.displayName} src={user.image || undefined} />
+                                <AvatarFallback className="text-2xl">{user.initials}</AvatarFallback>
+                            </Avatar>
+                            {user.openToCollaboration && (
+                                <span
+                                    className="absolute -bottom-1 -end-1 flex size-7 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] text-white ring-2 ring-background"
+                                    title={t('openToCollaboration')}
+                                >
+                                    <MessageCircle className="size-3.5" aria-hidden="true" />
+                                    <span className="sr-only">{t('openToCollaboration')}</span>
+                                </span>
+                            )}
+                        </div>
                     </BlurFade>
 
                     <div className="flex-1 min-w-0">
                         <BlurFade delay={BLUR_FADE_DELAY * 3} className="mb-1">
-                            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-                                {user.displayName}
-                            </h1>
+                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                <h1 className={cn("font-bold tracking-tight text-balance text-ccm-midnight", heading('xl'))}>
+                                    <bdi>{user.displayName}</bdi>
+                                </h1>
+                                {user.pronouns && (
+                                    <span className="text-sm text-muted-foreground">({user.pronouns})</span>
+                                )}
+                            </div>
                         </BlurFade>
                         {user.username && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-3">
+                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-2">
                                 <p className="text-lg text-muted-foreground">@{user.username}</p>
+                            </BlurFade>
+                        )}
+                        {user.headline && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 4.5} className="mb-3">
+                                <p className="text-base md:text-lg font-medium text-ccm-sea text-balance">
+                                    {user.headline}
+                                </p>
+                            </BlurFade>
+                        )}
+                        {user.openToCollaboration && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 4.8} className="mb-3">
+                                <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ccm-sky)]/25 px-3 py-1 text-xs font-semibold text-[var(--color-ccm-sea)]">
+                                    <span className="size-1.5 rounded-full bg-[var(--color-ccm-sea)]" aria-hidden="true" />
+                                    {t('openToCollaboration')}
+                                </span>
+                            </BlurFade>
+                        )}
+
+                        {!isOwnProfile && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 4.9} className="mb-3">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <MessageUserButton targetUserId={user.id} />
+                                    {/* Person-follow: powers the "For you" rail and the
+                                        FOLLOWERS messaging tier. Signed-in only. */}
+                                    {currentUserId && (
+                                        <FollowButton targetType="USER" targetId={user.id} />
+                                    )}
+                                </div>
                             </BlurFade>
                         )}
 
@@ -172,6 +253,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     </div>
                 </div>
 
+                {/* Who can see this profile - visible only to the profile owner */}
+                {isOwnProfile && (
+                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-3">
+                        <ProfileVisibilityNotice
+                            visibility={user.profileVisibility}
+                            searchable={user.isSearchable}
+                            className="max-w-2xl"
+                        />
+                    </BlurFade>
+                )}
+
                 {/* Profile Completeness - visible only to the profile owner */}
                 {isOwnProfile && (
                     <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-2">
@@ -187,20 +279,101 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             {/* Profile Statistics */}
             <ProfileStatistics user={user} />
 
+            {/* Anchor spine (Gate-2 §profile): same scroll-spy pattern as the
+                regional pages — anchors over one scrollable page. */}
+            <RegionSectionSpine
+                className="mt-8"
+                sections={[
+                    ...(profileSections.about ? [{ id: 'about', label: t('about') }] : []),
+                    ...(profileSections.projects
+                        ? [{ id: 'recent-work', label: t('recentWork.title'), count: user.recentWork.length }]
+                        : []),
+                    { id: 'contributions', label: t('contributions.title') },
+                    ...(user.communities.filter(c => c.type === 'REGIONAL').length > 0
+                        ? [{ id: 'communities', label: t('regionalCommunities') }]
+                        : []),
+                ]}
+            />
+
             <div className="grid gap-8 lg:grid-cols-3 mt-8">
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* About Section */}
                     {profileSections.about && (
+                        <div id="about" className="scroll-mt-14">
                         <BlurFade delay={BLUR_FADE_DELAY * 11}>
                             <Card>
                                 <CardContent className="pt-6">
-                                    <h2 className="text-xl font-semibold mb-4">{t('about')}</h2>
+                                    <h2 className={cn("font-semibold mb-4 text-ccm-midnight", heading('sm'))}>{t('about')}</h2>
                                     <div className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
                                         <Markdown>
                                             {user.bio}
                                         </Markdown>
                                     </div>
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                        </div>
+                    )}
+
+                    {/* Answered prompts — the most human part of the profile */}
+                    <Suspense fallback={null}>
+                        <PromptsBlock userId={user.id} locale={locale} />
+                    </Suspense>
+
+                    {/* Motivation — "what brought me here" */}
+                    {user.motivation && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 11.5}>
+                            <Card className="border-[var(--color-ccm-sky)] bg-[var(--color-ccm-sky)]/10">
+                                <CardContent className="pt-6">
+                                    <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('motivation')}</h2>
+                                    <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.motivation}</p>
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                    )}
+
+                    {/* Collaboration */}
+                    {(user.openToCollaboration || user.collaborationInterests || user.focusTopics.length > 0 || user.lookingFor.length > 0) && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 12}>
+                            <Card>
+                                <CardContent className="pt-6 space-y-4">
+                                    <h2 className={cn("font-semibold text-ccm-midnight", heading('sm'))}>{t('collaboration')}</h2>
+                                    {user.collaborationInterests && (
+                                        <p className="text-pretty text-sm text-muted-foreground whitespace-pre-line">{user.collaborationInterests}</p>
+                                    )}
+                                    {user.focusTopics.length > 0 && (
+                                        <div>
+                                            <h3 className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-2">{t('focusTopics')}</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {user.focusTopics.map((topic) => (
+                                                    <Badge key={topic} variant="secondary" className="bg-[var(--color-ccm-sky)]/25 text-[var(--color-ccm-sea)]">{topic}</Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {user.lookingFor.length > 0 && (
+                                        <div>
+                                            <h3 className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-2">{t('lookingFor')}</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {user.lookingFor.map((item) => (
+                                                    <Badge key={item} variant="outline">{item}</Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                    )}
+
+                    {/* Lived experience — already redacted server-side unless opted in */}
+                    {user.livedExperienceStatement && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 12.5}>
+                            <Card className="border-s-4 border-s-[var(--color-ccm-water)]">
+                                <CardContent className="pt-6">
+                                    <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('livedExperience')}</h2>
+                                    <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.livedExperienceStatement}</p>
                                 </CardContent>
                             </Card>
                         </BlurFade>
@@ -262,6 +435,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
                     {/* Recent Work Section */}
                     {profileSections.projects && (
+                        <div id="recent-work" className="scroll-mt-14">
                         <BlurFade delay={BLUR_FADE_DELAY * 14}>
                             <Card>
                                 <CardContent className="pt-6">
@@ -269,17 +443,22 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                         <h2 className="text-xl font-semibold">{t('recentWork.title')}</h2>
                                         {isOwnProfile && (
                                             <Button variant="outline" size="sm" asChild>
-                                                <Link href="/dashboard/profile/edit/work/add">{t('recentWork.addWork')}</Link>
+                                                <Link href="/dashboard/profile/edit?tab=recentWork">{t('recentWork.addWork')}</Link>
                                             </Button>
                                         )}
                                     </div>
                                     <div className="space-y-4">
                                         {user.recentWork.map((work, id) => (
                                             <BlurFade key={work.id} delay={BLUR_FADE_DELAY * 15 + id * 0.05}>
-                                                <div className="border-l-2 border-muted pl-4">
-                                                    <div className="flex items-start justify-between">
-                                                        <div>
-                                                            <h3 className="font-medium">{work.title}</h3>
+                                                <div className={cn(
+                                                    "border-s-2 ps-4",
+                                                    (work as WorkCurationFlags).pinned ? "border-ccm-sea" : "border-muted",
+                                                    // Hidden items only show to the owner — dim them so it's clear.
+                                                    isOwnProfile && (work as WorkCurationFlags).hidden && "opacity-50"
+                                                )}>
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div className="min-w-0">
+                                                            <h3 className="break-words font-medium">{work.title}</h3>
                                                             <div className="prose max-w-full text-pretty font-sans text-xs text-muted-foreground dark:prose-invert">
                                                                 <Markdown>
                                                                     {work.description}
@@ -296,8 +475,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                                                 </a>
                                                             )}
                                                         </div>
-                                                        <div className="text-xs text-muted-foreground">
-                                                            {work.isOngoing ? 'Ongoing' : new Date(work.endDate || work.startDate).getFullYear()}
+                                                        <div className="flex shrink-0 items-center gap-2">
+                                                            {isOwnProfile && (
+                                                                <RecentWorkOwnerControls
+                                                                    id={work.id}
+                                                                    hidden={Boolean((work as WorkCurationFlags).hidden)}
+                                                                    pinned={Boolean((work as WorkCurationFlags).pinned)}
+                                                                />
+                                                            )}
+                                                            <div className="text-xs text-muted-foreground">
+                                                                {work.isOngoing ? 'Ongoing' : new Date(work.endDate || work.startDate).getFullYear()}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -307,13 +495,24 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                 </CardContent>
                             </Card>
                         </BlurFade>
+                        </div>
                     )}
+
+                    {/* Contributions (community-graph: their case studies / content / work) */}
+                    <div id="contributions" className="scroll-mt-14">
+                    <BlurFade delay={BLUR_FADE_DELAY * 14.5}>
+                        <Suspense fallback={<div className="min-h-[200px]" aria-hidden />}>
+                            <ContributionsBlock userId={user.id} locale={locale} />
+                        </Suspense>
+                    </BlurFade>
+                    </div>
                 </div>
 
                 {/* Sidebar */}
                 <div className="space-y-6">
                     {/* Communities */}
                     {user.communities.filter(c => c.type === 'REGIONAL').length > 0 && (
+                        <div id="communities" className="scroll-mt-14">
                         <BlurFade delay={BLUR_FADE_DELAY * 16}>
                             <Card>
                                 <CardContent className="pt-6">
@@ -323,11 +522,29 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             .filter(c => c.type === 'REGIONAL')
                                             .map((community) => (
                                                 <div key={community.id} className="flex items-center gap-2">
-                                                    <Badge variant="secondary">
-                                                        {community.regionalName?.replace(/_/g, ' ') || community.name}
+                                                    <Badge variant="secondary" className="max-w-full whitespace-normal break-words text-start">
+                                                        <bdi>{regionLabel(tRegions, community.regionalName) || community.name}</bdi>
                                                     </Badge>
                                                 </div>
                                             ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                        </div>
+                    )}
+
+                    {publicWorkspaces.length > 0 && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 16.5}>
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <h3 className="font-semibold mb-3">{t('workspaces')}</h3>
+                                    <div className="space-y-2">
+                                        {publicWorkspaces.map((w) => (
+                                            <Link key={w.id} href={`/collaborations/${w.id}`} className="block text-sm text-ccm-sea hover:underline">
+                                                <bdi>{w.title}</bdi>
+                                            </Link>
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -344,8 +561,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             .filter(c => c.type === 'SPECIAL')
                                             .map((community) => (
                                                 <div key={community.id} className="flex items-center gap-2">
-                                                    <Badge variant="outline">
-                                                        {community.specialName?.replace(/_/g, ' ') || community.name}
+                                                    <Badge variant="outline" className="max-w-full whitespace-normal break-words text-start">
+                                                        <bdi>{specialCommunityLabel(tSpecial, community.specialName) || community.name}</bdi>
                                                     </Badge>
                                                 </div>
                                             ))}

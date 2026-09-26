@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import { Link } from "@/i18n/navigation";
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -9,9 +9,11 @@ import {
     User,
     MapPin
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
-import { sortTagsByLabel } from '@/lib/localization-utils';
+import { imageUrl } from '@/lib/content/images';
+import { sortTagsByLabel, getLocalizedText } from '@/lib/localization-utils';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor } from '@/lib/tags';
+import { useTranslations } from 'next-intl';
 
 // Define the news post type based on the schema
 interface NewsPost {
@@ -47,7 +49,7 @@ interface NewsPost {
     };
     author?: {
         name: string;
-        image?: any;
+        image?: unknown;
     };
     publishedAt?: string;
     organizations?: Array<{
@@ -80,7 +82,7 @@ interface GridNewsComponentProps {
     showAuthor?: boolean;
     showMetadata?: boolean;
     showLocation?: boolean;
-    customExcerpt?: any;
+    customExcerpt?: string | Record<string, string | undefined> | null;
     locale: string;
     userId?: string;
     className?: string;
@@ -90,11 +92,6 @@ interface GridNewsComponentProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(obj: any, locale: string): string {
-    if (!obj) return '';
-    if (typeof obj === 'string') return obj;
-    return obj[locale] || obj['en'] || '';
-}
 
 // Helper function to format date
 function formatNewsDate(date: Date, locale: string): string {
@@ -107,7 +104,8 @@ function formatNewsDate(date: Date, locale: string): string {
     try {
         return new Intl.DateTimeFormat(locale, options).format(date);
     } catch {
-        return date.toLocaleDateString('en-US', options);
+        // Fallback still respects the locale (use ar-EG for Arabic numerals).
+        return date.toLocaleDateString(locale === "ar" ? "ar-EG" : locale, options);
     }
 }
 
@@ -124,6 +122,8 @@ export default function GridNewsComponent({
                                              cardVariant = "classic",
                                              imageSizes,
                                          }: GridNewsComponentProps) {
+    const tCommon = useTranslations('common');
+    const tType = useTranslations('typedCards');
     if (!newsPost) return null;
 
     const isWide = cardVariant === "wide";
@@ -142,35 +142,11 @@ export default function GridNewsComponent({
     const publishDate = newsPost.publishedAt ? new Date(newsPost.publishedAt) : null;
 
     // Localized text helpers
-    const getMoreText = (count: number) => {
-        const moreTexts = {
-            en: 'more',
-            es: 'más',
-            fr: 'autres',
-            ar: 'آخرين'
-        };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
-    const getNewsTypeText = () => {
-        const typeTexts = {
-            en: 'News',
-            es: 'Noticias',
-            fr: 'Actualités',
-            ar: 'أخبار'
-        };
-        return typeTexts[supportedLocale] || 'News';
-    };
+    const getNewsTypeText = () => tType('type.newsPost');
 
-    const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
-    };
+    const getFeaturedText = () => tCommon('featured');
 
     const getLocationText = () => {
         if (!newsPost.locationDetails) return '';
@@ -180,7 +156,7 @@ export default function GridNewsComponent({
     };
 
     return (
-        <Link href={`/${locale}/news/${newsPost.slug.current}`} className="block h-full">
+        <Link href={`/news/${newsPost.slug.current}`} className="block h-full">
         <Card className={cn(
             "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary",
             className
@@ -189,7 +165,7 @@ export default function GridNewsComponent({
             {newsPost.image?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlForCropped(newsPost.image, 800, isWide ? 450 : 533).url()}
+                        src={imageUrl(newsPost.image, { width: 800, height: isWide ? 450 : 533, crop: true })}
                         alt={newsPost.image.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -217,7 +193,7 @@ export default function GridNewsComponent({
             <CardHeader className="pb-3">
                 <div className="space-y-2">
                     {/* Title */}
-                    <h3 className="font-semibold text-lg leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors">
+                    <h3 dir="auto" className="font-semibold text-lg leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors">
                         {title}
                     </h3>
                 </div>
@@ -282,19 +258,19 @@ export default function GridNewsComponent({
                 {/* Tags */}
                 {showTags && sortTagsByLabel(newsPost.tags, supportedLocale).length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag: any) => (
+                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag) => {
+                            const color = normalizeTagColor(tag.color);
+                            return (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
-                                style={{
-                                    borderColor: tag.color || undefined,
-                                    color: tag.color || undefined
-                                }}
+                                style={{ borderColor: color, color }}
                             >
                                 {getLocalizedText(tag.label, supportedLocale)}
                             </Badge>
-                        ))}
+                            );
+                        })}
                         {sortTagsByLabel(newsPost.tags, supportedLocale).length > 3 && (
                             <Badge variant="outline" className="text-xs">
                                 {getMoreText(sortTagsByLabel(newsPost.tags, supportedLocale).length - 3)}

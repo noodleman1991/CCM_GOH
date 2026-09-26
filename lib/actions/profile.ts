@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma"
 import { auth } from '@clerk/nextjs/server'
-import { unstable_cache } from 'next/cache'
 import { UserService } from '@/lib/services/user.service'
 import { calculateProfileCompleteness } from '@/lib/profile-completeness'
 import { getLocale } from 'next-intl/server'
@@ -29,8 +28,24 @@ export interface ProfileData {
     otherSocialLinks: Array<{platform: string, url: string}>
     role: string
     profileCompleteness: number
+    /** The owner's own setting; shown back to them on their profile so "who can
+     *  see this" is never a guess (2026-09-22). Visitors get it too, but it is
+     *  not secret: it only ever says PUBLIC on a page a visitor can open. */
+    profileVisibility?: 'PUBLIC' | 'MEMBERS' | 'PRIVATE' | null
+    isSearchable?: boolean | null
     createdAt: Date
     updatedAt: Date
+    // Domain-rich fields (K4)
+    headline?: string | null
+    pronouns?: string | null
+    languages: string[]
+    focusTopics: string[]
+    motivation?: string | null
+    openToCollaboration: boolean
+    lookingFor: string[]
+    collaborationInterests?: string | null
+    livedExperienceStatement?: string | null // redacted unless showLivedExperience
+    orcidId?: string | null
     recentWork: Array<{
         id: string
         title: string
@@ -39,6 +54,10 @@ export interface ProfileData {
         isOngoing: boolean
         startDate: Date
         endDate?: Date | null
+        role?: string | null
+        collaborators?: string | null
+        outcome?: string | null
+        imageUrl?: string | null
     }>
     communities: Array<{
         id: string
@@ -80,7 +99,23 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             return null
         }
 
-        const user = result.data as any // Type assertion for relations
+        // The service returns the Prisma row + relations; the page consumes a
+        // ProfileData-shaped object. Derived fields (displayName/initials/…)
+        // are computed below, curation flags ride on recentWork rows.
+        type UserWithRelations = Omit<ProfileData, "recentWork" | "communities" | "displayName" | "fullName" | "initials" | "profileCompleteness"> & {
+            recentWork?: (ProfileData["recentWork"][number] & { hidden?: boolean; pinned?: boolean })[]
+            communityMemberships?: { community: ProfileData["communities"][number] }[]
+            displayName?: string | null
+            initials?: string | null
+        }
+        const user = result.data as unknown as UserWithRelations
+
+        // The owner sees their hidden items (so they can manage them); visitors
+        // never see items the owner hid. Already ordered pinned-first upstream.
+        const isOwner = Boolean(viewerId && viewerId === user.id)
+        const recentWork = isOwner
+            ? (user.recentWork || [])
+            : (user.recentWork || []).filter((w) => !w.hidden)
 
         // Compute derived fields
         const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
@@ -111,11 +146,23 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             linkedinProfile: user.linkedinProfile, // Already redacted if showSocialLinks=false
             otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
-            profileCompleteness: calculateProfileCompleteness(user),
+            profileVisibility: user.profileVisibility ?? null,
+            isSearchable: user.isSearchable ?? null,
+            profileCompleteness: calculateProfileCompleteness(user as unknown as Parameters<typeof calculateProfileCompleteness>[0]),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-            recentWork: user.recentWork || [],
-            communities: user.communityMemberships?.map((cm: any) => cm.community) || [],
+            headline: user.headline,
+            pronouns: user.pronouns,
+            languages: user.languages || [],
+            focusTopics: user.focusTopics || [],
+            motivation: user.motivation,
+            openToCollaboration: user.openToCollaboration ?? false,
+            lookingFor: user.lookingFor || [],
+            collaborationInterests: user.collaborationInterests,
+            livedExperienceStatement: user.livedExperienceStatement, // null if redacted
+            orcidId: user.orcidId,
+            recentWork,
+            communities: user.communityMemberships?.map((cm) => cm.community) || [],
             displayName,
             fullName,
             initials,

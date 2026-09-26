@@ -12,7 +12,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import {
     Agenda,
     SupportedLanguage
@@ -24,6 +24,7 @@ import {
     canAccessAgenda
 } from '@/lib/agenda-utils';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
 import { DownloadSection } from './grid-agenda-download';
 
 interface GridAgendaComponentProps {
@@ -54,6 +55,7 @@ export default function GridAgendaComponent({
                                             }: GridAgendaComponentProps) {
     const t = useTranslations('regional');
     const tBlocks = useTranslations('blocks');
+    const tCommon = useTranslations('common');
 
     if (!agenda) return null;
 
@@ -93,7 +95,7 @@ export default function GridAgendaComponent({
             {agenda.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlForCropped(agenda.coverImage, 800, isWide ? 450 : 533).url()}
+                        src={imageUrl(agenda.coverImage, { width: 800, height: isWide ? 450 : 533, crop: true })}
                         alt={agenda.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -163,35 +165,39 @@ export default function GridAgendaComponent({
                         {totalDownloads > 0 && (
                             <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                <span>{totalDownloads} {tBlocks('downloads')}</span>
+                                <span>{tBlocks('downloadsCount', { count: totalDownloads })}</span>
                             </div>
                         )}
                     </div>
                 )}
 
                 {/* Tags */}
-                {showTags && agenda.tags && agenda.tags.length > 0 && (
+                {showTags && agenda.tags && agenda.tags.length > 0 && (() => {
+                    const tags = sortedTags(agenda.tags, locale);
+                    if (tags.length === 0) return null;
+                    return (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {agenda.tags.slice(0, 3).map((tag) => (
+                        {tags.slice(0, 3).map((tag) => {
+                            const color = normalizeTagColor(tag.color);
+                            return (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
-                                style={{
-                                    borderColor: tag.color,
-                                    color: tag.color
-                                }}
+                                style={{ borderColor: color, color }}
                             >
                                 {getLocalizedText(tag.label, locale)}
                             </Badge>
-                        ))}
-                        {agenda.tags.length > 3 && (
+                            );
+                        })}
+                        {tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                +{agenda.tags.length - 3} more
+                                {tCommon('moreCount', { count: tags.length - 3 })}
                             </Badge>
                         )}
                     </div>
-                )}
+                    );
+                })()}
             </CardContent>
 
             <CardFooter className="pt-0 px-0">

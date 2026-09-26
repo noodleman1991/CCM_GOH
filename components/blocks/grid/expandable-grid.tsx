@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -11,8 +10,10 @@ interface ExpandableGridProps {
   gridClassName?: string;
   locale: string;
   isRTL?: boolean;
-  expandLabel?: string;
-  collapseLabel?: string;
+  // Required: resolved by the server parent (grid-row) via next-intl so this
+  // client component never depends on NextIntlClientProvider context.
+  expandLabel: string;
+  collapseLabel: string;
 }
 
 export function ExpandableGrid({
@@ -24,7 +25,6 @@ export function ExpandableGrid({
   expandLabel,
   collapseLabel,
 }: ExpandableGridProps) {
-  const t = useTranslations('regional');
   // ✅ HYDRATION FIX: Initial state is false (collapsed)
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -47,12 +47,11 @@ export function ExpandableGrid({
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-              isRTL && "flex-row-reverse"
+              "inline-flex items-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             )}
             aria-expanded={isExpanded}
           >
-            <span>{isExpanded ? (collapseLabel || t('showLess')) : (expandLabel || t('viewMore'))}</span>
+            <span>{isExpanded ? collapseLabel : expandLabel}</span>
             {isExpanded ? (
               <ChevronUp className="h-4 w-4" />
             ) : (

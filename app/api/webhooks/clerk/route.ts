@@ -1,10 +1,29 @@
 
 import { Webhook } from 'svix'
-import { headers } from 'next/headers'
 import { prisma } from '@/lib/prisma'
-import { NextResponse } from 'next/server'
-import { clerkClient } from '@clerk/nextjs/server'
-import { eraseUserSanityContent } from '@/lib/account-deletion'
+import { NextResponse, after } from 'next/server'
+import { deleteUserData } from '@/lib/account-deletion'
+import { syncUserSearchRecord } from '@/lib/algolia-user-sync'
+import { captureAfterResponse } from '@/lib/analytics/server'
+import { applyStaffRoleInvite } from '@/lib/staff-role-invite'
+
+/**
+ * Update the user's search record after the response has been sent, and log
+ * a failure with the user id. Replaces three un-awaited `fetch` calls to
+ * `${NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`
+ * whose only error handling was `.catch` on the network error — a 401 or a
+ * 404 from that hop resolved as success and was never logged (audit finding
+ * H5). The indexer is a local function; there is no reason to go over HTTP.
+ */
+function scheduleSearchIndexUpdate(userId: string): void {
+    after(async () => {
+        try {
+            await syncUserSearchRecord(userId, 'update')
+        } catch (error) {
+            console.error(`❌ Search index update failed for user ${userId}:`, error)
+        }
+    })
+}
 
 // Enhanced types for better Clerk integration
 type UserCreatedEvent = {
@@ -23,9 +42,9 @@ type UserCreatedEvent = {
         username: string | null
         image_url: string | null
         profile_image_url: string | null
-        public_metadata: Record<string, any>
-        private_metadata: Record<string, any>
-        unsafe_metadata: Record<string, any>
+        public_metadata: { onboardingCompleted?: boolean } & Record<string, unknown>
+        private_metadata: Record<string, unknown>
+        unsafe_metadata: Record<string, unknown>
         created_at: number
         updated_at: number
     }
@@ -49,9 +68,9 @@ type UserUpdatedEvent = {
         username: string | null
         image_url: string | null
         profile_image_url: string | null
-        public_metadata: Record<string, any>
-        private_metadata: Record<string, any>
-        unsafe_metadata: Record<string, any>
+        public_metadata: { onboardingCompleted?: boolean } & Record<string, unknown>
+        private_metadata: Record<string, unknown>
+        unsafe_metadata: Record<string, unknown>
         updated_at: number
     }
     object: 'event'
@@ -80,6 +99,16 @@ type SessionCreatedEvent = {
 
 type ClerkWebhookEvent = UserCreatedEvent | UserUpdatedEvent | UserDeletedEvent | SessionCreatedEvent
 
+/** What the per-event handlers below resolve to (consumed by POST's `result.action`). */
+type WebhookHandlerResult = {
+    action: string
+    userId?: string
+    reason?: string
+    existingUserId?: string
+    newClerkId?: string
+    email?: string
+}
+
 function getPrimaryEmail(emailAddresses: Array<{ email_address: string; verification?: { status: string } }>): string | undefined {
     const verifiedEmail = emailAddresses.find(email => email.verification?.status === 'verified')
     return verifiedEmail?.email_address || emailAddresses[0]?.email_address
@@ -100,8 +129,8 @@ function getProfileImage(imageUrl: string | null, profileImageUrl: string | null
     return profileImageUrl || imageUrl || null
 }
 
-async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
-    const { id, email_addresses, phone_numbers, first_name, last_name, username, image_url, profile_image_url, public_metadata } = event.data
+async function handleUserCreated(event: UserCreatedEvent): Promise<WebhookHandlerResult> {
+    const { id, email_addresses, phone_numbers, first_name, last_name, username, image_url, profile_image_url } = event.data
 
     // Move these outside try block so they're accessible in catch (email conflict handler)
     const phoneData = getPrimaryPhone(phone_numbers || [])
@@ -117,7 +146,8 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
 
         if (existingUser) {
             console.log(`User ${id} already exists, updating instead`)
-            return handleUserUpdated(event as any)
+            // A created event carries the same user payload; only the literal `type` differs.
+            return handleUserUpdated(event as unknown as UserUpdatedEvent)
         }
 
         // Create user with Clerk auth data only
@@ -142,7 +172,7 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
                 workTypes: [],
                 expertiseAreas: [],
                 isSearchable: true,
-                profileVisibility: 'PUBLIC',
+                profileVisibility: 'MEMBERS',
                 showEmail: false,
                 showPhoneNumber: false,
                 showWorkDetails: true,
@@ -153,23 +183,23 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
 
         console.log(`✅ Created user: ${user.id}`)
 
-        // Trigger Algolia sync (fire and forget)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
-            },
-            body: JSON.stringify({ userId: user.id, action: 'update' })
-        }).catch((error) => {
-            console.warn(`Algolia sync failed for new user ${user.id}:`, error)
-        })
+        // A role reserved for this email before the first sign-in (pnpm user:role --invite).
+        await applyStaffRoleInvite(user.id, user.email)
+
+        scheduleSearchIndexUpdate(user.id)
+        captureAfterResponse({
+                event: "sign_up_completed",
+                distinctId: user.id,
+                properties: {},
+                set: { role: "community_member", onboarding_completed: false },
+            })
 
         return { action: 'created', userId: user.id }
 
-    } catch (error: any) {
+    } catch (error) {
         // Handle email conflict (P2002) gracefully
-        if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
+        const prismaError = error as { code?: string; meta?: { target?: string[] } }
+        if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
             const emailAddress = getPrimaryEmail(email_addresses)
             console.log(`⚠️ Email ${emailAddress} already exists, checking for existing user`)
 
@@ -224,7 +254,8 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
 
         if (!existingUser) {
             console.log(`User ${id} doesn't exist, creating...`)
-            return handleUserCreated(event as any)
+            // An updated event carries the same user payload; only the literal `type` differs.
+            return handleUserCreated(event as unknown as UserCreatedEvent)
         }
 
         const phoneData = getPrimaryPhone(phone_numbers || [])
@@ -247,7 +278,7 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
 
         // Only sync essential onboarding metadata from Clerk
         // All user profile data is managed exclusively in Prisma
-        const metadataUpdate: any = {}
+        const metadataUpdate: { onboardingCompleted?: boolean; welcomeMessageSeen?: boolean; onboardingStep?: number } = {}
 
         // Handle onboarding completion status
         if (public_metadata?.onboardingCompleted !== undefined) {
@@ -267,17 +298,7 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
 
         console.log(`✅ Updated user: ${user.id}`)
 
-        // Trigger Algolia sync (fire and forget)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
-            },
-            body: JSON.stringify({ userId: user.id, action: 'update' })
-        }).catch((error) => {
-            console.warn(`Algolia sync failed for updated user ${user.id}:`, error)
-        })
+        scheduleSearchIndexUpdate(user.id)
 
         return { action: 'updated', userId: user.id }
 
@@ -287,53 +308,29 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
     }
 }
 
+/**
+ * A user deleted in Clerk (dashboard, or the in-app flow's final step) gets
+ * the SAME full erasure the in-app flow runs: `deleteUserData` hands solely
+ * owned workspaces to the next member, sweeps R2 uploads, removes the Resend
+ * contact, erases private CMS content, deletes the Algolia record and then the
+ * Prisma row (cascading the rest). Until 2026-09-16 this handler did a raw
+ * `prisma.user.delete` plus the CMS erasure only (audit finding M3), so a
+ * dashboard deletion left R2 orphans and a newsletter contact behind and
+ * cascade-deleted every workspace the user solely owned.
+ *
+ * Idempotent and safe when the row is already gone (`deleteUserData` treats
+ * P2025 as done), so it remains the backstop for the in-app flow. A thrown
+ * error becomes a 500, which makes svix retry — erasure is re-runnable.
+ */
 async function handleUserDeleted(event: UserDeletedEvent) {
     const { id } = event.data
 
     try {
-        const existingUser = await prisma.user.findUnique({
-            where: { id }
-        })
-
-        if (!existingUser) {
-            console.log(`User ${id} doesn't exist, skipping Prisma deletion`)
-        } else {
-            await prisma.user.delete({
-                where: { id }
-            })
-            console.log(`✅ Deleted user: ${id}`)
-        }
-
-        // Also erase the user's PRIVATE Sanity content (drafts + non-approved
-        // submissions). This makes the webhook a complete backstop for users
-        // deleted directly in the Clerk dashboard (bypassing our API route).
-        // Idempotent: no-op if there is nothing left to erase. Published case
-        // studies are intentionally retained.
-        try {
-            const sanity = await eraseUserSanityContent(id)
-            if (sanity.draftsDeleted || sanity.submissionsDeleted) {
-                console.log(`🧹 Erased Sanity content for ${id}:`, sanity)
-            }
-        } catch (sanityErr) {
-            console.warn(`Sanity erasure failed for deleted user ${id}:`, sanityErr)
-        }
-
-        // Trigger Algolia sync to remove from index (fire and forget)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
-            },
-            body: JSON.stringify({ userId: id, action: 'delete' })
-        }).catch((error) => {
-            console.warn(`Algolia sync failed for deleted user ${id}:`, error)
-        })
-
+        const result = await deleteUserData(id)
+        console.log(`✅ Erased user ${id}:`, result)
         return { action: 'deleted', userId: id }
-
     } catch (error) {
-        console.error(`❌ Failed to delete user ${id}:`, error)
+        console.error(`❌ Failed to erase user ${id}:`, error)
         throw error
     }
 }
@@ -372,10 +369,12 @@ async function handleSessionCreated(event: SessionCreatedEvent) {
 
 export async function POST(req: Request) {
     try {
-        const headerPayload = await headers()
-        const svixId = headerPayload.get("svix-id")
-        const svixTimestamp = headerPayload.get("svix-timestamp")
-        const svixSignature = headerPayload.get("svix-signature")
+        // Read from the request itself rather than `headers()` from
+        // next/headers: same values, and the handler is then a function of its
+        // Request alone (testable without a Next request scope).
+        const svixId = req.headers.get("svix-id")
+        const svixTimestamp = req.headers.get("svix-timestamp")
+        const svixSignature = req.headers.get("svix-signature")
 
         if (!svixId || !svixTimestamp || !svixSignature) {
             return NextResponse.json({ error: 'Missing svix headers' }, { status: 400 })
@@ -456,7 +455,7 @@ export async function GET() {
     try {
         await prisma.$queryRaw`SELECT 1`
         return NextResponse.json({ status: 'healthy' })
-    } catch (error) {
+    } catch {
         return NextResponse.json({ status: 'unhealthy' }, { status: 503 })
     }
 }

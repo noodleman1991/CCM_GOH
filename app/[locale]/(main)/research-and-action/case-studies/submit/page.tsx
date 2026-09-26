@@ -1,31 +1,9 @@
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getTranslations } from 'next-intl/server'
-import { client } from "@/sanity/lib/client"
 import CaseStudySubmissionLayout from "@/components/forms/case-study-submission-layout"
-
-// Fetch available tags for the form
-async function fetchAvailableTags() {
-    return await client.fetch(`
-    *[_type == "tag"] | order(label.en asc) {
-      _id,
-      label,
-      value
-    }
-  `)
-}
-
-// Fetch available regional communities
-async function fetchRegionalCommunities() {
-    return await client.fetch(`
-    *[_type == "regionalCommunity" && active == true] | order(name.en asc) {
-      _id,
-      name,
-      slug
-    }
-  `)
-}
+import { getAvailableCaseStudyTags, getActiveCaseStudyCommunities, loadEditableCaseStudy } from "@/lib/content/case-studies"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params
@@ -37,29 +15,45 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export default async function CaseStudySubmitPage({
-                                                      params
+                                                      params,
+                                                      searchParams
                                                   }: {
     params: Promise<{ locale: string }>
+    searchParams: Promise<{ workspace?: string; edit?: string; draft?: string }>
 }) {
     const { locale } = await params
+    const { workspace, edit, draft } = await searchParams
     const { userId } = await auth()
 
     if (!userId) {
-        redirect('/sign-in')
+        redirect({ href: '/sign-in', locale })
     }
 
     const [availableTags, regionalCommunities] = await Promise.all([
-        fetchAvailableTags(),
-        fetchRegionalCommunities()
+        getAvailableCaseStudyTags(),
+        getActiveCaseStudyCommunities()
     ])
+
+    // X7 edit mode: load the author's own draft/pending doc into the form.
+    // Authz: the submitter, or a member of a workspace this doc is an output of.
+    let editDoc: (Record<string, unknown> & { _sanityId: string }) | null = null
+    if (edit) {
+        editDoc = await loadEditableCaseStudy(edit, userId)
+        if (!editDoc) redirect({ href: '/research-and-action/case-studies/submit', locale })
+    }
 
     return (
         <div className="container max-w-7xl py-8">
             <CaseStudySubmissionLayout
-                availableTags={availableTags}
-                regionalCommunities={regionalCommunities}
+                availableTags={availableTags as never}
+                regionalCommunities={regionalCommunities as never}
                 locale={locale}
                 userId={userId}
+                workspaceId={workspace ?? null}
+                editDoc={editDoc}
+                // Continue from the submissions dashboard: reopen this draft,
+                // not the latest one. The form fetches it by id, owner-scoped.
+                draftId={draft ?? null}
             />
         </div>
     )

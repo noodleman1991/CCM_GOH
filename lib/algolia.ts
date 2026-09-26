@@ -1,7 +1,17 @@
-import { algoliasearch } from 'algoliasearch'
+import { algoliasearch, type Algoliasearch } from 'algoliasearch'
+import type { User } from '@/generated/prisma'
+
+// Index names and the write-time prefix live in a side-effect-free module, so a
+// Payload hook or a `tsx` script can name an index without constructing a
+// client (or hitting this file's `require('dotenv')`). Re-exported so every
+// existing `from '@/lib/algolia'` import keeps working.
+export { ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia-indices'
 
 // Load environment variables (for Node.js contexts outside Next.js)
-if (typeof window === 'undefined' && !process.env.VERCEL) {
+// `require` exists under Next's bundling and under CommonJS scripts; an ESM
+// `tsx` script (scripts/algolia/*) has none and loads its own env first.
+if (typeof window === 'undefined' && !process.env.VERCEL && typeof require === 'function') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- dotenv must load synchronously and only in non-Vercel Node contexts; a static ESM import would run unconditionally (including in client bundles).
   require('dotenv').config()
 }
 
@@ -40,15 +50,6 @@ export const algoliaClient = (() => {
   }
 })()
 
-// Index names
-export const ALGOLIA_INDICES = {
-  USERS: 'users',
-  SANITY_CONTENT: 'sanity_content',
-  AGENDAS: 'agendas',
-  POSTS: 'posts',
-  CASE_STUDIES: 'case_studies',
-  NEWS: 'news'
-} as const
 
 // Search client for frontend (uses search-only API key)
 // Create the base search client (without debouncing)
@@ -63,7 +64,7 @@ const baseSearchClient = (() => {
       return {
         search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
         searchForFacetValues: () => Promise.resolve([]),
-      } as any
+      } as unknown as Algoliasearch
     }
     console.log('✅ Algolia search client initialized successfully')
     return algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
@@ -73,7 +74,7 @@ const baseSearchClient = (() => {
     return {
       search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
       searchForFacetValues: () => Promise.resolve([]),
-    } as any
+    } as unknown as Algoliasearch
   }
 })()
 
@@ -146,6 +147,10 @@ export interface CaseStudySearchRecord extends Record<string, unknown> {
     affiliation?: string
   }>
   tags: string[]
+  /** Every language's label — searchable, not faceted (tag audit 2026-09-17). */
+  tagLabels?: string[]
+  /** The tags' stable `value` slugs — filterOnly, for ?tags= deep links. */
+  tagSlugs?: string[]
   studyLocation?: {
     lat: number
     lng: number
@@ -158,6 +163,11 @@ export interface CaseStudySearchRecord extends Record<string, unknown> {
   organizations: string[]
   language: string
   accessLevel: 'public' | 'registered' | 'members'
+  // Phase 6 fixed taxonomy (region short code + themes/populations) — these
+  // back the attributesForFaceting entries of the same names.
+  region?: string
+  themes?: string[]
+  populations?: string[]
 }
 
 export interface AgendaSearchRecord extends Record<string, unknown> {
@@ -175,8 +185,13 @@ export interface AgendaSearchRecord extends Record<string, unknown> {
   organizations: string[]
   regionalCommunities: string[]
   tags: string[]
+  tagLabels?: string[]
+  tagSlugs?: string[]
   accessLevel: 'public' | 'registered' | 'members'
+  /** @deprecated single language was always 'en' — use `languages`. */
   language: string
+  /** Every language this agenda is available in (from files + localized titles). */
+  languages: string[]
   files?: Array<{
     language: string
     url: string
@@ -199,6 +214,8 @@ export interface NewsSearchRecord extends Record<string, unknown> {
   }
   featured: boolean
   tags: string[]
+  tagLabels?: string[]
+  tagSlugs?: string[]
   organizations: string[]
   projects: string[]
   location?: {
@@ -209,6 +226,10 @@ export interface NewsSearchRecord extends Record<string, unknown> {
   }
   accessLevel: 'public'
   language: string
+  // Phase 6 fixed taxonomy (region short code + themes/populations).
+  region?: string
+  themes?: string[]
+  populations?: string[]
 }
 
 export interface ContentSearchRecord {
@@ -217,7 +238,7 @@ export interface ContentSearchRecord {
   title: string
   excerpt?: string
   content: string
-  contentType: 'report' | 'post' | 'case-study'
+  contentType: 'report' | 'case-study'
   publishedAt: number
   updatedAt: number
   author?: {
@@ -231,11 +252,48 @@ export interface ContentSearchRecord {
   featured?: boolean
 }
 
+/**
+ * Minimal structural shape transformUserForIndex/shouldIndexUser actually read.
+ * Wide enough for both full Prisma `User` rows (with the communityMemberships
+ * include) and partial fixtures; field types mirror the Prisma column types.
+ */
+export interface IndexableUser {
+  id: string
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  image?: string | null
+  city?: string | null
+  country?: string | null
+  organization?: string | null
+  position?: string | null
+  workTypes?: readonly string[] | null
+  expertiseAreas?: readonly string[] | null
+  isSearchable?: boolean | null
+  profileVisibility?: User['profileVisibility']
+  showEmail?: boolean | null
+  showWorkDetails?: boolean | null
+  showSocialLinks?: boolean | null
+  showLocation?: boolean | null
+  createdAt: Date | string
+  updatedAt?: Date | string | null
+  role: string
+  communityMemberships?: ReadonlyArray<{ community: { name: string } }> | null
+}
+
 // Helper function to transform user data for indexing
-export function transformUserForIndex(user: any): UserSearchRecord {
+export function transformUserForIndex(user: IndexableUser): UserSearchRecord {
   // Only index users who have opted in to being searchable
   if (!user.isSearchable) {
     throw new Error('User has opted out of search')
+  }
+  // Only PUBLIC profiles reach the index at all. The browser key can read
+  // every record in the index, so a MEMBERS/PRIVATE row was one query away
+  // from anyone; the client-side filter was the only thing hiding it.
+  // Members-only people search is the Prisma-backed endpoint, not Algolia.
+  if (user.profileVisibility !== 'PUBLIC') {
+    throw new Error('Only public profiles are indexed')
   }
 
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim()
@@ -256,7 +314,10 @@ export function transformUserForIndex(user: any): UserSearchRecord {
   const workTypes = showWorkDetails ? (user.workTypes || []) : []
   const expertiseAreas = showWorkDetails ? (user.expertiseAreas || []) : []
 
-  return {
+  // Values come straight from the (possibly partial / nullable) user row, so
+  // the record is built as-is and cast once — keeps runtime output identical
+  // to what was always indexed while the declared record type stays strict.
+  const record = {
     objectID: user.id,
     userId: user.id,
     username: user.username || '',
@@ -283,23 +344,28 @@ export function transformUserForIndex(user: any): UserSearchRecord {
     joinedAt: new Date(user.createdAt).getTime(),
     lastActiveAt: user.updatedAt ? new Date(user.updatedAt).getTime() : undefined,
     communityCount: user.communityMemberships?.length || 0,
-    communities: user.communityMemberships?.map((membership: any) => 
+    communities: user.communityMemberships?.map((membership) =>
       membership.community.name
     ) || [],
     role: user.role
   }
+  return record as UserSearchRecord
 }
 
 // Helper function to check if user should be included in search
-export function shouldIndexUser(user: any): boolean {
+export function shouldIndexUser(
+  user: Pick<IndexableUser, 'isSearchable' | 'username' | 'firstName' | 'lastName' | 'profileVisibility'>
+): boolean {
   // Must be searchable
   if (!user.isSearchable) return false
-  
+
   // Must have minimum required fields
   if (!user.username || (!user.firstName && !user.lastName)) return false
-  
-  // Profile visibility check will be handled at search time via filters
-  return true
+
+  // Must be PUBLIC. Until 2026-09-17 this said "visibility is handled at
+  // search time via filters" — but the filter lived in the browser, next to a
+  // key that could read the whole index. An unset visibility is not public.
+  return user.profileVisibility === 'PUBLIC'
 }
 
 // Configuration for search indices
@@ -318,6 +384,10 @@ export const INDEX_SETTINGS = {
       'unordered(expertiseAreas)',
       'unordered(communities)'
     ],
+    // Never returned in a hit, whatever key asks: the privacy flags are for
+    // the indexer, not the browser. showWorkDetails stays retrievable because
+    // grouped-search reads it to decide whether to show position/organisation.
+    unretrievableAttributes: ['isSearchable', 'showEmail', 'showSocialLinks', 'showLocation'],
     attributesForFaceting: [
       'filterOnly(isSearchable)',
       'filterOnly(profileVisibility)',
@@ -359,6 +429,7 @@ export const INDEX_SETTINGS = {
       'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
       'unordered(authors.name)',
       'unordered(tags)',
+      'unordered(tagLabels)',
       'unordered(organizations)'
     ],
     attributesForFaceting: [
@@ -366,9 +437,14 @@ export const INDEX_SETTINGS = {
       'filterOnly(accessLevel)',
       'featured',
       'tags',
+      'filterOnly(tagSlugs)',
       'organizations',
       'language',
-      'authors.role'
+      'authors.role',
+      // Phase 6 fixed taxonomy facets (region short code + themes/populations).
+      'region',
+      'themes',
+      'populations'
     ],
     customRanking: [
       'desc(featured)',
@@ -398,6 +474,7 @@ export const INDEX_SETTINGS = {
       'unordered(description.en,description.es,description.fr,description.ar)',
       'unordered(organizations)',
       'unordered(tags)',
+      'unordered(tagLabels)',
       'unordered(agendaType)'
     ],
     attributesForFaceting: [
@@ -406,9 +483,11 @@ export const INDEX_SETTINGS = {
       'year',
       'featured',
       'tags',
+      'filterOnly(tagSlugs)',
       'organizations',
       'regionalCommunities',
-      'language'
+      'language',
+      'languages'
     ],
     customRanking: [
       'desc(featured)',
@@ -439,6 +518,7 @@ export const INDEX_SETTINGS = {
       'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
       'unordered(author.name)',
       'unordered(tags)',
+      'unordered(tagLabels)',
       'unordered(organizations)',
       'unordered(projects)'
     ],
@@ -446,11 +526,16 @@ export const INDEX_SETTINGS = {
       'filterOnly(accessLevel)',
       'featured',
       'tags',
+      'filterOnly(tagSlugs)',
       'organizations',
       'projects',
       'language',
       'location.country',
-      'author.name'
+      'author.name',
+      // Phase 6 fixed taxonomy facets.
+      'region',
+      'themes',
+      'populations'
     ],
     customRanking: [
       'desc(featured)',

@@ -1,36 +1,28 @@
-export const revalidate = 60;
-
 import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import { client } from '@/sanity/lib/client'
+import { getLivedExperienceIndex } from "@/lib/content/lived-experiences";
+import type { LivedExperience, LivedExperienceIndex } from "@/lib/content/lived-experiences";
+import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
 import { Skeleton } from '@/components/ui/skeleton'
 import LivedExperiencesPageClient from './page-client'
 
-// Fetch lived experience videos grouped by regional community
-async function fetchLivedExperiences() {
-  const query = `{
-    "videos": *[_type == "livedExperience"] | order(_createdAt desc) {
-      _id,
-      title,
-      videoUrl,
-      tags,
-      "thumbnailUrl": thumbnail.asset->url,
-      "region": region->{
-        _id,
-        name,
-        "slug": slug.current
-      }
-    },
-    "regionalCommunities": *[_type == "regionalCommunity"] | order(order asc, name asc) {
-      _id,
-      name,
-      "slug": slug.current
-    },
-    "allTags": array::unique(*[_type == "livedExperience"].tags[])
-  }`
-
-  return await client.fetch(query)
+/**
+ * Does this video belong to `community`?
+ *
+ * Accepts both shapes: a resolved `region` reference, and the legacy bare
+ * region code ("ssa") that a backfill wrote into the field instead of a
+ * reference. `region->` yields null for the legacy shape, so without this the
+ * videos silently disappear from every group — which is what emptied the page.
+ */
+function belongsToCommunity(
+  video: { region?: { id?: string } | null; rawRegion?: unknown },
+  community: { id: string; slug?: string }
+): boolean {
+  if (video.region?.id) return video.region.id === community.id
+  const raw = video.rawRegion
+  if (typeof raw !== 'string' || !isRegionCode(raw)) return false
+  return REGION_TO_RC_SLUG[raw] === community.slug
 }
 
 function LoadingSkeleton() {
@@ -77,15 +69,15 @@ export default async function LivedExperiencesPage({
   const searchQuery = typeof search === 'string' ? search : ''
 
   // Fetch data
-  const data = await fetchLivedExperiences()
+  const data: LivedExperienceIndex = await getLivedExperienceIndex()
 
   // Group videos by regional community
-  const communityVideosMap: Record<string, any[]> = {}
+  const communityVideosMap: Record<string, LivedExperience[]> = {}
 
   for (const community of data.regionalCommunities) {
-    const communityName = typeof community.name === 'string' ? community.name : community.name.en
-    const videosInCommunity = data.videos.filter((video: any) =>
-      video.region?._id === community._id
+    const communityName = typeof community.name === 'string' ? community.name : (community.name.en as string)
+    const videosInCommunity = data.videos.filter((video) =>
+      belongsToCommunity(video, community)
     )
 
     if (videosInCommunity.length > 0) {

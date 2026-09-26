@@ -1,5 +1,5 @@
 import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import {
   Carousel,
   CarouselContent,
@@ -10,23 +10,24 @@ import {
   CarouselCounter,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { type BackgroundOptionType } from "@/types/background-option";
+import type { SectionPadding } from "@/components/ui/section-container";
 
 const CAROUSEL_SIZES = {
   one: "basis-full",
-  two: "basis-full md:basis-1/2",
-  three: "basis-full md:basis-1/2 lg:basis-1/3",
+  two: "basis-full @content-md/page:basis-1/2",
+  three: "basis-full @content-md/page:basis-1/2 @content-lg/page:basis-1/3",
 } as const;
 
 // Aspect ratios scale predictably with the card width instead of jumping
 // between arbitrary fixed heights (the old values shrank then grew across
 // breakpoints, causing inconsistent cropping). Wider cards get a wider ratio.
 const IMAGE_SIZES = {
-  one: "aspect-video sm:aspect-[2/1]",
+  one: "aspect-video @content-sm/page:aspect-[2/1]",
   two: "aspect-[4/3]",
   three: "aspect-[4/3]",
 } as const;
@@ -42,13 +43,28 @@ const SIZES_ATTR = {
 
 type CarouselSize = keyof typeof CAROUSEL_SIZES;
 
-type Carousel1 = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "carousel-1" }
->;
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
 
-interface Carousel1Props
-  extends Omit<NonNullable<Carousel1>, "_type" | "_key"> {
+interface Carousel1Image {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
+
+interface Carousel1Props {
+  title?: LocalizedText;
+  description?: LocalizedText;
+  background?: unknown;
+  padding?: SectionPadding | null;
+  images?: Carousel1Image[] | null;
   size: CarouselSize | null;
   indicators: "none" | "dots" | "count" | null;
   locale?: string;
@@ -59,15 +75,13 @@ export default function Carousel1({
   description,
   background,
   padding,
-  colorVariant,
   size = "one",
   indicators = "none",
   images,
   locale = "en",
 }: Carousel1Props) {
-  const color = stegaClean(colorVariant);
-  const stegaIndicators = stegaClean(indicators);
-  const stegaSize = stegaClean(size) as CarouselSize;
+  const stegaIndicators = cleanText(indicators);
+  const stegaSize = cleanText(size) as CarouselSize;
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -80,8 +94,8 @@ export default function Carousel1({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer color={color} padding={padding} background={background as any}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer padding={padding} background={background as BackgroundOptionType | null}>
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         <div className="flex flex-col space-y-6">
           {localizedTitle && (
             <div className="text-center">
@@ -89,7 +103,7 @@ export default function Carousel1({
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="mt-3 text-base @content-md/page:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}
@@ -113,7 +127,7 @@ export default function Carousel1({
                   >
                     <Image
                       className="object-cover"
-                      src={urlFor(image).url()}
+                      src={imageUrl(image, { width: 1200, height: 675 })}
                       alt={image.alt || ""}
                       fill
                       placeholder={
@@ -129,11 +143,11 @@ export default function Carousel1({
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"
-            className="-start-3 md:-start-8 xl:-start-12"
+            className="-start-3 @content-md/page:-start-8 @content-xl/page:-start-12"
           />
           <CarouselNext
             variant="secondary"
-            className="-end-3 md:-end-8 xl:-end-12"
+            className="-end-3 @content-md/page:-end-8 @content-xl/page:-end-12"
           />
           {stegaIndicators !== "none" && (
             <div className="w-full flex justify-center">

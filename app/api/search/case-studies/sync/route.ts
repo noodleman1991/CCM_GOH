@@ -1,43 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
-import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord } from '@/lib/algolia'
-import { sanityFetch } from '@/sanity/lib/live'
+import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord, writeIndexName } from '@/lib/algolia'
+import {
+  getApprovedCaseStudyIndexDocs,
+  getCaseStudyIndexDocsByIds,
+  getApprovedCaseStudyCount,
+  type CaseStudyIndexDoc,
+} from '@/lib/content/case-studies'
+import { transformCaseStudyForIndex } from '@/payload/hooks/search-sync'
+import { authorizeSearchSync, refuseUnlessLiveIndexWritesAllowed } from '@/lib/auth/search-sync-gate'
 
-// Sanity query to get approved case studies
-const CASE_STUDIES_QUERY = `*[_type == "caseStudy" && status == "approved"] {
-  _id,
-  title,
-  slug,
-  excerpt,
-  status,
-  featured,
-  publishedAt,
-  _updatedAt,
-  authors[] {
-    name,
-    role,
-    affiliation->{name}
-  },
-  tags[]->{name},
-  studyLocation,
-  studyPeriod,
-  organizations[]->{name},
-  image {
-    asset->{url}
-  }
-}`
+/** Minimal shape of the Sanity case study payload consumed by the transform below. */
+type SanityCaseStudy = CaseStudyIndexDoc
 
 export async function POST(request: NextRequest) {
   try {
-    // Check internal secret auth or Clerk auth
-    const authHeader = request.headers.get('authorization')
-    const internalSecret = process.env.INTERNAL_SYNC_SECRET
-    const { userId } = await auth()
-
-    // Allow if either internal secret matches OR user is authenticated
-    if (authHeader !== `Bearer ${internalSecret}` && !userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Internal bearer or staff actor; 401 anonymous, 403 member. The check this
+    // replaced let any signed-in user re-index and matched `Bearer undefined`
+    // when the secret was unset (hub audit 2026-09-16, H3).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
 
     // Check if Algolia client is available
     if (!algoliaClient) {
@@ -46,33 +27,33 @@ export async function POST(request: NextRequest) {
       }, { status: 503 })
     }
 
+    // Never write to the live index from dev, preview or CI.
+    const refused = refuseUnlessLiveIndexWritesAllowed()
+    if (refused) return refused
+
     const { type = 'full', caseStudyIds = [] } = await request.json()
 
     if (type === 'full') {
       // Full sync - get all approved case studies
-      const result = await sanityFetch({
-        query: CASE_STUDIES_QUERY,
-        tags: ['caseStudy']
-      })
-      const caseStudies = result.data || []
+      const caseStudies = await getApprovedCaseStudyIndexDocs()
 
       console.log(`Starting full sync of ${caseStudies.length} case studies to Algolia`)
 
       // Transform case studies for indexing
       const records: CaseStudySearchRecord[] = caseStudies
-        .map((caseStudy: any) => transformCaseStudyForIndex(caseStudy))
-        .filter(Boolean)
+        .map((caseStudy: SanityCaseStudy) => transformCaseStudyForIndex(caseStudy))
+        .filter((r): r is CaseStudySearchRecord => r !== null)
 
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
-          indexName: ALGOLIA_INDICES.CASE_STUDIES,
-          objects: records as any[]
+          indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
+          objects: records
         })
 
         // Wait for indexing to complete
         if (Array.isArray(response) && response[0]?.taskID) {
-          await algoliaClient.waitForTask({ indexName: ALGOLIA_INDICES.CASE_STUDIES, taskID: response[0].taskID })
+          await algoliaClient.waitForTask({ indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES), taskID: response[0].taskID })
         }
 
         console.log(`✅ Successfully indexed ${records.length} case studies`)
@@ -94,33 +75,7 @@ export async function POST(request: NextRequest) {
 
     } else if (type === 'partial' && caseStudyIds.length > 0) {
       // Partial sync - specific case studies
-      const result = await sanityFetch({
-        query: `*[_type == "caseStudy" && _id in $ids] {
-          _id,
-          title,
-          slug,
-          excerpt,
-          status,
-          featured,
-          publishedAt,
-          _updatedAt,
-          authors[] {
-            name,
-            role,
-            affiliation->{name}
-          },
-          tags[]->{name},
-          studyLocation,
-          studyPeriod,
-          organizations[]->{name},
-          image {
-            asset->{url}
-          }
-        }`,
-        params: { ids: caseStudyIds },
-        tags: ['caseStudy']
-      })
-      const caseStudies = result.data || []
+      const caseStudies = await getCaseStudyIndexDocsByIds(caseStudyIds)
 
       const toIndex: CaseStudySearchRecord[] = []
       const toDelete: string[] = []
@@ -139,15 +94,15 @@ export async function POST(request: NextRequest) {
       // Index approved case studies
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.CASE_STUDIES,
-          objects: toIndex as any[]
+          indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
+          objects: toIndex
         })
       }
 
       // Remove non-approved case studies
       if (toDelete.length > 0) {
         await algoliaClient.deleteObjects({
-          indexName: ALGOLIA_INDICES.CASE_STUDIES,
+          indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
           objectIDs: toDelete
         })
       }
@@ -175,8 +130,13 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint to check sync status
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Same gate as POST: this used to return CMS/index counts to anyone
+    // (hub audit 2026-09-16, H3c).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
+
     // Check if Algolia client is available
     if (!algoliaClient) {
       return NextResponse.json({
@@ -189,18 +149,14 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as any).getStats?.({ indexName: ALGOLIA_INDICES.CASE_STUDIES })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES) })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)
     }
 
     // Get total approved case studies from Sanity
-    const result = await sanityFetch({
-      query: `count(*[_type == "caseStudy" && status == "approved"])`,
-      tags: ['caseStudy']
-    })
-    const approvedCaseStudies = result.data || 0
+    const approvedCaseStudies = await getApprovedCaseStudyCount()
 
     return NextResponse.json({
       indexStats: {
@@ -222,40 +178,3 @@ export async function GET() {
   }
 }
 
-// Helper function to transform case study for Algolia indexing
-function transformCaseStudyForIndex(caseStudy: any): CaseStudySearchRecord | null {
-  try {
-    return {
-      objectID: caseStudy._id,
-      contentId: caseStudy._id,
-      title: caseStudy.title || { en: 'Untitled Case Study' },
-      excerpt: caseStudy.excerpt || {},
-      slug: caseStudy.slug?.current || '',
-      status: caseStudy.status || 'pending',
-      featured: caseStudy.featured || false,
-      publishedAt: caseStudy.publishedAt ? new Date(caseStudy.publishedAt).getTime() : Date.now(),
-      updatedAt: caseStudy._updatedAt ? new Date(caseStudy._updatedAt).getTime() : Date.now(),
-      authors: (caseStudy.authors || []).map((author: any) => ({
-        name: author.name || 'Unknown Author',
-        role: author.role || 'author',
-        affiliation: author.affiliation?.name
-      })),
-      tags: (caseStudy.tags || []).map((tag: any) => tag.name).filter(Boolean),
-      studyLocation: caseStudy.studyLocation ? {
-        lat: caseStudy.studyLocation.lat,
-        lng: caseStudy.studyLocation.lng,
-        name: `${caseStudy.studyLocation.lat}, ${caseStudy.studyLocation.lng}`
-      } : undefined,
-      studyPeriod: caseStudy.studyPeriod ? {
-        startDate: caseStudy.studyPeriod.startDate,
-        endDate: caseStudy.studyPeriod.endDate
-      } : undefined,
-      organizations: (caseStudy.organizations || []).map((org: any) => org.name).filter(Boolean),
-      language: 'en', // Default to English, could be enhanced with language detection
-      accessLevel: 'public' // All approved case studies are public for now
-    }
-  } catch (error) {
-    console.warn(`Failed to transform case study ${caseStudy._id}:`, error)
-    return null
-  }
-}

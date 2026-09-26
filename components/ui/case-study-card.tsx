@@ -1,16 +1,28 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { Users, Building2, Calendar, MapPin, Award } from "lucide-react";
 
+/** Minimal Sanity image projection used by cards (imageUrl-compatible). */
+interface CardImage {
+    asset?: {
+        _id?: string;
+        url?: string;
+        metadata?: { lqip?: string };
+    };
+    alt?: string;
+    hotspot?: unknown;
+    crop?: unknown;
+}
+
 interface CaseStudyCardProps {
     title: Record<string, string> | string;
     subtitle?: Record<string, string> | string;
     excerpt?: Record<string, string> | string;
-    image?: any;
+    image?: CardImage;
     tags?: Array<{
         title: Record<string, string>;
         color?: string;
@@ -42,13 +54,22 @@ export function CaseStudyCard({
   locale,
   variant = "default"
 }: {
-  caseStudy: any;
+  caseStudy: {
+    slug?: { current?: string };
+    title: Record<string, string> | string;
+    excerpt?: Record<string, string> | string;
+    image?: CardImage;
+    tags?: Array<{ label: string; color?: string }>;
+    authors?: Array<{ name: string; role?: string }>;
+    publishedAt?: string;
+    featured?: boolean;
+  };
   locale: string;
   variant?: "default" | "minimal";
 }) {
   if (!caseStudy) return null;
 
-  const href = `/${locale}/case-studies/${caseStudy.slug?.current}`;
+  const href = `/${locale}/research-and-action/case-studies/${caseStudy.slug?.current}`;
 
   if (variant === "minimal") {
     return (
@@ -57,7 +78,7 @@ export function CaseStudyCard({
           {caseStudy.image && (
             <div className="aspect-video bg-muted rounded-md overflow-hidden">
               <Image
-                src={urlFor(caseStudy.image).width(400).height(225).url()}
+                src={imageUrl(caseStudy.image, { width: 400, height: 225 })}
                 alt={caseStudy.image.alt || ""}
                 width={400}
                 height={225}
@@ -66,12 +87,12 @@ export function CaseStudyCard({
             </div>
           )}
           <div>
-            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 dir="auto" className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors" title={getLocalizedValue(caseStudy.title, locale)}>
               {getLocalizedValue(caseStudy.title, locale)}
             </h3>
             {caseStudy.publishedAt && (
               <p className="text-xs text-muted-foreground mt-1">
-                {formatDate(caseStudy.publishedAt)}
+                {formatDate(caseStudy.publishedAt, locale)}
               </p>
             )}
           </div>
@@ -86,7 +107,7 @@ export function CaseStudyCard({
         title={caseStudy.title}
         excerpt={caseStudy.excerpt}
         image={caseStudy.image}
-        tags={caseStudy.tags?.map((tag: any) => ({
+        tags={caseStudy.tags?.map((tag) => ({
           title: { [locale]: tag.label },
           color: tag.color
         }))}
@@ -99,7 +120,8 @@ export function CaseStudyCard({
   );
 }
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from 'next-intl';
 
 export default function CaseStudyCardComponent({
                                           title,
@@ -115,6 +137,8 @@ export default function CaseStudyCardComponent({
                                           featured = false,
                                           locale = 'en',
                                       }: CaseStudyCardProps) {
+  const tCommon = useTranslations('common');
+  const tCS = useTranslations('caseStudy');
     const localizedTitle = getLocalizedValue(title, locale);
     const localizedSubtitle = getLocalizedValue(subtitle, locale);
     const localizedExcerpt = getLocalizedValue(excerpt, locale);
@@ -126,7 +150,7 @@ export default function CaseStudyCardComponent({
     const formatStudyPeriod = () => {
         if (!studyPeriod?.startDate) return null;
         const start = new Date(studyPeriod.startDate).getFullYear();
-        const end = studyPeriod.endDate ? new Date(studyPeriod.endDate).getFullYear() : "Present";
+        const end = studyPeriod.endDate ? new Date(studyPeriod.endDate).getFullYear() : tCommon('present');
         return start === end ? start : `${start} - ${end}`;
     };
 
@@ -141,7 +165,7 @@ export default function CaseStudyCardComponent({
             {image?.asset?._id && (
                 <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden bg-muted">
                     <Image
-                        src={urlFor(image).url()}
+                        src={imageUrl(image, { width: 800 })}
                         alt={localizedImageAlt || localizedTitle || ""}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -150,13 +174,13 @@ export default function CaseStudyCardComponent({
                         blurDataURL={image?.asset?.metadata?.lqip || ""}
                     />
                     {featured && (
-                        <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1.5 rounded-full flex items-center gap-1">
+                        <div className="absolute top-3 end-3 bg-primary text-primary-foreground px-3 py-1.5 rounded-full flex items-center gap-1">
                             <Award className="w-3 h-3" />
-                            <span className="text-xs font-medium">Featured</span>
+                            <span className="text-xs font-medium">{tCommon('featured')}</span>
                         </div>
                     )}
                     {studyPeriod && (
-                        <div className="absolute bottom-3 left-3 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                        <div className="absolute bottom-3 start-3 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
                             <span className="text-xs font-medium">{formatStudyPeriod()}</span>
                         </div>
                     )}
@@ -194,7 +218,7 @@ export default function CaseStudyCardComponent({
 
                 {/* Title */}
                 <div className="mb-3">
-                    <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 dir="auto" className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors" title={localizedTitle}>
                         {localizedTitle}
                     </h3>
                 </div>
@@ -216,8 +240,8 @@ export default function CaseStudyCardComponent({
                             <span>
                 {leadAuthor?.name}
                                 {coAuthorsCount > 0 && (
-                                    <span className="text-xs ml-1">
-                    +{coAuthorsCount} {coAuthorsCount === 1 ? 'author' : 'authors'}
+                                    <span className="text-xs ms-1">
+                    {tCS('coAuthorsCount', { count: coAuthorsCount })}
                   </span>
                                 )}
               </span>
@@ -247,7 +271,7 @@ export default function CaseStudyCardComponent({
                         <div className="flex items-center gap-1 text-muted-foreground">
                             <Calendar className="w-3 h-3" />
                             <time dateTime={publishedAt} className="text-xs">
-                                Published {formatDate(publishedAt)}
+                                {tCS('publishedOn', { date: formatDate(publishedAt, locale) })}
                             </time>
                         </div>
                     )}

@@ -1,0 +1,117 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+const getActorMock = vi.fn<() => Promise<unknown>>();
+const authorizeCollabMock = vi.fn<(...a: unknown[]) => Promise<unknown>>();
+vi.mock("@/lib/authz", () => ({ getActor: () => getActorMock() }));
+vi.mock("@/lib/collaboration/service", () => ({
+  authorizeCollab: (...a: unknown[]) => authorizeCollabMock(...a),
+}));
+
+const db = vi.hoisted(() => {
+  const d: Record<string, Record<string, ReturnType<typeof vi.fn>>> = {
+    collaborationDoc: {
+      count: vi.fn(async () => 0),
+      create: vi.fn(async () => ({ id: "doc1" })),
+      update: vi.fn(async () => ({})),
+      delete: vi.fn(async () => ({})),
+      updateMany: vi.fn(async () => ({ count: 1 })),
+      deleteMany: vi.fn(async () => ({ count: 1 })),
+    },
+  };
+  return d;
+});
+vi.mock("@/lib/prisma", () => ({ prisma: db }));
+
+import { createDoc, renameDoc, updateDocContent, deleteDoc } from "@/lib/actions/docs";
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  getActorMock.mockResolvedValue({ id: "u1", role: "community_member" });
+  authorizeCollabMock.mockResolvedValue({ actorId: "u1", role: "EDITOR" });
+});
+
+describe("createDoc", () => {
+  it("requires sign-in", async () => {
+    getActorMock.mockResolvedValueOnce(null);
+    const res = await createDoc("c1");
+    expect(res.ok).toBe(false);
+    expect(db.collaborationDoc.create).not.toHaveBeenCalled();
+  });
+  it("blocks non-editors", async () => {
+    authorizeCollabMock.mockRejectedValueOnce(new Error("Forbidden"));
+    const res = await createDoc("c1");
+    expect(res.ok).toBe(false);
+  });
+  it("creates with order = current doc count", async () => {
+    db.collaborationDoc.count.mockResolvedValueOnce(2);
+    const res = await createDoc("c1");
+    expect(res.ok).toBe(true);
+    expect(db.collaborationDoc.create.mock.calls[0][0].data.order).toBe(2);
+  });
+  it("requests collab:editDoc", async () => {
+    await createDoc("c1");
+    expect(authorizeCollabMock).toHaveBeenCalledWith("c1", "collab:editDoc");
+  });
+});
+
+describe("renameDoc", () => {
+  it("rejects empty title", async () => {
+    const res = await renameDoc("c1", "doc1", "  ");
+    expect(res.ok).toBe(false);
+  });
+  it("updates a valid title", async () => {
+    const res = await renameDoc("c1", "doc1", "Spec");
+    expect(res.ok).toBe(true);
+    expect(db.collaborationDoc.updateMany).toHaveBeenCalledWith({
+      where: { id: "doc1", collaborationId: "c1" },
+      data: { title: "Spec" },
+    });
+  });
+});
+
+describe("updateDocContent", () => {
+  it("rejects non-array content", async () => {
+    const res = await updateDocContent("c1", "doc1", { not: "an array" });
+    expect(res.ok).toBe(false);
+    expect(db.collaborationDoc.updateMany).not.toHaveBeenCalled();
+  });
+  it("persists Portable Text array", async () => {
+    const pt = [{ _type: "block", children: [{ _type: "span", text: "hi" }] }];
+    const res = await updateDocContent("c1", "doc1", pt);
+    expect(res.ok).toBe(true);
+    expect(db.collaborationDoc.updateMany).toHaveBeenCalledWith({
+      where: { id: "doc1", collaborationId: "c1" },
+      data: { content: pt },
+    });
+  });
+});
+
+describe("deleteDoc", () => {
+  it("deletes when authorized", async () => {
+    const res = await deleteDoc("c1", "doc1");
+    expect(res.ok).toBe(true);
+    expect(db.collaborationDoc.deleteMany).toHaveBeenCalledWith({
+      where: { id: "doc1", collaborationId: "c1" },
+    });
+  });
+});
+
+// Authorizing the caller for a workspace is not enough — the doc must belong to
+// it. A doc id from another workspace matches nothing and is refused.
+describe("cross-workspace scoping", () => {
+  it("refuses to rename a doc that isn't in this workspace", async () => {
+    db.collaborationDoc.updateMany.mockResolvedValueOnce({ count: 0 });
+    const res = await renameDoc("c1", "doc-from-c2", "Hijacked");
+    expect(res.ok).toBe(false);
+  });
+  it("refuses to overwrite content of a doc that isn't in this workspace", async () => {
+    db.collaborationDoc.updateMany.mockResolvedValueOnce({ count: 0 });
+    const res = await updateDocContent("c1", "doc-from-c2", []);
+    expect(res.ok).toBe(false);
+  });
+  it("refuses to delete a doc that isn't in this workspace", async () => {
+    db.collaborationDoc.deleteMany.mockResolvedValueOnce({ count: 0 });
+    const res = await deleteDoc("c1", "doc-from-c2");
+    expect(res.ok).toBe(false);
+  });
+});

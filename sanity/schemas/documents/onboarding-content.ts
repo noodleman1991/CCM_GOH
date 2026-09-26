@@ -5,34 +5,42 @@ export default defineType({
   name: 'onboardingContent',
   title: 'Onboarding Content',
   type: 'document',
+  // Groups ordered to follow the onboarding journey the visitor experiences —
+  // Welcome → the steps → Privacy → Review → the redirect prompt — then the
+  // shared UI labels, and finally internal Settings/metadata.
   groups: [
     {
-      name: 'content',
-      title: 'Content',
-    },
-    {
       name: 'welcome',
-      title: 'Welcome Step',
+      title: '1. Welcome Step',
+      default: true,
     },
     {
       name: 'steps',
-      title: 'Step Descriptions',
+      title: '2. Step Intros',
     },
     {
       name: 'privacy',
-      title: 'Privacy Settings',
+      title: '3. Privacy Step',
     },
     {
       name: 'review',
-      title: 'Review & Submit',
+      title: '4. Review & Submit',
     },
     {
       name: 'redirectDialog',
-      title: 'Redirect Dialog',
+      title: '5. Redirect Prompt',
+    },
+    {
+      name: 'labels',
+      title: 'UI Labels & Messages',
     },
     {
       name: 'settings',
       title: 'Settings',
+    },
+    {
+      name: 'content',
+      title: 'Internal',
     },
   ],
   fields: [
@@ -58,7 +66,9 @@ export default defineType({
     }),
     defineField({
       name: "language",
+      title: "Language",
       type: "string",
+      description: "The locale this onboarding content is written for (set by the translation system).",
       readOnly: true,
       group: "settings",
     }),
@@ -159,7 +169,9 @@ export default defineType({
       group: 'steps',
       fields: [
         { name: 'usernameHint', title: 'Username Hint', type: 'text' },
+        { name: 'headlineHint', title: 'Headline Hint', type: 'text' },
         { name: 'bioHint', title: 'Bio Hint', type: 'text' },
+        { name: 'motivationHint', title: 'Motivation Hint', type: 'text' },
         { name: 'languageHint', title: 'Language Hint', type: 'text' },
       ],
     }),
@@ -402,6 +414,7 @@ export default defineType({
       name: 'navigationTexts',
       title: 'Navigation Button Texts',
       type: 'object',
+      group: 'labels',
       fields: [
         { name: 'continue', title: 'Continue Button', type: 'string', initialValue: 'Continue' },
         { name: 'back', title: 'Back Button', type: 'string', initialValue: 'Back' },
@@ -415,6 +428,7 @@ export default defineType({
       name: 'validationMessages',
       title: 'Form Validation Messages',
       type: 'object',
+      group: 'labels',
       fields: [
         // Basic Info Validations
         {
@@ -484,6 +498,7 @@ export default defineType({
       name: 'fieldLabels',
       title: 'Form Field Labels and Placeholders',
       type: 'object',
+      group: 'labels',
       fields: [
         // Basic Info Labels
         {
@@ -494,8 +509,12 @@ export default defineType({
             { name: 'firstName', title: 'First Name', type: 'string', initialValue: 'First Name' },
             { name: 'lastName', title: 'Last Name', type: 'string', initialValue: 'Last Name' },
             { name: 'username', title: 'Username', type: 'string', initialValue: 'Username' },
+            { name: 'headline', title: 'Headline', type: 'string', initialValue: 'Headline' },
+            { name: 'headlinePlaceholder', title: 'Headline Placeholder', type: 'string', initialValue: 'e.g. Researcher on climate anxiety in youth' },
             { name: 'bio', title: 'Bio', type: 'string', initialValue: 'Bio' },
             { name: 'bioPlaceholder', title: 'Bio Placeholder', type: 'string', initialValue: 'Tell us about yourself...' },
+            { name: 'motivation', title: 'Motivation', type: 'string', initialValue: 'What brought you here?' },
+            { name: 'motivationPlaceholder', title: 'Motivation Placeholder', type: 'string', initialValue: 'What draws you to climate change and mental health…' },
             { name: 'ageGroup', title: 'Age Group', type: 'string', initialValue: 'Age Group' },
             { name: 'selectAge', title: 'Select Age', type: 'string', initialValue: 'Select your age group' },
             { name: 'under18', title: 'Under 18', type: 'string', initialValue: 'Under 18' },
@@ -606,6 +625,7 @@ export default defineType({
       name: 'privacyFieldLabels',
       title: 'Privacy Settings Field Labels',
       type: 'object',
+      group: 'labels',
       fields: [
         { name: 'allowSearch', title: 'Allow Search', type: 'string', initialValue: 'Allow others to find me in search' },
         { name: 'searchHint', title: 'Search Hint', type: 'string', initialValue: 'Other members can discover your profile through search' },
@@ -627,6 +647,7 @@ export default defineType({
       name: 'visibilityLabels',
       title: 'Profile Visibility Labels',
       type: 'object',
+      group: 'labels',
       fields: [
         { name: 'public', title: 'Public', type: 'string', initialValue: 'Public' },
         { name: 'members', title: 'Members Only', type: 'string', initialValue: 'Members Only' },

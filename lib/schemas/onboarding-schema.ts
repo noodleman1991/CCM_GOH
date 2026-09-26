@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { LIMITS } from "@/lib/validation/limits";
 
 // Default validation messages as fallback
 const defaultMessages = {
@@ -9,8 +10,11 @@ const defaultMessages = {
     usernameMax: "Username must be less than 30 characters",
     usernamePattern: "Username can only contain letters, numbers and underscores",
     bio: "Bio must be less than 500 characters",
+    headline: "Keep your headline under 120 characters",
+    motivation: "Keep this under 600 characters",
     country: "Country is required",
-    city: "City is required"
+    city: "City is required",
+    preferredLanguage: "Please choose your preferred language"
   },
   workInfo: {
     workTypes: "Please select at least one work type",
@@ -18,7 +22,8 @@ const defaultMessages = {
     workBio: "Work bio must be less than 1000 characters",
     linkedinUrl: "Please enter a valid LinkedIn URL",
     websiteUrl: "Please enter a valid website URL",
-    socialLinkUrl: "Please enter a valid URL"
+    socialLinkUrl: "Please enter a valid URL",
+    socialLinkPlatform: "Platform name is required"
   },
   recentWork: {
     title: "Title is required",
@@ -30,25 +35,37 @@ const defaultMessages = {
   }
 }
 
+/**
+ * CMS-supplied overrides for the default validation messages: same sections
+ * and keys as `defaultMessages`, but every entry optional.
+ */
+export type OnboardingValidationMessages = {
+  [Section in keyof typeof defaultMessages]?: Partial<
+    Record<keyof (typeof defaultMessages)[Section], string | null | undefined>
+  > | null
+}
+
 // Factory function to create schema with custom validation messages
-export const createOnboardingSchema = (validationMessages?: any) => {
+export const createOnboardingSchema = (validationMessages?: OnboardingValidationMessages | null) => {
   const messages = validationMessages || defaultMessages
 
   return z.object({
     // Basic Info Step (Step 1)
     basicInfo: z.object({
-      firstName: z.string().min(1, messages.basicInfo?.firstName || defaultMessages.basicInfo.firstName).max(50),
-      lastName: z.string().min(1, messages.basicInfo?.lastName || defaultMessages.basicInfo.lastName).max(50),
+      firstName: z.string().min(1, messages.basicInfo?.firstName || defaultMessages.basicInfo.firstName).max(LIMITS.profile.firstName),
+      lastName: z.string().min(1, messages.basicInfo?.lastName || defaultMessages.basicInfo.lastName).max(LIMITS.profile.lastName),
       username: z.string()
         .min(3, messages.basicInfo?.username || defaultMessages.basicInfo.username)
-        .max(30, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
+        .max(LIMITS.profile.username, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
         .regex(/^[a-zA-Z0-9_]+$/, messages.basicInfo?.usernamePattern || defaultMessages.basicInfo.usernamePattern),
-      bio: z.string().max(500, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
+      headline: z.string().max(LIMITS.profile.headline, messages.basicInfo?.headline || defaultMessages.basicInfo.headline).optional(),
+      bio: z.string().max(LIMITS.profile.bio, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
+      motivation: z.string().max(LIMITS.profile.motivation, messages.basicInfo?.motivation || defaultMessages.basicInfo.motivation).optional(),
       ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),
       preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
-        errorMap: () => ({ message: "Please choose your preferred language" })
+        errorMap: () => ({ message: messages.basicInfo?.preferredLanguage || defaultMessages.basicInfo.preferredLanguage })
       })
     }),
 
@@ -59,11 +76,11 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       communityIds: z.array(z.string()).max(10).optional().default([]),
       organization: z.string().optional(),
       position: z.string().optional(),
-      workBio: z.string().max(1000, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
+      workBio: z.string().max(LIMITS.profile.workBio, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
       linkedinProfile: z.string().url(messages.workInfo?.linkedinUrl || defaultMessages.workInfo.linkedinUrl).optional().or(z.literal("")),
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
       otherSocialLinks: z.array(z.object({
-        platform: z.string().min(1, "Platform name is required"),
+        platform: z.string().min(1, messages.workInfo?.socialLinkPlatform || defaultMessages.workInfo.socialLinkPlatform),
         url: z.string().url(messages.workInfo?.socialLinkUrl || defaultMessages.workInfo.socialLinkUrl)
       })).optional().default([])
     }),
@@ -72,10 +89,10 @@ export const createOnboardingSchema = (validationMessages?: any) => {
     recentWork: z.array(z.object({
       title: z.string()
         .min(1, messages.recentWork?.title || defaultMessages.recentWork.title)
-        .max(100, messages.recentWork?.titleMax || defaultMessages.recentWork.titleMax),
+        .max(LIMITS.recentWork.title, messages.recentWork?.titleMax || defaultMessages.recentWork.titleMax),
       description: z.string()
         .min(1, messages.recentWork?.description || defaultMessages.recentWork.description)
-        .max(500, messages.recentWork?.descriptionMax || defaultMessages.recentWork.descriptionMax),
+        .max(LIMITS.recentWork.description, messages.recentWork?.descriptionMax || defaultMessages.recentWork.descriptionMax),
       link: z.string().url(messages.recentWork?.link || defaultMessages.recentWork.link).optional().or(z.literal("")),
       isOngoing: z.boolean(),
       startDate: z.string().min(1, messages.recentWork?.startDate || defaultMessages.recentWork.startDate),
@@ -85,7 +102,7 @@ export const createOnboardingSchema = (validationMessages?: any) => {
     // Privacy Step (Step 4)
     privacy: z.object({
       isSearchable: z.boolean().default(true),
-      profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+      profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("MEMBERS"),
       showEmail: z.boolean().default(false),
       showPhoneNumber: z.boolean().default(false),
       showWorkDetails: z.boolean().default(true),
@@ -116,7 +133,9 @@ export const defaultOnboardingValues: OnboardingFormData = {
     firstName: "",
     lastName: "",
     username: "",
+    headline: "",
     bio: "",
+    motivation: "",
     ageGroup: undefined,
     country: "",
     city: "",
@@ -136,7 +155,7 @@ export const defaultOnboardingValues: OnboardingFormData = {
   recentWork: [],
   privacy: {
     isSearchable: true,
-    profileVisibility: "PUBLIC" as const,
+    profileVisibility: "MEMBERS" as const,
     showEmail: false,
     showPhoneNumber: false,
     showWorkDetails: true,

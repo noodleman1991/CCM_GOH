@@ -61,22 +61,28 @@ export default defineType({
             name: "color",
             title: "Color",
             type: "string",
+            description:
+                "Pick an on-brand colour. All options read clearly on a white card. (Older tags using other colours are automatically mapped to the closest brand colour when displayed.)",
             options: {
                 list: [
-                    { title: "Blue", value: "#3b82f6" },
-                    { title: "Green", value: "#10b981" },
-                    { title: "Red", value: "#ef4444" },
-                    { title: "Yellow", value: "#f59e0b" },
-                    { title: "Purple", value: "#8b5cf6" },
-                    { title: "Pink", value: "#ec4899" },
-                    { title: "Indigo", value: "#6366f1" },
-                    { title: "Gray", value: "#6b7280" },
-                    { title: "Orange", value: "#f97316" },
-                    { title: "Teal", value: "#14b8a6" },
+                    { title: "Sea (primary)", value: "#205596" },
+                    { title: "Water", value: "#2F6FA8" },
+                    { title: "Midnight", value: "#0B3160" },
+                    { title: "Teal", value: "#0F7368" },
+                    { title: "Plum", value: "#6B3FA0" },
+                    { title: "Clay", value: "#A1542B" },
                 ],
                 layout: "radio",
             },
-            initialValue: "#3b82f6",
+            initialValue: "#205596",
+        }),
+        defineField({
+            name: "useAsTheme",
+            title: "Use as Theme",
+            type: "boolean",
+            description:
+                "Show this tag as a Theme filter on the Atlas and other discovery surfaces.",
+            initialValue: false,
         }),
         orderRankField({ type: "tag" }),
     ],
@@ -86,12 +92,14 @@ export default defineType({
             subtitle: "category",
             value: "value.current",
             color: "color",
+            useAsTheme: "useAsTheme",
         },
-        prepare({ title, subtitle, value, color }: {
+        prepare({ title, subtitle, value, color, useAsTheme }: {
             title?: string;
             subtitle?: string;
             value?: string;
             color?: string;
+            useAsTheme?: boolean;
         }) {
             const colorNames: Record<string, string> = {
                 "#3b82f6": "Blue",
@@ -108,7 +116,7 @@ export default defineType({
 
             return {
                 title: `${title || "Untitled Tag"}`,
-                subtitle: `${colorNames[color || "#3b82f6"] || "Blue"} | ${subtitle || "topic"} | ${value || "no-slug"}`,
+                subtitle: `${colorNames[color || "#3b82f6"] || "Blue"} | ${subtitle || "topic"} | ${value || "no-slug"}${useAsTheme ? " | Theme" : ""}`,
                 media: Tag,
             };
         },

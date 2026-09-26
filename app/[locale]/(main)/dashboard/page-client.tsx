@@ -15,12 +15,15 @@ import {
   Users,
   MapPin,
   Calendar,
-  Newspaper,
   ArrowRight,
   Edit,
-  FileText
+  FileText,
+  FolderKanban,
+  MessageSquare
 } from 'lucide-react'
+import { SectionHeader } from '@/components/ui/section-header'
 import type { SupportedLocale } from '@/types/prisma'
+import { imageUrl } from '@/lib/content/images'
 
 interface DashboardUser {
   id: string
@@ -37,6 +40,15 @@ interface RegionalCommunity {
   id: string
   name: string
   slug: string
+  memberCount?: number
+}
+
+interface Contribution {
+  id: string
+  kind: 'caseStudy' | 'content' | 'recentWork'
+  title: string
+  href: string | null
+  date: string | null
 }
 
 interface RecentWork {
@@ -65,19 +77,35 @@ interface NewsItem {
   }
 }
 
+type DashboardAttention = {
+  kind: "task" | "notification"
+  id: string
+  title: string
+  detail: string | null
+  href: string
+}
+
+type ForYouRow = { id: string; type: string; title: string; href: string; match: "region" | "theme" }
+
 interface DashboardClientProps {
+  attention?: DashboardAttention[]
+  forYou?: ForYouRow[]
   user: DashboardUser
   regionalCommunity: RegionalCommunity | null
   recentWork: RecentWork[]
   recentNews: NewsItem[]
+  contributions?: Contribution[]
   locale: SupportedLocale
 }
 
 export function DashboardClient({
+  attention = [],
+  forYou = [],
   user,
   regionalCommunity,
   recentWork,
   recentNews,
+  contributions = [],
   locale
 }: DashboardClientProps) {
   const t = useTranslations('dashboard')
@@ -118,7 +146,7 @@ export function DashboardClient({
             </div>
             <Button asChild size="lg">
               <Link href={`/dashboard/profile/edit`}>
-                <Edit className={cn("w-4 h-4", rtl ? "ml-2" : "mr-2")} />
+                <Edit className={"w-4 h-4 me-2"} />
                 {t('editProfile')}
               </Link>
             </Button>
@@ -139,20 +167,111 @@ export function DashboardClient({
         </div>
       </section>
 
+      {/* Your Community — full-width band directly under the header (most
+          personal, engagement-driving element; near the top on mobile too) */}
+      {regionalCommunity && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+          <Card>
+            <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-[var(--color-ccm-sea)]" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-ccm-sea">{t('yourCommunity')}</p>
+                  <p className="font-heading font-semibold text-ccm-midnight truncate">
+                    <bdi>{regionalCommunity.name}</bdi>
+                  </p>
+                  {regionalCommunity.memberCount ? (
+                    <p className="text-sm text-muted-foreground">
+                      {t('memberCount', { count: regionalCommunity.memberCount })}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              <Button asChild className="w-full sm:w-auto flex-shrink-0">
+                <Link href={`/communities/${regionalCommunity.slug}`} className="flex items-center justify-center gap-2">
+                  <span>{t('visitCommunity')}</span>
+                  <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
       {/* Main Dashboard Content */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Actions */}
           <div className="lg:col-span-2 space-y-8">
+            {/* X4 "What needs me" — tasks + unread project activity, one glance */}
+            {attention.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">{t('attentionTitle')}</h2>
+                <div className="space-y-2">
+                  {attention.map((a) => {
+                    // Notification details arrive as raw enum values (e.g.
+                    // TASK_ASSIGNED) — show them in user words via i18n keys.
+                    const detail =
+                      a.kind === "notification" && a.detail
+                        ? t.has(`notificationTypes.${a.detail}`)
+                          ? t(`notificationTypes.${a.detail}`)
+                          : null
+                        : a.detail
+                    return (
+                    <Link
+                      key={`${a.kind}-${a.id}`}
+                      href={a.href}
+                      className="flex items-start gap-2.5 rounded-xl border border-border bg-card p-3 text-sm transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:shadow-sm"
+                    >
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "mt-1.5 size-2 flex-none rounded-full",
+                          a.kind === "task" ? "bg-[var(--color-ccm-water)]" : "bg-[var(--color-ccm-sea)]"
+                        )}
+                      />
+                      <span className="min-w-0 flex-1 text-foreground">
+                        <bdi>{a.title}</bdi>
+                        {detail && <span className="ms-2 text-xs text-muted-foreground"><bdi>{detail}</bdi></span>}
+                      </span>
+                      <span className="flex-none text-xs font-bold text-[var(--color-ccm-sea)]">{t('attentionOpen')}</span>
+                    </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* X5 "For you" — content matching the regions/themes you follow */}
+            {forYou.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">{t('forYouTitle')}</h2>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {forYou.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      className="rounded-xl border border-border bg-card p-3 text-sm transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:shadow-sm"
+                    >
+                      <span className="block truncate font-medium text-foreground"><bdi>{item.title}</bdi></span>
+                      <span className="text-xs text-muted-foreground">{t(item.match === 'region' ? 'forYouRegion' : 'forYouTheme')}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Quick Actions */}
             <div>
               <h2 className="text-2xl font-bold mb-6">{t('quickActions')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-blue-500/10 flex-shrink-0">
-                        <User className="w-6 h-6 text-blue-500" />
+                    <div className={cn("flex items-center gap-3")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
+                        <User className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
                       <CardTitle>{t('manageProfile')}</CardTitle>
                     </div>
@@ -162,9 +281,9 @@ export function DashboardClient({
                       {t('manageProfileDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/dashboard/profile/edit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
-                        <span>{t('viewProfile')}</span>
-                        <ArrowRight className="w-4 h-4" />
+                      <Link href={user.username ? `/profiles/${user.username}` : `/dashboard/profile/edit`} className="flex items-center justify-center gap-2">
+                        <span>{t('viewPublicProfile')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -172,9 +291,9 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-green-500/10 flex-shrink-0">
-                        <Upload className="w-6 h-6 text-green-500" />
+                    <div className={cn("flex items-center gap-3")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-water)]/10 flex-shrink-0">
+                        <Upload className="w-6 h-6 text-[var(--color-ccm-water)]" />
                       </div>
                       <CardTitle>{t('submitCaseStudy')}</CardTitle>
                     </div>
@@ -184,9 +303,9 @@ export function DashboardClient({
                       {t('submitCaseStudyDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/research-and-action/case-studies/submit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
-                        <span>{t('submit')}</span>
-                        <ArrowRight className="w-4 h-4" />
+                      <Link href={`/research-and-action/case-studies/submit`} className="flex items-center justify-center gap-2">
+                        <span>{t('submitCaseStudyAction')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -194,9 +313,9 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-purple-500/10 flex-shrink-0">
-                        <Users className="w-6 h-6 text-purple-500" />
+                    <div className={cn("flex items-center gap-3")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-sky)]/25 flex-shrink-0">
+                        <Users className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
                       <CardTitle>{t('collaborate')}</CardTitle>
                     </div>
@@ -206,7 +325,7 @@ export function DashboardClient({
                       {t('collaborateDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/collaborate`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/collaborate`} className={cn("flex items-center justify-center gap-2")}>
                         <span>{t('findCollaborators')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -216,9 +335,9 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-orange-500/10 flex-shrink-0">
-                        <Settings className="w-6 h-6 text-orange-500" />
+                    <div className={cn("flex items-center gap-3")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-midnight)]/10 flex-shrink-0">
+                        <Settings className="w-6 h-6 text-[var(--color-ccm-midnight)]" />
                       </div>
                       <CardTitle>{t('accountSettings')}</CardTitle>
                     </div>
@@ -228,9 +347,53 @@ export function DashboardClient({
                       {t('accountSettingsDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/dashboard/account`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/dashboard/account`} className={cn("flex items-center justify-center gap-2")}>
                         <span>{t('manageAccount')}</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
+                  <CardHeader>
+                    <div className={cn("flex items-center gap-3")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
+                        <FolderKanban className="w-6 h-6 text-[var(--color-ccm-sea)]" />
+                      </div>
+                      <CardTitle>{t('workspaces')}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
+                      {t('workspacesDescription')}
+                    </CardDescription>
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/collaborations`} className="flex items-center justify-center gap-2">
+                        <span>{t('openWorkspaces')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
+                  <CardHeader>
+                    <div className={cn("flex items-center gap-3")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-water)]/10 flex-shrink-0">
+                        <MessageSquare className="w-6 h-6 text-[var(--color-ccm-water)]" />
+                      </div>
+                      <CardTitle>{t('messages')}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
+                      {t('messagesDescription')}
+                    </CardDescription>
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/messages`} className="flex items-center justify-center gap-2">
+                        <span>{t('openMessages')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -241,22 +404,19 @@ export function DashboardClient({
             {/* Recent Work */}
             {recentWork.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold">{t('recentWork')}</h2>
-                  <Button asChild variant="ghost" size="sm">
-                    <Link href={`/dashboard/profile/edit/work`}>
-                      {t('viewAll')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
-                    </Link>
-                  </Button>
+                <div className="mb-6">
+                  <SectionHeader
+                    title={t('recentWork')}
+                    action={{ label: t('viewAll'), href: '/dashboard/profile/edit?tab=recentWork' }}
+                  />
                 </div>
                 <div className="space-y-4">
                   {recentWork.map((work) => (
                     <Card key={work.id}>
                       <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <CardTitle className="text-lg">{work.title}</CardTitle>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <CardTitle className="break-words text-lg">{work.title}</CardTitle>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                               <Calendar className="w-4 h-4" />
                               <span>
@@ -266,7 +426,7 @@ export function DashboardClient({
                             </div>
                           </div>
                           {work.isOngoing && (
-                            <span className="px-2 py-1 text-xs bg-green-500/10 text-green-700 dark:text-green-400 rounded-full">
+                            <span className="px-2 py-1 text-xs bg-[var(--color-ccm-sky)]/25 text-[var(--color-ccm-sea)] rounded-full">
                               {t('ongoing')}
                             </span>
                           )}
@@ -286,43 +446,50 @@ export function DashboardClient({
             )}
           </div>
 
-          {/* Right Column - Community & News */}
+          {/* Right Column - News & contributions */}
           <div className="space-y-8">
-            {/* Regional Community */}
-            {regionalCommunity && (
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-blue-500/10">
-                      <MapPin className="w-6 h-6 text-blue-500" />
-                    </div>
-                    <div>
-                      <CardTitle>{t('yourCommunity')}</CardTitle>
-                      <CardDescription className="mt-1">
-                        {regionalCommunity.name}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild className="w-full">
-                    <Link href={`/communities/${regionalCommunity.slug}`}>
-                      {t('visitCommunity')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+            {/* Recent submissions — the user's own contributions */}
+            {contributions.length > 0 && (
+              <div>
+                <div className="mb-4">
+                  <SectionHeader title={t('recentSubmissions')} />
+                </div>
+                <Card>
+                  <CardContent className="p-0 divide-y">
+                    {contributions.map((c) => {
+                      const inner = (
+                        <div className="flex items-start gap-3 p-4">
+                          <div className="p-2 rounded-md bg-[var(--color-ccm-sky)]/25 shrink-0">
+                            <FileText className="w-4 h-4 text-[var(--color-ccm-sea)]" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium line-clamp-2">{c.title}</p>
+                            {c.date && (
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {new Date(c.date).toLocaleDateString(locale)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )
+                      return c.href ? (
+                        <Link key={c.id} href={c.href} className="block hover:bg-muted/50 transition-colors">
+                          {inner}
+                        </Link>
+                      ) : (
+                        <div key={c.id}>{inner}</div>
+                      )
+                    })}
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Recent Community News */}
             {recentNews && recentNews.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <Newspaper className="w-5 h-5" />
-                    {t('recentNews')}
-                  </h2>
+                <div className="mb-4">
+                  <SectionHeader title={t('recentNews')} />
                 </div>
                 <div className="space-y-4">
                   {recentNews.map((news) => (
@@ -331,7 +498,7 @@ export function DashboardClient({
                         {news.image?.asset?.url && (
                           <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
                             <Image
-                              src={news.image.asset.url}
+                              src={imageUrl(news.image, { width: 800 })}
                               alt={news.image.alt || news.title}
                               fill
                               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -365,7 +532,6 @@ export function DashboardClient({
                   <Button asChild variant="outline" className="w-full mt-4">
                     <Link href={`/communities/${regionalCommunity.slug}`}>
                       {t('viewAllNews')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                     </Link>
                   </Button>
                 )}
@@ -374,7 +540,7 @@ export function DashboardClient({
 
             {/* Join Community CTA */}
             {!regionalCommunity && (
-              <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-200 dark:border-blue-800">
+              <Card className="bg-gradient-to-br from-[var(--color-ccm-sky)]/20 to-[var(--color-ccm-water)]/10 border-[var(--color-ccm-sky)]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="w-5 h-5" />
@@ -388,7 +554,7 @@ export function DashboardClient({
                   <Button asChild className="w-full">
                     <Link href={`/communities`}>
                       {t('exploreCommunities')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
+                      <ArrowRight className={"w-4 h-4 ms-2"} />
                     </Link>
                   </Button>
                 </CardContent>

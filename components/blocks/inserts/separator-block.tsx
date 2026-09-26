@@ -35,7 +35,7 @@ export function SeparatorBlock({
 
   return (
     <div className={cn("w-full", spacingClass)}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
         {style === "line" && (
           <hr className={cn("border-t", colorClass)} />
         )}
