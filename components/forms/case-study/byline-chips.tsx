@@ -14,6 +14,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { LIMITS } from '@/lib/validation/limits';
+import { FieldError } from '@/components/forms/errors/field-error';
+import { fieldId } from '@/components/forms/errors/field-id';
 
 export type AuthorRole = 'lead' | 'coauthor' | 'contributor' | 'advisor';
 
@@ -39,36 +42,44 @@ interface BylineChipsProps {
     onAdd: () => void;
     onUpdate: (index: number, field: 'name' | 'email' | 'role', value: string) => void;
     onRemove: (index: number) => void;
-    error?: string;
+    /** Messages keyed by form path: `authors`, `authors.N.name`, `authors.N.email`. */
+    errors?: Record<string, string>;
+    onLeave?: (path: string) => void;
+    describedBy?: (path: string) => { 'aria-invalid'?: true; 'aria-describedby'?: string };
 }
 
+const noAttrs = () => ({});
+
 /**
- * Task E3 — byline row. Renders the submission's author list as editorial
- * chips; tapping a chip opens an inline editor for that author. Same author
- * data shape as before (name/email/role), just a chip presentation.
+ * "Who wrote this?" — the authors as chips; tapping one opens its editor.
+ * An author with a problem always has its editor open, with the message under
+ * the field it belongs to.
  */
-export function BylineChips({ authors, onAdd, onUpdate, onRemove, error }: BylineChipsProps) {
+export function BylineChips({ authors, onAdd, onUpdate, onRemove, errors = {}, onLeave, describedBy = noAttrs }: BylineChipsProps) {
     const t = useTranslations('caseStudySubmission.byline');
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const open = openIndex !== null && openIndex < authors.length ? openIndex : null;
+    const hasError = (i: number) => Boolean(errors[`authors.${i}.name`] || errors[`authors.${i}.email`]);
+    const panels = authors.map((_, i) => i).filter((i) => i === open || hasError(i));
 
     return (
         <div>
-            <p className="font-heading text-sm font-semibold text-ccm-midnight">{t('label')}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 {authors.map((author, index) => {
-                    const isOpen = open === index;
+                    const isOpen = panels.includes(index);
                     return (
                         <button
                             key={index}
                             type="button"
                             aria-expanded={isOpen}
-                            onClick={() => setOpenIndex(isOpen ? null : index)}
+                            onClick={() => setOpenIndex(open === index ? null : index)}
                             className={cn(
                                 'flex min-h-11 items-center gap-2 rounded-full border py-1.5 ps-1.5 pe-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ccm-water',
-                                isOpen
-                                    ? 'border-ccm-water bg-ccm-water/5'
-                                    : 'border-border hover:border-ccm-water/50'
+                                hasError(index)
+                                    ? 'border-destructive/60'
+                                    : isOpen
+                                      ? 'border-ccm-water bg-ccm-water/5'
+                                      : 'border-border hover:border-ccm-water/50'
                             )}
                         >
                             <span
@@ -89,12 +100,14 @@ export function BylineChips({ authors, onAdd, onUpdate, onRemove, error }: Bylin
                     );
                 })}
                 <button
+                    id={fieldId('authors')}
                     type="button"
                     onClick={() => {
                         onAdd();
                         // The new author is appended, so it lands at the current length.
                         setOpenIndex(authors.length);
                     }}
+                    {...describedBy('authors')}
                     className="flex min-h-11 items-center gap-2 rounded-full border border-dashed border-border px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:border-ccm-water/60 hover:text-ccm-sea focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ccm-water"
                 >
                     <Plus className="h-4 w-4" aria-hidden="true" />
@@ -102,74 +115,86 @@ export function BylineChips({ authors, onAdd, onUpdate, onRemove, error }: Bylin
                 </button>
             </div>
 
-            {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
+            <FieldError path="authors" message={errors.authors} />
 
-            {open !== null && (
-                <div className="mt-3 rounded-xl border bg-muted/20 p-4">
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                            <Label htmlFor={`byline-name-${open}`}>{t('nameLabel')}</Label>
-                            <Input
-                                id={`byline-name-${open}`}
-                                value={authors[open].name}
-                                onChange={(e) => onUpdate(open, 'name', e.target.value)}
-                                placeholder={t('namePlaceholder')}
-                                className="mt-2"
-                            />
+            {panels.map((i) => {
+                const namePath = `authors.${i}.name`;
+                const emailPath = `authors.${i}.email`;
+                return (
+                    <div key={i} className="mt-3 rounded-xl border bg-muted/20 p-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <Label htmlFor={fieldId(namePath)}>{t('nameLabel')}</Label>
+                                <Input
+                                    id={fieldId(namePath)}
+                                    value={authors[i].name}
+                                    onChange={(e) => onUpdate(i, 'name', e.target.value)}
+                                    onBlur={() => onLeave?.(namePath)}
+                                    {...describedBy(namePath)}
+                                    placeholder={t('namePlaceholder')}
+                                    className="mt-2 min-h-11"
+                                    maxLength={LIMITS.caseStudy.authorName}
+                                />
+                                <FieldError path={namePath} message={errors[namePath]} />
+                            </div>
+                            <div>
+                                <Label htmlFor={fieldId(emailPath)}>{t('emailLabel')}</Label>
+                                <Input
+                                    id={fieldId(emailPath)}
+                                    type="email"
+                                    dir="ltr"
+                                    value={authors[i].email || ''}
+                                    onChange={(e) => onUpdate(i, 'email', e.target.value)}
+                                    onBlur={() => onLeave?.(emailPath)}
+                                    {...describedBy(emailPath)}
+                                    placeholder="email@example.com"
+                                    className="mt-2 min-h-11"
+                                />
+                                <FieldError path={emailPath} message={errors[emailPath]} />
+                            </div>
+                            <div className="sm:col-span-2">
+                                <Label>{t('roleLabel')}</Label>
+                                <Select
+                                    value={authors[i].role}
+                                    onValueChange={(value) => onUpdate(i, 'role', value)}
+                                >
+                                    <SelectTrigger className="mt-2 min-h-11">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {ROLES.map((role) => (
+                                            <SelectItem key={role} value={role}>
+                                                {t(`roles.${role}`)}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        <div>
-                            <Label htmlFor={`byline-email-${open}`}>{t('emailLabel')}</Label>
-                            <Input
-                                id={`byline-email-${open}`}
-                                type="email"
-                                value={authors[open].email || ''}
-                                onChange={(e) => onUpdate(open, 'email', e.target.value)}
-                                placeholder="email@example.com"
-                                className="mt-2"
-                            />
-                        </div>
-                        <div className="sm:col-span-2">
-                            <Label>{t('roleLabel')}</Label>
-                            <Select
-                                value={authors[open].role}
-                                onValueChange={(value) => onUpdate(open, 'role', value)}
-                            >
-                                <SelectTrigger className="mt-2">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {ROLES.map((role) => (
-                                        <SelectItem key={role} value={role}>
-                                            {t(`roles.${role}`)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between gap-2">
-                        {authors.length > 1 ? (
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                    onRemove(open);
-                                    setOpenIndex(null);
-                                }}
-                            >
-                                <X className="me-2 h-4 w-4" />
-                                {t('removeAuthor')}
+                        <div className="mt-4 flex items-center justify-between gap-2">
+                            {authors.length > 1 ? (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    className="min-h-11"
+                                    onClick={() => {
+                                        onRemove(i);
+                                        setOpenIndex(null);
+                                    }}
+                                >
+                                    <X className="me-2 h-4 w-4" />
+                                    {t('removeAuthor')}
+                                </Button>
+                            ) : (
+                                <span />
+                            )}
+                            <Button type="button" variant="outline" className="min-h-11" onClick={() => setOpenIndex(null)}>
+                                {t('done')}
                             </Button>
-                        ) : (
-                            <span />
-                        )}
-                        <Button type="button" variant="outline" size="sm" onClick={() => setOpenIndex(null)}>
-                            {t('done')}
-                        </Button>
+                        </div>
                     </div>
-                </div>
-            )}
+                );
+            })}
         </div>
     );
 }

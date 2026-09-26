@@ -33,6 +33,7 @@ interface CaseStudyReviewProps {
         label: Record<string, string>
         value: { current: string }
     }>
+    regionalCommunities?: Array<{ _id: string; name: Record<string, string> }>
     userId: string
 }
 
@@ -43,7 +44,7 @@ const languages = [
     { code: 'ar', label: 'العربية' },
 ] as const
 
-export default function CaseStudyReview({ availableTags, userId }: CaseStudyReviewProps) {
+export default function CaseStudyReview({ availableTags, regionalCommunities = [], userId }: CaseStudyReviewProps) {
     const t = useTranslations('caseStudyForm')
     const locale = useLocale()
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -55,6 +56,13 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
         getValidationErrors,
         isFormValid
     } = useCaseStudyStore()
+
+    // The place by name (a named study area, else the community), never coordinates.
+    const community = regionalCommunities.find((c) => c._id === formData.relatedCommunity)
+    const placeName =
+        formData.studyAreas?.find((area) => area.name?.trim())?.name ||
+        (community ? community.name?.[locale] || community.name?.en : '') ||
+        ''
 
     const validationErrors = getValidationErrors()
     const canSubmit = isFormValid()
@@ -327,11 +335,11 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             </div>
                         )}
 
-                        {formData.studyLocation && (
+                        {placeName && (
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                    {t('review.location', { coords: `${formData.studyLocation.lat?.toFixed(4)}, ${formData.studyLocation.lng?.toFixed(4)}` })}
+                                <span className="text-sm" dir="auto">
+                                    {t('review.location', { location: placeName })}
                                 </span>
                             </div>
                         )}

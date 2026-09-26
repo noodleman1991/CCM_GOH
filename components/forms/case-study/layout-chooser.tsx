@@ -16,22 +16,24 @@ const OPTIONS: Array<{ value: CaseStudyLayout; icon: React.ElementType }> = [
 interface LayoutChooserProps {
     value: CaseStudyLayout;
     onChange: (value: CaseStudyLayout) => void;
+    /** Id of a heading that already names the chooser; its own label is then left out. */
+    labelledBy?: string;
 }
 
 /**
  * Task E3 — layout chooser (parent spec §8a/C1). Three cards writing the
  * caseStudy `layout` field: same content, different detail-page arrangement.
  */
-export function LayoutChooser({ value, onChange }: LayoutChooserProps) {
+export function LayoutChooser({ value, onChange, labelledBy }: LayoutChooserProps) {
     const t = useTranslations('caseStudySubmission.layoutChooser');
 
     return (
         <div>
-            <p className="font-heading text-sm font-semibold text-ccm-midnight">{t('label')}</p>
+            {!labelledBy && <p className="font-heading text-sm font-semibold text-ccm-midnight">{t('label')}</p>}
             <p className="mt-1 text-sm text-muted-foreground">{t('hint')}</p>
             <div
                 role="radiogroup"
-                aria-label={t('label')}
+                {...(labelledBy ? { 'aria-labelledby': labelledBy } : { 'aria-label': t('label') })}
                 className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3"
             >
                 {OPTIONS.map(({ value: option, icon: Icon }) => {

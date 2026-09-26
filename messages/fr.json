@@ -1064,20 +1064,12 @@
         "caption": "Une synthèse de recherche structurée avec des résultats"
       }
     },
-    "languages": {
-      "switcherLabel": "Langue du contenu",
-      "hint": "L'anglais est obligatoire ; les traductions aident davantage de lecteurs à découvrir votre travail."
-    },
     "canvas": {
-      "titleLabel": "Titre de l'étude de cas",
       "titlePlaceholder": "Donnez un titre à votre étude de cas…",
-      "excerptLabel": "Résumé",
       "excerptPlaceholder": "Rédigez un bref résumé : ce qui s'est passé, où et pourquoi c'est important…",
-      "excerptHint": "Au moins 100 caractères en anglais",
       "bodyPlaceholder": "Racontez l'histoire — tapez / pour insérer des blocs…"
     },
     "byline": {
-      "label": "Signature",
       "addAuthor": "Ajouter un auteur",
       "removeAuthor": "Supprimer l'auteur",
       "unnamed": "Nouvel auteur",
@@ -1086,7 +1078,6 @@
       "emailLabel": "E-mail (facultatif)",
       "roleLabel": "Rôle dans l'étude",
       "done": "Terminé",
-      "organizationLabel": "Organisation (facultatif)",
       "organizationPlaceholder": "Nom de l'organisation ou de l'institution",
       "roles": {
         "lead": "Auteur principal",
@@ -1100,69 +1091,17 @@
       "formats": "JPEG, PNG ou WebP, jusqu'à 5 Mo",
       "replace": "Remplacer l'image",
       "remove": "Supprimer l'image",
-      "previewAlt": "Aperçu de l'image de couverture"
-    },
-    "details": {
-      "heading": "Détails de l'histoire",
-      "description": "Aidez les lecteurs et les relecteurs à situer votre travail : où, quand et sur quoi il porte.",
-      "topicLabel": "Thème",
-      "topicPlaceholder": "Sélectionnez le thème principal",
-      "communityLabel": "Communauté régionale (facultatif)",
-      "communityPlaceholder": "Sélectionnez une communauté",
-      "clearCommunity": "Effacer la sélection",
-      "tagsLabel": "Mots-clés",
-      "tagsHint": "Choisissez les mots-clés qui décrivent le mieux votre travail pour aider les autres à le découvrir",
-      "countryLabel": "Pays",
-      "countryPlaceholder": "Où ce travail a-t-il été mené ?",
-      "cityLabel": "Ville / région",
-      "cityPlaceholder": "Lieu précis",
-      "findOnMap": "Situer sur la carte",
-      "searching": "Recherche…",
-      "coordsFound": "Coordonnées du lieu",
-      "periodStartLabel": "Date de début de l'étude",
-      "periodEndLabel": "Date de fin de l'étude",
-      "periodEndHint": "Laissez vide si l'étude est en cours"
+      "previewAlt": "Aperçu de l'image de couverture",
+      "uploading": "Envoi de votre image…"
     },
     "bar": {
-      "saving": "Enregistrement du brouillon…",
-      "saved": "Brouillon enregistré",
-      "savedAt": "Brouillon enregistré à {time}",
-      "notSaved": "Les modifications sont enregistrées automatiquement en brouillon",
-      "saveError": "Impossible d'enregistrer le brouillon — nouvel essai à votre prochaine modification",
       "saveDraft": "Enregistrer le brouillon",
       "preview": "Aperçu",
       "submit": "Soumettre pour relecture",
-      "incomplete": "Renseignez les champs obligatoires pour soumettre"
-    },
-    "validation": {
-      "titleMin": "Veuillez fournir un titre clair en anglais",
-      "excerptMin": "Veuillez fournir une brève description (au moins 100 caractères)",
-      "contentRequired": "Veuillez fournir un contenu détaillé pour votre étude de cas",
-      "topicRequired": "Veuillez sélectionner un sujet",
-      "authorNameMin": "Veuillez saisir le nom complet de l'auteur",
-      "authorEmailInvalid": "Veuillez saisir une adresse e-mail valide",
-      "authorsMin": "Au moins un auteur est requis",
-      "tagsMin": "Veuillez sélectionner au moins un sujet pertinent",
-      "titleMax": "Le titre doit faire moins de {max} caractères",
-      "excerptMax": "Le résumé doit faire moins de {max} caractères",
-      "authorNameMax": "Le nom de l'auteur·ice doit faire moins de {max} caractères",
-      "organizationMax": "Le nom de l'organisation doit faire moins de {max} caractères"
+      "submitting": "Envoi…"
     },
     "toasts": {
-      "draftRestored": "Votre brouillon enregistré a été restauré",
-      "previousDraftRestored": "Votre brouillon précédent a été restauré",
-      "imageInvalidType": "Veuillez téléverser une image JPEG, PNG ou WebP",
-      "imageTooLarge": "L'image doit faire moins de 5 Mo",
-      "fixErrors": "Veuillez corriger les erreurs avant d'envoyer",
-      "fixBeforeReview": "Veuillez corriger les points signalés avant de vérifier",
-      "submitFailed": "L'envoi a échoué",
-      "submitErrorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
-      "submitted": "Merci ! Votre étude de cas a été envoyée pour relecture.",
-      "draftSaved": "Brouillon enregistré",
-      "draftSaveFailed": "Impossible d'enregistrer le brouillon",
-      "searchingLocation": "Recherche du lieu…",
-      "locationFound": "Lieu trouvé ! ({lat}, {lng})",
-      "locationNotFound": "Impossible de trouver le lieu"
+      "draftRestored": "Votre brouillon enregistré a été restauré"
     },
     "successScreen": {
       "heading": "Merci pour votre contribution !",
@@ -1177,7 +1116,6 @@
       "goBack": "Revenir à l'édition",
       "basicInfo": "Informations de base",
       "titleLabel": "Titre",
-      "topicLabel": "Sujet",
       "descriptionLabel": "Description",
       "authorsHeading": "Auteurs ({count})",
       "tagsCommunity": "Étiquettes et communauté",
@@ -1186,16 +1124,9 @@
       "location": "Lieu : {location}",
       "period": "Période : {start} – {end}",
       "ongoing": "En cours",
-      "featuredImage": "Image à la une",
-      "fileSize": "({size} Ko)",
       "confirmSubmit": "Confirmer et envoyer"
     },
-    "submittingScreen": {
-      "heading": "Envoi de votre étude de cas",
-      "body": "Veuillez patienter pendant que nous traitons votre envoi…"
-    },
     "tags": {
-      "heading": "Étiquettes",
       "hint": "Choisissez au moins un thème. Le premier choisi sera le thème principal.",
       "search": "Rechercher des étiquettes…",
       "noMatch": "Aucune étiquette ne correspond. Suggérez-en une ci-dessous.",
@@ -1208,6 +1139,51 @@
       },
       "main": "Thème principal",
       "remove": "Retirer {tag}"
+    },
+    "sections": {
+      "writingIn": "J'écris en",
+      "story": "Votre récit",
+      "people": "Qui l'a écrit ?",
+      "where": "Où et quand",
+      "tags": "Étiquettes",
+      "presentation": "Quelle présentation ?"
+    },
+    "fields": {
+      "title": "Titre",
+      "summary": "Résumé",
+      "summaryHint": "Une ou deux phrases sur ce qui s'est passé ({min} caractères ou plus)",
+      "englishTitle": "Titre en anglais",
+      "englishSummary": "Résumé d'une ligne en anglais",
+      "englishHint": "Pour que le site anglais et la recherche puissent afficher votre étude de cas.",
+      "translations": "Ajouter des traductions (facultatif)",
+      "translationTitle": "Titre en {language}",
+      "translationSummary": "Résumé en {language}",
+      "dates": "Quand cela s'est-il passé ?",
+      "start": "Début",
+      "end": "Fin (laissez vide si c'est en cours)",
+      "organisation": "Organisation (facultatif)",
+      "community": "Communauté régionale (facultatif si vous ajoutez un lieu)",
+      "communityNone": "Aucune communauté"
+    },
+    "whatsLeft": {
+      "title": "Ajoutez un titre",
+      "summary": "Écrivez un court résumé (au moins {min} caractères)",
+      "story": "Écrivez votre récit",
+      "englishTitle": "Ajoutez un titre en anglais",
+      "englishSummary": "Ajoutez un résumé d'une ligne en anglais",
+      "authors": "Indiquez qui l'a écrit",
+      "theme": "Choisissez au moins un thème",
+      "where": "Indiquez où cela s'est passé",
+      "pin": "Ajoutez un lieu précis pour qu'il apparaisse comme repère sur la carte ; sans lui, il ne figure que sur la page de la communauté"
+    },
+    "draft": {
+      "saving": "Enregistrement…",
+      "savedAt": "Enregistré · {time}",
+      "error": "Impossible d'enregistrer : nous réessayons. Votre texte est en sécurité sur cet appareil.",
+      "restorePrompt": "Récupérer vos modifications non enregistrées de {time} ?",
+      "restore": "Récupérer",
+      "discard": "Ignorer",
+      "idle": "Votre travail s'enregistre au fur et à mesure"
     }
   },
   "caseStudy": {
@@ -1358,7 +1334,7 @@
       "noContent": "Aucun contenu fourni. Veuillez ajouter un contenu détaillé pour votre étude de cas.",
       "authorsHeading": "Auteurs ({count})",
       "studyDetails": "Détails de l'étude",
-      "location": "Lieu : {coords}",
+      "location": "Lieu : {location}",
       "ongoing": "En cours",
       "tagsCount": "Étiquettes ({count})",
       "featuredImage": "Image à la une",

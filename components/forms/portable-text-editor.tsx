@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -53,6 +53,12 @@ interface PortableTextEditorProps {
      * canvas — floating pill toolbar, borderless body, quiet footer.
      */
     variant?: 'default' | 'canvas';
+    /** Id of the editable area, so a label, an error link or "focus the first problem" can reach it. */
+    id?: string;
+    /** Id of the visible label naming the editable area. */
+    labelledBy?: string;
+    /** `aria-invalid` / `aria-describedby` for the editable area, from the form's error system. */
+    describedBy?: { 'aria-invalid'?: true; 'aria-describedby'?: string };
 }
 
 export default function PortableTextEditor({
@@ -63,7 +69,10 @@ export default function PortableTextEditor({
     maxLength = 20000,
     enabledBlocks = DEFAULT_SLASH_MENU_ITEMS,
     collaborationId,
-    variant = 'default'
+    variant = 'default',
+    id,
+    labelledBy,
+    describedBy
 }: PortableTextEditorProps) {
     const t = useTranslations('editor');
     const isRTL = language === 'ar';
@@ -127,7 +136,11 @@ export default function PortableTextEditor({
                     ? 'prose max-w-none focus:outline-none min-h-[420px] py-4'
                     : 'prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4',
                 dir: isRTL ? 'rtl' : 'ltr',
-                lang: language
+                lang: language,
+                role: 'textbox',
+                'aria-multiline': 'true',
+                ...(id ? { id } : {}),
+                ...(labelledBy ? { 'aria-labelledby': labelledBy } : {})
             },
             // Plain-text markdown (from a notes app, a chat, a README) becomes
             // real headings/lists/quotes/code blocks. Rich HTML pastes keep
@@ -190,6 +203,24 @@ export default function PortableTextEditor({
             editor.chain().focus().setLink({ href: url }).run();
         }
     }, [editor, t]);
+
+    // Error attributes change after the editor exists; ProseMirror leaves
+    // attributes it did not set alone, so they are applied to its node directly.
+    const invalid = describedBy?.['aria-invalid'];
+    const errorLink = describedBy?.['aria-describedby'];
+    useEffect(() => {
+        let dom: HTMLElement | undefined;
+        try {
+            dom = editor?.view.dom; // throws while the view is not mounted yet
+        } catch {
+            return;
+        }
+        if (!dom) return;
+        if (invalid) dom.setAttribute('aria-invalid', 'true');
+        else dom.removeAttribute('aria-invalid');
+        if (errorLink) dom.setAttribute('aria-describedby', errorLink);
+        else dom.removeAttribute('aria-describedby');
+    }, [editor, invalid, errorLink]);
 
     if (!editor) {
         return null;

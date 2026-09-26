@@ -15,8 +15,8 @@ interface HeroImageDropProps {
 /**
  * Task E3 — hero-image drop zone. A dashed zone that becomes the image once a
  * file is picked, with a replace/remove affordance (always visible on touch,
- * hover-revealed on pointer devices). Reuses the form's existing upload
- * state/plumbing — the File is still uploaded only at final submit.
+ * hover-revealed on pointer devices). The form uploads the file as soon as
+ * it is chosen and passes back the stored image's URL as `previewUrl`.
  */
 export function HeroImageDrop({ previewUrl, onFile, onRemove }: HeroImageDropProps) {
     const t = useTranslations('caseStudySubmission.hero');
@@ -45,7 +45,7 @@ export function HeroImageDrop({ previewUrl, onFile, onRemove }: HeroImageDropPro
 
             {previewUrl ? (
                 <div className="group relative overflow-hidden rounded-xl">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- local data-URL preview */}
+                    {/* eslint-disable-next-line @next/next/no-img-element -- the uploaded cover, any host the upload route returns */}
                     <img
                         src={previewUrl}
                         alt={t('previewAlt')}

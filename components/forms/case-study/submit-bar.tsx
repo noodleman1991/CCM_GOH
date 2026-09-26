@@ -1,106 +1,66 @@
 "use client";
 
-import React from 'react';
-import { useTranslations } from 'next-intl';
-import { Check, CloudOff, Eye, Loader2, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useTranslations } from "next-intl";
+import { Check, CloudOff, Eye, Loader2, Save, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { DraftState } from "@/components/forms/case-study/use-case-study-draft";
 
-export type DraftStatus = 'idle' | 'saving' | 'saved' | 'error';
-
-interface SubmitBarProps {
-    draftStatus: DraftStatus;
-    draftSavedAt: string | null;
-    incomplete: boolean;
-    isSubmitting: boolean;
-    onSaveDraft: () => void;
-    onPreview: () => void;
-    onSubmit: () => void;
+/** "Saved · 12:04", "Saving…" or the failure line — always visible in "What's left". */
+export function DraftStatusLine({ state, savedAt, locale }: { state: DraftState; savedAt: Date | null; locale: string }) {
+  const t = useTranslations("caseStudySubmission.draft");
+  const time = savedAt?.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  return (
+    <p className="flex min-w-0 items-start gap-1.5" aria-live="polite">
+      {state === "saving" ? (
+        <>
+          <Loader2 className="mt-0.5 size-3.5 shrink-0 animate-spin" aria-hidden />
+          <span>{t("saving")}</span>
+        </>
+      ) : state === "error" ? (
+        <>
+          <CloudOff className="mt-0.5 size-3.5 shrink-0 text-ccm-amber" aria-hidden />
+          <span>{t("error")}</span>
+        </>
+      ) : state === "saved" && time ? (
+        <>
+          <Check className="mt-0.5 size-3.5 shrink-0 text-green-600" aria-hidden />
+          <span>{t("savedAt", { time })}</span>
+        </>
+      ) : (
+        <span>{t("idle")}</span>
+      )}
+    </p>
+  );
 }
 
-/**
- * Task E3 — sticky bottom bar: autosaved-draft indicator (fed by the existing
- * /api/case-studies/drafts autosave) + Preview (the existing review step) +
- * "Submit for review". Sticky within the page flow; bottom offset respects
- * the mobile safe area.
- */
-export function SubmitBar({
-    draftStatus,
-    draftSavedAt,
-    incomplete,
-    isSubmitting,
-    onSaveDraft,
-    onPreview,
-    onSubmit,
-}: SubmitBarProps) {
-    const t = useTranslations('caseStudySubmission.bar');
-
-    const indicator = (() => {
-        switch (draftStatus) {
-            case 'saving':
-                return (
-                    <>
-                        <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" aria-hidden="true" />
-                        <span className="truncate">{t('saving')}</span>
-                    </>
-                );
-            case 'saved':
-                return (
-                    <>
-                        <Check className="h-3.5 w-3.5 shrink-0 text-green-600" aria-hidden="true" />
-                        <span className="truncate">
-                            {draftSavedAt ? t('savedAt', { time: draftSavedAt }) : t('saved')}
-                        </span>
-                    </>
-                );
-            case 'error':
-                return (
-                    <>
-                        <CloudOff className="h-3.5 w-3.5 shrink-0 text-ccm-amber" aria-hidden="true" />
-                        <span className="truncate">{t('saveError')}</span>
-                    </>
-                );
-            default:
-                return <span className="truncate">{t('notSaved')}</span>;
-        }
-    })();
-
-    return (
-        <div className="sticky bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mt-10">
-            <div className="flex items-center gap-3 rounded-2xl border bg-background/95 px-4 py-3 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/85">
-                <p
-                    className="flex min-w-0 flex-1 items-center gap-1.5 text-xs text-muted-foreground"
-                    aria-live="polite"
-                >
-                    {indicator}
-                </p>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    className="hidden min-h-11 sm:inline-flex"
-                    onClick={onSaveDraft}
-                >
-                    {t('saveDraft')}
-                </Button>
-                <Button
-                    type="button"
-                    variant="outline"
-                    className="min-h-11"
-                    onClick={onPreview}
-                >
-                    <Eye className="h-4 w-4 sm:me-2" aria-hidden="true" />
-                    <span className="sr-only sm:not-sr-only">{t('preview')}</span>
-                </Button>
-                <Button
-                    type="button"
-                    className="min-h-11"
-                    onClick={onSubmit}
-                    disabled={isSubmitting || incomplete}
-                    title={incomplete ? t('incomplete') : undefined}
-                >
-                    <Send className="me-2 h-4 w-4" aria-hidden="true" />
-                    {t('submit')}
-                </Button>
-            </div>
-        </div>
-    );
+/** Save draft · Preview · Submit for review (icons only on phones, so the bottom bar fits). Submit is never
+ *  disabled: pressing it shows what's missing instead. */
+export function SubmitActions({
+  isSubmitting,
+  onSaveDraft,
+  onPreview,
+  onSubmit,
+}: {
+  isSubmitting: boolean;
+  onSaveDraft: () => void;
+  onPreview: () => void;
+  onSubmit: () => void;
+}) {
+  const t = useTranslations("caseStudySubmission.bar");
+  return (
+    <>
+      <Button type="button" variant="ghost" className="min-h-11 min-w-11" onClick={onSaveDraft} aria-label={t("saveDraft")}>
+        <Save className="size-4 sm:me-2" aria-hidden />
+        <span className="hidden sm:inline">{t("saveDraft")}</span>
+      </Button>
+      <Button type="button" variant="outline" className="min-h-11 min-w-11" onClick={onPreview} aria-label={t("preview")}>
+        <Eye className="size-4 sm:me-2" aria-hidden />
+        <span className="hidden sm:inline">{t("preview")}</span>
+      </Button>
+      <Button type="button" className="min-h-11" onClick={onSubmit} disabled={isSubmitting}>
+        {isSubmitting ? <Loader2 className="me-2 size-4 animate-spin" aria-hidden /> : <Send className="me-2 size-4" aria-hidden />}
+        {isSubmitting ? t("submitting") : t("submit")}
+      </Button>
+    </>
+  );
 }

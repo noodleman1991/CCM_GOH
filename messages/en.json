@@ -938,20 +938,12 @@
         "caption": "A structured research summary with findings"
       }
     },
-    "languages": {
-      "switcherLabel": "Content language",
-      "hint": "English is required — translations help more readers find your work."
-    },
     "canvas": {
-      "titleLabel": "Case study title",
       "titlePlaceholder": "Title your case study…",
-      "excerptLabel": "Summary",
       "excerptPlaceholder": "Write a short summary — what happened, where, and why it matters…",
-      "excerptHint": "At least 100 characters in English",
       "bodyPlaceholder": "Tell the story — type / for blocks…"
     },
     "byline": {
-      "label": "Byline",
       "addAuthor": "Add author",
       "removeAuthor": "Remove author",
       "unnamed": "New author",
@@ -960,7 +952,6 @@
       "emailLabel": "Email (optional)",
       "roleLabel": "Role in study",
       "done": "Done",
-      "organizationLabel": "Organization (optional)",
       "organizationPlaceholder": "Organization or institution name",
       "roles": {
         "lead": "Lead author",
@@ -974,69 +965,17 @@
       "formats": "JPEG, PNG or WebP, up to 5MB",
       "replace": "Replace image",
       "remove": "Remove image",
-      "previewAlt": "Cover image preview"
-    },
-    "details": {
-      "heading": "Story details",
-      "description": "Help readers and reviewers place your work — where, when, and what it covers.",
-      "topicLabel": "Topic",
-      "topicPlaceholder": "Select the main topic",
-      "communityLabel": "Regional community (optional)",
-      "communityPlaceholder": "Select a community",
-      "clearCommunity": "Clear selection",
-      "tagsLabel": "Tags",
-      "tagsHint": "Pick the tags that best describe your work so others can discover it",
-      "countryLabel": "Country",
-      "countryPlaceholder": "Where was this work done?",
-      "cityLabel": "City / region",
-      "cityPlaceholder": "Specific location",
-      "findOnMap": "Find on map",
-      "searching": "Searching…",
-      "coordsFound": "Location coordinates",
-      "periodStartLabel": "Study start date",
-      "periodEndLabel": "Study end date",
-      "periodEndHint": "Leave empty if ongoing"
+      "previewAlt": "Cover image preview",
+      "uploading": "Uploading your image…"
     },
     "bar": {
-      "saving": "Saving draft…",
-      "saved": "Draft saved",
-      "savedAt": "Draft saved at {time}",
-      "notSaved": "Changes save automatically as a draft",
-      "saveError": "Draft could not be saved — retrying on your next change",
       "saveDraft": "Save draft",
       "preview": "Preview",
       "submit": "Submit for review",
-      "incomplete": "Complete the required fields to submit"
-    },
-    "validation": {
-      "titleMin": "Please provide a clear title in English",
-      "excerptMin": "Please provide a brief description (at least 100 characters)",
-      "contentRequired": "Please provide detailed content for your case study",
-      "topicRequired": "Please select a topic",
-      "authorNameMin": "Please enter the author's full name",
-      "authorEmailInvalid": "Please enter a valid email address",
-      "authorsMin": "At least one author is required",
-      "tagsMin": "Please select at least one relevant topic",
-      "titleMax": "Keep the title under {max} characters",
-      "excerptMax": "Keep the summary under {max} characters",
-      "authorNameMax": "Keep the author's name under {max} characters",
-      "organizationMax": "Keep the organisation name under {max} characters"
+      "submitting": "Sending…"
     },
     "toasts": {
-      "draftRestored": "Your saved draft has been restored",
-      "previousDraftRestored": "Your previous draft has been restored",
-      "imageInvalidType": "Please upload a JPEG, PNG, or WebP image",
-      "imageTooLarge": "Image must be smaller than 5MB",
-      "fixErrors": "Please fix the errors before submitting",
-      "fixBeforeReview": "Please fix the highlighted issues before reviewing",
-      "submitFailed": "Submission failed",
-      "submitErrorGeneric": "Something went wrong. Please try again.",
-      "submitted": "Thank you! Your case study has been submitted for review.",
-      "draftSaved": "Draft saved",
-      "draftSaveFailed": "Could not save draft",
-      "searchingLocation": "Searching for location…",
-      "locationFound": "Location found! ({lat}, {lng})",
-      "locationNotFound": "Could not find location"
+      "draftRestored": "Your saved draft has been restored"
     },
     "successScreen": {
       "heading": "Thank You for Your Contribution!",
@@ -1051,7 +990,6 @@
       "goBack": "Go Back to Edit",
       "basicInfo": "Basic Information",
       "titleLabel": "Title",
-      "topicLabel": "Topic",
       "descriptionLabel": "Description",
       "authorsHeading": "Authors ({count})",
       "tagsCommunity": "Tags & Community",
@@ -1060,16 +998,9 @@
       "location": "Location: {location}",
       "period": "Period: {start} – {end}",
       "ongoing": "Ongoing",
-      "featuredImage": "Featured Image",
-      "fileSize": "({size} KB)",
       "confirmSubmit": "Confirm & Submit"
     },
-    "submittingScreen": {
-      "heading": "Submitting Your Case Study",
-      "body": "Please wait while we process your submission…"
-    },
     "tags": {
-      "heading": "Tags",
       "hint": "Pick at least one theme. Your first theme is the main one.",
       "search": "Search tags…",
       "noMatch": "No tags match. Suggest a new one below.",
@@ -1082,6 +1013,51 @@
       },
       "main": "Main theme",
       "remove": "Remove {tag}"
+    },
+    "sections": {
+      "writingIn": "I'm writing in",
+      "story": "Your story",
+      "people": "Who wrote this?",
+      "where": "Where & when",
+      "tags": "Tags",
+      "presentation": "How should it look?"
+    },
+    "fields": {
+      "title": "Title",
+      "summary": "Summary",
+      "summaryHint": "One or two sentences about what happened ({min}+ characters)",
+      "englishTitle": "English title",
+      "englishSummary": "One-line English summary",
+      "englishHint": "So the English site and search can list your case study.",
+      "translations": "Add translations (optional)",
+      "translationTitle": "Title in {language}",
+      "translationSummary": "Summary in {language}",
+      "dates": "When did this happen?",
+      "start": "Started",
+      "end": "Ended (leave empty if ongoing)",
+      "organisation": "Organisation (optional)",
+      "community": "Regional community (optional if you add a place)",
+      "communityNone": "No community"
+    },
+    "whatsLeft": {
+      "title": "Add a title",
+      "summary": "Write a short summary (at least {min} characters)",
+      "story": "Write your story",
+      "englishTitle": "Add an English title",
+      "englishSummary": "Add a one-line English summary",
+      "authors": "Add who wrote this",
+      "theme": "Choose at least one theme",
+      "where": "Add where this took place",
+      "pin": "Add a specific place so this appears as a pin on the map — without one it only shows on the community's page"
+    },
+    "draft": {
+      "saving": "Saving…",
+      "savedAt": "Saved · {time}",
+      "error": "Couldn't save — we'll keep trying. Your text is safe on this device.",
+      "restorePrompt": "Restore your unsaved changes from {time}?",
+      "restore": "Restore",
+      "discard": "Discard",
+      "idle": "Your work saves as you go"
     }
   },
   "caseStudy": {
@@ -1190,7 +1166,7 @@
       "noContent": "No content provided. Please add detailed content for your case study.",
       "authorsHeading": "Authors ({count})",
       "studyDetails": "Study Details",
-      "location": "Location: {coords}",
+      "location": "Location: {location}",
       "ongoing": "Ongoing",
       "tagsCount": "Tags ({count})",
       "featuredImage": "Featured Image",

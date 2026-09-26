@@ -79,7 +79,8 @@ describe("no string field keeps a private numeric max", () => {
     "lib/actions/collaboration.ts",
     "lib/actions/plans.ts",
     "lib/actions/docs.ts",
-    "components/forms/case-study-form.tsx",
+    "components/forms/case-study/story-section.tsx",
+    "components/forms/case-study/people-section.tsx",
     "components/forms/research-output-form.tsx",
     "components/blocks/profile/profile-edit-form.tsx",
   ];
@@ -94,7 +95,9 @@ describe("no string field keeps a private numeric max", () => {
 
 describe("inputs carry the same cap as the schema", () => {
   it.each([
-    ["components/forms/case-study-form.tsx", ["LIMITS.caseStudy.title", "LIMITS.caseStudy.excerpt", "LIMITS.caseStudy.organizationName"]],
+    // The case study form's inputs live in its section components.
+    ["components/forms/case-study/story-section.tsx", ["LIMITS.caseStudy.title", "LIMITS.caseStudy.excerpt"]],
+    ["components/forms/case-study/people-section.tsx", ["LIMITS.caseStudy.organizationName"]],
     ["components/forms/lived-experience-form.tsx", ["LIMITS.livedExperience.title", "LIMITS.livedExperience.description", "LIMITS.livedExperience.issue", "LIMITS.livedExperience.personContext"]],
     ["components/forms/research-output-form.tsx", ["LIMITS.researchOutput.title", "LIMITS.researchOutput.excerpt"]],
     ["components/blocks/profile/profile-edit-form.tsx", ["LIMITS.profile.headline", "LIMITS.profile.bio", "LIMITS.profile.workBio"]],

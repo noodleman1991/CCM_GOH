@@ -1064,20 +1064,12 @@
         "caption": "Un resumen de investigación estructurado con hallazgos"
       }
     },
-    "languages": {
-      "switcherLabel": "Idioma del contenido",
-      "hint": "El inglés es obligatorio; las traducciones ayudan a que más personas encuentren tu trabajo."
-    },
     "canvas": {
-      "titleLabel": "Título del estudio de caso",
       "titlePlaceholder": "Ponle título a tu estudio de caso…",
-      "excerptLabel": "Resumen",
       "excerptPlaceholder": "Escribe un breve resumen: qué ocurrió, dónde y por qué importa…",
-      "excerptHint": "Al menos 100 caracteres en inglés",
       "bodyPlaceholder": "Cuenta la historia — escribe / para insertar bloques…"
     },
     "byline": {
-      "label": "Autoría",
       "addAuthor": "Añadir autor",
       "removeAuthor": "Eliminar autor",
       "unnamed": "Nuevo autor",
@@ -1086,7 +1078,6 @@
       "emailLabel": "Correo electrónico (opcional)",
       "roleLabel": "Rol en el estudio",
       "done": "Listo",
-      "organizationLabel": "Organización (opcional)",
       "organizationPlaceholder": "Nombre de la organización o institución",
       "roles": {
         "lead": "Autor principal",
@@ -1100,69 +1091,17 @@
       "formats": "JPEG, PNG o WebP, hasta 5 MB",
       "replace": "Reemplazar imagen",
       "remove": "Quitar imagen",
-      "previewAlt": "Vista previa de la imagen de portada"
-    },
-    "details": {
-      "heading": "Detalles de la historia",
-      "description": "Ayuda a lectores y revisores a situar tu trabajo: dónde, cuándo y qué abarca.",
-      "topicLabel": "Tema",
-      "topicPlaceholder": "Selecciona el tema principal",
-      "communityLabel": "Comunidad regional (opcional)",
-      "communityPlaceholder": "Selecciona una comunidad",
-      "clearCommunity": "Borrar selección",
-      "tagsLabel": "Etiquetas",
-      "tagsHint": "Elige las etiquetas que mejor describan tu trabajo para que otros lo descubran",
-      "countryLabel": "País",
-      "countryPlaceholder": "¿Dónde se realizó este trabajo?",
-      "cityLabel": "Ciudad / región",
-      "cityPlaceholder": "Ubicación específica",
-      "findOnMap": "Buscar en el mapa",
-      "searching": "Buscando…",
-      "coordsFound": "Coordenadas de la ubicación",
-      "periodStartLabel": "Fecha de inicio del estudio",
-      "periodEndLabel": "Fecha de fin del estudio",
-      "periodEndHint": "Déjalo vacío si sigue en curso"
+      "previewAlt": "Vista previa de la imagen de portada",
+      "uploading": "Subiendo tu imagen…"
     },
     "bar": {
-      "saving": "Guardando borrador…",
-      "saved": "Borrador guardado",
-      "savedAt": "Borrador guardado a las {time}",
-      "notSaved": "Los cambios se guardan automáticamente como borrador",
-      "saveError": "No se pudo guardar el borrador; se reintentará con tu próximo cambio",
       "saveDraft": "Guardar borrador",
       "preview": "Vista previa",
       "submit": "Enviar a revisión",
-      "incomplete": "Completa los campos obligatorios para enviar"
-    },
-    "validation": {
-      "titleMin": "Proporcione un título claro en inglés",
-      "excerptMin": "Proporcione una breve descripción (al menos 100 caracteres)",
-      "contentRequired": "Proporcione contenido detallado para su estudio de caso",
-      "topicRequired": "Seleccione un tema",
-      "authorNameMin": "Introduzca el nombre completo del autor",
-      "authorEmailInvalid": "Introduzca una dirección de correo electrónico válida",
-      "authorsMin": "Se requiere al menos un autor",
-      "tagsMin": "Seleccione al menos un tema relevante",
-      "titleMax": "El título debe tener menos de {max} caracteres",
-      "excerptMax": "El resumen debe tener menos de {max} caracteres",
-      "authorNameMax": "El nombre de la persona autora debe tener menos de {max} caracteres",
-      "organizationMax": "El nombre de la organización debe tener menos de {max} caracteres"
+      "submitting": "Enviando…"
     },
     "toasts": {
-      "draftRestored": "Se ha restaurado su borrador guardado",
-      "previousDraftRestored": "Se ha restaurado su borrador anterior",
-      "imageInvalidType": "Suba una imagen JPEG, PNG o WebP",
-      "imageTooLarge": "La imagen debe pesar menos de 5 MB",
-      "fixErrors": "Corrija los errores antes de enviar",
-      "fixBeforeReview": "Corrija los problemas señalados antes de revisar",
-      "submitFailed": "El envío ha fallado",
-      "submitErrorGeneric": "Algo salió mal. Inténtelo de nuevo.",
-      "submitted": "¡Gracias! Su estudio de caso se ha enviado para revisión.",
-      "draftSaved": "Borrador guardado",
-      "draftSaveFailed": "No se pudo guardar el borrador",
-      "searchingLocation": "Buscando la ubicación…",
-      "locationFound": "¡Ubicación encontrada! ({lat}, {lng})",
-      "locationNotFound": "No se pudo encontrar la ubicación"
+      "draftRestored": "Se ha restaurado su borrador guardado"
     },
     "successScreen": {
       "heading": "¡Gracias por su contribución!",
@@ -1177,7 +1116,6 @@
       "goBack": "Volver a editar",
       "basicInfo": "Información básica",
       "titleLabel": "Título",
-      "topicLabel": "Tema",
       "descriptionLabel": "Descripción",
       "authorsHeading": "Autores ({count})",
       "tagsCommunity": "Etiquetas y comunidad",
@@ -1186,16 +1124,9 @@
       "location": "Ubicación: {location}",
       "period": "Período: {start} – {end}",
       "ongoing": "En curso",
-      "featuredImage": "Imagen destacada",
-      "fileSize": "({size} KB)",
       "confirmSubmit": "Confirmar y enviar"
     },
-    "submittingScreen": {
-      "heading": "Enviando su estudio de caso",
-      "body": "Espere mientras procesamos su envío…"
-    },
     "tags": {
-      "heading": "Etiquetas",
       "hint": "Elige al menos un tema. El primero que elijas será el principal.",
       "search": "Buscar etiquetas…",
       "noMatch": "Ninguna etiqueta coincide. Sugiere una nueva abajo.",
@@ -1208,6 +1139,51 @@
       },
       "main": "Tema principal",
       "remove": "Quitar {tag}"
+    },
+    "sections": {
+      "writingIn": "Escribo en",
+      "story": "Tu historia",
+      "people": "¿Quién lo escribió?",
+      "where": "Dónde y cuándo",
+      "tags": "Etiquetas",
+      "presentation": "¿Cómo quieres que se vea?"
+    },
+    "fields": {
+      "title": "Título",
+      "summary": "Resumen",
+      "summaryHint": "Una o dos frases sobre lo que pasó ({min} caracteres o más)",
+      "englishTitle": "Título en inglés",
+      "englishSummary": "Resumen de una línea en inglés",
+      "englishHint": "Para que el sitio en inglés y la búsqueda puedan mostrar tu estudio de caso.",
+      "translations": "Añadir traducciones (opcional)",
+      "translationTitle": "Título en {language}",
+      "translationSummary": "Resumen en {language}",
+      "dates": "¿Cuándo ocurrió?",
+      "start": "Empezó",
+      "end": "Terminó (déjalo vacío si sigue en curso)",
+      "organisation": "Organización (opcional)",
+      "community": "Comunidad regional (opcional si añades un lugar)",
+      "communityNone": "Ninguna comunidad"
+    },
+    "whatsLeft": {
+      "title": "Añade un título",
+      "summary": "Escribe un breve resumen (al menos {min} caracteres)",
+      "story": "Escribe tu historia",
+      "englishTitle": "Añade un título en inglés",
+      "englishSummary": "Añade un resumen de una línea en inglés",
+      "authors": "Indica quién lo escribió",
+      "theme": "Elige al menos un tema",
+      "where": "Indica dónde ocurrió",
+      "pin": "Añade un lugar concreto para que aparezca como punto en el mapa; sin él, solo se muestra en la página de la comunidad"
+    },
+    "draft": {
+      "saving": "Guardando…",
+      "savedAt": "Guardado · {time}",
+      "error": "No se pudo guardar; lo seguiremos intentando. Tu texto está a salvo en este dispositivo.",
+      "restorePrompt": "¿Recuperar los cambios sin guardar de las {time}?",
+      "restore": "Recuperar",
+      "discard": "Descartar",
+      "idle": "Tu trabajo se guarda sobre la marcha"
     }
   },
   "caseStudy": {
@@ -1358,7 +1334,7 @@
       "noContent": "No se ha proporcionado contenido. Añada contenido detallado para su estudio de caso.",
       "authorsHeading": "Autores ({count})",
       "studyDetails": "Detalles del estudio",
-      "location": "Ubicación: {coords}",
+      "location": "Ubicación: {location}",
       "ongoing": "En curso",
       "tagsCount": "Etiquetas ({count})",
       "featuredImage": "Imagen destacada",
