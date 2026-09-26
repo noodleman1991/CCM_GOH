@@ -172,3 +172,52 @@ The nav is grouped by task, in this order. Team editors see the first six groups
 | **System** | Comment moderation wordlists (all editors); Users and raw case-study drafts (admins only). |
 
 The editing routine, in five steps: clear the review queue on the dashboard first (approve, request revision with a note, or reject; check the submitter's suggested tags against existing ones); for new editorial content create the English document, fill the required fields, pick existing tags, save as draft; switch locale and translate at least title and summary (untranslated fields fall back to English on the site); publish and check the page, which updates within seconds; suggest new tags only through the Tags collection.
+
+## 2026-09-26 human-friendly forms
+
+Task 18's gates (full test suite, `tsc`, lint of the changed files, a real-library run against the dev database, and signed-out rendered checks) all passed on `feat/payload-migration`; see the task report for numbers. This work adds two additive Payload migrations, not yet on production: `20260926_155648_human_friendly_forms` and `20260926_175525_draft_layout_and_suggestions`.
+
+1. Before deploy — optional pre-check, not a required manual step. `payload.config.ts` sets `prodMigrations`, so production applies any pending migration automatically on the first boot after the deploy in step 3; this only confirms what is pending:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status
+   ```
+   Expect both migrations above listed as not yet run. After step 3's deploy, run the same command again and confirm both show as applied.
+
+   A manual `pnpm exec payload migrate` can hit an interactive "dev mode … data loss" prompt when a stale dev marker is present on the target database; production carried no such marker as of 2026-09-26, so the automatic apply on deploy is expected to go through cleanly without it. If the prompt appears anyway, read what the marker is warning about before answering it — don't answer blind.
+
+2. Topic → tag conversion. Dry run first, against production (read-only; needs `--production` — or the repo-wide `--allow-production` — to pass `scripts/case-studies/topic-to-tags.ts`'s own dev-database guard; either flag works for both the dry run and the execute):
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/case-studies/topic-to-tags.ts --production
+   ```
+   Read the printed tables before doing anything else:
+   - "Mapped slugs with no tag (skipped)" — any slug here has no matching tag in production; add it, or fix the mapping in `lib/case-studies/topic-tag-map.ts`, before executing.
+   - The "… case studies have an unpublished draft newer than the saved row, with different tags" warning — each one risks a later draft-publish undoing the conversion; note them for the editors.
+   - The "Vulnerable Populations" tag re-filing line, and the table of case studies that would change.
+
+   Only once those are clean, execute:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/case-studies/topic-to-tags.ts --production --execute
+   ```
+
+   Separately: check the tag with slug `access-to-education` in the production CMS (**Tags & vocabularies** → Tags). On dev it was found with no label in any language (2026-09-26). If it's still nameless in production, name it — English "Access to Education", Spanish "Acceso a la educación", French "Accès à l'éducation", Arabic "الوصول إلى التعليم" — before or right after the conversion.
+
+3. Deploy (manual, by the user — never run by the agent):
+   ```
+   vercel --prod
+   ```
+   Then re-run step 1's `migrate:status` and confirm both migrations now show as applied.
+
+4. Re-index case studies — the conversion above changes `tags` on every affected document:
+   ```
+   curl -X POST -H "Authorization: Bearer $INTERNAL_SYNC_SECRET" -H "content-type: application/json" -d '{}' https://hub.connectingclimateminds.org/api/search/case-studies/sync
+   ```
+   `scripts/sync-case-studies-to-algolia.mjs` is the older Sanity-era reindex script and reads Sanity, not Payload; the route above is the one this project's Payload cutover actually uses (same shape as step 6's four-collection loop, run here for case studies alone since that is the only collection this work touches).
+
+5. Manual signed-in checks (the agent cannot sign in to verify these itself):
+   1. Start a case study, type two letters in the title, tab away — a plain message appears; finish the title — it disappears.
+   2. Press Submit with gaps — the page jumps to the first gap; "What's left" lists the rest; on a phone, the bottom bar shows the count.
+   3. Choose العربية — title, summary and story are right-to-left; English title and summary appear.
+   4. Search "Lagos" — pick — the name shows, with no numbers; the community is suggested.
+   5. Paste `## Findings\n- one\n- two` into the story — a heading and a list.
+   6. Add a cover image, leave, reopen from the dashboard — the image, place and language are all still there.
+   7. Submit, then open it again from the dashboard while it's pending, change a word, wait 2 s, reload — the change is kept and the status is still "In review".
