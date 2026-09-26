@@ -18,4 +18,9 @@ describe("OriginalLanguageNote", () => {
     mount("en");
     expect(screen.queryByText(/Originally written/)).toBeNull();
   });
+  it("is marked in the reader's language", () => {
+    mount("ar");
+    const note = screen.getByText("Originally written in Arabic").closest("p");
+    expect(note?.getAttribute("lang")).toBe("en");
+  });
 });

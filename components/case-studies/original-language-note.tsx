@@ -8,7 +8,7 @@ export function OriginalLanguageNote({ contentLanguage, locale }: { contentLangu
   if (!contentLanguage || contentLanguage === locale) return null;
   const language = new Intl.DisplayNames([locale], { type: "language" }).of(contentLanguage) ?? contentLanguage;
   return (
-    <p className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
+    <p className="mb-6 flex items-center gap-2 text-sm text-muted-foreground" lang={locale}>
       <Languages className="size-4" aria-hidden />
       {t("originallyWrittenIn", { language })}
     </p>

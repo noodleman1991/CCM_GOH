@@ -176,9 +176,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
       {caseStudy.content && (
         layout === 'report' ? (
           <div className="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start">
-            <article className="min-w-0 text-base md:text-lg leading-relaxed" lang={caseStudy.contentLanguage ?? supportedLocale}>
+            <article className="min-w-0 text-base md:text-lg leading-relaxed">
               <OriginalLanguageNote contentLanguage={caseStudy.contentLanguage as never} locale={supportedLocale} />
-              <PortableTextRenderer value={caseStudy.content as never} locale={supportedLocale} isRTL={(caseStudy.contentLanguage ?? supportedLocale) === 'ar'} />
+              <div lang={caseStudy.contentLanguage ?? supportedLocale}>
+                <PortableTextRenderer value={caseStudy.content as never} locale={supportedLocale} isRTL={(caseStudy.contentLanguage ?? supportedLocale) === 'ar'} />
+              </div>
             </article>
             <aside className="lg:sticky lg:top-24 rounded-xl border bg-muted/20 p-5 text-sm">
               <h3 className="mb-3 font-heading font-semibold text-ccm-midnight">{t('atAGlance')}</h3>
@@ -199,9 +201,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
             </aside>
           </div>
         ) : (
-          <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed" lang={caseStudy.contentLanguage ?? supportedLocale}>
+          <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed">
             <OriginalLanguageNote contentLanguage={caseStudy.contentLanguage as never} locale={supportedLocale} />
-            <PortableTextRenderer value={caseStudy.content as never} locale={supportedLocale} isRTL={(caseStudy.contentLanguage ?? supportedLocale) === 'ar'} />
+            <div lang={caseStudy.contentLanguage ?? supportedLocale}>
+              <PortableTextRenderer value={caseStudy.content as never} locale={supportedLocale} isRTL={(caseStudy.contentLanguage ?? supportedLocale) === 'ar'} />
+            </div>
           </article>
         )
       )}
