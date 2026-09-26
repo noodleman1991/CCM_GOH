@@ -585,6 +585,7 @@ interface CaseStudyRow {
   locationPrecision?: string | null;
   locationCountryCode?: string | null;
   locationDisplayText?: string | null;
+  originalLanguage?: string | null;
   studyAreas?: unknown;
   seoTitle?: string | null;
   seoDescription?: string | null;
@@ -638,7 +639,13 @@ function caseStudyFragment(row: CaseStudyRow): Row {
     excerpt: orNull(localized(row.excerpt)),
     featured: row.featured ?? null,
     image: imageProjection(row.image, "full", ["hotspot", "crop", "alt", "caption"]),
+    locationDisplayText: orNull(text(row.locationDisplayText)),
+    locationText: groupOrNull({
+      city: orNull(text(row.locationText?.city)),
+      country: orNull(text(row.locationText?.country)),
+    }),
     organizations: organizationProjection(row.organizations, ["_id", "name", "slug", "acronym", "logo"]),
+    originalLanguage: orNull(text(row.originalLanguage)),
     // `projects` has no Payload column and 0 Sanity documents. See note 7.
     projects: null,
     publishedAt: orNull(isoDate(row.publishedAt)),
@@ -660,11 +667,14 @@ function caseStudyFragment(row: CaseStudyRow): Row {
 /** `CASE_STUDY_DETAIL_PROJECTION_FRAGMENT` — the fragment plus the eight keys
  *  the detail page adds. */
 function caseStudyDetail(row: CaseStudyRow): CaseStudy {
-  const body = row.content ? Object.values(row.content).find(Boolean) : undefined;
+  const locales = ["originalLanguage" in row && typeof row.originalLanguage === "string" ? row.originalLanguage : "en", "en", "es", "fr", "ar"];
+  const contentLanguage = row.content ? locales.find((l) => (row.content as Record<string, unknown>)[l]) ?? null : null;
+  const body = contentLanguage ? (row.content as Record<string, unknown>)[contentLanguage] : undefined;
   return groqObject({
     ...caseStudyFragment(row),
     canonicalUrl: orNull(text(row.canonicalUrl)),
     content: body ? portableText(body) : null,
+    contentLanguage: orNull(contentLanguage),
     layout: orNull(text(row.layout)),
     // `relatedContent` has no Payload column and 0 Sanity documents. Note 7.
     relatedContent: null,
@@ -717,6 +727,9 @@ const FRAGMENT_SELECT = {
   tags: true,
   studyAreas: true,
   studyLocation: true,
+  locationDisplayText: true,
+  locationText: true,
+  originalLanguage: true,
   studyPeriod: true,
 } as const;
 
@@ -751,6 +764,9 @@ const INDEX_SELECT = {
   organizations: true,
   tags: true,
   studyLocation: true,
+  locationDisplayText: true,
+  locationText: true,
+  originalLanguage: true,
   studyPeriod: true,
   sanityUpdatedAt: true,
   updatedAt: true,
@@ -1943,6 +1959,11 @@ function caseStudyIndexProjection(row: CaseStudyRow): CaseStudyIndexDoc {
     excerpt: orNull(localized(row.excerpt)),
     featured: row.featured ?? null,
     image: imageProjection(row.image, "url", []),
+    locationDisplayText: orNull(text(row.locationDisplayText)),
+    locationText: groupOrNull({
+      city: orNull(text(row.locationText?.city)),
+      country: orNull(text(row.locationText?.country)),
+    }),
     organizations: organizationProjection(row.organizations, ["name"]),
     populations: orNull(listOrNull(row.populations ?? undefined)),
     publishedAt: orNull(isoDate(row.publishedAt)),

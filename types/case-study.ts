@@ -128,6 +128,9 @@ export interface CaseStudy {
     locationPrecision?: 'exact' | 'city' | 'country' | 'region' | null;
     locationCountryCode?: string | null;
     locationDisplayText?: string | null;
+    locationText?: { city?: string | null; country?: string | null } | null;
+    originalLanguage?: SupportedLanguage | null;
+    contentLanguage?: SupportedLanguage | null;
     studyAreas?: StudyArea[];
     // Cross-content links (connection[] — see RELATED_CONTENT_PROJECTION)
     relatedContent?: Array<{

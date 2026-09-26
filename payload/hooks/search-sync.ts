@@ -219,7 +219,10 @@ export function transformCaseStudyForIndex(
         ? {
             lat: caseStudy.studyLocation.lat,
             lng: caseStudy.studyLocation.lng,
-            name: `${caseStudy.studyLocation.lat}, ${caseStudy.studyLocation.lng}`,
+            name:
+              caseStudy.locationDisplayText ||
+              [caseStudy.locationText?.city, caseStudy.locationText?.country].filter(Boolean).join(", ") ||
+              "",
           }
         : undefined,
       studyPeriod: caseStudy.studyPeriod

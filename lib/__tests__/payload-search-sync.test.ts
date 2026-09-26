@@ -104,6 +104,7 @@ const approvedCaseStudy: CaseStudyIndexDoc = {
   authors: [{ name: "A. Khan", role: "lead", affiliation: { name: "BRAC" } }],
   tags: [{ _id: "t-heat", label: { en: "Heat", ar: "حرارة" }, value: "heat" }, { _id: "t-empty", label: {}, value: "empty" }],
   studyLocation: { lat: 24.86, lng: 67.01 },
+  locationDisplayText: "Karachi, Pakistan",
   studyPeriod: { startDate: "2024-01-01", endDate: "2024-12-31" },
   organizations: [{ name: "BRAC" }],
 };
@@ -293,7 +294,7 @@ describe("the record shape, which the index schema depends on", () => {
       tags: ["Heat"],
       tagLabels: ["Heat", "حرارة"],
       tagSlugs: ["heat"],
-      studyLocation: { lat: 24.86, lng: 67.01, name: "24.86, 67.01" },
+      studyLocation: { lat: 24.86, lng: 67.01, name: "Karachi, Pakistan" },
       studyPeriod: { startDate: "2024-01-01", endDate: "2024-12-31" },
       organizations: ["BRAC"],
       language: "en",

@@ -37,19 +37,13 @@ export function getPrimaryAuthor(caseStudy: CaseStudy): CaseStudyAuthor | null {
 }
 
 export function getStudyLocationText(caseStudy: CaseStudy): string | null {
-    if (caseStudy.studyAreas && caseStudy.studyAreas.length > 0) {
-        const firstArea = caseStudy.studyAreas[0];
-        if (firstArea.name) {
-            return firstArea.name;
-        }
-    }
-
-    if (caseStudy.studyLocation) {
-        const { lat, lng } = caseStudy.studyLocation;
-        return `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
-    }
-
-    return null;
+    const named = caseStudy.locationDisplayText?.trim();
+    if (named) return named;
+    const { city, country } = caseStudy.locationText ?? {};
+    const pair = [city, country].filter((part): part is string => Boolean(part && part.trim())).join(', ');
+    if (pair) return pair;
+    const area = caseStudy.studyAreas?.find((a) => a.name)?.name;
+    return area || null;
 }
 
 export function formatCaseStudyDate(date: Date, locale: SupportedLanguage): string {

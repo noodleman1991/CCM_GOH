@@ -121,6 +121,9 @@ export interface CaseStudy {
   locationPrecision?: "exact" | "city" | "country" | "region" | null;
   locationCountryCode?: string | null;
   locationDisplayText?: string | null;
+  locationText?: { city?: string | null; country?: string | null } | null;
+  originalLanguage?: string | null;
+  contentLanguage?: string | null;
   studyAreas?: Array<{
     location: { lat: number; lng: number; alt?: number };
     name?: string;
@@ -1645,6 +1648,8 @@ export interface CaseStudyIndexDoc {
   studyPeriod?: { startDate: string; endDate: string };
   organizations?: Array<{ name?: string }>;
   image?: { asset?: { url?: string } };
+  locationDisplayText?: string | null;
+  locationText?: { city?: string | null; country?: string | null } | null;
 }
 
 const CASE_STUDY_INDEX_FIELDS = `
