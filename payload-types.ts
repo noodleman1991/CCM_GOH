@@ -202,7 +202,7 @@ export interface CaseStudy {
    */
   slug: string;
   excerpt?: string | null;
-  content: {
+  content?: {
     root: {
       type: string;
       children: {
@@ -216,7 +216,7 @@ export interface CaseStudy {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
   image?: {
     asset?: (string | null) | Media;
     alt?: string | null;
@@ -227,27 +227,37 @@ export interface CaseStudy {
    * Suggested by the submitter. Create the tag in Tags, attach it, then clear this list.
    */
   suggestedTags?: string[] | null;
-  topic:
-    | 'climate-environment'
-    | 'mental-health'
-    | 'community-health'
-    | 'youth-education'
-    | 'policy-governance'
-    | 'technology-innovation'
-    | 'economic-development'
-    | 'cultural-arts'
-    | 'food-agriculture'
-    | 'urban-planning'
-    | 'human-rights'
-    | 'migration'
-    | 'gender-equality'
-    | 'disaster-resilience'
-    | 'digital-inclusion'
-    | 'other';
+  /**
+   * Retired — replaced by theme tags. Kept only until the topic → tag conversion is confirmed in production.
+   */
+  topic?:
+    | (
+        | 'climate-environment'
+        | 'mental-health'
+        | 'community-health'
+        | 'youth-education'
+        | 'policy-governance'
+        | 'technology-innovation'
+        | 'economic-development'
+        | 'cultural-arts'
+        | 'food-agriculture'
+        | 'urban-planning'
+        | 'human-rights'
+        | 'migration'
+        | 'gender-equality'
+        | 'disaster-resilience'
+        | 'digital-inclusion'
+        | 'other'
+      )
+    | null;
   /**
    * 0/28 real documents have this set — Sanity's initialValue never backfilled existing docs.
    */
   layout?: ('story' | 'feature' | 'report') | null;
+  /**
+   * The language the story was written in. Readers of other languages see it with an 'Originally written in' note.
+   */
+  originalLanguage?: ('en' | 'es' | 'fr' | 'ar') | null;
   /**
    * Fixed-7 region code, backfilled from the related community.
    */
@@ -2582,6 +2592,9 @@ export interface CaseStudyDraft {
    * @maxItems 2
    */
   studyLocation?: [number, number] | null;
+  locationDisplayText?: string | null;
+  locationPrecision?: ('exact' | 'city' | 'country' | 'region') | null;
+  locationCountryCode?: string | null;
   studyAreas?:
     | {
         /**
@@ -2802,6 +2815,7 @@ export interface CaseStudiesSelect<T extends boolean = true> {
   suggestedTags?: T;
   topic?: T;
   layout?: T;
+  originalLanguage?: T;
   region?: T;
   themes?: T;
   populations?: T;
@@ -4277,6 +4291,9 @@ export interface CaseStudyDraftsSelect<T extends boolean = true> {
         city?: T;
       };
   studyLocation?: T;
+  locationDisplayText?: T;
+  locationPrecision?: T;
+  locationCountryCode?: T;
   studyAreas?:
     | T
     | {

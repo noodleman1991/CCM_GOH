@@ -7,6 +7,7 @@ import * as migration_20260904_075324_globals_under_pg_arg_limit from './2026090
 import * as migration_20260904_105415_sanity_updated_at from './20260904_105415_sanity_updated_at';
 import * as migration_20260917_050259_push_down_indexes from './20260917_050259_push_down_indexes';
 import * as migration_20260920_141339_tag_suggestions from './20260920_141339_tag_suggestions';
+import * as migration_20260926_155648_human_friendly_forms from './20260926_155648_human_friendly_forms';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20260920_141339_tag_suggestions.up,
     down: migration_20260920_141339_tag_suggestions.down,
-    name: '20260920_141339_tag_suggestions'
+    name: '20260920_141339_tag_suggestions',
+  },
+  {
+    up: migration_20260926_155648_human_friendly_forms.up,
+    down: migration_20260926_155648_human_friendly_forms.down,
+    name: '20260926_155648_human_friendly_forms'
   },
 ];

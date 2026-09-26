@@ -183,6 +183,13 @@ export const CaseStudyDrafts: CollectionConfig = {
       ],
     },
     { name: "studyLocation", type: "point", label: "Primary Study Location" },
+    { name: "locationDisplayText", type: "text" },
+    {
+      name: "locationPrecision",
+      type: "select",
+      options: ["exact", "city", "country", "region"].map((value) => ({ label: value, value })),
+    },
+    { name: "locationCountryCode", type: "text" },
     {
       name: "studyAreas",
       type: "array",

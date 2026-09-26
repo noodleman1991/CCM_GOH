@@ -114,7 +114,7 @@ export const CaseStudies: CollectionConfig = {
     localizedText("title", { required: true }),
     slugField("title"),
     localizedTextarea("excerpt"),
-    localizedRichText("content", { required: true }),
+    localizedRichText("content"),
     {
       name: "image",
       type: "group",
@@ -143,7 +143,7 @@ export const CaseStudies: CollectionConfig = {
     {
       name: "topic",
       type: "select",
-      required: true,
+      admin: { description: "Retired — replaced by theme tags. Kept only until the topic → tag conversion is confirmed in production." },
       options: [
         { label: "Climate Change & Environment", value: "climate-environment" },
         { label: "Mental Health & Wellbeing", value: "mental-health" },
@@ -173,6 +173,18 @@ export const CaseStudies: CollectionConfig = {
         { label: "Report (evidence + data; sticky 'At a glance')", value: "report" },
       ],
       admin: { description: "0/28 real documents have this set — Sanity's initialValue never backfilled existing docs." },
+    },
+    {
+      name: "originalLanguage",
+      type: "select",
+      defaultValue: "en",
+      options: [
+        { label: "English", value: "en" },
+        { label: "Español", value: "es" },
+        { label: "Français", value: "fr" },
+        { label: "العربية", value: "ar" },
+      ],
+      admin: { description: "The language the story was written in. Readers of other languages see it with an 'Originally written in' note." },
     },
     {
       name: "region",
