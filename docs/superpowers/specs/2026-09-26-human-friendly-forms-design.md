@@ -109,7 +109,8 @@ Every route that rejects input replies with:
   locale, status)`) builds it. Upload, size and rate-limit rejections use the
   same shape.
 - In this project the helper is applied to the case study routes
-  (`/api/case-studies/submit`, `/api/case-studies/drafts`, the image upload);
+  (`/api/case-studies/submit`, `/api/case-studies/drafts`) and to the image
+  upload route the cover now uses (`/api/uploads/image`, §6.4);
   the other 34 routes move in project 3.
 
 ### 4.4 One behaviour in every form
@@ -165,7 +166,8 @@ The review/preview step stays. It shows the place name, never coordinates.
 
 - A title (at least 5 characters) and a summary (at least 50 characters), in
   the writing language.
-- If the writing language isn't English, an English title and summary.
+- If the writing language isn't English, an English title (at least 5
+  characters) and a one-line English summary (at least 20 characters).
 - A story with at least one paragraph of text.
 - At least one author with a name; a co-author's email, if given, must be
   valid.
@@ -292,7 +294,8 @@ draft status, Save draft (visible on phones), Preview and Submit.
 - `caseStudyDrafts` gains `locationDisplayText`, `locationPrecision` and
   `locationCountryCode` (migration), and the form's place value is saved into
   them.
-- The cover image is uploaded to `media` when chosen, not at submit, so its
+- The cover image is uploaded to `media` when chosen, through the existing
+  `/api/uploads/image` route, not at submit, so its
   reference is stored in the draft. On submit, a draft's existing image is
   reused, not uploaded again. Images that end up unused are acceptable in
   this project; a later cleanup can remove them.
