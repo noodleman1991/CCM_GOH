@@ -23,7 +23,18 @@ describe("legacyTopicsToTagSlugs", () => {
     expect(Array.from(new Set(["climate-change", ...mapped]))).toEqual(["climate-change", "mental-health-support"]);
   });
 
-  it("defaults to the live LEGACY_TOPIC_TO_TAG map and returns nothing while it's empty", () => {
-    expect(legacyTopicsToTagSlugs(["climate-environment"])).toEqual([]);
+  it("defaults to the live, user-confirmed LEGACY_TOPIC_TO_TAG map", () => {
+    expect(legacyTopicsToTagSlugs(["climate-environment", "youth-education"])).toEqual([
+      "climate-change",
+      "access-to-education",
+    ]);
+  });
+
+  it("leaves the topics the user chose not to map unmapped", () => {
+    expect(legacyTopicsToTagSlugs(["policy-governance", "technology-innovation"])).toEqual([]);
+  });
+
+  it("returns nothing when given an explicitly empty map", () => {
+    expect(legacyTopicsToTagSlugs(["climate-environment"], {})).toEqual([]);
   });
 });

@@ -108,6 +108,24 @@ export function findVulnerablePopulationsTag(tags: TagRow[]): TagRow | null {
   return tags.find((t) => t.label.trim().toLowerCase() === "vulnerable populations") ?? null;
 }
 
+/**
+ * True when a case study's newest version is an unpublished draft saved after
+ * its main row whose tags differ from the tags the row will hold after the
+ * conversion (`expectedTags`): publishing that draft later would overwrite
+ * the converted tags. A draft that already carries them (Payload saves one
+ * alongside every update of a draft row) is not a risk.
+ */
+export function isNewerUnpublishedDraft(
+  mainUpdatedAt: string | null | undefined,
+  latest: { status: string | null | undefined; updatedAt: string | null | undefined; tags?: string[] } | null,
+  expectedTags?: string[],
+): boolean {
+  if (!latest || latest.status !== "draft" || !latest.updatedAt) return false;
+  if (mainUpdatedAt && Date.parse(latest.updatedAt) <= Date.parse(mainUpdatedAt)) return false;
+  if (expectedTags && latest.tags && latest.tags.join() === expectedTags.join()) return false;
+  return true;
+}
+
 type Id = string | number;
 
 async function main() {
@@ -170,7 +188,7 @@ async function main() {
   // published-only), which is what an update without `draft` writes.
   const caseStudyDocs = (
     await payload.find({ collection: "caseStudies", pagination: false, depth: 0, overrideAccess: true })
-  ).docs as Array<{ id: Id; topic?: string | null; tags?: unknown[] | null }>;
+  ).docs as Array<{ id: Id; topic?: string | null; tags?: unknown[] | null; updatedAt?: string | null }>;
   const docs = caseStudyDocs.map((d) => ({
     id: keep(d.id),
     topic: d.topic ?? null,
@@ -207,6 +225,45 @@ async function main() {
       })),
     );
   }
+
+  // Read-only: a newer unpublished draft in the version history would carry
+  // the old tag order back when it is published (controller ruling 24).
+  const draftWarnings: Array<{ id: string; topic: string; "main row saved": string; "draft saved": string; planned: string }> = [];
+  for (const d of caseStudyDocs) {
+    const versions = await payload.findVersions({
+      collection: "caseStudies",
+      where: { parent: { equals: d.id } },
+      sort: "-updatedAt",
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    });
+    const latest = versions.docs[0] as
+      | { updatedAt?: string; version?: { _status?: string; tags?: unknown[] | null } }
+      | undefined;
+    const latestInfo = latest
+      ? {
+          status: latest.version?._status,
+          updatedAt: latest.updatedAt,
+          tags: (latest.version?.tags ?? []).map((t) => String(typeof t === "object" && t !== null ? (t as { id: Id }).id : t)),
+        }
+      : null;
+    const expected = plan.find((p) => p.id === String(d.id))?.after ?? docs.find((x) => x.id === String(d.id))?.tags;
+    if (isNewerUnpublishedDraft(d.updatedAt, latestInfo, expected)) {
+      draftWarnings.push({
+        id: String(d.id),
+        topic: d.topic ?? "",
+        "main row saved": d.updatedAt ?? "",
+        "draft saved": latest?.updatedAt ?? "",
+        planned: plan.some((p) => p.id === String(d.id)) ? "yes" : "no",
+      });
+    }
+  }
+  console.log(
+    `\n${draftWarnings.length} case studies have an unpublished draft newer than the saved row, with different tags` +
+      (draftWarnings.length ? " (publishing that draft later could undo the conversion; versions are not modified):" : "."),
+  );
+  if (draftWarnings.length) console.table(draftWarnings);
 
   const vulnerable = findVulnerablePopulationsTag(tags);
   console.log(

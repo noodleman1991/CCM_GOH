@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   findVulnerablePopulationsTag,
+  isNewerUnpublishedDraft,
   planConversion,
   proposeTopicMapping,
 } from "@/scripts/case-studies/topic-to-tags";
@@ -58,5 +59,20 @@ describe("topic → tag conversion", () => {
       { id: "2", value: "vulnerable-populations", label: " vulnerable populations ", category: "location" },
     ]);
     expect(found).toEqual(expect.objectContaining({ id: "2", value: "vulnerable-populations", category: "location" }));
+  });
+
+  it("flags only an unpublished draft saved after the main row", () => {
+    const main = "2026-09-01T00:00:00.000Z";
+    expect(isNewerUnpublishedDraft(main, { status: "draft", updatedAt: "2026-09-02T00:00:00.000Z" })).toBe(true);
+    expect(isNewerUnpublishedDraft(main, { status: "draft", updatedAt: "2026-08-31T00:00:00.000Z" })).toBe(false);
+    expect(isNewerUnpublishedDraft(main, { status: "published", updatedAt: "2026-09-02T00:00:00.000Z" })).toBe(false);
+    expect(isNewerUnpublishedDraft(main, null)).toBe(false);
+  });
+
+  it("does not flag a newer draft that already carries the converted tags", () => {
+    const main = "2026-09-01T00:00:00.000Z";
+    const later = "2026-09-02T00:00:00.000Z";
+    expect(isNewerUnpublishedDraft(main, { status: "draft", updatedAt: later, tags: ["t-mig", "x"] }, ["t-mig", "x"])).toBe(false);
+    expect(isNewerUnpublishedDraft(main, { status: "draft", updatedAt: later, tags: ["x"] }, ["t-mig", "x"])).toBe(true);
   });
 });
