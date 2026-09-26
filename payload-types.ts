@@ -6363,6 +6363,17 @@ export interface RichTextStoryMermaidBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextCodeBlock".
+ */
+export interface RichTextCodeBlock {
+  code?: string | null;
+  language?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "RichTextFootnoteBlock".
  */
 export interface RichTextFootnoteBlock {

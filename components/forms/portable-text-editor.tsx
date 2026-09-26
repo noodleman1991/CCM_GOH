@@ -2,7 +2,7 @@
 
 import React, { useCallback, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import { Placeholder } from '@tiptap/extensions';
@@ -33,6 +33,7 @@ import { StoryTimeline } from '@/components/forms/editor/nodes/timeline-node';
 import { StoryChart } from '@/components/forms/editor/nodes/chart-node';
 import { StoryMermaid } from '@/components/forms/editor/nodes/mermaid-node';
 import { uploadEditorImage, ImageUploadError } from '@/components/forms/editor/upload';
+import { markdownToTiptap } from '@/components/forms/editor/markdown-paste';
 
 export { tiptapToPortableText, portableTextToTiptap };
 
@@ -68,13 +69,17 @@ export default function PortableTextEditor({
     const isRTL = language === 'ar';
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
+    // handlePaste runs inside useEditor's options, before `editor` is in scope.
+    const editorRef = useRef<Editor | null>(null);
 
     const editor = useEditor({
         immediatelyRender: false, // Prevents SSR hydration errors in Next.js
         extensions: [
             StarterKit.configure({
+                // Level 1 is what `# ` produces; it is stored as the page's
+                // section heading (h2) — the title is the page's only h1.
                 heading: {
-                    levels: [2, 3, 4]
+                    levels: [1, 2, 3, 4]
                 }
             }),
             EditorImage.configure({
@@ -121,10 +126,24 @@ export default function PortableTextEditor({
                 class: variant === 'canvas'
                     ? 'prose max-w-none focus:outline-none min-h-[420px] py-4'
                     : 'prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4',
-                dir: isRTL ? 'rtl' : 'ltr'
+                dir: isRTL ? 'rtl' : 'ltr',
+                lang: language
+            },
+            // Plain-text markdown (from a notes app, a chat, a README) becomes
+            // real headings/lists/quotes/code blocks. Rich HTML pastes keep
+            // tiptap's own handling, and ordinary prose is left alone.
+            handlePaste: (_view, event) => {
+                const text = event.clipboardData?.getData('text/plain') ?? '';
+                const hasHtml = Boolean(event.clipboardData?.getData('text/html'));
+                if (hasHtml) return false;
+                const doc = markdownToTiptap(text);
+                if (!doc || !editorRef.current) return false;
+                editorRef.current.chain().focus().insertContent(doc.content).run();
+                return true;
             }
         }
     });
+    editorRef.current = editor;
 
     const insertUploadedImage = useCallback(
         async (file: File) => {
@@ -179,7 +198,7 @@ export default function PortableTextEditor({
     const isCanvas = variant === 'canvas';
 
     return (
-        <div className={isCanvas ? '' : 'border rounded-lg overflow-hidden'}>
+        <div className={isCanvas ? '' : 'border rounded-lg overflow-hidden'} lang={language}>
             <input
                 ref={fileInputRef}
                 type="file"

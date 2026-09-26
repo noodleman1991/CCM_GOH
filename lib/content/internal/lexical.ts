@@ -88,6 +88,7 @@ export const EMBED_BLOCK_TYPES = [
   "storyTimeline",
   "storyChart",
   "storyMermaid",
+  "code",
 ] as const;
 
 /** The `blockType` of the inline block that carries a `footnote` annotation. */

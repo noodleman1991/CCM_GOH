@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
  *   - infoBox: { _type:'infoBox', variant, content: PortableTextBlock[] }
  *   - break: { _type:'break', style }
  *   - blockquote: a normal `block` with style:'blockquote'
+ *   - code: { _type:'code', code, language? } (tiptap `codeBlock`)
  *
  * Unknown node types / PT `_type`s are silently dropped in both directions —
  * this keeps the editor forward-compatible with future block types (the
@@ -25,7 +26,10 @@ import { v4 as uuidv4 } from "uuid";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyNode = any;
 
+// The page title is the only h1, so the editor's level-1 heading (`#`) is
+// stored as the section heading (h2). It comes back as level 2.
 const BLOCK_STYLE_BY_HEADING_LEVEL: Record<number, string> = {
+  1: "h2",
   2: "h2",
   3: "h3",
   4: "h4",
@@ -43,6 +47,8 @@ function textNodeToSpan(child: AnyNode, markDefs: AnyNode[]): AnyNode {
   child.marks?.forEach((mark: AnyNode) => {
     if (mark.type === "bold") marks.push("strong");
     else if (mark.type === "italic") marks.push("em");
+    else if (mark.type === "strike") marks.push("strike-through");
+    else if (mark.type === "code") marks.push("code");
     else if (mark.type === "link") {
       const markDef = { _key: uuidv4(), _type: "link", href: mark.attrs?.href };
       markDefs.push(markDef);
@@ -270,6 +276,14 @@ export function tiptapToPortableText(doc: AnyNode): AnyNode[] {
         code: node.attrs?.code || "",
         ...renderFields(node.attrs),
       });
+    } else if (node.type === "codeBlock") {
+      const code = (node.content ?? []).map((child: AnyNode) => child.text ?? "").join("");
+      portableText.push({
+        _type: "code",
+        _key: uuidv4(),
+        code,
+        ...(node.attrs?.language ? { language: node.attrs.language } : {}),
+      });
     }
     // Unknown node types are intentionally dropped — see module docstring.
   });
@@ -306,6 +320,8 @@ export function portableTextToTiptap(portableText: AnyNode): AnyNode {
       child.marks?.forEach((mark: string) => {
         if (mark === "strong") marks.push({ type: "bold" });
         else if (mark === "em") marks.push({ type: "italic" });
+        else if (mark === "strike-through") marks.push({ type: "strike" });
+        else if (mark === "code") marks.push({ type: "code" });
         else {
           const linkMark = block.markDefs?.find((def: AnyNode) => def._key === mark);
           if (linkMark && linkMark._type === "link") {
@@ -430,6 +446,12 @@ export function portableTextToTiptap(portableText: AnyNode): AnyNode {
           renderedSvg: block.renderedSvg || null,
           renderStatus: block.renderStatus || null,
         },
+      });
+    } else if (block._type === "code") {
+      content.push({
+        type: "codeBlock",
+        attrs: { language: block.language ?? null },
+        content: block.code ? [{ type: "text", text: block.code }] : [],
       });
     }
     // Unknown PT _type values are intentionally dropped — see module docstring.

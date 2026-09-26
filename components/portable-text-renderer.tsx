@@ -503,6 +503,7 @@ const createPortableTextComponents = (
       em: ({ children }) => <em className="italic font-body">{children}</em>,
       underline: ({ children }) => <span className="underline font-body">{children}</span>,
       "strike-through": ({ children }) => <s className="line-through font-body">{children}</s>,
+      code: ({ children }) => <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.9em]">{children}</code>,
 
       // Highlight with CCM colors
       highlight: ({ children }) => (

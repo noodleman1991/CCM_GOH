@@ -263,6 +263,24 @@ export const richTextStoryMermaid: Block = {
 };
 
 /**
+ * A code block from the story editor (a ``` fence or pasted markdown). The
+ * public renderer already draws `{ _type: "code", code, language }`.
+ *
+ * `code` is deliberately NOT required: an author can leave an empty code block
+ * in the story, and a required field would make the whole save fail with an
+ * error the author can't place.
+ */
+export const richTextCode: Block = {
+  slug: "code",
+  interfaceName: "RichTextCodeBlock",
+  labels: { singular: "Code", plural: "Code" },
+  fields: [
+    { name: "code", type: "textarea" },
+    { name: "language", type: "text" },
+  ],
+};
+
+/**
  * The `footnote` annotation, as an INLINE block.
  *
  * Portable Text marks a span; Lexical has no arbitrary text mark, and an
@@ -307,6 +325,7 @@ export const richTextEmbedBlocks: Block[] = [
   richTextStoryTimeline,
   richTextStoryChart,
   richTextStoryMermaid,
+  richTextCode,
 ];
 
 /** Inline embeds. Only the footnote annotation needs one. */

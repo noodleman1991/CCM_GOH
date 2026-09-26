@@ -16,6 +16,8 @@ import {
   type SerializedParagraphNode,
 } from "@/lib/content/internal/lexical";
 import { richTextEditor, richTextEmbedBlocks, richTextInlineBlocks } from "@/payload/blocks/rich-text-embeds";
+import { lexicalToPortableText } from "@/lib/content/internal/lexical-to-portable-text";
+import { portableTextToTiptap, tiptapToPortableText } from "@/components/forms/editor/pt-convert";
 import fixtures from "./fixtures/portable-text.json";
 
 /**
@@ -786,5 +788,50 @@ describe("portableTextToLexical — an ordered list's start (finding 7)", () => 
     const list = portableTextToLexical([block({ listItem: "number", level: 1, children: [span("one")] })])
       .root.children[0] as SerializedListNode;
     expect(list.start).toBe(1);
+  });
+});
+
+describe("the story editor's code block and marks survive saving (Task 11)", () => {
+  // The editor's own output, not a hand-written PT array: tiptap -> PT ->
+  // Lexical -> the project's headless editor (so an unregistered block or a
+  // lost format would throw or vanish) -> PT again.
+  const editorDoc = {
+    type: "doc",
+    content: [
+      {
+        type: "paragraph",
+        content: [
+          { type: "text", text: "gone", marks: [{ type: "strike" }] },
+          { type: "text", text: "x = 1", marks: [{ type: "code" }] },
+        ],
+      },
+      { type: "codeBlock", attrs: { language: "python" }, content: [{ type: "text", text: "print('hi')\nprint(2)" }] },
+    ],
+  };
+
+  it("registers `code` as a lexical block", () => {
+    expect(richTextEmbedBlocks.map((b) => b.slug)).toContain("code");
+    expect(EMBED_BLOCK_TYPES).toContain("code");
+  });
+
+  it("round-trips { _type: code, code, language } and the strike/code marks through the real editor", async () => {
+    const pt = tiptapToPortableText(editorDoc);
+    const issues: unknown[] = [];
+    const state = portableTextToLexical(pt, { onIssue: (i) => issues.push(i) });
+    expect(issues).toEqual([]);
+
+    const editor = await buildEditor();
+    const reparsed = editor.parseEditorState(state as never).toJSON();
+    const back = lexicalToPortableText(reparsed) as Record<string, unknown>[];
+
+    expect(back[1]).toEqual({ _type: "code", _key: pt[1]._key, code: "print('hi')\nprint(2)", language: "python" });
+    const children = (back[0] as { children: { text: string; marks: string[] }[] }).children;
+    expect(children.map((c) => [c.text, c.marks])).toEqual([
+      ["gone", ["strike-through"]],
+      ["x = 1", ["code"]],
+    ]);
+
+    // And back into the editor as the same code block.
+    expect(portableTextToTiptap(back).content[1]).toEqual(editorDoc.content[1]);
   });
 });
