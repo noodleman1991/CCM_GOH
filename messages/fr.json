@@ -2499,19 +2499,20 @@
     "exploreWorkspace": "Explorer l'espace de travail"
   },
   "placePicker": {
-    "searchLabel": "Où ce travail a-t-il eu lieu ?",
-    "searchPlaceholder": "Recherchez une ville, un lieu ou un pays…",
+    "searchLabel": "Où cela s'est-il passé ?",
+    "searchPlaceholder": "Cherchez une ville, un village, une région ou un pays…",
     "searching": "Recherche…",
-    "precisionLabel": "Affiché sur la carte comme",
-    "precision": {
-      "exact": "Point exact",
-      "city": "Ville",
-      "country": "Pays",
-      "region": "Région seulement"
+    "noResults": "Aucun lieu trouvé. Essayez la ville la plus proche, le pays ou la région.",
+    "hint": "Introuvable ? Cherchez plutôt le pays ou la région.",
+    "displayLabel": "Comment nommer ce lieu ?",
+    "change": "Modifier",
+    "kind": {
+      "exact": "Lieu",
+      "city": "Ville ou village",
+      "region": "Région",
+      "country": "Pays"
     },
-    "precisionHint": "La carte n'affiche jamais plus précis que votre choix. « Région seulement » retire l'élément de la carte à épingles.",
-    "displayLabel": "Affiché comme",
-    "clear": "Supprimer le lieu"
+    "clear": "Retirer le lieu"
   },
   "editor": {
     "hint": "Tapez / pour insérer des blocs : titres, images, vidéo et plus",

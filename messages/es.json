@@ -2499,18 +2499,19 @@
     "exploreWorkspace": "Explorar el espacio de trabajo"
   },
   "placePicker": {
-    "searchLabel": "¿Dónde se realizó este trabajo?",
-    "searchPlaceholder": "Busca una ciudad, lugar o país…",
+    "searchLabel": "¿Dónde ocurrió?",
+    "searchPlaceholder": "Busca un pueblo, ciudad, región o país…",
     "searching": "Buscando…",
-    "precisionLabel": "Se muestra en el mapa como",
-    "precision": {
-      "exact": "Punto exacto",
-      "city": "Ciudad",
-      "country": "País",
-      "region": "Solo región"
+    "noResults": "No se encontraron lugares. Prueba con el pueblo más cercano, el país o la región.",
+    "hint": "¿No lo encuentras? Busca el país o la región.",
+    "displayLabel": "¿Cómo debemos nombrar este lugar?",
+    "change": "Cambiar",
+    "kind": {
+      "exact": "Lugar",
+      "city": "Pueblo o ciudad",
+      "region": "Región",
+      "country": "País"
     },
-    "precisionHint": "El mapa nunca muestra más detalle del que elijas. \"Solo región\" lo excluye por completo del mapa de puntos.",
-    "displayLabel": "Se muestra como",
     "clear": "Quitar ubicación"
   },
   "editor": {

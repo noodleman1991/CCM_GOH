@@ -2499,18 +2499,19 @@
     "exploreWorkspace": "Explore the workspace"
   },
   "placePicker": {
-    "searchLabel": "Where did this work take place?",
-    "searchPlaceholder": "Search for a city, place or country…",
+    "searchLabel": "Where did this take place?",
+    "searchPlaceholder": "Search a town, city, region or country…",
     "searching": "Searching…",
-    "precisionLabel": "Shown on the map as",
-    "precision": {
-      "exact": "Exact point",
-      "city": "City",
-      "country": "Country",
-      "region": "Region only"
+    "noResults": "No places found. Try the nearest town, the country, or the region.",
+    "hint": "Can't find it? Search for the country or region instead.",
+    "displayLabel": "How should we name this place?",
+    "change": "Change",
+    "kind": {
+      "exact": "Place",
+      "city": "Town or city",
+      "region": "Region",
+      "country": "Country"
     },
-    "precisionHint": "The map never shows finer than your choice. \"Region only\" keeps this off the pin map entirely.",
-    "displayLabel": "Displayed as",
     "clear": "Remove location"
   },
   "editor": {
