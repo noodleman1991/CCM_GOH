@@ -9,7 +9,8 @@ export type CaseStudyValues = {
   title: Partial<Record<WritingLanguage, string>>;
   excerpt: Partial<Record<WritingLanguage, string>>;
   content: unknown[];
-  authors: Array<{ name: string; email?: string; role: AuthorRole }>;
+  /** `userId` is kept for authors read back from a stored story, so a save keeps who they are. */
+  authors: Array<{ name: string; email?: string; role: AuthorRole; userId?: string }>;
   organizationName: string;
   place: PlaceValue | null;
   relatedCommunity: string;
@@ -78,6 +79,7 @@ export function fromStored(raw: Record<string, unknown>, fallback: CaseStudyValu
         name: str(a.name),
         email: str(a.email),
         role: (["lead", "coauthor", "contributor", "advisor"].includes(str(a.role)) ? a.role : "coauthor") as AuthorRole,
+        ...(str(a.userId) ? { userId: str(a.userId) } : {}),
       }))
     : [];
   const tags = Array.isArray(raw.tags) ? raw.tags : Array.isArray(raw.selectedTags) ? raw.selectedTags : [];

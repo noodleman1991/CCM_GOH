@@ -101,6 +101,8 @@ import {
   CaseStudyEditNotAllowedError,
   CaseStudyDraftNotFoundError,
 } from "@/lib/content/case-studies";
+import { portableTextToLexical } from "@/lib/content/internal/lexical";
+import { emptyValues, fromStored } from "@/components/forms/case-study/values";
 
 const mockQuery = vi.mocked(query);
 const mockQueryPreviewable = vi.mocked(queryPreviewable);
@@ -1688,6 +1690,57 @@ describe("case studies, answered by Payload", () => {
       await submitCaseStudy(base);
       const [{ data: untouched }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
       expect(untouched).not.toHaveProperty("image");
+    });
+
+    it("reopening an Arabic story in review keeps its language, authors, place and cover, and an autosave writes them back unchanged", async () => {
+      const arStory = [{ _type: "block", _key: "b1", style: "normal", markDefs: [], children: [{ _type: "span", _key: "s1", text: "قصة الفيضانات", marks: [] }] }];
+      const row = {
+        id: "cs1",
+        submittedBy: "u1",
+        moderationStatus: "pending",
+        originalLanguage: "ar",
+        title: { ar: "فيضانات لاغوس", en: "Lagos floods" },
+        excerpt: { ar: "ب".repeat(60), en: "E".repeat(30) },
+        content: { ar: portableTextToLexical(arStory), en: null },
+        authors: [
+          { id: "a1", name: "Amina", email: "amina@example.org", role: "lead", userId: "u1", clerkUserId: "u1" },
+          { id: "a2", name: "Bola", role: "coauthor", userId: "u2" },
+        ],
+        studyLocation: [3.39, 6.45],
+        locationDisplayText: "Lagos, Nigeria",
+        locationPrecision: "city",
+        locationCountryCode: "NGA",
+        locationText: { country: "Nigeria", city: "Lagos" },
+        image: { asset: { id: "media-7", url: "/api/media/file/cover.jpg" }, alt: "Cover" },
+        suggestedTags: ["floods"],
+      };
+      mockPayloadQueryRaw.mockResolvedValue(row as never);
+
+      const doc = await loadEditableCaseStudy("cs1", "u1");
+      expect(doc).not.toBeNull();
+      const values = fromStored(doc!, emptyValues({ name: "Someone Else", email: "else@example.org" }));
+      expect(values.originalLanguage).toBe("ar");
+      expect(values.title).toEqual({ ar: "فيضانات لاغوس", en: "Lagos floods" });
+      expect(JSON.stringify(values.content)).toContain("قصة الفيضانات");
+      expect(values.authors).toEqual([
+        { name: "Amina", email: "amina@example.org", role: "lead", userId: "u1" },
+        { name: "Bola", email: "", role: "coauthor", userId: "u2" },
+      ]);
+      expect(values.place).toEqual({ lat: 6.45, lng: 3.39, text: "Lagos, Nigeria", precision: "city", countryCode3: "NGA", country: "Nigeria", city: "Lagos" });
+      expect(values.imageAssetId).toBe("media-7");
+      expect(values.imageUrl).toBe("/api/media/file/cover.jpg");
+      expect(values.suggestedTags).toEqual(["floods"]);
+
+      // The form's first autosave sends exactly these values back.
+      await saveSubmissionEdits("u1", "cs1", JSON.parse(JSON.stringify(values)));
+      const calls = mockPayloadUpdate.mock.calls.map(([arg]) => arg as { locale: string; data: Record<string, unknown> });
+      expect(calls[0].locale).toBe("ar");
+      expect(calls[0].data).toMatchObject({ title: "فيضانات لاغوس", originalLanguage: "ar" });
+      expect((calls[0].data.authors as Array<{ name: string; userId?: string }>).map((a) => [a.name, a.userId])).toEqual([
+        ["Amina", "u1"],
+        ["Bola", "u2"],
+      ]);
+      expect(calls.some((c) => c.locale === "en" && "content" in c.data)).toBe(false);
     });
 
     it("saveSubmissionEdits with imageAssetId: null removes the cover; undefined leaves it alone", async () => {

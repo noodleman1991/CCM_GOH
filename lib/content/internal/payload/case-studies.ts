@@ -588,6 +588,7 @@ interface CaseStudyRow {
   locationCountryCode?: string | null;
   locationDisplayText?: string | null;
   originalLanguage?: string | null;
+  suggestedTags?: unknown;
   studyAreas?: unknown;
   seoTitle?: string | null;
   seoDescription?: string | null;
@@ -1415,6 +1416,15 @@ export interface RawEditableCaseStudy {
   relatedCommunity?: string;
   tags?: string[];
   organizationName?: string;
+  /** Everything below is what the form needs to reopen the story as it was
+   *  sent, so an autosave doesn't write defaults back over it. */
+  originalLanguage?: string;
+  authors?: Array<{ name?: string; email?: string; role?: string; userId?: string }>;
+  /** The form's place, rebuilt from the location columns; null when none was chosen. */
+  place?: Row | null;
+  imageAssetId?: string;
+  imageUrl?: string;
+  suggestedTags?: string[];
 }
 
 /**
@@ -1442,7 +1452,12 @@ export async function loadEditableCaseStudyDoc(id: string): Promise<RawEditableC
   });
   if (!row) return null;
 
-  const body = row.content ? Object.values(row.content).find(Boolean) : undefined;
+  // The story is stored in the language it was written in; read that locale
+  // first, then any other that holds one.
+  const originalLanguage = text(row.originalLanguage);
+  const contents = (row.content ?? {}) as Record<string, unknown>;
+  const body = (originalLanguage ? contents[originalLanguage] : undefined) ?? Object.values(contents).find(Boolean);
+  const asset = isRow(row.image) ? row.image.asset : undefined;
   const period = groupOrNull({
     endDate: orNull(isoDay(row.studyPeriod?.endDate)),
     startDate: orNull(isoDay(row.studyPeriod?.startDate)),
@@ -1473,6 +1488,17 @@ export async function loadEditableCaseStudyDoc(id: string): Promise<RawEditableC
     // writes an `organizations` reference instead), so this projected key has
     // always resolved to undefined. Reproduced, not invented.
     organizationName: undefined,
+    originalLanguage,
+    authors: Array.isArray(row.authors)
+      ? row.authors.filter(isRow).map((raw) => {
+          const author = raw as AuthorRow;
+          return { name: text(author.name), email: text(author.email), role: text(author.role), userId: text(author.userId) };
+        })
+      : undefined,
+    place: draftPlace(row),
+    imageAssetId: relationId(asset),
+    imageUrl: isRow(asset) ? text(asset.url) : undefined,
+    suggestedTags: stringList(row.suggestedTags),
   };
 }
 
@@ -2007,9 +2033,12 @@ export async function getCaseStudyDraftById(
   return row ? draftDocument(row) : null;
 }
 
-/** The form's place, rebuilt from the draft's location columns — only when a
- *  place was actually chosen (a point and its display text). */
-function draftPlace(row: DraftRow): Row | null {
+/** The form's place, rebuilt from a draft's (or a submitted case study's)
+ *  location columns — only when a place was actually chosen (a point and its
+ *  display text). */
+function draftPlace(
+  row: Pick<DraftRow, "studyLocation" | "locationDisplayText" | "locationText" | "locationPrecision" | "locationCountryCode">,
+): Row | null {
   const point = geopoint(row.studyLocation);
   const label = text(row.locationDisplayText);
   if (!point || !label) return null;

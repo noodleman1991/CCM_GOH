@@ -1106,6 +1106,12 @@ interface RawEditableCaseStudyDoc {
   relatedCommunity?: string;
   tags?: string[];
   organizationName?: string;
+  originalLanguage?: string;
+  authors?: Array<{ name?: string; email?: string; role?: string; userId?: string }>;
+  place?: Record<string, unknown> | null;
+  imageAssetId?: string;
+  imageUrl?: string;
+  suggestedTags?: string[];
 }
 
 export async function loadEditableCaseStudy(
@@ -1129,7 +1135,15 @@ export async function loadEditableCaseStudy(
       studyPeriod, locationText, locationDisplayText,
       "relatedCommunity": relatedCommunity._ref,
       "tags": tags[]._ref,
-      organizationName
+      organizationName, originalLanguage, suggestedTags,
+      "authors": authors[]{ name, email, role, userId },
+      "place": select(defined(studyLocation.lat) && defined(locationDisplayText) => {
+        "lat": studyLocation.lat, "lng": studyLocation.lng, "text": locationDisplayText,
+        "precision": coalesce(locationPrecision, "exact"), "countryCode3": locationCountryCode,
+        "country": locationText.country, "city": locationText.city
+      }),
+      "imageAssetId": image.asset._ref,
+      "imageUrl": image.asset->url
     }`,
         { id },
       );
@@ -1165,6 +1179,15 @@ export async function loadEditableCaseStudy(
     relatedCommunity: doc.relatedCommunity ?? "",
     organizationName: doc.organizationName ?? "",
     selectedTags: doc.tags ?? [],
+    // What the form needs to reopen the story as it was sent. Without these it
+    // fell back to English and the signed-in user as sole author, and the
+    // first autosave wrote those defaults over the stored story.
+    ...(doc.originalLanguage ? { originalLanguage: doc.originalLanguage } : {}),
+    ...(doc.authors?.length ? { authors: doc.authors } : {}),
+    place: doc.place ?? null,
+    ...(doc.imageAssetId ? { imageAssetId: doc.imageAssetId } : {}),
+    ...(doc.imageUrl ? { imageUrl: doc.imageUrl } : {}),
+    suggestedTags: doc.suggestedTags ?? [],
   };
 }
 
