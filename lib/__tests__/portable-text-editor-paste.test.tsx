@@ -57,3 +57,23 @@ describe("story editor markdown paste", () => {
     expect(paste(view, "# a comment\n- item\nprint('hi')")).toBe(false);
   });
 });
+
+describe("story editor becoming editable", () => {
+  it("does not report a change when it unlocks (no spurious autosave on load)", async () => {
+    const onChange = vi.fn();
+    const tree = (readOnly: boolean) => (
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <PortableTextEditor value={[]} onChangeAction={onChange} readOnly={readOnly} />
+      </NextIntlClientProvider>
+    );
+    const { container, rerender } = render(tree(true));
+    const el = await waitFor(() => {
+      const found = container.querySelector(".ProseMirror") as ViewEl | null;
+      if (!found?.editor?.view) throw new Error("editor not mounted");
+      return found;
+    });
+    rerender(tree(false));
+    await waitFor(() => expect(el.editor!.isEditable).toBe(true));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

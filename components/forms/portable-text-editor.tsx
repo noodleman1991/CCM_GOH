@@ -226,7 +226,9 @@ export default function PortableTextEditor({
         else dom.removeAttribute('aria-describedby');
     }, [editor, invalid, errorLink]);
     useEffect(() => {
-        if (editor && editor.isEditable === readOnly) editor.setEditable(!readOnly);
+        // false: unlocking is not an edit, so it must not fire onUpdate (that
+        // would autosave a freshly loaded, untouched form).
+        if (editor && editor.isEditable === readOnly) editor.setEditable(!readOnly, false);
     }, [editor, readOnly]);
 
     if (!editor) {
