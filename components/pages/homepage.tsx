@@ -2,6 +2,7 @@ import Hero1 from "@/components/blocks/hero/hero-1";
 import SplitRow from "@/components/blocks/split/split-row";
 import GridRow from "@/components/blocks/grid/grid-row";
 import Carousel2 from "@/components/blocks/carousel/carousel-2";
+import LivedExperiencesCarousel from "@/components/blocks/carousel/lived-experiences-carousel";
 import Cta1 from "@/components/blocks/cta/cta-1";
 import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import Blocks from "@/components/blocks";
@@ -11,6 +12,7 @@ import {
   getHomepageAgendas,
   getHomepageNews,
 } from "@/lib/content/pages";
+import { resolveLivedExperiencesSection } from "@/lib/content/homepage-lived-experiences";
 
 type DynamicMode = "dynamic-recent" | "dynamic-featured";
 
@@ -212,9 +214,10 @@ export default async function Homepage({ homepage, locale, userId }: HomepagePro
     );
   }
 
-  const [agendasModule, news] = await Promise.all([
+  const [agendasModule, news, livedExperiences] = await Promise.all([
     resolveAgendasSection(homepage.agendasModule),
     resolveNewsSection(homepage.news),
+    resolveLivedExperiencesSection(homepage.livedExperiences, locale),
   ]);
 
   return (
@@ -252,11 +255,20 @@ export default async function Homepage({ homepage, locale, userId }: HomepagePro
         />
       )}
 
-      {/* Section 5: Lived Experiences Stories */}
-      {homepage.livedExperiences && (
+      {/* Section 5: Lived Experiences Stories — hand-picked testimonials win
+          when any are picked (today's behaviour); otherwise the latest
+          published lived experiences fill the section, keeping its heading;
+          with none at all, the section is hidden rather than showing an
+          empty carousel (lib/content/homepage-lived-experiences.ts). */}
+      {livedExperiences.mode === "manual" && (
         <Carousel2
-          {...homepage.livedExperiences}
+          {...livedExperiences.section}
           locale={locale}
+        />
+      )}
+      {livedExperiences.mode === "auto" && (
+        <LivedExperiencesCarousel
+          {...livedExperiences.section}
         />
       )}
 
