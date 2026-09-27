@@ -1654,7 +1654,12 @@
       "mediaBody": "Add YouTube videos to share talks, demos, or recordings with the workspace."
     },
     "mediaConsentRequired": "This video needs cookie consent to play.",
-    "dropToUpload": "Drag a file here or"
+    "dropToUpload": "Drag a file here or",
+    "homePlanProgress": "Plan progress",
+    "homePlanProgressSubtitle": "How far the stages have moved toward done.",
+    "homeActivity": "Recent activity",
+    "homeActivitySubtitle": "The latest changes across docs and outputs.",
+    "homeViewMembers": "members"
   },
   "messages": {
     "title": "Messages",

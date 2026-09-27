@@ -1654,7 +1654,12 @@
       "mediaBody": "Ajoutez des vidéos YouTube pour partager des présentations, des démos ou des enregistrements avec l'espace de travail."
     },
     "mediaConsentRequired": "Cette vidéo nécessite le consentement aux cookies.",
-    "dropToUpload": "Glissez un fichier ici ou"
+    "dropToUpload": "Glissez un fichier ici ou",
+    "homePlanProgress": "Progression du plan",
+    "homePlanProgressSubtitle": "Où en sont les étapes par rapport à leur achèvement.",
+    "homeActivity": "Activité récente",
+    "homeActivitySubtitle": "Les derniers changements dans les documents et les résultats.",
+    "homeViewMembers": "membres"
   },
   "messages": {
     "title": "Messages",
