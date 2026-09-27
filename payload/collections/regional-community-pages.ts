@@ -136,14 +136,15 @@ export const RegionalCommunityPages: CollectionConfig = {
           name: "enabled",
           type: "checkbox",
           label: "Show the atlas embed",
-          // Deliberately no defaultValue. Sanity declares `initialValue:
-          // false`, but 0/29 documents store atlasEmbed at all, so that
-          // initial value has never been written — and the renderer reads it
-          // as opt-OUT (`atlasEmbed?.enabled !== false`), i.e. absent means
-          // shown. Defaulting to false here would turn the atlas OFF on every
-          // regional page the moment a document is saved. Leaving it unset
-          // preserves today's behaviour exactly.
-          admin: { description: "Leave unset to show it (the seven canonical regions show it by default)." },
+          // `defaultValue: true` matches the renderer's actual opt-OUT
+          // reading (`atlasEmbed?.enabled !== false`, i.e. absent or true
+          // means shown) so a new document's checkbox is visibly ticked
+          // rather than unset-but-secretly-on — the state that let the
+          // import regression (2026-09-27) go unnoticed: it wrote an
+          // explicit `false` for every document and nothing in the admin UI
+          // showed that as a change from the intended default.
+          defaultValue: true,
+          admin: { description: "Uncheck to hide the atlas embed on this regional page." },
         },
         {
           name: "showBreakdown",

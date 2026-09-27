@@ -2055,7 +2055,7 @@ export interface RegionalCommunityPage {
    */
   atlasEmbed?: {
     /**
-     * Leave unset to show it (the seven canonical regions show it by default).
+     * Uncheck to hide the atlas embed on this regional page.
      */
     enabled?: boolean | null;
     showBreakdown?: boolean | null;

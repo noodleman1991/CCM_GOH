@@ -1655,7 +1655,17 @@ const buildRegionalCommunityPage: DocBuilder = (doc, canonical, locale, ctx) => 
     sections: CONTENT_GRID_SLOTS.map(({ field, contentType }) =>
       contentGridSection(field, contentType, doc[field], { ...args, path: field }),
     ).filter((s): s is PayloadData => s !== undefined),
-    atlasEmbed: { enabled: atlas?.enabled === true, showBreakdown: atlas?.showBreakdown !== false },
+    // `enabled` is opt-OUT: 0/29 source documents ever stored `atlasEmbed`, and
+    // the renderer treats "unset" as shown (`atlasEmbed?.enabled !== false`,
+    // payload/collections/regional-community-pages.ts's own comment). Writing
+    // an explicit `false` for that missing value — as this line used to do —
+    // forces every regional page into the hidden state, which is the bug this
+    // guards against. Only an explicit source value (true or false) is carried
+    // through; a missing one leaves the Payload field unset.
+    atlasEmbed: {
+      ...(atlas?.enabled !== undefined ? { enabled: atlas.enabled === true } : {}),
+      showBreakdown: atlas?.showBreakdown !== false,
+    },
     logoCloud: slot("logoCloud1", doc.logoCloud, { ...args, path: "logoCloud" }),
     meta_title: text(doc.meta_title, locale) ?? null,
     meta_description: text(doc.meta_description, locale) ?? null,

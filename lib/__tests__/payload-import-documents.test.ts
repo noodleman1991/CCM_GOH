@@ -686,6 +686,52 @@ describe("archive-specific shapes", () => {
     expect(sections[1].showSection).toBeUndefined();
   });
 
+  it("leaves regionalCommunityPage.atlasEmbed.enabled unset when Sanity never stored it", () => {
+    // 0/29 documents store atlasEmbed at all (see payload/collections/
+    // regional-community-pages.ts's own comment): the field's "unset" is what
+    // the renderer reads as "shown" (`atlasEmbed?.enabled !== false`). Writing
+    // an explicit `false` for a missing source value forces every regional
+    // page into the hidden state — exactly the regression this pins.
+    const doc: SanityDoc = {
+      _id: "regional-community-page-oceania",
+      _type: "regionalCommunityPage",
+      language: "en",
+      title: "Oceania",
+      slug: { _type: "slug", current: "oceania" },
+      useTemplate: true,
+      regionalCommunity: { _ref: "regional-community-oceania", _type: "reference" },
+    };
+    const target = buildTarget(
+      "regionalCommunityPage",
+      { kind: "perLocale", canonical: doc, docs: { en: doc } },
+      context(["regional-community-oceania"]),
+    );
+    const atlasEmbed = target.data.en!.atlasEmbed as PayloadData;
+    expect(atlasEmbed.enabled).toBeUndefined();
+    expect("enabled" in atlasEmbed).toBe(false);
+  });
+
+  it("preserves an explicit atlasEmbed.enabled from Sanity, true or false", () => {
+    const doc: SanityDoc = {
+      _id: "regional-community-page-oceania",
+      _type: "regionalCommunityPage",
+      language: "en",
+      title: "Oceania",
+      slug: { _type: "slug", current: "oceania" },
+      useTemplate: true,
+      regionalCommunity: { _ref: "regional-community-oceania", _type: "reference" },
+      atlasEmbed: { enabled: false, showBreakdown: false },
+    };
+    const target = buildTarget(
+      "regionalCommunityPage",
+      { kind: "perLocale", canonical: doc, docs: { en: doc } },
+      context(["regional-community-oceania"]),
+    );
+    const atlasEmbed = target.data.en!.atlasEmbed as PayloadData;
+    expect(atlasEmbed.enabled).toBe(false);
+    expect(atlasEmbed.showBreakdown).toBe(false);
+  });
+
   it("normalizes the legacy sectionWidth value the enum no longer offers", () => {
     // 4 of the 19 stored values are `"full"`. Both renderers test
     // `=== "narrow"`, so "full" and "default" already render identically —
