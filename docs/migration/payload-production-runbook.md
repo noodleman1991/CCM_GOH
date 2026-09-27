@@ -221,3 +221,48 @@ Task 18's gates (full test suite, `tsc`, lint of the changed files, a real-libra
    5. Paste `## Findings\n- one\n- two` into the story — a heading and a list.
    6. Add a cover image, leave, reopen from the dashboard — the image, place and language are all still there.
    7. Submit, then open it again from the dashboard while it's pending, change a word, wait 2 s, reload — the change is kept and the status is still "In review".
+
+## 2026-09-27 live fixes
+
+Three live-bug fixes on `master` (not a feature branch — this repo's only branch). Full test suite (3203 tests), `tsc --noEmit`, and lint of the changed files all green; verified on the dev server (rendered markup + `curl`) before writing this section. Two of the three audited bugs did not actually reproduce on dev — see the notes under each heading; nothing beyond bug 1's steps below needs to run against production for this batch.
+
+### Bug 1 — atlas embed hidden on regional community pages
+
+Root cause: `scripts/payload-import/lib/transform.ts`'s `buildRegionalCommunityPage` wrote an explicit `enabled: false` for every regional page's `atlasEmbed`, even though no Sanity source document ever set the field (the schema's own comment says "unset" means shown). `lib/content/internal/payload/regional-community.ts` already maps a stored `false` back to `null` on the read side, which is why the atlas was still actually rendering on dev — but the stored value was wrong and the admin checkbox showed unticked, which would confuse an editor and would misfire again the moment the read-side mitigation is ever simplified away. Fixed at all three layers: the transform now leaves `enabled` unset for a missing source value; the field gets `defaultValue: true`; a kept script (`scripts/regional-pages/show-atlas.ts`) turns the checkbox back on for any page where it is explicitly `false`.
+
+This shipped an additive Postgres migration, not yet on production: `20260927_094948_atlas_embed_enabled_default` (`ALTER TABLE regional_pages ALTER COLUMN atlas_embed_enabled SET DEFAULT true`, plus the versions table's mirror column — both nullable columns, no backfill, no data loss).
+
+1. Before deploy — optional pre-check, same as the 2026-09-26 section above:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status
+   ```
+   Expect `20260927_094948_atlas_embed_enabled_default` listed as not yet run.
+
+2. Deploy first (manual, by the user):
+   ```
+   vercel --prod
+   ```
+   Then re-run `migrate:status` and confirm the migration now shows as applied.
+
+3. Data fix, after the deploy. Dry run first (read-only; needs `--production` or `--allow-production`):
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/regional-pages/show-atlas.ts --production
+   ```
+   Read the printed table — every regional community page it lists has the atlas explicitly hidden today. If that list looks right (it was all seven on dev), execute:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/regional-pages/show-atlas.ts --production --execute
+   ```
+
+4. Manual check: open a regional community page in production (e.g. `/en/communities/sub-saharan-africa`) and confirm the atlas section renders. It likely already does, same as on dev (the read-side mitigation above) — this step is to confirm the checkbox itself now shows correctly ticked in the admin UI for a page you open there.
+
+### Bug 2 — Central & Southern Asia regional page: did not reproduce
+
+The audit flagged this page as `_status: draft`, on the theory that the public route's published-only reader would then 404 it. On investigation this does not reproduce: reading the collection's **main table row** (`draft: false`, which is what the public route actually does) shows all seven regional community pages, including this one, as `_status: "published"`. The `draft: true` read that surfaces `"draft"` for this one page is fetching the *newest version*, not the published state — this collection genuinely carries one extra unpublished draft **version** on top of its published row (`lib/content/internal/payload/regional-community.ts`'s own comment already documents this as an expected Task 13 import artifact, preserving real unpublished edit history from Sanity). Confirmed live: `curl localhost:3000/en/communities/central-and-southern-asia` returns `200` with the full rendered page (real title, atlas markup, sections) — not a 404, and no different from the other six regional pages.
+
+No fix needed: the page is already published, so nothing was published on DEV, and no fallback-on-404 code was added (the route does not 404 for this page today, so that precondition never triggered). Production action: none required for this specific finding; if you want the unpublished draft *edit* (not the published page) reviewed or discarded, that is an editorial decision in the CMS, not a bug fix.
+
+### Bug 3 — homepage "Lived Experiences Stories" carousel: fixed, dev-only, no DB change
+
+Root cause: the homepage's `livedExperiences` slot is a hand-picked `carousel2` block (`payload/blocks/carousel-2.ts`) and its `testimonial` list is empty on all four language documents (0 of 4 — same finding the block's own code comment already recorded). `components/pages/homepage.tsx` rendered `Carousel2` unconditionally whenever the slot existed, so the section showed its heading over zero cards.
+
+Fixed in code only (`lib/content/homepage-lived-experiences.ts`, wired into `components/pages/homepage.tsx`) — no data or schema change, so nothing to run against production beyond deploying the code: when no testimonials are hand-picked, the section now falls back to the latest ~8 published lived experiences (the same automatic feed the regional community template already uses), keeping the slot's own heading. Hand-picked testimonials still win outright if an editor ever picks any. With no lived experiences at all, the section is hidden rather than showing an empty carousel. Verified on dev: the homepage now renders 8 real lived-experience cards under the heading "Stories of grief, resilience, and hope".
