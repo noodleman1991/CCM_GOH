@@ -45,4 +45,10 @@ describe("homepage on sections", async () => {
     const filters = named(contentFeed.fields, "filters")!;
     expect(named(filters.fields, "organizations")).toMatchObject({ type: "relationship", relationTo: "organizations", hasMany: true });
   });
+
+  it("keeps button text translatable, so a shared layout still has each language's labels", async () => {
+    const { linksArrayField, linkField } = await import("@/payload/blocks/shared");
+    expect(named(linksArrayField().fields, "title")).toMatchObject({ type: "text", localized: true });
+    expect(named(linkField().fields, "title")).toMatchObject({ type: "text", localized: true });
+  });
 });

@@ -11,7 +11,7 @@ import * as migration_20260926_155648_human_friendly_forms from './20260926_1556
 import * as migration_20260926_175525_draft_layout_and_suggestions from './20260926_175525_draft_layout_and_suggestions';
 import * as migration_20260927_094948_atlas_embed_enabled_default from './20260927_094948_atlas_embed_enabled_default';
 import * as migration_20260928_130239_page_sections_and_drafts from './20260928_130239_page_sections_and_drafts';
-import * as migration_20260928_145734_homepage_sections_and_organisations from './20260928_145734_homepage_sections_and_organisations';
+import * as migration_20260928_150942_homepage_sections_and_organisations from './20260928_150942_homepage_sections_and_organisations';
 
 export const migrations = [
   {
@@ -80,8 +80,8 @@ export const migrations = [
     name: '20260928_130239_page_sections_and_drafts',
   },
   {
-    up: migration_20260928_145734_homepage_sections_and_organisations.up,
-    down: migration_20260928_145734_homepage_sections_and_organisations.down,
-    name: '20260928_145734_homepage_sections_and_organisations'
+    up: migration_20260928_150942_homepage_sections_and_organisations.up,
+    down: migration_20260928_150942_homepage_sections_and_organisations.down,
+    name: '20260928_150942_homepage_sections_and_organisations'
   },
 ];

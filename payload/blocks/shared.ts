@@ -199,7 +199,10 @@ function buttonVariantField(name = "buttonVariant"): GroupField {
 
 function linkFields(): Field[] {
   return [
-    { name: "title", type: "text", admin: { description: "Button text." } },
+    // Translatable (CMS project 2): in a shared-layout section list each
+    // language needs its own button text. Inside a per-language list Payload
+    // strips the flag, so those lists store exactly what they did before.
+    localizedText("title", { admin: { description: "Button text." } }),
     {
       name: "href",
       type: "text",

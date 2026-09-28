@@ -86,12 +86,18 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" varchar NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
-  	"title" varchar,
   	"href" varchar,
   	"target" boolean,
   	"button_variant_variant" "enum_btn_variant" DEFAULT 'default',
   	"button_variant_size" "enum_btn_size" DEFAULT 'default',
   	"button_variant_stroke" "enum_btn_stroke" DEFAULT 'none'
+  );
+  
+  CREATE TABLE "hp_s_hero1_links_locales" (
+  	"title" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" varchar NOT NULL
   );
   
   CREATE TABLE "hp_s_hero1" (
@@ -131,12 +137,18 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" varchar NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
-  	"title" varchar,
   	"href" varchar,
   	"target" boolean,
   	"button_variant_variant" "enum_btn_variant" DEFAULT 'default',
   	"button_variant_size" "enum_btn_size" DEFAULT 'default',
   	"button_variant_stroke" "enum_btn_stroke" DEFAULT 'none'
+  );
+  
+  CREATE TABLE "hp_s_hero2_links_locales" (
+  	"title" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" varchar NOT NULL
   );
   
   CREATE TABLE "hp_s_hero2" (
@@ -198,7 +210,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"sticky" boolean DEFAULT false,
   	"padding_top" boolean,
   	"padding_bottom" boolean,
-  	"link_title" varchar,
   	"link_href" varchar,
   	"link_target" boolean,
   	"link_button_variant_variant" "enum_btn_variant" DEFAULT 'default',
@@ -211,6 +222,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"tag_line" varchar,
   	"title" varchar,
   	"body" jsonb,
+  	"link_title" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" varchar NOT NULL
@@ -419,7 +431,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_path" text NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"image_asset_id" varchar,
-  	"link_title" varchar,
   	"link_href" varchar,
   	"link_target" boolean,
   	"link_button_variant_variant" "enum_btn_variant" DEFAULT 'default',
@@ -432,6 +443,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar,
   	"excerpt" varchar,
   	"image_alt" varchar,
+  	"link_title" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" varchar NOT NULL
@@ -536,12 +548,18 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" varchar NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
-  	"title" varchar,
   	"href" varchar,
   	"target" boolean,
   	"button_variant_variant" "enum_btn_variant" DEFAULT 'default',
   	"button_variant_size" "enum_btn_size" DEFAULT 'default',
   	"button_variant_stroke" "enum_btn_stroke" DEFAULT 'none'
+  );
+  
+  CREATE TABLE "hp_s_cta1_links_locales" (
+  	"title" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" varchar NOT NULL
   );
   
   CREATE TABLE "hp_s_cta1" (
@@ -1162,13 +1180,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" serial PRIMARY KEY NOT NULL,
-  	"title" varchar,
   	"href" varchar,
   	"target" boolean,
   	"button_variant_variant" "enum_btn_variant" DEFAULT 'default',
   	"button_variant_size" "enum_btn_size" DEFAULT 'default',
   	"button_variant_stroke" "enum_btn_stroke" DEFAULT 'none',
   	"_uuid" varchar
+  );
+  
+  CREATE TABLE "_hp_s_hero1_v_links_locales" (
+  	"title" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
   );
   
   CREATE TABLE "_hp_s_hero1_v" (
@@ -1209,13 +1233,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" serial PRIMARY KEY NOT NULL,
-  	"title" varchar,
   	"href" varchar,
   	"target" boolean,
   	"button_variant_variant" "enum_btn_variant" DEFAULT 'default',
   	"button_variant_size" "enum_btn_size" DEFAULT 'default',
   	"button_variant_stroke" "enum_btn_stroke" DEFAULT 'none',
   	"_uuid" varchar
+  );
+  
+  CREATE TABLE "_hp_s_hero2_v_links_locales" (
+  	"title" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
   );
   
   CREATE TABLE "_hp_s_hero2_v" (
@@ -1279,7 +1309,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"sticky" boolean DEFAULT false,
   	"padding_top" boolean,
   	"padding_bottom" boolean,
-  	"link_title" varchar,
   	"link_href" varchar,
   	"link_target" boolean,
   	"link_button_variant_variant" "enum_btn_variant" DEFAULT 'default',
@@ -1293,6 +1322,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"tag_line" varchar,
   	"title" varchar,
   	"body" jsonb,
+  	"link_title" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" integer NOT NULL
@@ -1512,7 +1542,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_path" text NOT NULL,
   	"id" serial PRIMARY KEY NOT NULL,
   	"image_asset_id" varchar,
-  	"link_title" varchar,
   	"link_href" varchar,
   	"link_target" boolean,
   	"link_button_variant_variant" "enum_btn_variant" DEFAULT 'default',
@@ -1526,6 +1555,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar,
   	"excerpt" varchar,
   	"image_alt" varchar,
+  	"link_title" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" integer NOT NULL
@@ -1635,13 +1665,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" serial PRIMARY KEY NOT NULL,
-  	"title" varchar,
   	"href" varchar,
   	"target" boolean,
   	"button_variant_variant" "enum_btn_variant" DEFAULT 'default',
   	"button_variant_size" "enum_btn_size" DEFAULT 'default',
   	"button_variant_stroke" "enum_btn_stroke" DEFAULT 'none',
   	"_uuid" varchar
+  );
+  
+  CREATE TABLE "_hp_s_cta1_v_links_locales" (
+  	"title" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
   );
   
   CREATE TABLE "_hp_s_cta1_v" (
@@ -2320,12 +2356,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_homepage_v_rels" ADD COLUMN "tags_id" varchar;
   ALTER TABLE "_homepage_v_rels" ADD COLUMN "organizations_id" varchar;
   ALTER TABLE "hp_s_hero1_links" ADD CONSTRAINT "hp_s_hero1_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_hero1"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hp_s_hero1_links_locales" ADD CONSTRAINT "hp_s_hero1_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_hero1_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_hero1" ADD CONSTRAINT "hp_s_hero1_background_svg_pattern_id_media_id_fk" FOREIGN KEY ("background_svg_pattern_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_hero1" ADD CONSTRAINT "hp_s_hero1_background_image_asset_id_media_id_fk" FOREIGN KEY ("background_image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_hero1" ADD CONSTRAINT "hp_s_hero1_image_asset_id_media_id_fk" FOREIGN KEY ("image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_hero1" ADD CONSTRAINT "hp_s_hero1_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."homepage"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_hero1_locales" ADD CONSTRAINT "hp_s_hero1_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_hero1"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_hero2_links" ADD CONSTRAINT "hp_s_hero2_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_hero2"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hp_s_hero2_links_locales" ADD CONSTRAINT "hp_s_hero2_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_hero2_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_hero2" ADD CONSTRAINT "hp_s_hero2_background_svg_pattern_id_media_id_fk" FOREIGN KEY ("background_svg_pattern_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_hero2" ADD CONSTRAINT "hp_s_hero2_background_image_asset_id_media_id_fk" FOREIGN KEY ("background_image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_hero2" ADD CONSTRAINT "hp_s_hero2_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."homepage"("id") ON DELETE cascade ON UPDATE no action;
@@ -2376,6 +2414,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "hp_s_regionMap_locales" ADD CONSTRAINT "hp_s_regionMap_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_regionMap"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_atlasEmbed" ADD CONSTRAINT "hp_s_atlasEmbed_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."homepage"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_cta1_links" ADD CONSTRAINT "hp_s_cta1_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_cta1"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hp_s_cta1_links_locales" ADD CONSTRAINT "hp_s_cta1_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hp_s_cta1_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_s_cta1" ADD CONSTRAINT "hp_s_cta1_background_svg_pattern_id_media_id_fk" FOREIGN KEY ("background_svg_pattern_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_cta1" ADD CONSTRAINT "hp_s_cta1_background_image_asset_id_media_id_fk" FOREIGN KEY ("background_image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "hp_s_cta1" ADD CONSTRAINT "hp_s_cta1_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."homepage"("id") ON DELETE cascade ON UPDATE no action;
@@ -2444,12 +2483,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "hp_l_logoCloud1" ADD CONSTRAINT "hp_l_logoCloud1_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."homepage"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "hp_l_carousel2" ADD CONSTRAINT "hp_l_carousel2_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."homepage"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_hero1_v_links" ADD CONSTRAINT "_hp_s_hero1_v_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_hero1_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_hp_s_hero1_v_links_locales" ADD CONSTRAINT "_hp_s_hero1_v_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_hero1_v_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_hero1_v" ADD CONSTRAINT "_hp_s_hero1_v_background_svg_pattern_id_media_id_fk" FOREIGN KEY ("background_svg_pattern_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_hero1_v" ADD CONSTRAINT "_hp_s_hero1_v_background_image_asset_id_media_id_fk" FOREIGN KEY ("background_image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_hero1_v" ADD CONSTRAINT "_hp_s_hero1_v_image_asset_id_media_id_fk" FOREIGN KEY ("image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_hero1_v" ADD CONSTRAINT "_hp_s_hero1_v_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_homepage_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_hero1_v_locales" ADD CONSTRAINT "_hp_s_hero1_v_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_hero1_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_hero2_v_links" ADD CONSTRAINT "_hp_s_hero2_v_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_hero2_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_hp_s_hero2_v_links_locales" ADD CONSTRAINT "_hp_s_hero2_v_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_hero2_v_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_hero2_v" ADD CONSTRAINT "_hp_s_hero2_v_background_svg_pattern_id_media_id_fk" FOREIGN KEY ("background_svg_pattern_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_hero2_v" ADD CONSTRAINT "_hp_s_hero2_v_background_image_asset_id_media_id_fk" FOREIGN KEY ("background_image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_hero2_v" ADD CONSTRAINT "_hp_s_hero2_v_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_homepage_v"("id") ON DELETE cascade ON UPDATE no action;
@@ -2500,6 +2541,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_hp_s_regionMap_v_locales" ADD CONSTRAINT "_hp_s_regionMap_v_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_regionMap_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_atlasEmbed_v" ADD CONSTRAINT "_hp_s_atlasEmbed_v_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_homepage_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_cta1_v_links" ADD CONSTRAINT "_hp_s_cta1_v_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_cta1_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_hp_s_cta1_v_links_locales" ADD CONSTRAINT "_hp_s_cta1_v_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_hp_s_cta1_v_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_hp_s_cta1_v" ADD CONSTRAINT "_hp_s_cta1_v_background_svg_pattern_id_media_id_fk" FOREIGN KEY ("background_svg_pattern_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_cta1_v" ADD CONSTRAINT "_hp_s_cta1_v_background_image_asset_id_media_id_fk" FOREIGN KEY ("background_image_asset_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_hp_s_cta1_v" ADD CONSTRAINT "_hp_s_cta1_v_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_homepage_v"("id") ON DELETE cascade ON UPDATE no action;
@@ -2569,6 +2611,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_hp_l_carousel2_v" ADD CONSTRAINT "_hp_l_carousel2_v_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_homepage_v"("id") ON DELETE cascade ON UPDATE no action;
   CREATE INDEX "hp_s_hero1_links_order_idx" ON "hp_s_hero1_links" USING btree ("_order");
   CREATE INDEX "hp_s_hero1_links_parent_id_idx" ON "hp_s_hero1_links" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "hp_s_hero1_links_locales_locale_parent_id_unique" ON "hp_s_hero1_links_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "hp_s_hero1_order_idx" ON "hp_s_hero1" USING btree ("_order");
   CREATE INDEX "hp_s_hero1_parent_id_idx" ON "hp_s_hero1" USING btree ("_parent_id");
   CREATE INDEX "hp_s_hero1_path_idx" ON "hp_s_hero1" USING btree ("_path");
@@ -2578,6 +2621,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE UNIQUE INDEX "hp_s_hero1_locales_locale_parent_id_unique" ON "hp_s_hero1_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "hp_s_hero2_links_order_idx" ON "hp_s_hero2_links" USING btree ("_order");
   CREATE INDEX "hp_s_hero2_links_parent_id_idx" ON "hp_s_hero2_links" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "hp_s_hero2_links_locales_locale_parent_id_unique" ON "hp_s_hero2_links_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "hp_s_hero2_order_idx" ON "hp_s_hero2" USING btree ("_order");
   CREATE INDEX "hp_s_hero2_parent_id_idx" ON "hp_s_hero2" USING btree ("_parent_id");
   CREATE INDEX "hp_s_hero2_path_idx" ON "hp_s_hero2" USING btree ("_path");
@@ -2668,6 +2712,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "hp_s_atlasEmbed_path_idx" ON "hp_s_atlasEmbed" USING btree ("_path");
   CREATE INDEX "hp_s_cta1_links_order_idx" ON "hp_s_cta1_links" USING btree ("_order");
   CREATE INDEX "hp_s_cta1_links_parent_id_idx" ON "hp_s_cta1_links" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "hp_s_cta1_links_locales_locale_parent_id_unique" ON "hp_s_cta1_links_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "hp_s_cta1_order_idx" ON "hp_s_cta1" USING btree ("_order");
   CREATE INDEX "hp_s_cta1_parent_id_idx" ON "hp_s_cta1" USING btree ("_parent_id");
   CREATE INDEX "hp_s_cta1_path_idx" ON "hp_s_cta1" USING btree ("_path");
@@ -2835,6 +2880,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "hp_l_carousel2_locale_idx" ON "hp_l_carousel2" USING btree ("_locale");
   CREATE INDEX "_hp_s_hero1_v_links_order_idx" ON "_hp_s_hero1_v_links" USING btree ("_order");
   CREATE INDEX "_hp_s_hero1_v_links_parent_id_idx" ON "_hp_s_hero1_v_links" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "_hp_s_hero1_v_links_locales_locale_parent_id_unique" ON "_hp_s_hero1_v_links_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "_hp_s_hero1_v_order_idx" ON "_hp_s_hero1_v" USING btree ("_order");
   CREATE INDEX "_hp_s_hero1_v_parent_id_idx" ON "_hp_s_hero1_v" USING btree ("_parent_id");
   CREATE INDEX "_hp_s_hero1_v_path_idx" ON "_hp_s_hero1_v" USING btree ("_path");
@@ -2844,6 +2890,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE UNIQUE INDEX "_hp_s_hero1_v_locales_locale_parent_id_unique" ON "_hp_s_hero1_v_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "_hp_s_hero2_v_links_order_idx" ON "_hp_s_hero2_v_links" USING btree ("_order");
   CREATE INDEX "_hp_s_hero2_v_links_parent_id_idx" ON "_hp_s_hero2_v_links" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "_hp_s_hero2_v_links_locales_locale_parent_id_unique" ON "_hp_s_hero2_v_links_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "_hp_s_hero2_v_order_idx" ON "_hp_s_hero2_v" USING btree ("_order");
   CREATE INDEX "_hp_s_hero2_v_parent_id_idx" ON "_hp_s_hero2_v" USING btree ("_parent_id");
   CREATE INDEX "_hp_s_hero2_v_path_idx" ON "_hp_s_hero2_v" USING btree ("_path");
@@ -2934,6 +2981,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_hp_s_atlasEmbed_v_path_idx" ON "_hp_s_atlasEmbed_v" USING btree ("_path");
   CREATE INDEX "_hp_s_cta1_v_links_order_idx" ON "_hp_s_cta1_v_links" USING btree ("_order");
   CREATE INDEX "_hp_s_cta1_v_links_parent_id_idx" ON "_hp_s_cta1_v_links" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "_hp_s_cta1_v_links_locales_locale_parent_id_unique" ON "_hp_s_cta1_v_links_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "_hp_s_cta1_v_order_idx" ON "_hp_s_cta1_v" USING btree ("_order");
   CREATE INDEX "_hp_s_cta1_v_parent_id_idx" ON "_hp_s_cta1_v" USING btree ("_parent_id");
   CREATE INDEX "_hp_s_cta1_v_path_idx" ON "_hp_s_cta1_v" USING btree ("_path");
@@ -3148,9 +3196,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    ALTER TABLE "hp_s_hero1_links" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "hp_s_hero1_links_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_hero1" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_hero1_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_hero2_links" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "hp_s_hero2_links_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_hero2" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_hero2_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_sectionHeader" DISABLE ROW LEVEL SECURITY;
@@ -3189,6 +3239,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   ALTER TABLE "hp_s_regionMap_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_atlasEmbed" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_cta1_links" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "hp_s_cta1_links_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_cta1" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_cta1_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_s_submitStoryBanner" DISABLE ROW LEVEL SECURITY;
@@ -3234,9 +3285,11 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   ALTER TABLE "hp_l_logoCloud1" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "hp_l_carousel2" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_hero1_v_links" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "_hp_s_hero1_v_links_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_hero1_v" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_hero1_v_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_hero2_v_links" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "_hp_s_hero2_v_links_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_hero2_v" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_hero2_v_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_sectionHeader_v" DISABLE ROW LEVEL SECURITY;
@@ -3275,6 +3328,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   ALTER TABLE "_hp_s_regionMap_v_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_atlasEmbed_v" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_cta1_v_links" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "_hp_s_cta1_v_links_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_cta1_v" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_cta1_v_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_s_submitStoryBanner_v" DISABLE ROW LEVEL SECURITY;
@@ -3320,9 +3374,11 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   ALTER TABLE "_hp_l_logoCloud1_v" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_hp_l_carousel2_v" DISABLE ROW LEVEL SECURITY;
   DROP TABLE "hp_s_hero1_links" CASCADE;
+  DROP TABLE "hp_s_hero1_links_locales" CASCADE;
   DROP TABLE "hp_s_hero1" CASCADE;
   DROP TABLE "hp_s_hero1_locales" CASCADE;
   DROP TABLE "hp_s_hero2_links" CASCADE;
+  DROP TABLE "hp_s_hero2_links_locales" CASCADE;
   DROP TABLE "hp_s_hero2" CASCADE;
   DROP TABLE "hp_s_hero2_locales" CASCADE;
   DROP TABLE "hp_s_sectionHeader" CASCADE;
@@ -3361,6 +3417,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "hp_s_regionMap_locales" CASCADE;
   DROP TABLE "hp_s_atlasEmbed" CASCADE;
   DROP TABLE "hp_s_cta1_links" CASCADE;
+  DROP TABLE "hp_s_cta1_links_locales" CASCADE;
   DROP TABLE "hp_s_cta1" CASCADE;
   DROP TABLE "hp_s_cta1_locales" CASCADE;
   DROP TABLE "hp_s_submitStoryBanner" CASCADE;
@@ -3406,9 +3463,11 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "hp_l_logoCloud1" CASCADE;
   DROP TABLE "hp_l_carousel2" CASCADE;
   DROP TABLE "_hp_s_hero1_v_links" CASCADE;
+  DROP TABLE "_hp_s_hero1_v_links_locales" CASCADE;
   DROP TABLE "_hp_s_hero1_v" CASCADE;
   DROP TABLE "_hp_s_hero1_v_locales" CASCADE;
   DROP TABLE "_hp_s_hero2_v_links" CASCADE;
+  DROP TABLE "_hp_s_hero2_v_links_locales" CASCADE;
   DROP TABLE "_hp_s_hero2_v" CASCADE;
   DROP TABLE "_hp_s_hero2_v_locales" CASCADE;
   DROP TABLE "_hp_s_sectionHeader_v" CASCADE;
@@ -3447,6 +3506,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_hp_s_regionMap_v_locales" CASCADE;
   DROP TABLE "_hp_s_atlasEmbed_v" CASCADE;
   DROP TABLE "_hp_s_cta1_v_links" CASCADE;
+  DROP TABLE "_hp_s_cta1_v_links_locales" CASCADE;
   DROP TABLE "_hp_s_cta1_v" CASCADE;
   DROP TABLE "_hp_s_cta1_v_locales" CASCADE;
   DROP TABLE "_hp_s_submitStoryBanner_v" CASCADE;
