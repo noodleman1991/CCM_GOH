@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { backgroundOptionField, imageField, linksArrayField, sectionPaddingField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /**
  * sanity/schemas/blocks/hero/hero-1.ts. Verified against production_2
@@ -18,7 +19,7 @@ export const hero1: Block = {
   interfaceName: "Hero1Block",
   labels: { singular: "Hero", plural: "Heroes" },
   admin: pickerAdmin("hero", "Openings", "A large heading with text, buttons and an image beside it"),
-  fields: [
+  fields: moreOptions([
     backgroundOptionField("background"),
     localizedText("tagLine", { required: false }),
     localizedText("title", { required: false }),
@@ -35,5 +36,5 @@ export const hero1: Block = {
         { label: "Left", value: "left" },
       ],
     },
-  ],
+  ]),
 };

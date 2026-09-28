@@ -10,7 +10,8 @@ import type { Locale } from "@/lib/content/types";
 import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import { isRTL } from "@/i18n/i18n-helpers";
-import { getViewerUserId } from "@/lib/authz";
+import { getActor, getViewerUserId, isStaff } from "@/lib/authz";
+import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({
     params
@@ -69,6 +70,8 @@ export default async function IndexPage({ params }: IndexPageProps) {
                 homepage={homepage as unknown as Parameters<typeof Homepage>[0]["homepage"]}
                 locale={locale}
                 userId={await getViewerUserId()}
+                canEdit={isStaff(await getActor())}
+                editLabel={(await getTranslations({ locale, namespace: "blocks" }))("editSection")}
             />
         );
     }

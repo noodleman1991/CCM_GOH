@@ -20,8 +20,16 @@ import { contentGrid } from "@/payload/blocks/content-grid";
 import { gridCaseStudy } from "@/payload/blocks/grid-case-study";
 import { blocks as theTwelve, hero1 } from "@/payload/blocks";
 
+/** A field by name, looking inside collapsibles/rows too ("More options" holds no data of its own). */
 function findField(fields: Field[], name: string): Field | undefined {
-  return fields.find((f) => "name" in f && f.name === name);
+  for (const f of fields) {
+    if ("name" in f && f.name === name) return f;
+    if ((f.type === "collapsible" || f.type === "row") && "fields" in f) {
+      const inner = findField(f.fields, name);
+      if (inner) return inner;
+    }
+  }
+  return undefined;
 }
 
 function blocksField(fields: Field[], name: string): Extract<Field, { type: "blocks" }> | undefined {

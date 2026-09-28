@@ -3,6 +3,7 @@ import { sectionPaddingField } from "@/payload/blocks/shared";
 import { splitContent } from "@/payload/blocks/split-content";
 import { splitImage } from "@/payload/blocks/split-image";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /**
  * sanity/schemas/blocks/split/split-row.ts. Verified against production_2
@@ -33,7 +34,7 @@ export const splitRow: Block = {
   interfaceName: "SplitRowBlock",
   labels: { singular: "Text + image", plural: "Text + image rows" },
   admin: pickerAdmin("text-image", "Text & media", "Text on one side and an image on the other"),
-  fields: [
+  fields: moreOptions([
     sectionPaddingField("padding"),
     { name: "noGap", type: "checkbox", defaultValue: false, admin: { description: "Remove gap between columns" } },
     {
@@ -50,5 +51,5 @@ export const splitRow: Block = {
       maxRows: 3,
       blocks: [splitContent, splitImage],
     },
-  ],
+  ]),
 };

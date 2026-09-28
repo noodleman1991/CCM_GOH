@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { relationshipField, sectionPaddingField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /**
  * sanity/schemas/blocks/carousel/carousel-2.ts. Verified against
@@ -26,10 +27,10 @@ export const carousel2: Block = {
   interfaceName: "Carousel2Block",
   labels: { singular: "Testimonials", plural: "Testimonials" },
   admin: pickerAdmin("testimonials", "Logos & quotes", "Quotes from people, one at a time"),
-  fields: [
+  fields: moreOptions([
     localizedText("title", { required: false, label: "Section Title" }),
     localizedTextarea("description", { required: false, label: "Section Description" }),
     sectionPaddingField("padding"),
     relationshipField("testimonial", "testimonials", { hasMany: true }),
-  ],
+  ]),
 };

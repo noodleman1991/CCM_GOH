@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { backgroundOptionField, linksArrayField, sectionPaddingField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /**
  * sanity/schemas/blocks/cta/cta-1.ts. Verified against production_2
@@ -25,7 +26,7 @@ export const cta1: Block = {
   interfaceName: "Cta1Block",
   labels: { singular: "Call to action", plural: "Calls to action" },
   admin: pickerAdmin("call-to-action", "Calls to action", "A short message with one or two buttons"),
-  fields: [
+  fields: moreOptions([
     sectionPaddingField("padding"),
     backgroundOptionField("background"),
     {
@@ -51,5 +52,5 @@ export const cta1: Block = {
     localizedText("title", { required: false }),
     localizedRichText("body"),
     linksArrayField("links", { maxRows: 2 }),
-  ],
+  ]),
 };

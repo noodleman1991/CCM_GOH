@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { sectionPaddingField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /** `faqs` — questions that open to show their answers (components/blocks/faqs.tsx). */
 export const faqs: Block = {
@@ -9,7 +10,7 @@ export const faqs: Block = {
   interfaceName: "FaqsBlock",
   labels: { singular: "FAQs", plural: "FAQ sections" },
   admin: pickerAdmin("faqs", "Text & media", "Questions that open to show their answers"),
-  fields: [
+  fields: moreOptions([
     {
       name: "faqs",
       label: "Questions",
@@ -19,5 +20,5 @@ export const faqs: Block = {
       fields: [localizedText("title", { required: true, label: "Question" }), localizedRichText("body", { label: "Answer" })],
     },
     sectionPaddingField("padding"),
-  ],
+  ]),
 };

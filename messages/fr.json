@@ -1991,7 +1991,8 @@
       "press": "Presse",
       "policy": "Politique",
       "other": "Externe"
-    }
+    },
+    "editSection": "Modifier cette section"
   },
   "map": {
     "title": "Explorer par région",

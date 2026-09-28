@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { sectionPaddingField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /** `timeline-row` — steps or dates along a line (components/blocks/timeline/timeline-row.tsx). */
 export const timelineRow: Block = {
@@ -9,7 +10,7 @@ export const timelineRow: Block = {
   interfaceName: "TimelineRowBlock",
   labels: { singular: "Timeline", plural: "Timelines" },
   admin: pickerAdmin("timeline", "Text & media", "Steps or dates along a line"),
-  fields: [
+  fields: moreOptions([
     {
       name: "timelines",
       label: "Steps",
@@ -23,5 +24,5 @@ export const timelineRow: Block = {
       ],
     },
     sectionPaddingField("padding"),
-  ],
+  ]),
 };

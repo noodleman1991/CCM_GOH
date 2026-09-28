@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sectionPaddingField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /** `events-calendar` — fills itself from approved events (components/blocks/events/events-calendar.tsx). */
 export const eventsCalendar: Block = {
@@ -9,7 +10,7 @@ export const eventsCalendar: Block = {
   interfaceName: "EventsCalendarBlock",
   labels: { singular: "Events calendar", plural: "Events calendars" },
   admin: pickerAdmin("events-calendar", "Content", "A calendar of upcoming events, filled automatically"),
-  fields: [
+  fields: moreOptions([
     localizedText("title", { label: "Title (optional)" }),
     localizedTextarea("description", { label: "Intro (optional)" }),
     {
@@ -22,5 +23,5 @@ export const eventsCalendar: Block = {
       admin: { description: "Events appear here automatically once approved." },
     },
     sectionPaddingField("padding"),
-  ],
+  ]),
 };

@@ -2,6 +2,7 @@ import type { Block } from "payload";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { backgroundOptionField, sectionPaddingField, uploadField } from "@/payload/blocks/shared";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /** `carousel-1` — several images you can swipe through (components/blocks/carousel/carousel-1.tsx).
  *  Each image row is an image group in its own right (`asset` + `alt`), the
@@ -11,7 +12,7 @@ export const carousel1: Block = {
   interfaceName: "Carousel1Block",
   labels: { singular: "Image carousel", plural: "Image carousels" },
   admin: pickerAdmin("image-carousel", "Text & media", "Several images you can swipe through"),
-  fields: [
+  fields: moreOptions([
     localizedText("title", { label: "Title (optional)" }),
     localizedTextarea("description", { label: "Intro (optional)" }),
     {
@@ -46,5 +47,5 @@ export const carousel1: Block = {
     },
     backgroundOptionField("background"),
     sectionPaddingField("padding"),
-  ],
+  ]),
 };

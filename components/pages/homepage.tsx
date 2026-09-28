@@ -49,6 +49,9 @@ interface HomepageProps {
   /** Signed-in viewer, threaded to the agenda download buttons so a
    *  non-public `accessLevel` can see who is asking (audit M4). */
   userId?: string;
+  /** Staff see an "Edit this section" link on each section (CMS project 2). */
+  canEdit?: boolean;
+  editLabel?: string;
 }
 
 /** The fields the dynamic-section fetchers' items are read by below. */
@@ -195,7 +198,7 @@ async function resolveAgendasSection(
   }
 }
 
-export default async function Homepage({ homepage, locale, userId }: HomepageProps) {
+export default async function Homepage({ homepage, locale, userId, canEdit = false, editLabel }: HomepageProps) {
   const rtl = isRTL(locale);
 
   if (!homepage) {
@@ -207,7 +210,13 @@ export default async function Homepage({ homepage, locale, userId }: HomepagePro
   if (homepage.sections && homepage.sections.length > 0) {
     return (
       <div dir={rtl ? "rtl" : "ltr"}>
-        <Blocks blocks={homepage.sections} locale={locale} userId={userId} />
+        <Blocks
+          blocks={homepage.sections}
+          locale={locale}
+          userId={userId}
+          editHref={canEdit ? (index) => `/admin/globals/homepage#sections-row-${index}` : undefined}
+          editLabel={editLabel}
+        />
       </div>
     );
   }

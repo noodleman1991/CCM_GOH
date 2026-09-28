@@ -5,6 +5,7 @@ import { gridAgenda } from "@/payload/blocks/grid-agenda";
 import { gridCard } from "@/payload/blocks/grid-card";
 import { gridNews } from "@/payload/blocks/grid-news";
 import { pickerAdmin } from "@/payload/blocks/picker";
+import { moreOptions } from "@/payload/blocks/more-options";
 
 /**
  * sanity/schemas/blocks/grid/grid-row.ts. Verified against production_2
@@ -32,7 +33,7 @@ export const gridRow: Block = {
   interfaceName: "GridRowBlock",
   labels: { singular: "Link cards", plural: "Link cards" },
   admin: pickerAdmin("link-cards", "Content", "A row of cards you write yourself, each linking somewhere"),
-  fields: [
+  fields: moreOptions([
     sectionPaddingField("padding"),
     backgroundOptionField("background"),
     localizedText("title", { required: false, admin: { description: "Optional title for the grid section" } }),
@@ -105,5 +106,5 @@ export const gridRow: Block = {
       type: "blocks",
       blocks: [gridCard, gridAgenda, gridNews],
     },
-  ],
+  ]),
 };

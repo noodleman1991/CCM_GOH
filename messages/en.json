@@ -1991,7 +1991,8 @@
       "press": "Press",
       "policy": "Policy",
       "other": "External"
-    }
+    },
+    "editSection": "Edit this section"
   },
   "map": {
     "title": "Explore by region",
