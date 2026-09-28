@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getActor } from "@/lib/authz";
 import { isStaff } from "@/lib/authz-core";
 import { resolveContentFeed } from "@/lib/content/feeds/resolve";
-import { contentFeedSettings } from "@/lib/content/internal/payload/blocks";
+import { contentFeedSettings } from "@/lib/content/feeds/settings";
 import type { FeedContext } from "@/lib/content/feeds/types";
 
 const LOCALES: readonly FeedContext["locale"][] = ["en", "es", "fr", "ar"];

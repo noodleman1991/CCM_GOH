@@ -12,7 +12,7 @@ import { SearchModal } from "@/components/search-dialog";
 import { getActor, isStaff } from "@/lib/authz";
 import { ReportIssueWidget } from "@/components/issue-report/report-issue-widget";
 import { RefreshOnSave } from "@/components/preview/refresh-on-save";
-import { activeBackend } from "@/lib/content/internal/backend";
+import { isSanityContentBackend } from "@/lib/content/backend";
 
 export default async function MainLayout({
     children,
@@ -30,7 +30,7 @@ export default async function MainLayout({
     const isDraftMode = (await draftMode()).isEnabled;
     // Draft mode is also Payload live preview now; the Sanity live stream and
     // overlays only belong on the Sanity backend.
-    const onSanity = activeBackend() === "sanity";
+    const onSanity = isSanityContentBackend();
 
     return (
         <SidebarProvider isRtl={isRtl}>

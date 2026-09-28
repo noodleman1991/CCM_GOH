@@ -141,9 +141,9 @@ describe("payload page collections", () => {
     }
   });
 
-  it("enables versions.drafts on regionalCommunityPages (1 real Sanity draft) but not on pages (0 drafts)", () => {
+  it("enables versions.drafts on regionalCommunityPages (1 real Sanity draft) and, since the page builder (2026-09-28), on pages", () => {
     expect(RegionalCommunityPages.versions).toMatchObject({ drafts: true });
-    expect(Pages.versions).toBeFalsy();
+    expect(Pages.versions).toMatchObject({ drafts: expect.anything() });
   });
 });
 
@@ -159,16 +159,27 @@ describe("pages collection", () => {
     expect(b?.localized).toBe(true);
   });
 
-  it("offers only the page-level blocks Sanity's page.blocks[] declares and this migration ported — the other five are sub-blocks of splitRow/gridRow", () => {
+  it("offers the seven page-level blocks Sanity's page.blocks[] declared, plus the page builder's eleven sections (2026-09-28) — the other five are sub-blocks of splitRow/gridRow", () => {
     const b = blocksField(Pages.fields, "blocks");
     expect(b?.blocks.map((x) => x.slug).sort()).toEqual([
+      "atlasEmbed",
+      "carousel1",
       "carousel2",
+      "contentFeed",
       "cta1",
+      "eventsCalendar",
+      "faqs",
+      "formNewsletter",
       "gridRow",
       "hero1",
+      "hero2",
       "logoCloud1",
+      "peopleWidget",
+      "regionMap",
       "sectionHeader",
       "splitRow",
+      "submitStoryBanner",
+      "timelineRow",
     ]);
   });
 
