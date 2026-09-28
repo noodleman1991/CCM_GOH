@@ -26,6 +26,7 @@ import { withTranslationStatus } from "@/payload/blocks/row-label";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
+import { livePreview } from "@/payload/fields/live-preview";
 
 /**
  * Mirrors sanity/schemas/documents/page.ts. Verified against production_2
@@ -89,6 +90,7 @@ export const Pages: CollectionConfig = {
     group: "Site pages",
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
+    livePreview,
   },
   // Drafts (2026-09-28): edits autosave as a draft and only reach visitors on
   // Publish. Saving a draft never touches the published row, so the live page

@@ -11,6 +11,8 @@ import { SiteAnnouncementBar } from "@/components/announcement/site-announcement
 import { SearchModal } from "@/components/search-dialog";
 import { getActor, isStaff } from "@/lib/authz";
 import { ReportIssueWidget } from "@/components/issue-report/report-issue-widget";
+import { RefreshOnSave } from "@/components/preview/refresh-on-save";
+import { activeBackend } from "@/lib/content/internal/backend";
 
 export default async function MainLayout({
     children,
@@ -26,6 +28,9 @@ export default async function MainLayout({
     // moderation queue. Nobody else gets the widget in their DOM at all.
     const canReportIssues = isStaff(await getActor());
     const isDraftMode = (await draftMode()).isEnabled;
+    // Draft mode is also Payload live preview now; the Sanity live stream and
+    // overlays only belong on the Sanity backend.
+    const onSanity = activeBackend() === "sanity";
 
     return (
         <SidebarProvider isRtl={isRtl}>
@@ -87,11 +92,11 @@ export default async function MainLayout({
                 when the stream can't connect (e.g. 402 plan_limit_reached)
                 next-sanity retries every ~1s with no backoff, burning quota and
                 churning re-renders. */}
-            {isDraftMode && process.env.SANITY_LIVE_DISABLED !== "true" && <SanityLive />}
+            {isDraftMode && onSanity && process.env.SANITY_LIVE_DISABLED !== "true" && <SanityLive />}
             {isDraftMode && (
                 <>
                     <DisableDraftMode />
-                    <VisualEditing />
+                    {onSanity ? <VisualEditing /> : <RefreshOnSave />}
                 </>
             )}
         </SidebarProvider>

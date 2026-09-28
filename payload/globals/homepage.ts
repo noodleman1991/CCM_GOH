@@ -3,6 +3,7 @@ import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { blockSlot } from "@/payload/fields/block-slot";
+import { livePreview } from "@/payload/fields/live-preview";
 import { carousel2, cta1, gridRow, hero1, logoCloud1, splitRow } from "@/payload/blocks";
 
 /** Every homepage slot: the block's own field list, localized per field. */
@@ -94,7 +95,7 @@ function homepageSlot(
  */
 export const Homepage: GlobalConfig = {
   slug: "homepage",
-  admin: { group: "Site pages" },
+  admin: { group: "Site pages", livePreview },
   label: "Homepage",
   // Drafts (2026-09-28): see payload/collections/pages.ts.
   versions: { drafts: { autosave: { interval: 1500 } }, max: 50 },
