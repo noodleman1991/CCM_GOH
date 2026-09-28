@@ -458,6 +458,15 @@ describe("getSitemapEntries, answered by Payload", () => {
     });
   });
 
+  it("lists shown organisations' hub pages, and asks only for shown ones", async () => {
+    onPayload();
+    respond({ organizations: { docs: [{ id: "o1", slug: "wellcome", updatedAt: "2026-09-28T00:00:00Z" }] } });
+    const entries = await getSitemapEntries();
+    expect(entries).toContainEqual(expect.objectContaining({ url: "https://example.org/fr/organizations/wellcome", priority: 0.5 }));
+    const call = mockPayloadQueryPreviewable.mock.calls.find(([d]) => (d as { collection?: string }).collection === "organizations");
+    expect(JSON.stringify((call![0] as { where: unknown }).where)).toContain('"showOnSite":{"not_equals":false}');
+  });
+
   it("treats the `index` page as the site root, as the GROQ's select() does", async () => {
     onPayload();
     respond({ pages: { docs: [{ id: "home", slug: "index", sanityUpdatedAt: "2024-01-01T00:00:00Z" }] } });

@@ -2843,5 +2843,20 @@
       "researchOutputs": "كل النواتج البحثية",
       "agendas": "كل الأجندات"
     }
+  },
+  "organization": {
+    "onTheHub": "على المنصة",
+    "opensNewTab": "(يفتح في علامة تبويب جديدة)",
+    "type": {
+      "ngo": "منظمة غير حكومية",
+      "research": "مؤسسة بحثية",
+      "university": "جامعة",
+      "government": "جهة حكومية",
+      "international": "منظمة دولية",
+      "company": "شركة خاصة",
+      "community": "منظمة مجتمعية",
+      "foundation": "مؤسسة",
+      "other": "أخرى"
+    }
   }
 }

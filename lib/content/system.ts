@@ -158,6 +158,8 @@ const CONTENT_SITEMAP_SPECS: ContentSitemapSpec[] = [
   { filter: '_type == "researchOutput" && status == "approved"', pathPrefix: "/research-and-action/research-outputs", changeFrequency: "monthly", priority: 0.7 },
   { filter: '_type == "regionalCommunityPage" || _type == "regionalCommunity" && defined(slug.current)', pathPrefix: "/communities", changeFrequency: "weekly", priority: 0.8 },
   { filter: '_type == "event" && status == "approved"', pathPrefix: "/collaborate/events", changeFrequency: "weekly", priority: 0.6 },
+  // CMS project 2: organisation hub pages. Sanity never had them, so its arm lists none.
+  { filter: '_type == "organization" && false', pathPrefix: "/organizations", changeFrequency: "monthly", priority: 0.5 },
 ];
 
 /**

@@ -2843,5 +2843,20 @@
       "researchOutputs": "Todos los productos de investigación",
       "agendas": "Todas las agendas"
     }
+  },
+  "organization": {
+    "onTheHub": "En el hub",
+    "opensNewTab": "(se abre en una pestaña nueva)",
+    "type": {
+      "ngo": "ONG",
+      "research": "Institución de investigación",
+      "university": "Universidad",
+      "government": "Organismo gubernamental",
+      "international": "Organización internacional",
+      "company": "Empresa privada",
+      "community": "Organización comunitaria",
+      "foundation": "Fundación",
+      "other": "Otra"
+    }
   }
 }

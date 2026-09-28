@@ -231,6 +231,8 @@ interface SitemapSource {
   collections: CollectionSlug[];
   moderation: ModerationRule;
   lastModified: "sanityUpdatedAt" | "updatedAt";
+  /** An extra condition, e.g. organisations shown on the site. */
+  where?: Where;
 }
 
 const SITEMAP_SOURCES: Record<string, SitemapSource> = {
@@ -243,6 +245,7 @@ const SITEMAP_SOURCES: Record<string, SitemapSource> = {
   "/research-and-action/research-outputs": { collections: ["researchOutputs"], moderation: "approved", lastModified: "sanityUpdatedAt" },
   "/communities": { collections: ["regionalCommunityPages", "regionalCommunities"], moderation: "none", lastModified: "sanityUpdatedAt" },
   "/collaborate/events": { collections: ["events"], moderation: "approved", lastModified: "updatedAt" },
+  "/organizations": { collections: ["organizations"], moderation: "none", lastModified: "updatedAt", where: { showOnSite: { not_equals: false } } },
 };
 
 interface SitemapRow {
@@ -307,7 +310,7 @@ export async function getContentSitemapRows(pathPrefix: string): Promise<{ slug:
         depth: 0,
         pagination: false,
         sort: "id",
-        where: and(MODERATION[source.moderation], { slug: { exists: true } }),
+        where: and(MODERATION[source.moderation], { slug: { exists: true } }, source.where),
         select: { slug: true, [source.lastModified]: true },
       });
       return (result?.docs ?? [])
