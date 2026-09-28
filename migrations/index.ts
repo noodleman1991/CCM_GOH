@@ -10,6 +10,7 @@ import * as migration_20260920_141339_tag_suggestions from './20260920_141339_ta
 import * as migration_20260926_155648_human_friendly_forms from './20260926_155648_human_friendly_forms';
 import * as migration_20260926_175525_draft_layout_and_suggestions from './20260926_175525_draft_layout_and_suggestions';
 import * as migration_20260927_094948_atlas_embed_enabled_default from './20260927_094948_atlas_embed_enabled_default';
+import * as migration_20260928_130239_page_sections_and_drafts from './20260928_130239_page_sections_and_drafts';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20260927_094948_atlas_embed_enabled_default.up,
     down: migration_20260927_094948_atlas_embed_enabled_default.down,
-    name: '20260927_094948_atlas_embed_enabled_default'
+    name: '20260927_094948_atlas_embed_enabled_default',
+  },
+  {
+    up: migration_20260928_130239_page_sections_and_drafts.up,
+    down: migration_20260928_130239_page_sections_and_drafts.down,
+    name: '20260928_130239_page_sections_and_drafts'
   },
 ];

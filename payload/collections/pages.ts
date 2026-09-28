@@ -1,8 +1,27 @@
 import type { CollectionConfig } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
-import { carousel2, cta1, gridRow, hero1, logoCloud1, sectionHeader, splitRow } from "@/payload/blocks";
+import {
+  atlasEmbed,
+  carousel1,
+  carousel2,
+  contentFeed,
+  cta1,
+  eventsCalendar,
+  faqs,
+  formNewsletter,
+  gridRow,
+  hero1,
+  hero2,
+  logoCloud1,
+  peopleWidget,
+  regionMap,
+  sectionHeader,
+  splitRow,
+  submitStoryBanner,
+  timelineRow,
+} from "@/payload/blocks";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
@@ -70,8 +89,12 @@ export const Pages: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
   },
+  // Drafts (2026-09-28): edits autosave as a draft and only reach visitors on
+  // Publish. Saving a draft never touches the published row, so the live page
+  // is unaffected until then.
+  versions: { drafts: { autosave: { interval: 1500 } }, maxPerDoc: 50 },
   access: {
-    read: isAnyone,
+    read: publishedOnly,
     create: isEditor,
     update: isEditor,
     delete: isEditor,
@@ -87,7 +110,27 @@ export const Pages: CollectionConfig = {
       localized: true,
       label: "Page blocks",
       admin: { description: "Compose the page from reusable blocks (drag to reorder). Each language has its own list." },
-      blocks: [hero1, sectionHeader, splitRow, gridRow, carousel2, cta1, logoCloud1],
+      // The first seven keep their order; the rest follow the picker's groups (spec §3.1).
+      blocks: [
+        hero1,
+        sectionHeader,
+        splitRow,
+        gridRow,
+        carousel2,
+        cta1,
+        logoCloud1,
+        hero2,
+        carousel1,
+        timelineRow,
+        faqs,
+        contentFeed,
+        eventsCalendar,
+        peopleWidget,
+        regionMap,
+        atlasEmbed,
+        submitStoryBanner,
+        formNewsletter,
+      ],
     },
     localizedText("meta_title", { label: "Meta Title" }),
     localizedTextarea("meta_description", { label: "Meta Description" }),

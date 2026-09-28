@@ -1212,7 +1212,26 @@ export interface Page {
    * Compose the page from reusable blocks (drag to reorder). Each language has its own list.
    */
   blocks?:
-    | (Hero1Block | SectionHeaderBlock | SplitRowBlock | GridRowBlock | Carousel2Block | Cta1Block | LogoCloud1Block)[]
+    | (
+        | Hero1Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | GridRowBlock
+        | Carousel2Block
+        | Cta1Block
+        | LogoCloud1Block
+        | Hero2Block
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+      )[]
     | null;
   meta_title?: string | null;
   meta_description?: string | null;
@@ -1227,6 +1246,7 @@ export interface Page {
   orderRank?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1508,7 +1528,7 @@ export interface GridRowBlock {
    */
   cardVariant?: ('classic' | 'wide') | null;
   /**
-   * Dynamic modes keep this section automatically up to date with the latest published content.
+   * Old automatic setting — use a Content feed section instead.
    */
   mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
   maxItems?: number | null;
@@ -1856,6 +1876,382 @@ export interface LogoCloud1Block {
   id?: string | null;
   blockName?: string | null;
   blockType: 'logoCloud1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero2Block".
+ */
+export interface Hero2Block {
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  links?:
+    | {
+        /**
+         * Button text.
+         */
+        title?: string | null;
+        /**
+         * Full URL (https://…) or an internal path starting with /
+         */
+        href?: string | null;
+        target?: boolean | null;
+        buttonVariant?: {
+          variant?:
+            | (
+                | 'default'
+                | 'secondary'
+                | 'outline'
+                | 'ghost'
+                | 'link'
+                | 'invert'
+                | 'light-invert'
+                | 'destructive'
+                | 'primary'
+              )
+            | null;
+          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+          stroke?: ('none' | 'light' | 'midnight') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero2';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel1Block".
+ */
+export interface Carousel1Block {
+  title?: string | null;
+  description?: string | null;
+  images?:
+    | {
+        asset: string | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  size?: ('one' | 'two' | 'three') | null;
+  indicators?: ('none' | 'dots' | 'count') | null;
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineRowBlock".
+ */
+export interface TimelineRowBlock {
+  timelines?:
+    | {
+        title?: string | null;
+        tagLine?: string | null;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timelineRow';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqsBlock".
+ */
+export interface FaqsBlock {
+  faqs?:
+    | {
+        title: string;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentFeedBlock".
+ */
+export interface ContentFeedBlock {
+  heading?: string | null;
+  intro?: string | null;
+  kinds: ('caseStudies' | 'newsPosts' | 'events' | 'livedExperiences' | 'researchOutputs' | 'agendas')[];
+  fill?: ('automatic' | 'automaticWithPicks' | 'picksOnly') | null;
+  /**
+   * Drag to set the order. Only published items can be picked.
+   */
+  picks?:
+    | (
+        | {
+            relationTo: 'caseStudies';
+            value: string | CaseStudy;
+          }
+        | {
+            relationTo: 'newsPosts';
+            value: string | NewsPost;
+          }
+        | {
+            relationTo: 'events';
+            value: string | Event;
+          }
+        | {
+            relationTo: 'livedExperiences';
+            value: string | LivedExperience;
+          }
+        | {
+            relationTo: 'researchOutputs';
+            value: string | ResearchOutput;
+          }
+        | {
+            relationTo: 'agendas';
+            value: string | Agenda;
+          }
+      )[]
+    | null;
+  /**
+   * Leave these empty to show everything that matches. They don't apply to your picks.
+   */
+  filters?: {
+    regions?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam')[] | null;
+    communities?: (string | RegionalCommunity)[] | null;
+    tags?: (string | Tag)[] | null;
+    /**
+     * Events have no featured flag, so they won't appear when this is on.
+     */
+    featuredOnly?: boolean | null;
+    upcomingOnly?: boolean | null;
+  };
+  sort?: ('newest' | 'featuredFirst' | 'upcomingSoonest' | 'myOrder') | null;
+  count?: number | null;
+  layout?: ('grid' | 'carousel' | 'list') | null;
+  /**
+   * Showing one kind? The link goes to its page automatically. Showing several? Add your own link and text.
+   */
+  viewAll?: {
+    show?: boolean | null;
+    href?: string | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contentFeed';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventsCalendarBlock".
+ */
+export interface EventsCalendarBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Events appear here automatically once approved.
+   */
+  upcomingLimit?: number | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'eventsCalendar';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PeopleWidgetBlock".
+ */
+export interface PeopleWidgetBlock {
+  title?: string | null;
+  description?: string | null;
+  limit?: number | null;
+  /**
+   * Visitors can still switch regions.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'peopleWidget';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RegionMapBlock".
+ */
+export interface RegionMapBlock {
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'regionMap';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AtlasEmbedBlock".
+ */
+export interface AtlasEmbedBlock {
+  region: 'ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam';
+  showBreakdown?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'atlasEmbed';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SubmitStoryBannerBlock".
+ */
+export interface SubmitStoryBannerBlock {
+  title?: string | null;
+  subtitle?: string | null;
+  ctaLabel?: string | null;
+  illustration?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'submitStoryBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormNewsletterBlock".
+ */
+export interface FormNewsletterBlock {
+  consentText?: string | null;
+  buttonText?: string | null;
+  successMessage?: string | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formNewsletter';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3170,6 +3566,17 @@ export interface PagesSelect<T extends boolean = true> {
         carousel2?: T | Carousel2BlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
       };
   meta_title?: T;
   meta_description?: T;
@@ -3183,6 +3590,7 @@ export interface PagesSelect<T extends boolean = true> {
   orderRank?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3543,6 +3951,273 @@ export interface LogoCloud1BlockSelect<T extends boolean = true> {
         label?: T;
         orgType?: T;
         id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero2Block_select".
+ */
+export interface Hero2BlockSelect<T extends boolean = true> {
+  background?:
+    | T
+    | {
+        type?: T;
+        ccmColor?: T;
+        color?: T;
+        gradient?:
+          | T
+          | {
+              direction?: T;
+              startColor?: T;
+              endColor?: T;
+            };
+        svgPattern?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        lightText?: T;
+        blobAccent?: T;
+      };
+  tagLine?: T;
+  title?: T;
+  body?: T;
+  links?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        target?: T;
+        buttonVariant?:
+          | T
+          | {
+              variant?: T;
+              size?: T;
+              stroke?: T;
+            };
+        id?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel1Block_select".
+ */
+export interface Carousel1BlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  images?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        id?: T;
+      };
+  size?: T;
+  indicators?: T;
+  background?:
+    | T
+    | {
+        type?: T;
+        ccmColor?: T;
+        color?: T;
+        gradient?:
+          | T
+          | {
+              direction?: T;
+              startColor?: T;
+              endColor?: T;
+            };
+        svgPattern?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        lightText?: T;
+        blobAccent?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineRowBlock_select".
+ */
+export interface TimelineRowBlockSelect<T extends boolean = true> {
+  timelines?:
+    | T
+    | {
+        title?: T;
+        tagLine?: T;
+        body?: T;
+        id?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqsBlock_select".
+ */
+export interface FaqsBlockSelect<T extends boolean = true> {
+  faqs?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentFeedBlock_select".
+ */
+export interface ContentFeedBlockSelect<T extends boolean = true> {
+  heading?: T;
+  intro?: T;
+  kinds?: T;
+  fill?: T;
+  picks?: T;
+  filters?:
+    | T
+    | {
+        regions?: T;
+        communities?: T;
+        tags?: T;
+        featuredOnly?: T;
+        upcomingOnly?: T;
+      };
+  sort?: T;
+  count?: T;
+  layout?: T;
+  viewAll?:
+    | T
+    | {
+        show?: T;
+        href?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventsCalendarBlock_select".
+ */
+export interface EventsCalendarBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  upcomingLimit?: T;
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PeopleWidgetBlock_select".
+ */
+export interface PeopleWidgetBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  limit?: T;
+  region?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RegionMapBlock_select".
+ */
+export interface RegionMapBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AtlasEmbedBlock_select".
+ */
+export interface AtlasEmbedBlockSelect<T extends boolean = true> {
+  region?: T;
+  showBreakdown?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SubmitStoryBannerBlock_select".
+ */
+export interface SubmitStoryBannerBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  ctaLabel?: T;
+  illustration?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormNewsletterBlock_select".
+ */
+export interface FormNewsletterBlockSelect<T extends boolean = true> {
+  consentText?: T;
+  buttonText?: T;
+  successMessage?: T;
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
       };
   id?: T;
   blockName?: T;
@@ -4573,7 +5248,7 @@ export interface Homepage {
      */
     cardVariant?: ('classic' | 'wide') | null;
     /**
-     * Dynamic modes keep this section automatically up to date with the latest published content.
+     * Old automatic setting — use a Content feed section instead.
      */
     mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
     maxItems?: number | null;
@@ -4662,7 +5337,7 @@ export interface Homepage {
      */
     cardVariant?: ('classic' | 'wide') | null;
     /**
-     * Dynamic modes keep this section automatically up to date with the latest published content.
+     * Old automatic setting — use a Content feed section instead.
      */
     mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
     maxItems?: number | null;
@@ -4753,7 +5428,7 @@ export interface Homepage {
      */
     cardVariant?: ('classic' | 'wide') | null;
     /**
-     * Dynamic modes keep this section automatically up to date with the latest published content.
+     * Old automatic setting — use a Content feed section instead.
      */
     mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
     maxItems?: number | null;
@@ -4909,6 +5584,7 @@ export interface Homepage {
     asset?: (string | null) | Media;
     alt?: string | null;
   };
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -5744,6 +6420,7 @@ export interface HomepageSelect<T extends boolean = true> {
         asset?: T;
         alt?: T;
       };
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

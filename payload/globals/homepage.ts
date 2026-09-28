@@ -1,5 +1,5 @@
 import type { GlobalConfig } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { blockSlot } from "@/payload/fields/block-slot";
@@ -96,8 +96,10 @@ export const Homepage: GlobalConfig = {
   slug: "homepage",
   admin: { group: "Site pages" },
   label: "Homepage",
+  // Drafts (2026-09-28): see payload/collections/pages.ts.
+  versions: { drafts: { autosave: { interval: 1500 } }, max: 50 },
   access: {
-    read: isAnyone,
+    read: publishedOnly,
     update: isEditor,
   },
   fields: [
