@@ -1,5 +1,6 @@
 import type { Block, BlocksField, CheckboxField, Field } from "payload";
 import { cloneFieldList } from "@/payload/fields/block-slot";
+import { withTranslationStatus } from "@/payload/blocks/row-label";
 
 /**
  * The page builder's "Sections" field (spec §3.3): one list of sections that
@@ -14,7 +15,8 @@ import { cloneFieldList } from "@/payload/fields/block-slot";
  * leak one list's shape into the other. The `dbName`s keep their tables apart.
  */
 
-const copy = (block: Block, dbName: string): Block => ({ ...block, dbName, fields: cloneFieldList(block.fields) });
+const copy = (block: Block, dbName: string): Block =>
+  withTranslationStatus({ ...block, dbName, fields: cloneFieldList(block.fields) });
 
 /** A validator that refuses to save a list missing any of the `required` sections. */
 export function requiredSectionsValidator(required: string[], labels: Record<string, string>) {

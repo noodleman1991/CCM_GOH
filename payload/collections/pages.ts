@@ -22,6 +22,7 @@ import {
   submitStoryBanner,
   timelineRow,
 } from "@/payload/blocks";
+import { withTranslationStatus } from "@/payload/blocks/row-label";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
@@ -130,7 +131,7 @@ export const Pages: CollectionConfig = {
         atlasEmbed,
         submitStoryBanner,
         formNewsletter,
-      ],
+      ].map(withTranslationStatus),
     },
     localizedText("meta_title", { label: "Meta Title" }),
     localizedTextarea("meta_description", { label: "Meta Description" }),
