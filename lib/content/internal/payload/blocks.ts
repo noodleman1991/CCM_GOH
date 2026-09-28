@@ -805,9 +805,108 @@ function mapBlock(row: unknown): Row | undefined {
       return sectionHeaderBlock(row);
     case "logoCloud1":
       return logoCloud1Block(row);
+    case "hero2":
+      return hero2Block(row);
+    case "faqs":
+      return faqsBlock(row);
+    case "timelineRow":
+      return timelineRowBlock(row);
+    case "carousel1":
+      return carousel1Block(row);
+    case "submitStoryBanner":
+      return submitStoryBannerBlock(row);
+    case "formNewsletter":
+      return formNewsletterBlock(row);
     default:
       return undefined;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Sections added in the page builder (2026-09-28)
+// ---------------------------------------------------------------------------
+//
+// These have no Sanity history, so there is no GROQ shape to reproduce: each
+// returns exactly the props its component (components/blocks/index.tsx) reads,
+// with `null` for anything unset — the same convention as the families above.
+
+/** `hero-2` — hero-1's shape without the side image. */
+function hero2Block(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "hero-2",
+    background: backgroundObject(row.background),
+    body: richText(row.body),
+    links: linksArray(row.links),
+    padding: paddingObject(row.padding),
+    tagLine: orNull(text(row.tagLine)),
+    title: orNull(text(row.title)),
+  });
+}
+
+/** `faqs[]{_id, title, body}` — `_id` is the array row's id. */
+function faqsBlock(row: Row): Row {
+  const items = Array.isArray(row.faqs)
+    ? row.faqs.filter(isRow).map((item) =>
+        groqObject({ _id: String(item.id ?? ""), body: richText(item.body), title: orNull(text(item.title)) }),
+      )
+    : [];
+  return groqObject({ _key: blockKey(row), _type: "faqs", faqs: listOrNull(items), padding: paddingObject(row.padding) });
+}
+
+function timelineRowBlock(row: Row): Row {
+  const steps = Array.isArray(row.timelines)
+    ? row.timelines.filter(isRow).map((item) =>
+        groqObject({
+          _key: blockKey(item),
+          body: richText(item.body),
+          tagLine: orNull(text(item.tagLine)),
+          title: orNull(text(item.title)),
+        }),
+      )
+    : [];
+  return groqObject({ _key: blockKey(row), _type: "timeline-row", padding: paddingObject(row.padding), timelines: listOrNull(steps) });
+}
+
+/** Each image row is an image group; one whose upload is gone is dropped. */
+function carousel1Block(row: Row): Row {
+  const images = Array.isArray(row.images)
+    ? row.images.filter(isRow).map((item) => projectedImage(item)).filter((image): image is Row => image !== null)
+    : [];
+  return groqObject({
+    _key: blockKey(row),
+    _type: "carousel-1",
+    background: backgroundObject(row.background),
+    description: orNull(text(row.description)),
+    images: listOrNull(images),
+    indicators: orNull(text(row.indicators)),
+    padding: paddingObject(row.padding),
+    size: orNull(text(row.size)),
+    title: orNull(text(row.title)),
+  });
+}
+
+function submitStoryBannerBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "submit-story-banner",
+    ctaLabel: orNull(text(row.ctaLabel)),
+    illustration: projectedImage(row.illustration),
+    padding: paddingObject(row.padding),
+    subtitle: orNull(text(row.subtitle)),
+    title: orNull(text(row.title)),
+  });
+}
+
+function formNewsletterBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "form-newsletter",
+    buttonText: orNull(text(row.buttonText)),
+    consentText: orNull(text(row.consentText)),
+    padding: paddingObject(row.padding),
+    successMessage: orNull(text(row.successMessage)),
+  });
 }
 
 /**

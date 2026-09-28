@@ -11,6 +11,12 @@ import { gridCard } from "@/payload/blocks/grid-card";
 import { gridAgenda } from "@/payload/blocks/grid-agenda";
 import { gridNews } from "@/payload/blocks/grid-news";
 import { carousel2 } from "@/payload/blocks/carousel-2";
+import { hero2 } from "@/payload/blocks/hero-2";
+import { faqs } from "@/payload/blocks/faqs";
+import { timelineRow } from "@/payload/blocks/timeline-row";
+import { carousel1 } from "@/payload/blocks/carousel-1";
+import { submitStoryBanner } from "@/payload/blocks/submit-story-banner";
+import { formNewsletter } from "@/payload/blocks/form-newsletter";
 
 export {
   hero1,
@@ -25,6 +31,12 @@ export {
   gridAgenda,
   gridNews,
   carousel2,
+  hero2,
+  faqs,
+  timelineRow,
+  carousel1,
+  submitStoryBanner,
+  formNewsletter,
 };
 
 /**
