@@ -68,7 +68,13 @@ export function planPartners(logos: LogoRow[], orgs: OrgRow[]): PartnerStep[] {
     const name = nameFromAlt(logo.alt);
     if (!name) return { index, action: "skip", reason: "no description to name it by" };
     const k = key(name);
-    const orgId = byName.get(k);
+    // Exact name first; else a shortened name that exactly one organisation
+    // starts with ("Climate Cares" → "Climate Cares Centre") — never a guess
+    // between two.
+    const prefixed = orgs.filter(
+      (o) => o.showOnSite !== false && !UNCLEAR_NAMES.has(key(o.name)) && (key(o.name).startsWith(`${k} `) || k.startsWith(`${key(o.name)} `)),
+    );
+    const orgId = byName.get(k) ?? (prefixed.length === 1 ? prefixed[0].id : undefined);
     if (orgId) return { index, name, action: "match", orgId };
     if (creating.has(k)) return { index, name, action: "match", orgId: `new:${k}` };
     creating.add(k);

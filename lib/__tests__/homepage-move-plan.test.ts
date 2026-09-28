@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { planHomepageSections, planSection, type Difference } from "@/scripts/homepage/plan";
-import { hero1, splitRow } from "@/payload/blocks";
+import { carousel2, hero1, splitRow } from "@/payload/blocks";
 
 const loc = (en: string, rest: Record<string, string> = {}) => ({ en, ...rest });
 const slots = {
@@ -51,6 +51,12 @@ describe("planHomepageSections", () => {
     const p = plan();
     expect((p.sections[0].links as Array<{ buttonVariant: { size: string } }>)[0].buttonVariant.size).toBe("lg");
     expect(p.differences).toContainEqual({ section: "heroWelcome", path: "links[0].buttonVariant.size", values: { en: "lg", es: "default" } });
+  });
+
+  it("doesn't report an empty list against a missing one as a difference", () => {
+    const diffs: Difference[] = [];
+    planSection(carousel2, { title: { en: "Stories", es: "Historias" }, testimonial: { en: [] } }, "livedExperiences", diffs);
+    expect(diffs).toEqual([]);
   });
 
   it("never copies row ids across", () => {

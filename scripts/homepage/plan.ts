@@ -51,7 +51,8 @@ function view(value: unknown, lang: Lang): unknown {
   return value;
 }
 
-const json = (v: unknown) => JSON.stringify(v ?? null);
+/** Compared as stored meaning: an empty list and a missing value are the same (nothing). */
+const json = (v: unknown) => JSON.stringify(Array.isArray(v) && v.length === 0 ? null : (v ?? null));
 const same = (values: unknown[]) => values.every((v) => json(v) === json(values[0]));
 const filled = (v: unknown) => v !== null && v !== undefined && v !== "";
 const compact = (m: LocaleMap): LocaleMap => Object.fromEntries(Object.entries(m).filter(([, v]) => filled(v)));

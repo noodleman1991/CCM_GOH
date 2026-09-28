@@ -19,6 +19,21 @@ describe("planPartners", () => {
     ]);
   });
 
+  it("matches a shortened name when exactly one organisation starts with it", () => {
+    expect(planPartners([{ asset: "m5", alt: "Climate Cares Logo" }], orgs)[0]).toMatchObject({ action: "match", orgId: "o2" });
+  });
+
+  it("doesn't guess when a shortened name fits more than one organisation", () => {
+    const two = [...orgs, { id: "o3", name: "Climate Cares Network" }];
+    expect(planPartners([{ asset: "m6", alt: "Climate Cares Logo" }], two)[0]).toMatchObject({ action: "create" });
+  });
+
+  it("never matches an unclear fragment or a hidden organisation by a shortened name", () => {
+    const risky = [{ id: "u", name: "Federal University" }, { id: "h", name: "Force of Nature Collective", showOnSite: false }];
+    expect(planPartners([{ asset: "a", alt: "Federal University of Rio Grande do Sul Logo" }], risky)[0]).toMatchObject({ action: "create" });
+    expect(planPartners([{ asset: "b", alt: "Force of Nature Logo" }], risky)[0]).toMatchObject({ action: "create" });
+  });
+
   it("defaults an unknown type to other", () => {
     expect(planPartners([{ asset: "m3", alt: "Force of Nature Logo" }], orgs)[0]).toMatchObject({ action: "create", type: "other" });
   });
