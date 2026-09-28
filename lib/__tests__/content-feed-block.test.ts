@@ -38,6 +38,13 @@ describe("content feed section (admin)", () => {
     expect(condition({}, { fill: "picksOnly" })).toBe(true);
   });
 
+  it("never blocks publishing because a pick was unpublished later (it's skipped instead)", async () => {
+    const picks = field("picks") as unknown as { validate?: (value: unknown, options: unknown) => unknown; filterOptions?: unknown };
+    expect(picks.filterOptions).toBeTypeOf("function");
+    expect(picks.validate).toBeTypeOf("function");
+    expect(await picks.validate!([{ relationTo: "caseStudies", value: "unpublished-id" }], {})).toBe(true);
+  });
+
   it("tells editors events have no featured flag", () => {
     const featured = field("filters")!.fields!.find((f) => f.name === "featuredOnly");
     expect(featured?.admin?.description).toBe("Events have no featured flag, so they won't appear when this is on.");

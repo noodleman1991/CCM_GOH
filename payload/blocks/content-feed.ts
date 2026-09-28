@@ -72,6 +72,11 @@ export const contentFeed: Block = {
       hasMany: true,
       relationTo: ["caseStudies", "newsPosts", "events", "livedExperiences", "researchOutputs", "agendas"],
       filterOptions: ({ relationTo }) => PICKABLE[relationTo] ?? true,
+      // `filterOptions` only narrows what the picker offers. Payload would also
+      // re-check every saved pick against it and refuse to save the page once a
+      // picked item is unpublished; the feed skips such a pick instead (and
+      // "What will show now" says so), so saving must never fail over it.
+      validate: () => true,
       admin: {
         description: "Drag to set the order. Only published items can be picked.",
         condition: (_data, sibling: Sibling) => sibling?.fill === "automaticWithPicks" || sibling?.fill === "picksOnly",
