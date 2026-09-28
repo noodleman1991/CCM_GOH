@@ -299,3 +299,56 @@ One additive Postgres migration, applied and verified on dev: `20260928_130239_p
    7. Close the preview and visit any page as yourself: if a "draft mode" bar shows, use it to leave draft mode.
 
 5. If anything is wrong after deploy: the new sections and the feed are unused until an editor adds them, so nothing public depends on them. Drafts are the one behaviour change for editors — edits now need **Publish** to go live.
+
+## 2026-09-28 homepage on sections
+
+What shipped (CMS project 2, spec `docs/superpowers/specs/2026-09-28-homepage-on-sections-design.md`): the homepage becomes an ordinary Sections list (one layout for all four languages, the opening hero required), its news / agendas / lived-experience parts become Content feeds, three new sections are added (Fresh on the hub, Share-your-story banner, Region map), partner logos come from organisation records and link to new organisation pages (`/<lang>/organizations/<name>`), organisations can be hidden from the site, and staff see an "Edit this section" button on each homepage section. Rarely used section settings (padding, background, colours) fold into "More options".
+
+One additive migration: `20260928_152904_homepage_sections_and_organisations` — new section tables for the homepage (Payload names the ones that repeat an older table `…_2`), `homepage.layout_per_language`, `organizations.show_on_site` (default on), and new relationship columns. Nothing dropped or renamed; the eleven old homepage sections keep their tables and data as the backup.
+
+**Deploying changes nothing a visitor sees**: until the move script runs, the Sections list is empty and the homepage renders its old sections exactly as today.
+
+1. Pre-check:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status
+   ```
+   Expect `20260928_152904_homepage_sections_and_organisations` not yet run.
+
+2. Deploy: `vercel --prod`. Re-run `migrate:status`; the migration shows as applied. Load the homepage: unchanged.
+
+3. Dry run on production (reads only):
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/homepage/move-to-sections.ts --orgs --production
+   ```
+   Read, in order:
+   - **Partner logos → organisations**: one line per homepage logo, MATCH (an existing organisation) or CREATE (a new one, its logo taken from the current picture). On dev all 20 were sensible; "Climate Cares" matches "Climate Cares Centre".
+   - **Organisation names**: RENAME for clipped names whose full name is certain (Cook → James Cook University, Hopkins → Johns Hopkins University, Salle → La Salle University, Khan → Aga Khan University) and HIDE for unclear fragments ("The University", "Federal University"…). Hidden organisations are never deleted and keep any links from content.
+   - **New homepage sections**: 14 rows with each heading in en / es / fr / ar.
+   - **Values that differed between languages**: expected only the hero button size (larger in English).
+
+4. Execute:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/homepage/move-to-sections.ts --orgs --production --execute
+   ```
+   Then clear the cache and load the homepage twice (the first response after a clear can still be the old one):
+   ```
+   curl -X POST https://<site>/api/cache/revalidate -H "Authorization: Bearer $ADMIN_API_KEY" -H 'content-type: application/json' -d '{"all":true}'
+   ```
+   A second run refuses ("The homepage already has 14 sections…") unless `--replace` is given.
+
+5. Roll back if needed — the old homepage returns at once, nothing is lost:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/homepage/move-to-sections.ts --production --revert
+   ```
+   then clear the cache as in step 4. (Organisations created or tidied stay; they are harmless.)
+
+6. Check, signed out: the homepage in English and Arabic shows every old section plus Fresh on the hub, Share your story and Explore by region; the partner logos show at full size and each opens its organisation page; a hidden organisation's page is "not found".
+
+7. Signed-in checklist (staff account):
+   1. Each homepage section on the site shows an **Edit this section** button (not visible signed out); it opens the homepage editor.
+   2. The homepage editor shows **Sections** with pictures and plain names; removing the only hero shows "This page always keeps its Hero. You can move it, but not remove it."
+   3. Section rows show which languages are missing ("EN ✓ · ES missing…").
+   4. Each section's **More options** is folded shut and holds padding/background/colours.
+   5. The Logo strip's **Partner organisations** picker lists only shown organisations; add one, Publish, and see it in the strip.
+   6. An organisation's **Preview** opens its hub page; setting its type (most new partners are "Other") shows on that page.
+   7. Live preview shows the homepage sections at phone, tablet and desktop sizes.
