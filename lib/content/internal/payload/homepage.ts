@@ -81,7 +81,8 @@
 import "server-only";
 import { imageGroup } from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull, type LocalizedRaw } from "@/lib/content/internal/localized";
-import { slotBlock } from "@/lib/content/internal/payload/blocks";
+import { pageBlocks, slotBlock } from "@/lib/content/internal/payload/blocks";
+import { collapseLocales } from "@/lib/content/internal/localize";
 import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
 import type { PageTranslation, RawSlugRow } from "@/lib/content/pages/shared";
 import type { Locale } from "@/lib/content/types";
@@ -143,6 +144,22 @@ function pickLocale(value: unknown, locale: Locale): unknown {
 const HOMEPAGE_SLUG = "index";
 
 /**
+ * The homepage's sections (CMS project 2) in one language: the shared list,
+ * or — with the per-language switch on — that language's own list (English's
+ * when it is empty). Text is collapsed to the language with English per field,
+ * then mapped by the same adapter pages use. `[]` means "not moved yet": the
+ * renderer then shows the old fixed sections.
+ */
+function homepageSections(global: Row, locale: Locale): unknown[] {
+  let list: unknown = global.sections;
+  if (global.layoutPerLanguage === true && isRow(global.sectionsByLanguage)) {
+    const own = global.sectionsByLanguage[locale];
+    list = Array.isArray(own) && own.length > 0 ? own : global.sectionsByLanguage.en;
+  }
+  return pageBlocks(collapseLocales(list, locale)) ?? [];
+}
+
+/**
  * The eleven slots and the SEO fields, as `HOMEPAGE_FIXED_SLOTS` projects them.
  *
  * Split from the read so the mapping can be checked against a global taken
@@ -179,6 +196,7 @@ export function toHomepage(global: Row, locale: Locale, opts: { blocks?: boolean
     partnerLogos: slotBlock(slot("partnerLogos"), "logoCloud1"),
     projectInfo: slotBlock(slot("projectInfo"), "splitRow"),
     regionalCommunities: slotBlock(slot("regionalCommunities"), "gridRow"),
+    sections: homepageSections(global, locale),
     slug: groqObject({ _type: "slug", current: HOMEPAGE_SLUG }),
     title: orNull(arm(global.title, locale)),
   });

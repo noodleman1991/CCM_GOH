@@ -29,7 +29,7 @@ type GridColumns = NonNullable<DynamicGridSection["columns"]>;
  * as the props of the block component it is spread into.
  */
 interface HomepageDoc {
-  blocks?: ComponentProps<typeof Blocks>["blocks"] | null;
+  sections?: ComponentProps<typeof Blocks>["blocks"] | null;
   heroWelcome?: ComponentProps<typeof Hero1> | null;
   globalAgenda?: ComponentProps<typeof SplitRow> | null;
   howToUse?: ComponentProps<typeof SplitRow> | null;
@@ -202,14 +202,12 @@ export default async function Homepage({ homepage, locale, userId }: HomepagePro
     return null;
   }
 
-  // Preferred: render ONLY the freeform blocks[] page-builder (no legacy
-  // interleave). The fixed-section render below serves docs whose blocks[] is
-  // still empty (prod safety); retire it once the production homepage content
-  // is migrated to blocks[].
-  if (homepage.blocks && homepage.blocks.length > 0) {
+  // The Sections list (CMS project 2) is the homepage; the fixed template below
+  // renders only while it is empty — the backup the move script can fall back to.
+  if (homepage.sections && homepage.sections.length > 0) {
     return (
       <div dir={rtl ? "rtl" : "ltr"}>
-        <Blocks blocks={homepage.blocks} locale={locale} userId={userId} />
+        <Blocks blocks={homepage.sections} locale={locale} userId={userId} />
       </div>
     );
   }
