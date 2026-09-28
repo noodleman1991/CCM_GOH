@@ -9,37 +9,23 @@ import { withTranslationStatus } from "@/payload/blocks/row-label";
  *
  * Two lists, not one: Payload's `localized` is a property of the field, so a
  * shared list and a per-language list must be two fields, shown one at a time
- * by the switch. Each list gets its own copy of every block because Payload
- * sanitizes a block's fields in place — and inside a localized list it strips
- * the nested `localized` flags — so sharing one object between the two would
- * leak one list's shape into the other. The `dbName`s keep their tables apart.
+ * by the switch.
+ *
+ * Each list gets its own deep copy of every block, nested blocks included.
+ * Payload sanitizes block definitions in place, and when the same block type
+ * appears again in a document with a different shape it gives that usage its
+ * own table (`…_blocks_hero1_2`) by marking the block object — so the objects
+ * must not be shared. Custom `dbName`s are NOT used: Payload's write path
+ * finds a block's table by its type name, so two usages with custom names
+ * collide on save. Declare this field AFTER any older field that uses the same
+ * block types, so the older field keeps its existing tables.
  */
 
-/**
- * Blocks nested inside a section (a Text + image row's columns, a grid's cards)
- * get table names from the list too. Otherwise Payload maps them onto the
- * same table as the same nested block elsewhere in the document — the
- * homepage's hidden slots — and "fixes" that table to the new list's shape,
- * dropping the other field's columns.
- */
-function nameNested(fields: Field[], prefix: string): void {
-  for (const field of fields as Array<Field & { fields?: Field[]; blocks?: Block[] }>) {
-    if (Array.isArray(field.blocks)) {
-      field.blocks = field.blocks.map((b) => {
-        const named = { ...b, dbName: `${prefix}${b.slug}`, fields: b.fields };
-        nameNested(named.fields, prefix);
-        return named;
-      });
-    }
-    if (Array.isArray(field.fields)) nameNested(field.fields, prefix);
-  }
-}
+/** Write-context flag that lets a trusted script empty a list with required
+ *  sections — the homepage move's `--revert`. Editors can't set it. */
+export const SKIP_REQUIRED_SECTIONS = "skipRequiredSections";
 
-const copy = (block: Block, prefix: string): Block => {
-  const fields = cloneFieldList(block.fields);
-  nameNested(fields, prefix);
-  return withTranslationStatus({ ...block, dbName: `${prefix}${block.slug}`, fields });
-};
+const copy = (block: Block): Block => withTranslationStatus({ ...block, fields: cloneFieldList(block.fields) });
 
 /** A validator that refuses to save a list missing a required section. An
  *  inner array is a group: any one of those sections satisfies it. */
@@ -58,16 +44,17 @@ export function requiredSectionsValidator(required: Array<string | string[]>, la
 export function sectionsField({
   blocks,
   required = [],
-  tablePrefix,
 }: {
   blocks: Block[];
   /** Block slugs a page of this type can't be saved without; an inner array means any one of them. */
   required?: Array<string | string[]>;
-  /** Short, unique per collection — it names the block tables. */
-  tablePrefix: string;
 }): Field[] {
   const labels = Object.fromEntries(blocks.map((b) => [b.slug, String(b.labels?.singular ?? b.slug)]));
-  const validate = required.length > 0 ? requiredSectionsValidator(required, labels) : undefined;
+  const check = required.length > 0 ? requiredSectionsValidator(required, labels) : undefined;
+  const validate = check
+    ? (value: unknown, options?: { req?: { context?: Record<string, unknown> } }) =>
+        options?.req?.context?.[SKIP_REQUIRED_SECTIONS] === true ? true : check(value)
+    : undefined;
 
   const toggle: CheckboxField = {
     name: "layoutPerLanguage",
@@ -80,18 +67,18 @@ export function sectionsField({
     name: "sections",
     type: "blocks",
     label: "Sections",
-    blocks: blocks.map((b) => copy(b, `${tablePrefix}_s_`)),
+    blocks: blocks.map(copy),
     admin: { condition: (data) => !data?.layoutPerLanguage },
-    ...(validate ? { validate: (value: unknown) => validate(value) } : {}),
+    ...(validate ? { validate } : {}),
   };
   const perLanguage: BlocksField = {
     name: "sectionsByLanguage",
     type: "blocks",
     localized: true,
     label: "Sections (this language)",
-    blocks: blocks.map((b) => copy(b, `${tablePrefix}_l_`)),
+    blocks: blocks.map(copy),
     admin: { condition: (data) => Boolean(data?.layoutPerLanguage) },
-    ...(validate ? { validate: (value: unknown) => validate(value) } : {}),
+    ...(validate ? { validate } : {}),
   };
   return [toggle, shared, perLanguage];
 }

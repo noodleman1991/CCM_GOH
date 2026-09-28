@@ -1257,26 +1257,6 @@ export interface Page {
  * via the `definition` "Hero1Block".
  */
 export interface Hero1Block {
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-    /**
-     * Hex color code (e.g. #205596)
-     */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
   tagLine?: string | null;
   title?: string | null;
   body?: {
@@ -1329,6 +1309,26 @@ export interface Hero1Block {
         id?: string | null;
       }[]
     | null;
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
   /**
    * Add padding to the section.
    */
@@ -1346,6 +1346,9 @@ export interface Hero1Block {
  * via the `definition` "SectionHeaderBlock".
  */
 export interface SectionHeaderBlock {
+  tagLine?: string | null;
+  title?: string | null;
+  description?: string | null;
   /**
    * Add padding to the section.
    */
@@ -1355,9 +1358,6 @@ export interface SectionHeaderBlock {
   };
   sectionWidth?: ('default' | 'narrow') | null;
   stackAlign?: ('left' | 'center') | null;
-  tagLine?: string | null;
-  title?: string | null;
-  description?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'sectionHeader';
@@ -1367,6 +1367,7 @@ export interface SectionHeaderBlock {
  * via the `definition` "SplitRowBlock".
  */
 export interface SplitRowBlock {
+  splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
   /**
    * Add padding to the section.
    */
@@ -1378,7 +1379,6 @@ export interface SplitRowBlock {
    * Remove gap between columns
    */
   noGap?: boolean | null;
-  splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'splitRow';
@@ -1467,33 +1467,6 @@ export interface SplitImageBlock {
  */
 export interface GridRowBlock {
   /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-    /**
-     * Hex color code (e.g. #205596)
-     */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
-  /**
    * Optional title for the grid section
    */
   title?: string | null;
@@ -1524,6 +1497,39 @@ export interface GridRowBlock {
     alt?: string | null;
   };
   /**
+   * Old automatic setting — use a Content feed section instead.
+   */
+  mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+  maxItems?: number | null;
+  columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  /**
    * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
    */
   gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
@@ -1532,15 +1538,9 @@ export interface GridRowBlock {
    */
   cardVariant?: ('classic' | 'wide') | null;
   /**
-   * Old automatic setting — use a Content feed section instead.
-   */
-  mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
-  maxItems?: number | null;
-  /**
    * How many cards to show before the Show More button. Leave empty to always show all.
    */
   initialDisplayCount?: number | null;
-  columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'gridRow';
@@ -1656,6 +1656,7 @@ export interface GridNewsBlock {
 export interface Carousel2Block {
   title?: string | null;
   description?: string | null;
+  testimonial?: (string | Testimonial)[] | null;
   /**
    * Add padding to the section.
    */
@@ -1663,7 +1664,6 @@ export interface Carousel2Block {
     top?: boolean | null;
     bottom?: boolean | null;
   };
-  testimonial?: (string | Testimonial)[] | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel2';
@@ -1747,35 +1747,6 @@ export interface Testimonial {
  * via the `definition` "Cta1Block".
  */
 export interface Cta1Block {
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-    /**
-     * Hex color code (e.g. #205596)
-     */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
-  sectionWidth?: ('default' | 'narrow') | null;
-  stackAlign?: ('left' | 'center') | null;
   tagLine?: string | null;
   title?: string | null;
   body?: {
@@ -1824,6 +1795,35 @@ export interface Cta1Block {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  sectionWidth?: ('default' | 'narrow') | null;
+  stackAlign?: ('left' | 'center') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'cta1';
@@ -1833,23 +1833,12 @@ export interface Cta1Block {
  * via the `definition` "LogoCloud1Block".
  */
 export interface LogoCloud1Block {
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
   title?: string | null;
   description?: string | null;
   /**
    * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
    */
   layout?: ('grid' | 'marquee') | null;
-  /**
-   * Only applies to the marquee layout.
-   */
-  motionSpeed?: ('default' | 'slow') | null;
   /**
    * Each logo links to the organisation's page on the hub. Drag to reorder.
    */
@@ -1884,6 +1873,17 @@ export interface LogoCloud1Block {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  /**
+   * Only applies to the marquee layout.
+   */
+  motionSpeed?: ('default' | 'slow') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'logoCloud1';
@@ -1893,26 +1893,6 @@ export interface LogoCloud1Block {
  * via the `definition` "Hero2Block".
  */
 export interface Hero2Block {
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-    /**
-     * Hex color code (e.g. #205596)
-     */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
   tagLine?: string | null;
   title?: string | null;
   body?: {
@@ -1961,6 +1941,26 @@ export interface Hero2Block {
         id?: string | null;
       }[]
     | null;
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
   /**
    * Add padding to the section.
    */
@@ -2288,26 +2288,6 @@ export interface RegionalCommunityPage {
    * Welcome hero section
    */
   welcomeHero?: {
-    background?: {
-      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-      /**
-       * Hex color code (e.g. #205596)
-       */
-      color?: string | null;
-      gradient?: {
-        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-        startColor?: string | null;
-        endColor?: string | null;
-      };
-      svgPattern?: (string | null) | Media;
-      image?: {
-        asset?: (string | null) | Media;
-        alt?: string | null;
-      };
-      lightText?: boolean | null;
-      blobAccent?: boolean | null;
-    };
     tagLine?: string | null;
     title?: string | null;
     body?: {
@@ -2360,6 +2340,26 @@ export interface RegionalCommunityPage {
           id?: string | null;
         }[]
       | null;
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (string | null) | Media;
+      image?: {
+        asset?: (string | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
     /**
      * Add padding to the section.
      */
@@ -2373,26 +2373,6 @@ export interface RegionalCommunityPage {
    * Hero section with image support for joining the regional community (supports buttons and image positioning)
    */
   whyJoinCTA?: {
-    background?: {
-      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-      /**
-       * Hex color code (e.g. #205596)
-       */
-      color?: string | null;
-      gradient?: {
-        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-        startColor?: string | null;
-        endColor?: string | null;
-      };
-      svgPattern?: (string | null) | Media;
-      image?: {
-        asset?: (string | null) | Media;
-        alt?: string | null;
-      };
-      lightText?: boolean | null;
-      blobAccent?: boolean | null;
-    };
     tagLine?: string | null;
     title?: string | null;
     body?: {
@@ -2445,6 +2425,26 @@ export interface RegionalCommunityPage {
           id?: string | null;
         }[]
       | null;
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (string | null) | Media;
+      image?: {
+        asset?: (string | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
     /**
      * Add padding to the section.
      */
@@ -2472,23 +2472,12 @@ export interface RegionalCommunityPage {
    * Partner organizations logo cloud
    */
   logoCloud?: {
-    /**
-     * Add padding to the section.
-     */
-    padding?: {
-      top?: boolean | null;
-      bottom?: boolean | null;
-    };
     title?: string | null;
     description?: string | null;
     /**
      * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
      */
     layout?: ('grid' | 'marquee') | null;
-    /**
-     * Only applies to the marquee layout.
-     */
-    motionSpeed?: ('default' | 'slow') | null;
     /**
      * Each logo links to the organisation's page on the hub. Drag to reorder.
      */
@@ -2523,6 +2512,17 @@ export interface RegionalCommunityPage {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Only applies to the marquee layout.
+     */
+    motionSpeed?: ('default' | 'slow') | null;
   };
   meta_title?: string | null;
   meta_description?: string | null;
@@ -3616,29 +3616,6 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "Hero1Block_select".
  */
 export interface Hero1BlockSelect<T extends boolean = true> {
-  background?:
-    | T
-    | {
-        type?: T;
-        ccmColor?: T;
-        color?: T;
-        gradient?:
-          | T
-          | {
-              direction?: T;
-              startColor?: T;
-              endColor?: T;
-            };
-        svgPattern?: T;
-        image?:
-          | T
-          | {
-              asset?: T;
-              alt?: T;
-            };
-        lightText?: T;
-        blobAccent?: T;
-      };
   tagLine?: T;
   title?: T;
   body?: T;
@@ -3663,6 +3640,29 @@ export interface Hero1BlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  background?:
+    | T
+    | {
+        type?: T;
+        ccmColor?: T;
+        color?: T;
+        gradient?:
+          | T
+          | {
+              direction?: T;
+              startColor?: T;
+              endColor?: T;
+            };
+        svgPattern?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        lightText?: T;
+        blobAccent?: T;
+      };
   padding?:
     | T
     | {
@@ -3678,6 +3678,9 @@ export interface Hero1BlockSelect<T extends boolean = true> {
  * via the `definition` "SectionHeaderBlock_select".
  */
 export interface SectionHeaderBlockSelect<T extends boolean = true> {
+  tagLine?: T;
+  title?: T;
+  description?: T;
   padding?:
     | T
     | {
@@ -3686,9 +3689,6 @@ export interface SectionHeaderBlockSelect<T extends boolean = true> {
       };
   sectionWidth?: T;
   stackAlign?: T;
-  tagLine?: T;
-  title?: T;
-  description?: T;
   id?: T;
   blockName?: T;
 }
@@ -3697,6 +3697,12 @@ export interface SectionHeaderBlockSelect<T extends boolean = true> {
  * via the `definition` "SplitRowBlock_select".
  */
 export interface SplitRowBlockSelect<T extends boolean = true> {
+  splitColumns?:
+    | T
+    | {
+        splitContent?: T | SplitContentBlockSelect<T>;
+        splitImage?: T | SplitImageBlockSelect<T>;
+      };
   padding?:
     | T
     | {
@@ -3704,12 +3710,6 @@ export interface SplitRowBlockSelect<T extends boolean = true> {
         bottom?: T;
       };
   noGap?: T;
-  splitColumns?:
-    | T
-    | {
-        splitContent?: T | SplitContentBlockSelect<T>;
-        splitImage?: T | SplitImageBlockSelect<T>;
-      };
   id?: T;
   blockName?: T;
 }
@@ -3764,6 +3764,24 @@ export interface SplitImageBlockSelect<T extends boolean = true> {
  * via the `definition` "GridRowBlock_select".
  */
 export interface GridRowBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  description?: T;
+  headerImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  mode?: T;
+  maxItems?: T;
+  columns?:
+    | T
+    | {
+        gridCard?: T | GridCardBlockSelect<T>;
+        gridAgenda?: T | GridAgendaBlockSelect<T>;
+        gridNews?: T | GridNewsBlockSelect<T>;
+      };
   padding?:
     | T
     | {
@@ -3793,27 +3811,9 @@ export interface GridRowBlockSelect<T extends boolean = true> {
         lightText?: T;
         blobAccent?: T;
       };
-  title?: T;
-  subtitle?: T;
-  description?: T;
-  headerImage?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-      };
   gridColumns?: T;
   cardVariant?: T;
-  mode?: T;
-  maxItems?: T;
   initialDisplayCount?: T;
-  columns?:
-    | T
-    | {
-        gridCard?: T | GridCardBlockSelect<T>;
-        gridAgenda?: T | GridAgendaBlockSelect<T>;
-        gridNews?: T | GridNewsBlockSelect<T>;
-      };
   id?: T;
   blockName?: T;
 }
@@ -3880,13 +3880,13 @@ export interface GridNewsBlockSelect<T extends boolean = true> {
 export interface Carousel2BlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  testimonial?: T;
   padding?:
     | T
     | {
         top?: T;
         bottom?: T;
       };
-  testimonial?: T;
   id?: T;
   blockName?: T;
 }
@@ -3895,6 +3895,24 @@ export interface Carousel2BlockSelect<T extends boolean = true> {
  * via the `definition` "Cta1Block_select".
  */
 export interface Cta1BlockSelect<T extends boolean = true> {
+  tagLine?: T;
+  title?: T;
+  body?: T;
+  links?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        target?: T;
+        buttonVariant?:
+          | T
+          | {
+              variant?: T;
+              size?: T;
+              stroke?: T;
+            };
+        id?: T;
+      };
   padding?:
     | T
     | {
@@ -3926,6 +3944,42 @@ export interface Cta1BlockSelect<T extends boolean = true> {
       };
   sectionWidth?: T;
   stackAlign?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LogoCloud1Block_select".
+ */
+export interface LogoCloud1BlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  layout?: T;
+  organizations?: T;
+  images?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        label?: T;
+        orgType?: T;
+        id?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  motionSpeed?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero2Block_select".
+ */
+export interface Hero2BlockSelect<T extends boolean = true> {
   tagLine?: T;
   title?: T;
   body?: T;
@@ -3944,42 +3998,6 @@ export interface Cta1BlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LogoCloud1Block_select".
- */
-export interface LogoCloud1BlockSelect<T extends boolean = true> {
-  padding?:
-    | T
-    | {
-        top?: T;
-        bottom?: T;
-      };
-  title?: T;
-  description?: T;
-  layout?: T;
-  motionSpeed?: T;
-  organizations?: T;
-  images?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-        label?: T;
-        orgType?: T;
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Hero2Block_select".
- */
-export interface Hero2BlockSelect<T extends boolean = true> {
   background?:
     | T
     | {
@@ -4002,24 +4020,6 @@ export interface Hero2BlockSelect<T extends boolean = true> {
             };
         lightText?: T;
         blobAccent?: T;
-      };
-  tagLine?: T;
-  title?: T;
-  body?: T;
-  links?:
-    | T
-    | {
-        title?: T;
-        href?: T;
-        target?: T;
-        buttonVariant?:
-          | T
-          | {
-              variant?: T;
-              size?: T;
-              stroke?: T;
-            };
-        id?: T;
       };
   padding?:
     | T
@@ -4256,29 +4256,6 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
   welcomeHero?:
     | T
     | {
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
         tagLine?: T;
         title?: T;
         body?: T;
@@ -4302,6 +4279,29 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
                     stroke?: T;
                   };
               id?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
             };
         padding?:
           | T
@@ -4314,29 +4314,6 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
   whyJoinCTA?:
     | T
     | {
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
         tagLine?: T;
         title?: T;
         body?: T;
@@ -4360,6 +4337,29 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
                     stroke?: T;
                   };
               id?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
             };
         padding?:
           | T
@@ -4383,16 +4383,9 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
   logoCloud?:
     | T
     | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
         title?: T;
         description?: T;
         layout?: T;
-        motionSpeed?: T;
         organizations?: T;
         images?:
           | T
@@ -4403,6 +4396,13 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
               orgType?: T;
               id?: T;
             };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        motionSpeed?: T;
       };
   meta_title?: T;
   meta_description?: T;
@@ -5088,77 +5088,9 @@ export interface Homepage {
   id: number;
   title?: string | null;
   /**
-   * Off: every language shows the same sections, with the words translated. On: each language gets its own list.
-   */
-  layoutPerLanguage?: boolean | null;
-  sections?:
-    | (
-        | Hero1Block
-        | Hero2Block
-        | SectionHeaderBlock
-        | SplitRowBlock
-        | Carousel1Block
-        | TimelineRowBlock
-        | FaqsBlock
-        | ContentFeedBlock
-        | EventsCalendarBlock
-        | PeopleWidgetBlock
-        | GridRowBlock
-        | RegionMapBlock
-        | AtlasEmbedBlock
-        | Cta1Block
-        | SubmitStoryBannerBlock
-        | FormNewsletterBlock
-        | LogoCloud1Block
-        | Carousel2Block
-      )[]
-    | null;
-  sectionsByLanguage?:
-    | (
-        | Hero1Block
-        | Hero2Block
-        | SectionHeaderBlock
-        | SplitRowBlock
-        | Carousel1Block
-        | TimelineRowBlock
-        | FaqsBlock
-        | ContentFeedBlock
-        | EventsCalendarBlock
-        | PeopleWidgetBlock
-        | GridRowBlock
-        | RegionMapBlock
-        | AtlasEmbedBlock
-        | Cta1Block
-        | SubmitStoryBannerBlock
-        | FormNewsletterBlock
-        | LogoCloud1Block
-        | Carousel2Block
-      )[]
-    | null;
-  /**
    * Welcome to Connecting Climate Minds Hub section
    */
   heroWelcome?: {
-    background?: {
-      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-      /**
-       * Hex color code (e.g. #205596)
-       */
-      color?: string | null;
-      gradient?: {
-        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-        startColor?: string | null;
-        endColor?: string | null;
-      };
-      svgPattern?: (string | null) | Media;
-      image?: {
-        asset?: (string | null) | Media;
-        alt?: string | null;
-      };
-      lightText?: boolean | null;
-      blobAccent?: boolean | null;
-    };
     tagLine?: string | null;
     title?: string | null;
     body?: {
@@ -5211,6 +5143,26 @@ export interface Homepage {
           id?: string | null;
         }[]
       | null;
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (string | null) | Media;
+      image?: {
+        asset?: (string | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
     /**
      * Add padding to the section.
      */
@@ -5224,6 +5176,7 @@ export interface Homepage {
    * Prioritizing Global Research and Action section
    */
   globalAgenda?: {
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
     /**
      * Add padding to the section.
      */
@@ -5235,12 +5188,12 @@ export interface Homepage {
      * Remove gap between columns
      */
     noGap?: boolean | null;
-    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
   };
   /**
    * Collaborative space for ideas, dialogue, and connection
    */
   howToUse?: {
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
     /**
      * Add padding to the section.
      */
@@ -5252,36 +5205,8 @@ export interface Homepage {
      * Remove gap between columns
      */
     noGap?: boolean | null;
-    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
   };
   agendasModule?: {
-    /**
-     * Add padding to the section.
-     */
-    padding?: {
-      top?: boolean | null;
-      bottom?: boolean | null;
-    };
-    background?: {
-      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-      /**
-       * Hex color code (e.g. #205596)
-       */
-      color?: string | null;
-      gradient?: {
-        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-        startColor?: string | null;
-        endColor?: string | null;
-      };
-      svgPattern?: (string | null) | Media;
-      image?: {
-        asset?: (string | null) | Media;
-        alt?: string | null;
-      };
-      lightText?: boolean | null;
-      blobAccent?: boolean | null;
-    };
     /**
      * Optional title for the grid section
      */
@@ -5313,6 +5238,39 @@ export interface Homepage {
       alt?: string | null;
     };
     /**
+     * Old automatic setting — use a Content feed section instead.
+     */
+    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+    maxItems?: number | null;
+    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (string | null) | Media;
+      image?: {
+        asset?: (string | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    /**
      * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
      */
     gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
@@ -5321,19 +5279,14 @@ export interface Homepage {
      */
     cardVariant?: ('classic' | 'wide') | null;
     /**
-     * Old automatic setting — use a Content feed section instead.
-     */
-    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
-    maxItems?: number | null;
-    /**
      * How many cards to show before the Show More button. Leave empty to always show all.
      */
     initialDisplayCount?: number | null;
-    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
   };
   livedExperiences?: {
     title?: string | null;
     description?: string | null;
+    testimonial?: (string | Testimonial)[] | null;
     /**
      * Add padding to the section.
      */
@@ -5341,37 +5294,9 @@ export interface Homepage {
       top?: boolean | null;
       bottom?: boolean | null;
     };
-    testimonial?: (string | Testimonial)[] | null;
   };
   regionalCommunities?: {
     /**
-     * Add padding to the section.
-     */
-    padding?: {
-      top?: boolean | null;
-      bottom?: boolean | null;
-    };
-    background?: {
-      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-      /**
-       * Hex color code (e.g. #205596)
-       */
-      color?: string | null;
-      gradient?: {
-        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-        startColor?: string | null;
-        endColor?: string | null;
-      };
-      svgPattern?: (string | null) | Media;
-      image?: {
-        asset?: (string | null) | Media;
-        alt?: string | null;
-      };
-      lightText?: boolean | null;
-      blobAccent?: boolean | null;
-    };
-    /**
      * Optional title for the grid section
      */
     title?: string | null;
@@ -5402,6 +5327,39 @@ export interface Homepage {
       alt?: string | null;
     };
     /**
+     * Old automatic setting — use a Content feed section instead.
+     */
+    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+    maxItems?: number | null;
+    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (string | null) | Media;
+      image?: {
+        asset?: (string | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    /**
      * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
      */
     gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
@@ -5410,17 +5368,12 @@ export interface Homepage {
      */
     cardVariant?: ('classic' | 'wide') | null;
     /**
-     * Old automatic setting — use a Content feed section instead.
-     */
-    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
-    maxItems?: number | null;
-    /**
      * How many cards to show before the Show More button. Leave empty to always show all.
      */
     initialDisplayCount?: number | null;
-    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
   };
   collaboration?: {
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
     /**
      * Add padding to the section.
      */
@@ -5432,37 +5385,9 @@ export interface Homepage {
      * Remove gap between columns
      */
     noGap?: boolean | null;
-    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
   };
   news?: {
     /**
-     * Add padding to the section.
-     */
-    padding?: {
-      top?: boolean | null;
-      bottom?: boolean | null;
-    };
-    background?: {
-      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-      /**
-       * Hex color code (e.g. #205596)
-       */
-      color?: string | null;
-      gradient?: {
-        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-        startColor?: string | null;
-        endColor?: string | null;
-      };
-      svgPattern?: (string | null) | Media;
-      image?: {
-        asset?: (string | null) | Media;
-        alt?: string | null;
-      };
-      lightText?: boolean | null;
-      blobAccent?: boolean | null;
-    };
-    /**
      * Optional title for the grid section
      */
     title?: string | null;
@@ -5493,39 +5418,11 @@ export interface Homepage {
       alt?: string | null;
     };
     /**
-     * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
-     */
-    gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
-    /**
-     * Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.
-     */
-    cardVariant?: ('classic' | 'wide') | null;
-    /**
      * Old automatic setting — use a Content feed section instead.
      */
     mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
     maxItems?: number | null;
-    /**
-     * How many cards to show before the Show More button. Leave empty to always show all.
-     */
-    initialDisplayCount?: number | null;
     columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
-  };
-  projectInfo?: {
-    /**
-     * Add padding to the section.
-     */
-    padding?: {
-      top?: boolean | null;
-      bottom?: boolean | null;
-    };
-    /**
-     * Remove gap between columns
-     */
-    noGap?: boolean | null;
-    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
-  };
-  mentalHealthDefinition?: {
     /**
      * Add padding to the section.
      */
@@ -5553,8 +5450,34 @@ export interface Homepage {
       lightText?: boolean | null;
       blobAccent?: boolean | null;
     };
-    sectionWidth?: ('default' | 'narrow') | null;
-    stackAlign?: ('left' | 'center') | null;
+    /**
+     * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
+     */
+    gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
+    /**
+     * Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.
+     */
+    cardVariant?: ('classic' | 'wide') | null;
+    /**
+     * How many cards to show before the Show More button. Leave empty to always show all.
+     */
+    initialDisplayCount?: number | null;
+  };
+  projectInfo?: {
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Remove gap between columns
+     */
+    noGap?: boolean | null;
+  };
+  mentalHealthDefinition?: {
     tagLine?: string | null;
     title?: string | null;
     body?: {
@@ -5603,8 +5526,6 @@ export interface Homepage {
           id?: string | null;
         }[]
       | null;
-  };
-  partnerLogos?: {
     /**
      * Add padding to the section.
      */
@@ -5612,16 +5533,36 @@ export interface Homepage {
       top?: boolean | null;
       bottom?: boolean | null;
     };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (string | null) | Media;
+      image?: {
+        asset?: (string | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    sectionWidth?: ('default' | 'narrow') | null;
+    stackAlign?: ('left' | 'center') | null;
+  };
+  partnerLogos?: {
     title?: string | null;
     description?: string | null;
     /**
      * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
      */
     layout?: ('grid' | 'marquee') | null;
-    /**
-     * Only applies to the marquee layout.
-     */
-    motionSpeed?: ('default' | 'slow') | null;
     /**
      * Each logo links to the organisation's page on the hub. Drag to reorder.
      */
@@ -5656,7 +5597,66 @@ export interface Homepage {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Only applies to the marquee layout.
+     */
+    motionSpeed?: ('default' | 'slow') | null;
   };
+  /**
+   * Off: every language shows the same sections, with the words translated. On: each language gets its own list.
+   */
+  layoutPerLanguage?: boolean | null;
+  sections?:
+    | (
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+      )[]
+    | null;
+  sectionsByLanguage?:
+    | (
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+      )[]
+    | null;
   meta_title?: string | null;
   meta_description?: string | null;
   noindex?: boolean | null;
@@ -6114,6 +6114,384 @@ export interface ModerationSetting {
  */
 export interface HomepageSelect<T extends boolean = true> {
   title?: T;
+  heroWelcome?:
+    | T
+    | {
+        tagLine?: T;
+        title?: T;
+        body?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              target?: T;
+              buttonVariant?:
+                | T
+                | {
+                    variant?: T;
+                    size?: T;
+                    stroke?: T;
+                  };
+              id?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        imagePosition?: T;
+      };
+  globalAgenda?:
+    | T
+    | {
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+      };
+  howToUse?:
+    | T
+    | {
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+      };
+  agendasModule?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        headerImage?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        mode?: T;
+        maxItems?: T;
+        columns?:
+          | T
+          | {
+              gridCard?: T | GridCardBlockSelect<T>;
+              gridAgenda?: T | GridAgendaBlockSelect<T>;
+              gridNews?: T | GridNewsBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        gridColumns?: T;
+        cardVariant?: T;
+        initialDisplayCount?: T;
+      };
+  livedExperiences?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        testimonial?: T;
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+      };
+  regionalCommunities?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        headerImage?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        mode?: T;
+        maxItems?: T;
+        columns?:
+          | T
+          | {
+              gridCard?: T | GridCardBlockSelect<T>;
+              gridAgenda?: T | GridAgendaBlockSelect<T>;
+              gridNews?: T | GridNewsBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        gridColumns?: T;
+        cardVariant?: T;
+        initialDisplayCount?: T;
+      };
+  collaboration?:
+    | T
+    | {
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+      };
+  news?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        headerImage?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        mode?: T;
+        maxItems?: T;
+        columns?:
+          | T
+          | {
+              gridCard?: T | GridCardBlockSelect<T>;
+              gridAgenda?: T | GridAgendaBlockSelect<T>;
+              gridNews?: T | GridNewsBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        gridColumns?: T;
+        cardVariant?: T;
+        initialDisplayCount?: T;
+      };
+  projectInfo?:
+    | T
+    | {
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+      };
+  mentalHealthDefinition?:
+    | T
+    | {
+        tagLine?: T;
+        title?: T;
+        body?: T;
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              target?: T;
+              buttonVariant?:
+                | T
+                | {
+                    variant?: T;
+                    size?: T;
+                    stroke?: T;
+                  };
+              id?: T;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        sectionWidth?: T;
+        stackAlign?: T;
+      };
+  partnerLogos?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        layout?: T;
+        organizations?: T;
+        images?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+              label?: T;
+              orgType?: T;
+              id?: T;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        motionSpeed?: T;
+      };
   layoutPerLanguage?: T;
   sections?:
     | T
@@ -6158,384 +6536,6 @@ export interface HomepageSelect<T extends boolean = true> {
         formNewsletter?: T | FormNewsletterBlockSelect<T>;
         logoCloud1?: T | LogoCloud1BlockSelect<T>;
         carousel2?: T | Carousel2BlockSelect<T>;
-      };
-  heroWelcome?:
-    | T
-    | {
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
-        tagLine?: T;
-        title?: T;
-        body?: T;
-        image?:
-          | T
-          | {
-              asset?: T;
-              alt?: T;
-            };
-        links?:
-          | T
-          | {
-              title?: T;
-              href?: T;
-              target?: T;
-              buttonVariant?:
-                | T
-                | {
-                    variant?: T;
-                    size?: T;
-                    stroke?: T;
-                  };
-              id?: T;
-            };
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        imagePosition?: T;
-      };
-  globalAgenda?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        noGap?: T;
-        splitColumns?:
-          | T
-          | {
-              splitContent?: T | SplitContentBlockSelect<T>;
-              splitImage?: T | SplitImageBlockSelect<T>;
-            };
-      };
-  howToUse?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        noGap?: T;
-        splitColumns?:
-          | T
-          | {
-              splitContent?: T | SplitContentBlockSelect<T>;
-              splitImage?: T | SplitImageBlockSelect<T>;
-            };
-      };
-  agendasModule?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
-        title?: T;
-        subtitle?: T;
-        description?: T;
-        headerImage?:
-          | T
-          | {
-              asset?: T;
-              alt?: T;
-            };
-        gridColumns?: T;
-        cardVariant?: T;
-        mode?: T;
-        maxItems?: T;
-        initialDisplayCount?: T;
-        columns?:
-          | T
-          | {
-              gridCard?: T | GridCardBlockSelect<T>;
-              gridAgenda?: T | GridAgendaBlockSelect<T>;
-              gridNews?: T | GridNewsBlockSelect<T>;
-            };
-      };
-  livedExperiences?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        testimonial?: T;
-      };
-  regionalCommunities?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
-        title?: T;
-        subtitle?: T;
-        description?: T;
-        headerImage?:
-          | T
-          | {
-              asset?: T;
-              alt?: T;
-            };
-        gridColumns?: T;
-        cardVariant?: T;
-        mode?: T;
-        maxItems?: T;
-        initialDisplayCount?: T;
-        columns?:
-          | T
-          | {
-              gridCard?: T | GridCardBlockSelect<T>;
-              gridAgenda?: T | GridAgendaBlockSelect<T>;
-              gridNews?: T | GridNewsBlockSelect<T>;
-            };
-      };
-  collaboration?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        noGap?: T;
-        splitColumns?:
-          | T
-          | {
-              splitContent?: T | SplitContentBlockSelect<T>;
-              splitImage?: T | SplitImageBlockSelect<T>;
-            };
-      };
-  news?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
-        title?: T;
-        subtitle?: T;
-        description?: T;
-        headerImage?:
-          | T
-          | {
-              asset?: T;
-              alt?: T;
-            };
-        gridColumns?: T;
-        cardVariant?: T;
-        mode?: T;
-        maxItems?: T;
-        initialDisplayCount?: T;
-        columns?:
-          | T
-          | {
-              gridCard?: T | GridCardBlockSelect<T>;
-              gridAgenda?: T | GridAgendaBlockSelect<T>;
-              gridNews?: T | GridNewsBlockSelect<T>;
-            };
-      };
-  projectInfo?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        noGap?: T;
-        splitColumns?:
-          | T
-          | {
-              splitContent?: T | SplitContentBlockSelect<T>;
-              splitImage?: T | SplitImageBlockSelect<T>;
-            };
-      };
-  mentalHealthDefinition?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        background?:
-          | T
-          | {
-              type?: T;
-              ccmColor?: T;
-              color?: T;
-              gradient?:
-                | T
-                | {
-                    direction?: T;
-                    startColor?: T;
-                    endColor?: T;
-                  };
-              svgPattern?: T;
-              image?:
-                | T
-                | {
-                    asset?: T;
-                    alt?: T;
-                  };
-              lightText?: T;
-              blobAccent?: T;
-            };
-        sectionWidth?: T;
-        stackAlign?: T;
-        tagLine?: T;
-        title?: T;
-        body?: T;
-        links?:
-          | T
-          | {
-              title?: T;
-              href?: T;
-              target?: T;
-              buttonVariant?:
-                | T
-                | {
-                    variant?: T;
-                    size?: T;
-                    stroke?: T;
-                  };
-              id?: T;
-            };
-      };
-  partnerLogos?:
-    | T
-    | {
-        padding?:
-          | T
-          | {
-              top?: T;
-              bottom?: T;
-            };
-        title?: T;
-        description?: T;
-        layout?: T;
-        motionSpeed?: T;
-        organizations?: T;
-        images?:
-          | T
-          | {
-              asset?: T;
-              alt?: T;
-              label?: T;
-              orgType?: T;
-              id?: T;
-            };
       };
   meta_title?: T;
   meta_description?: T;

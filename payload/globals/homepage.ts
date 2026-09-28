@@ -137,7 +137,6 @@ export const Homepage: GlobalConfig = {
   },
   fields: [
     localizedText("title", { label: "Page Title" }),
-    ...sectionsField({ blocks: HOMEPAGE_SECTIONS, required: [["hero1", "hero2"]], tablePrefix: "hp" }),
     homepageSlot("heroWelcome", hero1, {
       label: "Hero Welcome Section",
       description: "Welcome to Connecting Climate Minds Hub section",
@@ -158,6 +157,10 @@ export const Homepage: GlobalConfig = {
     homepageSlot("projectInfo", splitRow, { label: "Project Information" }),
     homepageSlot("mentalHealthDefinition", cta1, { label: "Mental Health Definition" }),
     homepageSlot("partnerLogos", logoCloud1, { label: "Partner Logos" }),
+    // After the hidden slots on purpose: they share block types (split columns,
+    // grid cards), and the field declared first keeps the existing tables —
+    // see payload/fields/sections.ts.
+    ...sectionsField({ blocks: HOMEPAGE_SECTIONS, required: [["hero1", "hero2"]] }),
     localizedText("meta_title", { label: "Meta Title" }),
     localizedTextarea("meta_description", { label: "Meta Description" }),
     { name: "noindex", type: "checkbox", defaultValue: false, label: "No Index" },
