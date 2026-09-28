@@ -1,10 +1,12 @@
-import type { GlobalConfig } from "payload";
+import type { Block, GlobalConfig } from "payload";
 import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { blockSlot } from "@/payload/fields/block-slot";
 import { livePreview } from "@/payload/fields/live-preview";
 import { carousel2, cta1, gridRow, hero1, logoCloud1, splitRow } from "@/payload/blocks";
+import * as library from "@/payload/blocks";
+import { sectionsField } from "@/payload/fields/sections";
 
 /** Every homepage slot: the block's own field list, localized per field. */
 function homepageSlot(
@@ -12,8 +14,34 @@ function homepageSlot(
   block: Parameters<typeof blockSlot>[1],
   opts: { label?: string; description?: string } = {},
 ) {
-  return blockSlot(name, block, { ...opts, localized: false });
+  // Hidden since CMS project 2: the Sections list is the homepage now; the
+  // slots stay as the backup `scripts/homepage/move-to-sections.ts --revert`
+  // falls back to.
+  const group = blockSlot(name, block, { ...opts, localized: false });
+  return { ...group, admin: { ...group.admin, hidden: true } };
 }
+
+/** Every section editors can put on the homepage: the whole library except the retired regional one. */
+export const HOMEPAGE_SECTIONS: Block[] = [
+  library.hero1,
+  library.hero2,
+  library.sectionHeader,
+  library.splitRow,
+  library.carousel1,
+  library.timelineRow,
+  library.faqs,
+  library.contentFeed,
+  library.eventsCalendar,
+  library.peopleWidget,
+  library.gridRow,
+  library.regionMap,
+  library.atlasEmbed,
+  library.cta1,
+  library.submitStoryBanner,
+  library.formNewsletter,
+  library.logoCloud1,
+  library.carousel2,
+];
 
 /**
  * Mirrors sanity/schemas/documents/homepage.ts. Verified against
@@ -95,7 +123,11 @@ function homepageSlot(
  */
 export const Homepage: GlobalConfig = {
   slug: "homepage",
-  admin: { group: "Site pages", livePreview },
+  admin: {
+    group: "Site pages",
+    livePreview,
+    description: "The homepage shows the Sections below, in order. (The old fixed sections are kept hidden as a backup.)",
+  },
   label: "Homepage",
   // Drafts (2026-09-28): see payload/collections/pages.ts.
   versions: { drafts: { autosave: { interval: 1500 } }, max: 50 },
@@ -105,6 +137,7 @@ export const Homepage: GlobalConfig = {
   },
   fields: [
     localizedText("title", { label: "Page Title" }),
+    ...sectionsField({ blocks: HOMEPAGE_SECTIONS, required: [["hero1", "hero2"]], tablePrefix: "hp" }),
     homepageSlot("heroWelcome", hero1, {
       label: "Hero Welcome Section",
       description: "Welcome to Connecting Climate Minds Hub section",

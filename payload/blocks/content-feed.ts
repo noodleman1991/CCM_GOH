@@ -92,6 +92,14 @@ export const contentFeed: Block = {
         { name: "communities", label: "Community", type: "relationship", relationTo: "regionalCommunities", hasMany: true },
         { name: "tags", label: "Themes and tags", type: "relationship", relationTo: "tags", hasMany: true },
         {
+          name: "organizations",
+          label: "Organisation",
+          type: "relationship",
+          relationTo: "organizations",
+          hasMany: true,
+          filterOptions: { showOnSite: { not_equals: false } },
+        },
+        {
           name: "featuredOnly",
           label: "Featured only",
           type: "checkbox",

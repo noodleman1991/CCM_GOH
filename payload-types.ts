@@ -509,6 +509,10 @@ export interface Organization {
   sanityUpdatedAt?: string | null;
   name: string;
   /**
+   * Off: no page on the hub, and it never appears in a logo strip.
+   */
+  showOnSite?: boolean | null;
+  /**
    * Leave empty and it is made from the name when you save.
    */
   slug: string;
@@ -1846,6 +1850,13 @@ export interface LogoCloud1Block {
    * Only applies to the marquee layout.
    */
   motionSpeed?: ('default' | 'slow') | null;
+  /**
+   * Each logo links to the organisation's page on the hub. Drag to reorder.
+   */
+  organizations?: (string | Organization)[] | null;
+  /**
+   * Logos with no organisation on the hub. Prefer Partner organisations.
+   */
   images?:
     | {
         asset?: (string | null) | Media;
@@ -2130,6 +2141,7 @@ export interface ContentFeedBlock {
     regions?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam')[] | null;
     communities?: (string | RegionalCommunity)[] | null;
     tags?: (string | Tag)[] | null;
+    organizations?: (string | Organization)[] | null;
     /**
      * Events have no featured flag, so they won't appear when this is on.
      */
@@ -2477,6 +2489,13 @@ export interface RegionalCommunityPage {
      * Only applies to the marquee layout.
      */
     motionSpeed?: ('default' | 'slow') | null;
+    /**
+     * Each logo links to the organisation's page on the hub. Drag to reorder.
+     */
+    organizations?: (string | Organization)[] | null;
+    /**
+     * Logos with no organisation on the hub. Prefer Partner organisations.
+     */
     images?:
       | {
           asset?: (string | null) | Media;
@@ -3943,6 +3962,7 @@ export interface LogoCloud1BlockSelect<T extends boolean = true> {
   description?: T;
   layout?: T;
   motionSpeed?: T;
+  organizations?: T;
   images?:
     | T
     | {
@@ -4117,6 +4137,7 @@ export interface ContentFeedBlockSelect<T extends boolean = true> {
         regions?: T;
         communities?: T;
         tags?: T;
+        organizations?: T;
         featuredOnly?: T;
         upcomingOnly?: T;
       };
@@ -4372,6 +4393,7 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
         description?: T;
         layout?: T;
         motionSpeed?: T;
+        organizations?: T;
         images?:
           | T
           | {
@@ -4527,6 +4549,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
   id?: T;
   sanityUpdatedAt?: T;
   name?: T;
+  showOnSite?: T;
   slug?: T;
   acronym?: T;
   type?: T;
@@ -5056,12 +5079,62 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * The homepage shows the Sections below, in order. (The old fixed sections are kept hidden as a backup.)
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage".
  */
 export interface Homepage {
   id: number;
   title?: string | null;
+  /**
+   * Off: every language shows the same sections, with the words translated. On: each language gets its own list.
+   */
+  layoutPerLanguage?: boolean | null;
+  sections?:
+    | (
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+      )[]
+    | null;
+  sectionsByLanguage?:
+    | (
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+      )[]
+    | null;
   /**
    * Welcome to Connecting Climate Minds Hub section
    */
@@ -5549,6 +5622,13 @@ export interface Homepage {
      * Only applies to the marquee layout.
      */
     motionSpeed?: ('default' | 'slow') | null;
+    /**
+     * Each logo links to the organisation's page on the hub. Drag to reorder.
+     */
+    organizations?: (string | Organization)[] | null;
+    /**
+     * Logos with no organisation on the hub. Prefer Partner organisations.
+     */
     images?:
       | {
           asset?: (string | null) | Media;
@@ -6034,6 +6114,51 @@ export interface ModerationSetting {
  */
 export interface HomepageSelect<T extends boolean = true> {
   title?: T;
+  layoutPerLanguage?: T;
+  sections?:
+    | T
+    | {
+        hero1?: T | Hero1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
+      };
+  sectionsByLanguage?:
+    | T
+    | {
+        hero1?: T | Hero1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
+      };
   heroWelcome?:
     | T
     | {
@@ -6401,6 +6526,7 @@ export interface HomepageSelect<T extends boolean = true> {
         description?: T;
         layout?: T;
         motionSpeed?: T;
+        organizations?: T;
         images?:
           | T
           | {

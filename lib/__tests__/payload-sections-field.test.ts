@@ -72,3 +72,29 @@ describe("required sections", () => {
     expect(validate([{ blockType: "hero1" }, { blockType: "atlasEmbed" }])).toBe(true);
   });
 });
+
+describe("one-of required sections", () => {
+  const validate = requiredSectionsValidator([["hero1", "hero2"]], { hero1: "Hero", hero2: "Hero with image" });
+  it("is satisfied by any section in the group", () => {
+    expect(validate([{ blockType: "hero2" }])).toBe(true);
+    expect(validate([{ blockType: "faqs" }, { blockType: "hero1" }])).toBe(true);
+  });
+  it("names the first section of the group when none is present", () => {
+    expect(validate([{ blockType: "faqs" }])).toBe("This page always keeps its Hero. You can move it, but not remove it.");
+  });
+});
+
+describe("nested sections get their own tables", () => {
+  const column: Block = { slug: "splitContent", fields: [{ name: "title", type: "text", localized: true }] };
+  const row: Block = { slug: "splitRow", fields: [{ name: "splitColumns", type: "blocks", blocks: [column] }] };
+  const [, shared, perLanguage] = sectionsField({ blocks: [row], tablePrefix: "demo" }) as unknown as Array<{ blocks: Array<{ fields: Array<{ blocks: Block[] }> }> }>;
+
+  it("names blocks inside a section by the list too, so no table is shared with another field", () => {
+    expect(shared.blocks[0].fields[0].blocks[0].dbName).toBe("demo_s_splitContent");
+    expect(perLanguage.blocks[0].fields[0].blocks[0].dbName).toBe("demo_l_splitContent");
+  });
+
+  it("leaves the original nested block untouched", () => {
+    expect(column.dbName).toBeUndefined();
+  });
+});

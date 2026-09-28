@@ -30,7 +30,9 @@ export const Organizations: CollectionConfig = {
   admin: {
     group: "People & places",
     useAsTitle: "name",
-    defaultColumns: ["name", "acronym", "type", "verified"],
+    defaultColumns: ["name", "acronym", "type", "showOnSite"],
+    // The "Preview" button: this organisation's page on the hub.
+    preview: (doc, { locale }) => (doc?.slug ? `/${locale ?? "en"}/organizations/${String(doc.slug)}` : null),
   },
   access: {
     read: isAnyone,
@@ -44,6 +46,13 @@ export const Organizations: CollectionConfig = {
     documentIdField,
     sanityUpdatedAt,
     { name: "name", type: "text", required: true },
+    {
+      name: "showOnSite",
+      type: "checkbox",
+      defaultValue: true,
+      label: "Show this organisation on the site",
+      admin: { position: "sidebar", description: "Off: no page on the hub, and it never appears in a logo strip." },
+    },
     slugField("name"),
     { name: "acronym", type: "text", admin: { description: "e.g. WHO, UN." } },
     {

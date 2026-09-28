@@ -53,8 +53,19 @@ export const logoCloud1: Block = {
       ],
     },
     {
+      name: "organizations",
+      label: "Partner organisations",
+      type: "relationship",
+      relationTo: "organizations",
+      hasMany: true,
+      filterOptions: { showOnSite: { not_equals: false } },
+      admin: { description: "Each logo links to the organisation's page on the hub. Drag to reorder." },
+    },
+    {
       name: "images",
+      label: "Other logos (not linked)",
       type: "array",
+      admin: { description: "Logos with no organisation on the hub. Prefer Partner organisations." },
       fields: [
         uploadField("asset", "media"),
         localizedText("alt", { required: false }),
