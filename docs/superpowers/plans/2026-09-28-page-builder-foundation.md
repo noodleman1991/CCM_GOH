@@ -384,7 +384,7 @@ describe("built-in automatic sections", () => {
 - [ ] **Step 5: PASS + gates + commit**
 
 ```bash
-git add payload/blocks lib/content/internal/payload/blocks.ts lib/__tests__/payload-new-auto-blocks.test.ts
+git add payload/blocks payload/fields/regions.ts payload/collections/regional-communities.ts lib/content/internal/payload/blocks.ts lib/__tests__/payload-new-auto-blocks.test.ts
 git commit -m "feat(cms): events calendar, people, region map and atlas become sections"
 ```
 
