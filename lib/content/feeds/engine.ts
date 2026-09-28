@@ -134,15 +134,18 @@ function safeHref(href: string): boolean {
 
 /**
  * The "View all" link, or `null` for none. One kind → that kind's listing, with
- * the site's own label (`labelKey` in the `feed` messages). A mixed feed has no
- * single listing, so it needs both a link and a label from the editor.
+ * the site's own label (`labelKey` in the `feed` messages) and `siteLink: true`:
+ * the path has no language prefix, because the locale-aware `Link` adds it. A
+ * mixed feed has no single listing, so it needs both a link and a label from
+ * the editor, used exactly as typed.
  */
 export function viewAllLink(
   s: FeedSettings,
-  locale: string,
-): { href: string; labelKey: string | null; label: string | null } | null {
+): { href: string; labelKey: string | null; label: string | null; siteLink: boolean } | null {
   if (!s.viewAll.show) return null;
-  if (s.kinds.length === 1) return { href: `/${locale}${KIND_LISTING[s.kinds[0]]}`, labelKey: `viewAll.${s.kinds[0]}`, label: null };
-  if (s.viewAll.href && s.viewAll.label && safeHref(s.viewAll.href)) return { href: s.viewAll.href, labelKey: null, label: s.viewAll.label };
+  if (s.kinds.length === 1) return { href: KIND_LISTING[s.kinds[0]], labelKey: `viewAll.${s.kinds[0]}`, label: null, siteLink: true };
+  if (s.viewAll.href && s.viewAll.label && safeHref(s.viewAll.href)) {
+    return { href: s.viewAll.href, labelKey: null, label: s.viewAll.label, siteLink: false };
+  }
   return null;
 }

@@ -139,7 +139,7 @@ function isoDate(value: unknown): string | null {
 
 export type ModerationRule = "approved" | "approved-or-unset" | "none";
 
-const MODERATION: Record<ModerationRule, Where | null> = {
+export const MODERATION: Record<ModerationRule, Where | null> = {
   approved: { moderationStatus: { equals: "approved" } },
   // The loose arm belongs to `livedExperience` alone. See the header.
   "approved-or-unset": {

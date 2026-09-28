@@ -21,6 +21,7 @@ import { eventsCalendar } from "@/payload/blocks/events-calendar";
 import { peopleWidget } from "@/payload/blocks/people-widget";
 import { regionMap } from "@/payload/blocks/region-map";
 import { atlasEmbed } from "@/payload/blocks/atlas-embed";
+import { contentFeed } from "@/payload/blocks/content-feed";
 
 export {
   hero1,
@@ -45,6 +46,7 @@ export {
   peopleWidget,
   regionMap,
   atlasEmbed,
+  contentFeed,
 };
 
 /**

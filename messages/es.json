@@ -2833,5 +2833,15 @@
       "rateLimit": "Has enviado muchas solicitudes en poco tiempo. Inténtalo de nuevo dentro de un rato.",
       "unavailable": "Esta función aún no está disponible."
     }
+  },
+  "feed": {
+    "viewAll": {
+      "caseStudies": "Todos los estudios de caso",
+      "newsPosts": "Todas las noticias",
+      "events": "Todos los eventos",
+      "livedExperiences": "Todas las experiencias vividas",
+      "researchOutputs": "Todos los productos de investigación",
+      "agendas": "Todas las agendas"
+    }
   }
 }

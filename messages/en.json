@@ -2833,5 +2833,15 @@
       "rateLimit": "You've sent a lot of requests in a short time. Please try again in a little while.",
       "unavailable": "This feature isn't available yet."
     }
+  },
+  "feed": {
+    "viewAll": {
+      "caseStudies": "All case studies",
+      "newsPosts": "All news",
+      "events": "All events",
+      "livedExperiences": "All lived experiences",
+      "researchOutputs": "All research outputs",
+      "agendas": "All agendas"
+    }
   }
 }

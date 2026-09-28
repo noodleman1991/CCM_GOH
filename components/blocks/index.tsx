@@ -19,6 +19,7 @@ import PeopleWidget from "@/components/blocks/people/people-widget";
 import EventsCalendar from "@/components/blocks/events/events-calendar";
 import FreshContent from "@/components/blocks/fresh-content";
 import SubmitStoryBanner from "@/components/blocks/cta/submit-story-banner";
+import ContentFeed from "@/components/blocks/content-feed";
 import { BlockReveal } from "@/components/blocks/block-reveal";
 import { isRTL } from "@/i18n/i18n-helpers";
 
@@ -63,6 +64,7 @@ const componentMap: Record<string, React.ElementType> = {
     "events-calendar": EventsCalendar,
     "fresh-content": FreshContent,
     "submit-story-banner": SubmitStoryBanner,
+    "content-feed": ContentFeed,
 };
 
 export default function Blocks({ blocks, locale, userId }: BlocksProps) {

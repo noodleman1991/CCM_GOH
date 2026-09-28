@@ -123,23 +123,23 @@ describe("mergeFeed", () => {
 
 describe("viewAllLink", () => {
   it("links to the kind's listing when exactly one kind is shown", () => {
-    expect(viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts"] }), "fr")).toEqual({ href: "/fr/news", labelKey: "viewAll.newsPosts", label: null });
+    expect(viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts"] }))).toEqual({ href: "/news", labelKey: "viewAll.newsPosts", label: null, siteLink: true });
   });
 
   it("needs both an editor link and label for a mixed feed", () => {
-    expect(viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts", "events"] }), "en")).toBeNull();
+    expect(viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts", "events"] }))).toBeNull();
     expect(
-      viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts", "events"], viewAll: { show: true, href: "/en/atlas", label: "See all" } }), "en"),
-    ).toEqual({ href: "/en/atlas", labelKey: null, label: "See all" });
+      viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts", "events"], viewAll: { show: true, href: "/en/atlas", label: "See all" } })),
+    ).toEqual({ href: "/en/atlas", labelKey: null, label: "See all", siteLink: false });
   });
 
   it("respects 'show a View all link' off", () => {
-    expect(viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts"], viewAll: { show: false } }), "en")).toBeNull();
+    expect(viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts"], viewAll: { show: false } }))).toBeNull();
   });
 
   it("refuses an editor link to another site", () => {
     expect(
-      viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts", "events"], viewAll: { href: "javascript:alert(1)", label: "x" } }), "en"),
+      viewAllLink(normalizeFeedSettings({ kinds: ["newsPosts", "events"], viewAll: { href: "javascript:alert(1)", label: "x" } })),
     ).toBeNull();
   });
 });

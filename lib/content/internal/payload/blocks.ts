@@ -826,6 +826,8 @@ function mapBlock(row: unknown): Row | undefined {
       return regionMapBlock(row);
     case "atlasEmbed":
       return atlasEmbedBlock(row);
+    case "contentFeed":
+      return contentFeedBlock(row);
     default:
       return undefined;
   }
@@ -954,6 +956,56 @@ function regionMapBlock(row: Row): Row {
     description: orNull(text(row.description)),
     title: orNull(text(row.title)),
   });
+}
+
+/** A relationship value — populated row, bare id, or `{relationTo, value}` —
+ *  as its id. */
+function relationIdOf(value: unknown): string | undefined {
+  if (isRow(value)) return relationIdOf(value.id);
+  if (typeof value === "number") return String(value);
+  return text(value);
+}
+
+function idList(values: unknown): string[] {
+  return Array.isArray(values) ? values.map(relationIdOf).filter((id): id is string => id !== undefined) : [];
+}
+
+/**
+ * `content-feed` carries its settings, not its cards: the component resolves
+ * them at render time (lib/content/feeds/resolve.ts), so a feed stays current
+ * without the page being republished. Relations become plain ids here so
+ * nothing populated reaches the flight payload.
+ */
+function contentFeedBlock(row: Row): Row {
+  const filters = isRow(row.filters) ? row.filters : {};
+  const viewAll = isRow(row.viewAll) ? row.viewAll : {};
+  const picks = (Array.isArray(row.picks) ? row.picks : []).filter(isRow).flatMap((pick) => {
+    const id = relationIdOf(pick.value);
+    const kind = text(pick.relationTo);
+    return id && kind ? [{ kind, id }] : [];
+  });
+  return {
+    _key: blockKey(row),
+    _type: "content-feed",
+    settings: {
+      heading: orNull(text(row.heading)),
+      intro: orNull(text(row.intro)),
+      kinds: Array.isArray(row.kinds) ? row.kinds.filter((kind): kind is string => typeof kind === "string") : [],
+      fill: orNull(text(row.fill)),
+      picks,
+      filters: {
+        regions: Array.isArray(filters.regions) ? filters.regions.filter((code): code is string => typeof code === "string") : [],
+        communityIds: idList(filters.communities),
+        tagIds: idList(filters.tags),
+        featuredOnly: filters.featuredOnly === true,
+        upcomingOnly: filters.upcomingOnly === true,
+      },
+      sort: orNull(text(row.sort)),
+      count: orNull(num(row.count)),
+      layout: orNull(text(row.layout)),
+      viewAll: { show: viewAll.show !== false, href: orNull(text(viewAll.href)), label: orNull(text(viewAll.label)) },
+    },
+  };
 }
 
 /** Dropped (like an unknown block) without a valid region: the component
