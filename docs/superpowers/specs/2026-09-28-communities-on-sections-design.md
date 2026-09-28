@@ -46,7 +46,7 @@ After this project a community is **one record** edited in one place, its page i
 ### 3.3 Chapter menu
 
 - A `chapterField()` added to every section in `COMMUNITY_SECTIONS` (and harmless elsewhere): a `group` named `chapter` inside More options with `kind` (select: none (default), overview, agendas, caseStudies, news, voices, members, partners, custom) and `label` (localized text, shown only for custom). Label: "Show in the page menu as".
-- Rendering: `groupIntoChapters(blocks)` — a section with a chapter starts that chapter; sections without one join the chapter above; sections before any chapter render without an anchor. Standard kinds resolve their label from `regional.sectionTitles.*` in the visitor's language; custom uses its own label (English fallback). The existing `RegionSectionSpine` renders the menu when there are two or more chapters; each chapter is a `<section id>` anchor (`scroll-mt-14`), ids from the kind (`overview`, `agendas`, …) or a slug of the custom label.
+- Rendering: `groupIntoChapters(blocks)` — a section with a chapter starts that chapter; sections without one join the chapter above; sections before any chapter render without an anchor. Standard kinds resolve their label from `regional.sectionTitles.*` in the visitor's language (overview→`overview`, agendas→`agendas`, caseStudies→`caseStudies`, news→`newsUpdates`, voices→`communityVoices`, members→`members`, partners→`partners` — all existing keys); custom uses its own label (English fallback). The existing `RegionSectionSpine` renders the menu when there are two or more chapters; each chapter is a `<section id>` anchor (`scroll-mt-14`), ids from the kind (`overview`, `agendas`, …) or a slug of the custom label.
 
 ### 3.4 Feed context and agenda cards
 
