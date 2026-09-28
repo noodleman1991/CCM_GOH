@@ -80,9 +80,11 @@ async function main() {
   const context = IMPORT_WRITE_CONTEXT;
 
   if (revert) {
-    await payload.updateGlobal({ slug: "homepage", locale: "en", draft: false, data: { sections: [], layoutPerLanguage: false, _status: "published" } as never, context });
+    const { SKIP_REQUIRED_SECTIONS } = await import("../../payload/fields/sections");
+    const revertContext = { ...context, [SKIP_REQUIRED_SECTIONS]: true };
+    await payload.updateGlobal({ slug: "homepage", locale: "en", draft: false, data: { sections: [], layoutPerLanguage: false, _status: "published" } as never, context: revertContext });
     for (const locale of LOCALES) {
-      await payload.updateGlobal({ slug: "homepage", locale, draft: false, data: { sectionsByLanguage: [], _status: "published" } as never, context });
+      await payload.updateGlobal({ slug: "homepage", locale, draft: false, data: { sectionsByLanguage: [], _status: "published" } as never, context: revertContext });
     }
     console.log("The homepage is back on its old sections. Clear the site cache so visitors see it.");
     process.exit(0);
