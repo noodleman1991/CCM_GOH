@@ -55,7 +55,9 @@ function LogoMark({ image, size, priority }: { image: LogoImage; size: "tile" | 
     <Image
       src={imageUrl(image, { width: 400, height: 225 })}
       alt={image.alt || image.name || image.label || ""}
-      className={cn("w-auto object-contain", size === "tile" ? "max-h-20" : "max-h-24")}
+      // A fixed box, not `w-auto`: with a responsive srcset, `w-auto` let the
+      // browser size logos from the smallest candidate (they rendered ~11px).
+      className={cn("object-contain", size === "tile" ? "h-20 w-full" : "h-24 w-24")}
       priority={priority}
       placeholder={image?.asset?.metadata?.lqip && image?.asset?.mimeType !== "image/svg+xml" ? "blur" : undefined}
       blurDataURL={image?.asset?.metadata?.lqip || ""}
