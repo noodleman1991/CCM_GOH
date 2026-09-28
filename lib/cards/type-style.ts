@@ -16,7 +16,8 @@ export type TypedCardType =
   | "researchOutput"
   | "event"
   | "person"
-  | "region";
+  | "region"
+  | "agenda";
 
 export const TYPE_STYLE: Record<TypedCardType, { color: string; labelKey: string }> = {
   caseStudy: { color: CCM.sea, labelKey: "caseStudy" },
@@ -26,6 +27,7 @@ export const TYPE_STYLE: Record<TypedCardType, { color: string; labelKey: string
   event: { color: "#3D8FA8", labelKey: "event" },
   person: { color: "#6E9BC0", labelKey: "person" },
   region: { color: "#2C7A5B", labelKey: "region" },
+  agenda: { color: "#5B6C8F", labelKey: "agenda" },
 };
 
 export function isTypedCardType(v: string): v is TypedCardType {

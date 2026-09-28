@@ -2707,6 +2707,7 @@
       "event": "Event",
       "person": "Member",
       "region": "Regional community",
+      "agenda": "Agenda",
       "report": "Report",
       "project": "Project"
     },
