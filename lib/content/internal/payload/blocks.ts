@@ -974,9 +974,10 @@ function idList(values: unknown): string[] {
  * `content-feed` carries its settings, not its cards: the component resolves
  * them at render time (lib/content/feeds/resolve.ts), so a feed stays current
  * without the page being republished. Relations become plain ids here so
- * nothing populated reaches the flight payload.
+ * nothing populated reaches the flight payload. Exported for the admin's
+ * "What will show now" preview, which sends the same raw values.
  */
-function contentFeedBlock(row: Row): Row {
+export function contentFeedSettings(row: Row): Row {
   const filters = isRow(row.filters) ? row.filters : {};
   const viewAll = isRow(row.viewAll) ? row.viewAll : {};
   const picks = (Array.isArray(row.picks) ? row.picks : []).filter(isRow).flatMap((pick) => {
@@ -985,27 +986,27 @@ function contentFeedBlock(row: Row): Row {
     return id && kind ? [{ kind, id }] : [];
   });
   return {
-    _key: blockKey(row),
-    _type: "content-feed",
-    settings: {
-      heading: orNull(text(row.heading)),
-      intro: orNull(text(row.intro)),
-      kinds: Array.isArray(row.kinds) ? row.kinds.filter((kind): kind is string => typeof kind === "string") : [],
-      fill: orNull(text(row.fill)),
-      picks,
-      filters: {
-        regions: Array.isArray(filters.regions) ? filters.regions.filter((code): code is string => typeof code === "string") : [],
-        communityIds: idList(filters.communities),
-        tagIds: idList(filters.tags),
-        featuredOnly: filters.featuredOnly === true,
-        upcomingOnly: filters.upcomingOnly === true,
-      },
-      sort: orNull(text(row.sort)),
-      count: orNull(num(row.count)),
-      layout: orNull(text(row.layout)),
-      viewAll: { show: viewAll.show !== false, href: orNull(text(viewAll.href)), label: orNull(text(viewAll.label)) },
+    heading: orNull(text(row.heading)),
+    intro: orNull(text(row.intro)),
+    kinds: Array.isArray(row.kinds) ? row.kinds.filter((kind): kind is string => typeof kind === "string") : [],
+    fill: orNull(text(row.fill)),
+    picks,
+    filters: {
+      regions: Array.isArray(filters.regions) ? filters.regions.filter((code): code is string => typeof code === "string") : [],
+      communityIds: idList(filters.communities),
+      tagIds: idList(filters.tags),
+      featuredOnly: filters.featuredOnly === true,
+      upcomingOnly: filters.upcomingOnly === true,
     },
+    sort: orNull(text(row.sort)),
+    count: orNull(num(row.count)),
+    layout: orNull(text(row.layout)),
+    viewAll: { show: viewAll.show !== false, href: orNull(text(viewAll.href)), label: orNull(text(viewAll.label)) },
   };
+}
+
+function contentFeedBlock(row: Row): Row {
+  return { _key: blockKey(row), _type: "content-feed", settings: contentFeedSettings(row) };
 }
 
 /** Dropped (like an unknown block) without a valid region: the component

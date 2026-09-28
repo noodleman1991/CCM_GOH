@@ -135,5 +135,7 @@ export const contentFeed: Block = {
         localizedText("label", { label: "Link text (for several kinds)" }),
       ],
     },
+    // No stored value: a live list of what the settings above would show.
+    { name: "whatWillShow", type: "ui", admin: { components: { Field: "@/payload/components/feed-preview#FeedPreview" } } },
   ],
 };

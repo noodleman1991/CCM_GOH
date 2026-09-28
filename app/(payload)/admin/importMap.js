@@ -24,6 +24,7 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ModerationActions as ModerationActions_57f9ce9aedc9389a0e52a58f32510b64 } from '@/payload/components/moderation-actions'
 import { SectionRowLabel as SectionRowLabel_a3836b4cc6000e04c6e944bb5c15f7a7 } from '@/payload/components/section-row-label'
+import { FeedPreview as FeedPreview_b30692c4dc1487013c633e1aa29d8f29 } from '@/payload/components/feed-preview'
 import { ReportIssue as ReportIssue_7563ac9ec89234b97cf5859415a7095d } from '@/payload/components/report-issue'
 import { BrandIcon as BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { BrandLogo as BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
@@ -60,6 +61,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/payload/components/moderation-actions#ModerationActions": ModerationActions_57f9ce9aedc9389a0e52a58f32510b64,
   "@/payload/components/section-row-label#SectionRowLabel": SectionRowLabel_a3836b4cc6000e04c6e944bb5c15f7a7,
+  "@/payload/components/feed-preview#FeedPreview": FeedPreview_b30692c4dc1487013c633e1aa29d8f29,
   "@/payload/components/report-issue#ReportIssue": ReportIssue_7563ac9ec89234b97cf5859415a7095d,
   "@/payload/components/brand-logo#BrandIcon": BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/brand-logo#BrandLogo": BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31,
