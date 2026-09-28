@@ -8,6 +8,7 @@ import { getLocalizedField } from "@/lib/localization-utils";
 import { useTranslations } from "next-intl";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 import { heading, gridGap } from "@/lib/design-tokens";
 import type { SectionPadding } from "@/components/ui/section-container";
 
@@ -27,10 +28,13 @@ interface LogoCloud1Props {
 }
 
 type LogoImage = {
-  asset?: { _id?: string; mimeType?: string; metadata?: { lqip?: string; dimensions?: { width?: number; height?: number } } };
+  asset?: { _id?: string; mimeType?: string; metadata?: { lqip?: string; dimensions?: { width?: number; height?: number } } } | null;
   alt?: string;
   label?: string;
   orgType?: string;
+  /** Partner organisations: their page on the hub, and their name. */
+  href?: string | null;
+  name?: string | null;
 };
 
 const TYPE_ORDER = [
@@ -38,25 +42,56 @@ const TYPE_ORDER = [
   "international", "company", "community", "foundation", "other",
 ];
 
+/** The logo itself, or — for an organisation with no logo yet — its name. */
+function LogoMark({ image, size, priority }: { image: LogoImage; size: "tile" | "strip"; priority?: boolean }) {
+  if (!image.asset) {
+    return (
+      <span className="inline-flex h-20 items-center justify-center rounded-lg bg-ccm-mist px-4 text-center text-sm font-bold text-ccm-midnight">
+        {image.name ?? image.label ?? image.alt}
+      </span>
+    );
+  }
+  return (
+    <Image
+      src={imageUrl(image, { width: 400, height: 225 })}
+      alt={image.alt || image.name || image.label || ""}
+      className={cn("w-auto object-contain", size === "tile" ? "max-h-20" : "max-h-24")}
+      priority={priority}
+      placeholder={image?.asset?.metadata?.lqip && image?.asset?.mimeType !== "image/svg+xml" ? "blur" : undefined}
+      blurDataURL={image?.asset?.metadata?.lqip || ""}
+      width={image.asset?.metadata?.dimensions?.width || 220}
+      height={image?.asset?.metadata?.dimensions?.height || 90}
+      sizes={size === "tile" ? "(min-width: 1024px) 16vw, (min-width: 640px) 25vw, 40vw" : "96px"}
+    />
+  );
+}
+
+/** Organisations link to their hub page; other logos are plain. */
+function Linked({ image, children, hidden }: { image: LogoImage; children: React.ReactNode; hidden?: boolean }) {
+  if (!image.href) return <>{children}</>;
+  return (
+    <Link
+      href={image.href}
+      aria-label={image.name ?? undefined}
+      tabIndex={hidden ? -1 : undefined}
+      aria-hidden={hidden || undefined}
+      className="block rounded-lg outline-offset-4 focus-visible:outline-2 focus-visible:outline-ccm-sea"
+    >
+      {children}
+    </Link>
+  );
+}
+
 function LogoTile({ image, label }: { image: LogoImage; label?: string }) {
   return (
-    <figure className="flex flex-col items-center justify-center gap-2 text-center">
-      <div className="flex h-20 w-full items-center justify-center">
-        <Image
-          src={imageUrl(image, { width: 400, height: 225 })}
-          alt={image.alt || label || ""}
-          className="max-h-20 w-auto object-contain"
-          placeholder={
-            image?.asset?.metadata?.lqip && image?.asset?.mimeType !== "image/svg+xml" ? "blur" : undefined
-          }
-          blurDataURL={image?.asset?.metadata?.lqip || ""}
-          width={image.asset?.metadata?.dimensions?.width || 220}
-          height={image?.asset?.metadata?.dimensions?.height || 90}
-          sizes="(min-width: 1024px) 16vw, (min-width: 640px) 25vw, 40vw"
-        />
-      </div>
-      {label && <figcaption className="text-xs font-medium text-muted-foreground">{label}</figcaption>}
-    </figure>
+    <Linked image={image}>
+      <figure className="flex flex-col items-center justify-center gap-2 text-center">
+        <div className="flex h-20 w-full items-center justify-center">
+          <LogoMark image={image} size="tile" />
+        </div>
+        {label && image.asset && <figcaption className="text-xs font-medium text-muted-foreground">{label}</figcaption>}
+      </figure>
+    </Linked>
   );
 }
 
@@ -145,24 +180,14 @@ export default function LogoCloud1({
             <Fragment key={arrayIndex}>
               {imgs.map((image, index) => (
                 <div
-                  key={`${image.asset?._id}-${arrayIndex}-${index}`}
+                  key={`${image.asset?._id ?? image.href}-${arrayIndex}-${index}`}
                   className="flex h-24 w-24 shrink-0 items-center justify-center"
+                  aria-hidden={arrayIndex === 1 || undefined}
                 >
-                  <Image
-                    src={imageUrl(image, { width: 400, height: 225 })}
-                    alt={image.alt || image.label || ""}
-                    className="max-h-24 w-auto object-contain"
-                    priority={arrayIndex === 0 && index < 3}
-                    placeholder={
-                      image?.asset?.metadata?.lqip && image?.asset?.mimeType !== "image/svg+xml"
-                        ? "blur"
-                        : undefined
-                    }
-                    blurDataURL={image?.asset?.metadata?.lqip || ""}
-                    width={image.asset?.metadata?.dimensions?.width || 220}
-                    height={image?.asset?.metadata?.dimensions?.height || 90}
-                    sizes="96px"
-                  />
+                  {/* The strip repeats once so it can loop; the repeat is hidden from screen readers and the keyboard. */}
+                  <Linked image={image} hidden={arrayIndex === 1}>
+                    <LogoMark image={image} size="strip" priority={arrayIndex === 0 && index < 3} />
+                  </Linked>
                 </div>
               ))}
             </Fragment>

@@ -542,9 +542,13 @@ function logoCloud1Block(row: Row, key: string | null = blockKey(row)): Row {
     _key: key,
     _type: "logo-cloud-1",
     description: orNull(text(row.description)),
-    images: Array.isArray(row.images)
-      ? listOrNull(row.images.filter(isRow).map(logoCloudImage).filter((i): i is Row => i !== null))
-      : null,
+    // Partner organisations first (CMS project 2), then any unlinked logos.
+    images: listOrNull([
+      ...(Array.isArray(row.organizations)
+        ? row.organizations.map(logoFromOrganization).filter((i): i is Row => i !== null)
+        : []),
+      ...(Array.isArray(row.images) ? row.images.filter(isRow).map(logoCloudImage).filter((i): i is Row => i !== null) : []),
+    ]),
     layout: orNull(text(row.layout)),
     motionSpeed: orNull(text(row.motionSpeed)),
     padding: paddingObject(row.padding),
@@ -558,8 +562,29 @@ function logoCloudImage(row: Row): Row | null {
   return groqObject({
     _key: blockKey(row),
     ...projected,
+    href: null,
     label: orNull(text(row.label)),
+    name: null,
     orgType: orNull(text(row.orgType)),
+  });
+}
+
+/** A partner organisation as a logo: its own logo (or none — the strip shows
+ *  its name), named, linked to its hub page. Hidden or deleted ones are left out. */
+function logoFromOrganization(value: unknown): Row | null {
+  if (!isRow(value) || value.showOnSite === false) return null;
+  const name = text(value.name);
+  const slug = text(value.slug);
+  if (!name || !slug) return null;
+  const logo = projectedImage(value.logo);
+  return groqObject({
+    _key: `org-${String(value.id ?? slug)}`,
+    ...(logo ?? { asset: null }),
+    alt: name,
+    href: `/organizations/${slug}`,
+    label: name,
+    name,
+    orgType: orNull(text(value.type)),
   });
 }
 
