@@ -266,3 +266,36 @@ No fix needed: the page is already published, so nothing was published on DEV, a
 Root cause: the homepage's `livedExperiences` slot is a hand-picked `carousel2` block (`payload/blocks/carousel-2.ts`) and its `testimonial` list is empty on all four language documents (0 of 4 — same finding the block's own code comment already recorded). `components/pages/homepage.tsx` rendered `Carousel2` unconditionally whenever the slot existed, so the section showed its heading over zero cards.
 
 Fixed in code only (`lib/content/homepage-lived-experiences.ts`, wired into `components/pages/homepage.tsx`) — no data or schema change, so nothing to run against production beyond deploying the code: when no testimonials are hand-picked, the section now falls back to the latest ~8 published lived experiences (the same automatic feed the regional community template already uses), keeping the slot's own heading. Hand-picked testimonials still win outright if an editor ever picks any. With no lived experiences at all, the section is hidden rather than showing an empty carousel. Verified on dev: the homepage now renders 8 real lived-experience cards under the heading "Stories of grief, resilience, and hope".
+
+## 2026-09-28 page builder foundation
+
+What shipped (CMS project 1 of 5, spec `docs/superpowers/specs/2026-09-28-page-builder-foundation-design.md`): the section picker gets plain names, six groups and pictures; ten code-only sections become addable on pages (hero with image, FAQs, timeline, image carousel, share-your-story banner, newsletter signup, events calendar, people, region map, atlas); a new **Content feed** section (any mix of case studies, news, events, lived experiences, research outputs and agendas — automatic, your picks first, or only your picks); a "What will show now" panel under each feed; translation status on section rows; **drafts** for pages and the homepage; and **live preview** (phone, tablet, desktop) for both.
+
+Visitors see no change on existing pages: existing sections keep their stored names and fields, and the migration marks every existing page and the homepage published.
+
+One additive Postgres migration, applied and verified on dev: `20260928_130239_page_sections_and_drafts`. It creates the new section tables and the pages/homepage version tables, adds `_status` to `pages` and `homepage` (then sets it to `published` on every existing row), adds relation columns to `pages_rels`, and loosens five NOT NULL constraints Payload requires for drafts (`pages.slug`, and the grid agenda/news references in `pages`/`homepage` blocks). Nothing is dropped or renamed.
+
+1. Before deploy — optional pre-check:
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status
+   ```
+   Expect `20260928_130239_page_sections_and_drafts` listed as not yet run.
+
+2. Deploy (manual, by the user):
+   ```
+   vercel --prod
+   ```
+   `prodMigrations` applies the migration on boot. Re-run `migrate:status` and confirm it shows as applied. No script to run afterwards.
+
+3. Quick public check (signed out): the homepage and two existing pages (e.g. `/en/about`, `/fr/about`) look exactly as before.
+
+4. Signed-in checklist (staff account, in the production admin):
+   1. Open any page → **Add section**: six groups (Openings, Text & media, Content, Maps, Calls to action, Logos & quotes), each section with a picture and a plain name. The regional "Content section" reads "Content section (old)".
+   2. Add a **Content feed**. Switch "How to fill it" between the three choices: "My picks" appears only for the two pick modes, and the picker offers only published items. "Upcoming events only" appears only when Events is ticked.
+   3. The **What will show now** panel under the feed lists items and updates about half a second after you change a setting. Pick an item, then unpublish that item in another tab: the panel says one pick isn't shown, and the page still saves.
+   4. Section rows show their number and plain name. (The "EN ✓ · ES missing" status appears for sections in shared-layout lists, which pages, the homepage and regional pages move onto in projects 2–4 — today's page lists are per language, so they show no status yet.)
+   5. Edit a heading and wait: the page saves a **draft** on its own. Signed out in another browser, the live page still shows the published version until you press **Publish**.
+   6. Open **Live preview**: switch phone, tablet and desktop; edit a heading and the preview updates after the autosave. Do the same on the **Homepage**.
+   7. Close the preview and visit any page as yourself: if a "draft mode" bar shows, use it to leave draft mode.
+
+5. If anything is wrong after deploy: the new sections and the feed are unused until an editor adds them, so nothing public depends on them. Drafts are the one behaviour change for editors — edits now need **Publish** to go live.
