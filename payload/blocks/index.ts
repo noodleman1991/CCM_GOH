@@ -17,6 +17,10 @@ import { timelineRow } from "@/payload/blocks/timeline-row";
 import { carousel1 } from "@/payload/blocks/carousel-1";
 import { submitStoryBanner } from "@/payload/blocks/submit-story-banner";
 import { formNewsletter } from "@/payload/blocks/form-newsletter";
+import { eventsCalendar } from "@/payload/blocks/events-calendar";
+import { peopleWidget } from "@/payload/blocks/people-widget";
+import { regionMap } from "@/payload/blocks/region-map";
+import { atlasEmbed } from "@/payload/blocks/atlas-embed";
 
 export {
   hero1,
@@ -37,6 +41,10 @@ export {
   carousel1,
   submitStoryBanner,
   formNewsletter,
+  eventsCalendar,
+  peopleWidget,
+  regionMap,
+  atlasEmbed,
 };
 
 /**

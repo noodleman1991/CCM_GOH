@@ -99,6 +99,7 @@ import { imageGroup, mediaOf } from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull, type LocalizedRaw } from "@/lib/content/internal/localized";
 import { agendaCardProjection } from "@/lib/content/internal/payload/outputs";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
+import { isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
 
 type Row = Record<string, unknown>;
 
@@ -817,6 +818,14 @@ function mapBlock(row: unknown): Row | undefined {
       return submitStoryBannerBlock(row);
     case "formNewsletter":
       return formNewsletterBlock(row);
+    case "eventsCalendar":
+      return eventsCalendarBlock(row);
+    case "peopleWidget":
+      return peopleWidgetBlock(row);
+    case "regionMap":
+      return regionMapBlock(row);
+    case "atlasEmbed":
+      return atlasEmbedBlock(row);
     default:
       return undefined;
   }
@@ -907,6 +916,52 @@ function formNewsletterBlock(row: Row): Row {
     padding: paddingObject(row.padding),
     successMessage: orNull(text(row.successMessage)),
   });
+}
+
+/** A region only when it is one of the seven — anything else would reach a
+ *  Postgres enum or a component that needs a valid code. */
+function regionOrNull(value: unknown): RegionCode | null {
+  const code = text(value);
+  return code && isRegionCode(code) ? code : null;
+}
+
+function eventsCalendarBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "events-calendar",
+    description: orNull(text(row.description)),
+    padding: paddingObject(row.padding),
+    title: orNull(text(row.title)),
+    upcomingLimit: num(row.upcomingLimit) ?? 6,
+  });
+}
+
+function peopleWidgetBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "people-widget",
+    description: orNull(text(row.description)),
+    limit: num(row.limit) ?? 12,
+    region: regionOrNull(row.region),
+    title: orNull(text(row.title)),
+  });
+}
+
+function regionMapBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "region-map",
+    description: orNull(text(row.description)),
+    title: orNull(text(row.title)),
+  });
+}
+
+/** Dropped (like an unknown block) without a valid region: the component
+ *  renders nothing for one anyway. */
+function atlasEmbedBlock(row: Row): Row | undefined {
+  const region = regionOrNull(row.region);
+  if (!region) return undefined;
+  return groqObject({ _key: blockKey(row), _type: "atlas-embed", region, showBreakdown: row.showBreakdown !== false });
 }
 
 /**

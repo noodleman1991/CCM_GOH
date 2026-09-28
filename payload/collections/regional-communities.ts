@@ -5,6 +5,7 @@ import { localizedText } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
+import { REGION_OPTIONS } from "@/payload/fields/regions";
 
 /**
  * Mirrors sanity/schemas/documents/regional-community.ts. Verified against
@@ -14,7 +15,7 @@ import { slugField } from "@/payload/fields/slug";
  *
  * - `region` values in real data (csa, esea, enam, lac, nawa, oce, ssa)
  *   match `REGION_OPTIONS` (lib/content/taxonomy-options.ts) exactly —
- *   inlined below rather than imported, since Payload code stays out of
+ *   kept in payload/fields/regions.ts rather than imported, since Payload code stays out of
  *   `lib/content/` (Task 1/3's established boundary: nothing under
  *   `lib/content/`, `components/`, or existing `app/api/`).
  * - `members` (person ref + role, meant to link authors to a community from
@@ -28,15 +29,6 @@ import { slugField } from "@/payload/fields/slug";
  *   disagreements (nothing stores a different shape than declared), just
  *   unused live fields, same treatment as Task 3's `tagLine`.
  */
-const REGION_OPTIONS = [
-  { label: "Sub-Saharan Africa", value: "ssa" },
-  { label: "Northern Africa & Western Asia", value: "nawa" },
-  { label: "Central & Southern Asia", value: "csa" },
-  { label: "Eastern & South-Eastern Asia", value: "esea" },
-  { label: "Latin America & the Caribbean", value: "lac" },
-  { label: "Oceania", value: "oce" },
-  { label: "Europe & Northern America", value: "enam" },
-];
 
 export const RegionalCommunities: CollectionConfig = {
   slug: "regionalCommunities",
