@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Link cards">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <rect x="28" y="60" width="130" height="150" rx="10" fill="#FFFFFF"/>
+  <rect x="42" y="80" width="90" height="14" rx="6" fill="#0B3160"/>
+  <rect x="42" y="106" width="100" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="42" y="124" width="80" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="136" cy="186" r="12" fill="#205596"/>
+  <rect x="175" y="60" width="130" height="150" rx="10" fill="#FFFFFF"/>
+  <rect x="189" y="80" width="90" height="14" rx="6" fill="#0B3160"/>
+  <rect x="189" y="106" width="100" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="189" y="124" width="80" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="283" cy="186" r="12" fill="#205596"/>
+  <rect x="322" y="60" width="130" height="150" rx="10" fill="#FFFFFF"/>
+  <rect x="336" y="80" width="90" height="14" rx="6" fill="#0B3160"/>
+  <rect x="336" y="106" width="100" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="336" y="124" width="80" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="430" cy="186" r="12" fill="#205596"/>
+</svg>

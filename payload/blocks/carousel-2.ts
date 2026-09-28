@@ -1,6 +1,7 @@
 import type { Block } from "payload";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { relationshipField, sectionPaddingField } from "@/payload/blocks/shared";
+import { pickerAdmin } from "@/payload/blocks/picker";
 
 /**
  * sanity/schemas/blocks/carousel/carousel-2.ts. Verified against
@@ -23,6 +24,8 @@ import { relationshipField, sectionPaddingField } from "@/payload/blocks/shared"
 export const carousel2: Block = {
   slug: "carousel2",
   interfaceName: "Carousel2Block",
+  labels: { singular: "Testimonials", plural: "Testimonials" },
+  admin: pickerAdmin("testimonials", "Logos & quotes", "Quotes from people, one at a time"),
   fields: [
     localizedText("title", { required: false, label: "Section Title" }),
     localizedTextarea("description", { required: false, label: "Section Description" }),

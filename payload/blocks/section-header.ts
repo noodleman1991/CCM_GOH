@@ -1,6 +1,7 @@
 import type { Block } from "payload";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sectionPaddingField } from "@/payload/blocks/shared";
+import { pickerAdmin } from "@/payload/blocks/picker";
 
 /**
  * sanity/schemas/blocks/section-header.ts.
@@ -28,6 +29,8 @@ import { sectionPaddingField } from "@/payload/blocks/shared";
 export const sectionHeader: Block = {
   slug: "sectionHeader",
   interfaceName: "SectionHeaderBlock",
+  labels: { singular: "Section heading", plural: "Section headings" },
+  admin: pickerAdmin("section-heading", "Openings", "A heading and short intro that starts a new part of the page"),
   fields: [
     sectionPaddingField("padding"),
     {

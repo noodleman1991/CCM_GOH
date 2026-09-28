@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Call to action">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <rect x="24" y="70" width="432" height="130" rx="14" fill="#205596" opacity=".25"/>
+  <rect x="128" y="98" width="224" height="22" rx="6" fill="#0B3160"/>
+  <rect x="140" y="146" width="96" height="30" rx="15" fill="#205596"/>
+  <rect x="248" y="146" width="96" height="30" rx="15" fill="#FFFFFF"/>
+</svg>

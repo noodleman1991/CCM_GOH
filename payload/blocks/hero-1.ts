@@ -1,6 +1,7 @@
 import type { Block } from "payload";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { backgroundOptionField, imageField, linksArrayField, sectionPaddingField } from "@/payload/blocks/shared";
+import { pickerAdmin } from "@/payload/blocks/picker";
 
 /**
  * sanity/schemas/blocks/hero/hero-1.ts. Verified against production_2
@@ -15,6 +16,8 @@ import { backgroundOptionField, imageField, linksArrayField, sectionPaddingField
 export const hero1: Block = {
   slug: "hero1",
   interfaceName: "Hero1Block",
+  labels: { singular: "Hero", plural: "Heroes" },
+  admin: pickerAdmin("hero", "Openings", "A large heading with text, buttons and an image beside it"),
   fields: [
     backgroundOptionField("background"),
     localizedText("tagLine", { required: false }),

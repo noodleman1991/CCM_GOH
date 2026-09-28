@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Hero with image">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <rect x="24" y="24" width="432" height="222" rx="12" fill="#205596" opacity=".35"/>
+  <rect x="64" y="96" width="260" height="24" rx="6" fill="#0B3160"/>
+  <rect x="64" y="132" width="220" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="64" y="160" width="100" height="28" rx="14" fill="#205596"/>
+</svg>

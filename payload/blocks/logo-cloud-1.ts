@@ -1,6 +1,7 @@
 import type { Block } from "payload";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sectionPaddingField, uploadField } from "@/payload/blocks/shared";
+import { pickerAdmin } from "@/payload/blocks/picker";
 
 /**
  * sanity/schemas/blocks/logo-cloud/logo-cloud-1.ts. Verified against
@@ -18,6 +19,8 @@ import { sectionPaddingField, uploadField } from "@/payload/blocks/shared";
 export const logoCloud1: Block = {
   slug: "logoCloud1",
   interfaceName: "LogoCloud1Block",
+  labels: { singular: "Logo strip", plural: "Logo strips" },
+  admin: pickerAdmin("logo-strip", "Logos & quotes", "A row of partner logos"),
   fields: [
     sectionPaddingField("padding"),
     localizedText("title", { required: false }),

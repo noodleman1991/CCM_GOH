@@ -1,6 +1,7 @@
 import type { Block } from "payload";
 import { localizedRichText, localizedText } from "@/payload/fields/localized";
 import { backgroundOptionField, linksArrayField, sectionPaddingField } from "@/payload/blocks/shared";
+import { pickerAdmin } from "@/payload/blocks/picker";
 
 /**
  * sanity/schemas/blocks/cta/cta-1.ts. Verified against production_2
@@ -22,6 +23,8 @@ import { backgroundOptionField, linksArrayField, sectionPaddingField } from "@/p
 export const cta1: Block = {
   slug: "cta1",
   interfaceName: "Cta1Block",
+  labels: { singular: "Call to action", plural: "Calls to action" },
+  admin: pickerAdmin("call-to-action", "Calls to action", "A short message with one or two buttons"),
   fields: [
     sectionPaddingField("padding"),
     backgroundOptionField("background"),

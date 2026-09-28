@@ -72,7 +72,7 @@ import { gridNews } from "@/payload/blocks/grid-news";
 export const contentGrid: Block = {
   slug: "contentGrid",
   interfaceName: "ContentGridBlock",
-  labels: { singular: "Content Section", plural: "Content Sections" },
+  labels: { singular: "Content section (old)", plural: "Content sections (old)" },
   fields: [
     {
       name: "contentType",

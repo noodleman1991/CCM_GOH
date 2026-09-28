@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="People">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <circle cx="72" cy="120" r="28" fill="#205596" opacity=".6"/>
+  <rect x="42" y="164" width="60" height="10" rx="5" fill="#0B3160"/>
+  <rect x="48" y="182" width="48" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="156" cy="120" r="28" fill="#4186C3" opacity=".6"/>
+  <rect x="126" y="164" width="60" height="10" rx="5" fill="#0B3160"/>
+  <rect x="132" y="182" width="48" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="240" cy="120" r="28" fill="#0B3160" opacity=".6"/>
+  <rect x="210" y="164" width="60" height="10" rx="5" fill="#0B3160"/>
+  <rect x="216" y="182" width="48" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="324" cy="120" r="28" fill="#205596" opacity=".6"/>
+  <rect x="294" y="164" width="60" height="10" rx="5" fill="#0B3160"/>
+  <rect x="300" y="182" width="48" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="408" cy="120" r="28" fill="#4186C3" opacity=".6"/>
+  <rect x="378" y="164" width="60" height="10" rx="5" fill="#0B3160"/>
+  <rect x="384" y="182" width="48" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+</svg>

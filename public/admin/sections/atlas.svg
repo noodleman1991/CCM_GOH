@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Atlas">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <g transform="translate(-20,0) scale(.85)"><path d="M70 120 C90 70 170 60 210 90 C250 60 330 70 370 100 C420 110 420 170 380 190 C330 220 260 200 220 210 C170 225 100 215 80 180 C60 160 60 140 70 120Z" fill="#4186C3" opacity=".35"/><circle cx="140" cy="120" r="8" fill="#205596"/><circle cx="230" cy="150" r="8" fill="#205596"/><circle cx="300" cy="110" r="8" fill="#0B3160"/><circle cx="350" cy="170" r="8" fill="#205596"/></g>
+  <rect x="330" y="40" width="122" height="190" rx="10" fill="#FFFFFF"/>
+  <rect x="344" y="58" width="80" height="12" rx="5" fill="#0B3160"/>
+  <rect x="344" y="82" width="90" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="344" y="100" width="70" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="344" y="118" width="94" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <rect x="344" y="136" width="60" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+</svg>

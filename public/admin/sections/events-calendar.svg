@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Events calendar">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <rect x="60" y="34" width="140" height="16" rx="6" fill="#0B3160"/>
+  <rect x="60" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="112" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="164" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="216" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="268" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="320" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="372" y="64" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="60" y="102" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="112" y="102" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="164" y="102" width="44" height="30" rx="6" fill="#205596"/>
+  <rect x="216" y="102" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="268" y="102" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="320" y="102" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="372" y="102" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="60" y="140" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="112" y="140" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="164" y="140" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="216" y="140" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="268" y="140" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="320" y="140" width="44" height="30" rx="6" fill="#205596"/>
+  <rect x="372" y="140" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="60" y="178" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="112" y="178" width="44" height="30" rx="6" fill="#205596"/>
+  <rect x="164" y="178" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="216" y="178" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="268" y="178" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="320" y="178" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="372" y="178" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="60" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="112" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="164" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="216" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="268" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="320" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+  <rect x="372" y="216" width="44" height="30" rx="6" fill="#FFFFFF"/>
+</svg>

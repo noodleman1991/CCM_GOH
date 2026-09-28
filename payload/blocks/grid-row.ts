@@ -4,6 +4,7 @@ import { backgroundOptionField, imageField, sectionPaddingField } from "@/payloa
 import { gridAgenda } from "@/payload/blocks/grid-agenda";
 import { gridCard } from "@/payload/blocks/grid-card";
 import { gridNews } from "@/payload/blocks/grid-news";
+import { pickerAdmin } from "@/payload/blocks/picker";
 
 /**
  * sanity/schemas/blocks/grid/grid-row.ts. Verified against production_2
@@ -29,6 +30,8 @@ import { gridNews } from "@/payload/blocks/grid-news";
 export const gridRow: Block = {
   slug: "gridRow",
   interfaceName: "GridRowBlock",
+  labels: { singular: "Link cards", plural: "Link cards" },
+  admin: pickerAdmin("link-cards", "Content", "A row of cards you write yourself, each linking somewhere"),
   fields: [
     sectionPaddingField("padding"),
     backgroundOptionField("background"),
@@ -74,8 +77,7 @@ export const gridRow: Block = {
       label: "Content Mode",
       defaultValue: "manual",
       admin: {
-        description:
-          "Dynamic modes keep this section automatically up to date with the latest published content.",
+        description: "Old automatic setting — use a Content feed section instead.",
       },
       options: [
         { label: "Manual — hand-pick items", value: "manual" },

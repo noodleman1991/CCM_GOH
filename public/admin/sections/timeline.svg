@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Timeline">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <rect x="118" y="40" width="4" height="190" rx="2" fill="#4186C3" opacity=".5"/>
+  <circle cx="120" cy="60" r="9" fill="#205596"/>
+  <rect x="146" y="48" width="120" height="12" rx="5" fill="#0B3160"/>
+  <rect x="146" y="64" width="200" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="120" cy="110" r="9" fill="#205596"/>
+  <rect x="146" y="98" width="120" height="12" rx="5" fill="#0B3160"/>
+  <rect x="146" y="114" width="200" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="120" cy="160" r="9" fill="#205596"/>
+  <rect x="146" y="148" width="120" height="12" rx="5" fill="#0B3160"/>
+  <rect x="146" y="164" width="200" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="120" cy="210" r="9" fill="#205596"/>
+  <rect x="146" y="198" width="120" height="12" rx="5" fill="#0B3160"/>
+  <rect x="146" y="214" width="200" height="10" rx="5" fill="#4186C3" opacity=".5"/>
+</svg>

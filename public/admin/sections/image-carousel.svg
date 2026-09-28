@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="Image carousel">
+  <rect width="480" height="270" rx="16" fill="#EEF4FB"/>
+  <rect x="32" y="56" width="130" height="140" rx="10" fill="#205596" opacity=".35"/>
+  <rect x="175" y="56" width="130" height="140" rx="10" fill="#205596" opacity=".5"/>
+  <rect x="318" y="56" width="130" height="140" rx="10" fill="#205596" opacity=".35"/>
+  <circle cx="222" cy="222" r="5" fill="#0B3160"/>
+  <circle cx="240" cy="222" r="5" fill="#4186C3" opacity=".5"/>
+  <circle cx="258" cy="222" r="5" fill="#4186C3" opacity=".5"/>
+</svg>
