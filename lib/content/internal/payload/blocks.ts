@@ -995,6 +995,7 @@ export function contentFeedSettings(row: Row): Row {
       regions: Array.isArray(filters.regions) ? filters.regions.filter((code): code is string => typeof code === "string") : [],
       communityIds: idList(filters.communities),
       tagIds: idList(filters.tags),
+      organizationIds: idList(filters.organizations),
       featuredOnly: filters.featuredOnly === true,
       upcomingOnly: filters.upcomingOnly === true,
     },

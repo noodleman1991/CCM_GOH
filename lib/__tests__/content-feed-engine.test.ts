@@ -32,6 +32,10 @@ describe("normalizeFeedSettings", () => {
     expect(normalizeFeedSettings(null).kinds).toEqual(["caseStudies"]);
   });
 
+  it("keeps organisation ids", () => {
+    expect(normalizeFeedSettings({ filters: { organizationIds: ["o1", "", 3] } }).filters.organizationIds).toEqual(["o1"]);
+  });
+
   it("drops malformed picks", () => {
     const s = normalizeFeedSettings({ picks: [{ kind: "newsPosts", id: "1" }, { kind: "bogus", id: "2" }, { kind: "events" }, null] });
     expect(s.picks).toEqual([{ kind: "newsPosts", id: "1" }]);

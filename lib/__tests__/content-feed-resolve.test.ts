@@ -102,6 +102,13 @@ describe("resolveContentFeed", () => {
     expect(r.items.map((i) => i.id)).toEqual(["n1"]);
   });
 
+  it("filters by organisation, leaving out kinds with no organisation link", async () => {
+    query.mockResolvedValue({ docs: [] });
+    await resolveContentFeed({ kinds: ["caseStudies", "events"], filters: { organizationIds: ["o1"] } }, { locale: "en" });
+    expect(calls().map((d) => d.collection)).toEqual(["caseStudies"]);
+    expect(whereOf("caseStudies")).toContain('"organizations":{"in":["o1"]}');
+  });
+
   it("shows nothing on the old content backend", async () => {
     backend.mockReturnValue("sanity");
     const r = await resolveContentFeed({ kinds: ["caseStudies"] }, { locale: "en" });

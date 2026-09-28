@@ -26,6 +26,7 @@ export interface FeedFilters {
   regions: string[];
   communityIds: string[];
   tagIds: string[];
+  organizationIds: string[];
   featuredOnly: boolean;
   upcomingOnly: boolean;
 }

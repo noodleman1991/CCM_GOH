@@ -50,6 +50,7 @@ export function normalizeFeedSettings(raw: unknown): FeedSettings {
       regions: strs(f.regions).filter(isRegionCode),
       communityIds: strs(f.communityIds),
       tagIds: strs(f.tagIds),
+      organizationIds: strs(f.organizationIds),
       featuredOnly: f.featuredOnly === true,
       upcomingOnly: f.upcomingOnly === true,
     },

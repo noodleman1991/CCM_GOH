@@ -38,6 +38,8 @@ interface KindConfig {
   region: string | null;
   community: string;
   tags: string | null;
+  /** The Where path to the organisations it's linked to, or `null` when it has none. */
+  organizations: string | null;
   image: "image" | "coverImage" | null;
   excerpt: "excerpt" | "description";
   place: "locationDisplayText" | "place.text" | null;
@@ -54,6 +56,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     region: "region",
     community: "relatedCommunity",
     tags: "tags",
+    organizations: "organizations",
     image: "image",
     excerpt: "excerpt",
     place: "locationDisplayText",
@@ -68,6 +71,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     region: "region",
     community: "relatedCommunity",
     tags: "tags",
+    organizations: "organizations",
     image: "image",
     excerpt: "excerpt",
     place: "place.text",
@@ -82,6 +86,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     region: "region.region",
     community: "region",
     tags: "tags",
+    organizations: "organizations",
     // Its `thumbnail` is video-only; cards use the tinted placeholder, as the homepage does.
     image: null,
     excerpt: "description",
@@ -97,6 +102,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     region: "region",
     community: "relatedCommunities",
     tags: "tags",
+    organizations: "organizations",
     image: "coverImage",
     excerpt: "excerpt",
     place: "place.text",
@@ -111,6 +117,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     region: null,
     community: "relatedCommunity",
     tags: null,
+    organizations: null,
     image: "coverImage",
     excerpt: "description",
     place: "place.text",
@@ -126,6 +133,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     region: null,
     community: "regionalCommunities",
     tags: "tags",
+    organizations: "organizations",
     image: "coverImage",
     excerpt: "description",
     place: null,
@@ -176,6 +184,10 @@ function filterWhere(kind: FeedKind, filters: FeedFilters, ctx: FeedContext): Wh
   if (filters.tagIds.length > 0) {
     if (!config.tags) return null;
     parts.push({ [config.tags]: { in: filters.tagIds } });
+  }
+  if (filters.organizationIds.length > 0) {
+    if (!config.organizations) return null;
+    parts.push({ [config.organizations]: { in: filters.organizationIds } });
   }
   if (filters.featuredOnly) {
     if (!config.featured) return null;
