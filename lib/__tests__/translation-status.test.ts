@@ -63,7 +63,8 @@ describe("row label wiring", () => {
   it("adds the status label without changing the block's shape", () => {
     const labelled = withTranslationStatus(hero1);
     expect(labelled.slug).toBe("hero1");
-    expect(labelled.fields).toBe(hero1.fields);
+    expect(labelled.fields).not.toBe(hero1.fields);
+    expect(labelled.fields.map((f) => ("name" in f ? f.name : f.type))).toEqual(hero1.fields.map((f) => ("name" in f ? f.name : f.type)));
     expect(labelled.admin?.components?.Label).toEqual({
       path: "@/payload/components/section-row-label#SectionRowLabel",
       clientProps: { label: "Hero" },
