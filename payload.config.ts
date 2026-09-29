@@ -119,7 +119,7 @@ export default buildConfig({
   // mapping, so none can be forgotten — see payload/hooks/revalidate-content.ts.
   collections: [
     // Nav groups appear in order of first appearance here (Payload groupNavItems).
-    // Publish
+    // Hub content
     CaseStudies,
     LivedExperiences,
     ResearchOutputs,
@@ -131,13 +131,13 @@ export default buildConfig({
     RegionalCommunityPages,
     DocsChapters,
     Testimonials,
-    // People & places
+    // People & organisations
     Authors,
     Organizations,
     RegionalCommunities,
     Projects,
     ExternalSources,
-    // Tags & vocabularies
+    // Settings (vocabularies)
     Tags,
     WorkTypes,
     ExpertiseAreas,
@@ -145,7 +145,7 @@ export default buildConfig({
     // Media
     Media,
     Files,
-    // System (admin only)
+    // Settings (admin only)
     Users,
     CaseStudyDrafts,
   ]

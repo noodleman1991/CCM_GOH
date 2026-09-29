@@ -29,7 +29,7 @@ import { slugField } from "@/payload/fields/slug";
 export const Agendas: CollectionConfig = {
   slug: "agendas",
   admin: {
-    group: "Publish",
+    group: "Hub content",
     useAsTitle: "title",
     defaultColumns: ["title", "agendaType", "year", "featured"],
   },

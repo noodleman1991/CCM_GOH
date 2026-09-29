@@ -43,7 +43,7 @@ export const Authors: CollectionConfig = {
   slug: "authors",
   versions: { drafts: true },
   admin: {
-    group: "People & places",
+    group: "People & organisations",
     useAsTitle: "name",
     defaultColumns: ["name", "organizationalAffiliation", "slug"],
   },

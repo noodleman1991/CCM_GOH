@@ -60,7 +60,7 @@ import { slugField } from "@/payload/fields/slug";
 export const Events: CollectionConfig = {
   slug: "events",
   admin: {
-    group: "Publish",
+    group: "Hub content",
     useAsTitle: "title",
     defaultColumns: ["title", "startAt", "mode", "moderationStatus"],
   },

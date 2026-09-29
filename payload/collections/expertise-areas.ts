@@ -16,7 +16,7 @@ import { documentIdField } from "@/payload/fields/document-id";
 export const ExpertiseAreas: CollectionConfig = {
   slug: "expertiseAreas",
   admin: {
-    group: "Tags & vocabularies",
+    group: "Settings",
     useAsTitle: "key",
     defaultColumns: ["key", "label", "order", "isActive"],
   },

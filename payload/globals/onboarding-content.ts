@@ -447,7 +447,7 @@ function onboardingGlobal(slug: string, label: string, description: string, fiel
       read: isAnyone,
       update: isEditor,
     },
-    admin: { description, group: "Onboarding" },
+    admin: { description, group: "Settings" },
     fields,
   };
 }

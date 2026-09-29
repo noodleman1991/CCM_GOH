@@ -17,7 +17,7 @@ import { documentIdField } from "@/payload/fields/document-id";
 export const ProfilePrompts: CollectionConfig = {
   slug: "profilePrompts",
   admin: {
-    group: "Tags & vocabularies",
+    group: "Settings",
     useAsTitle: "prompt",
     defaultColumns: ["prompt", "category", "active"],
   },

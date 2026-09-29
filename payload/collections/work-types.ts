@@ -26,7 +26,7 @@ import { documentIdField } from "@/payload/fields/document-id";
 export const WorkTypes: CollectionConfig = {
   slug: "workTypes",
   admin: {
-    group: "Tags & vocabularies",
+    group: "Settings",
     useAsTitle: "key",
     defaultColumns: ["key", "label", "order", "isActive"],
   },

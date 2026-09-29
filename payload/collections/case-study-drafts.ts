@@ -79,7 +79,7 @@ import { documentIdField } from "@/payload/fields/document-id";
 export const CaseStudyDrafts: CollectionConfig = {
   slug: "caseStudyDrafts",
   admin: {
-    group: "System",
+    group: "Settings",
     // Not an editorial surface: hidden from the nav for everyone but admins.
     hidden: ({ user }) => (user as { role?: string } | null)?.role !== "admin",
     useAsTitle: "title",

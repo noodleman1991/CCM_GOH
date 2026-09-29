@@ -23,7 +23,7 @@ export const Users: CollectionConfig = {
     strategies: [clerkStrategy],
   },
   admin: {
-    group: "System",
+    group: "Settings",
     // Not an editorial surface: hidden from the nav for everyone but admins.
     hidden: ({ user }) => (user as { role?: string } | null)?.role !== "admin",
     useAsTitle: "email",

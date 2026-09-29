@@ -53,7 +53,7 @@ import { slugField } from "@/payload/fields/slug";
 export const Projects: CollectionConfig = {
   slug: "projects",
   admin: {
-    group: "People & places",
+    group: "People & organisations",
     useAsTitle: "name",
     defaultColumns: ["name", "acronym", "type", "status"],
   },

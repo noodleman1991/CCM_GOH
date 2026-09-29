@@ -28,7 +28,7 @@ import { slugField } from "@/payload/fields/slug";
 export const Organizations: CollectionConfig = {
   slug: "organizations",
   admin: {
-    group: "People & places",
+    group: "People & organisations",
     useAsTitle: "name",
     defaultColumns: ["name", "acronym", "type", "showOnSite"],
     // The "Preview" button: this organisation's page on the hub.

@@ -40,7 +40,7 @@ export const NewsPosts: CollectionConfig = {
   slug: "newsPosts",
   versions: { drafts: true },
   admin: {
-    group: "Publish",
+    group: "Hub content",
     useAsTitle: "title",
     defaultColumns: ["title", "publishedAt", "featured"],
   },

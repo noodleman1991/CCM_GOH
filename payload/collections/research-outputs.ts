@@ -55,7 +55,7 @@ import { slugField } from "@/payload/fields/slug";
 export const ResearchOutputs: CollectionConfig = {
   slug: "researchOutputs",
   admin: {
-    group: "Publish",
+    group: "Hub content",
     useAsTitle: "title",
     defaultColumns: ["title", "outputType", "moderationStatus", "featured"],
   },
