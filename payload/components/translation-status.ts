@@ -53,8 +53,9 @@ export function translationStatus(block: unknown, locales: readonly string[]): R
 /** The status as the row shows it, and as a screen reader should say it. */
 export function statusLine(status: Record<string, TranslationState>): { text: string; spoken: string } {
   const entries = Object.entries(status);
+  const missing = entries.filter(([, s]) => s === "missing").map(([l]) => l.toUpperCase());
   return {
-    text: entries.map(([l, s]) => `${l.toUpperCase()} ${s === "complete" ? "✓" : "missing"}`).join(" · "),
+    text: missing.length === 0 ? "Translated ✓" : `Not translated yet: ${missing.join(", ")} — visitors see English`,
     spoken: `Translations: ${entries.map(([l, s]) => `${LOCALE_NAMES[l] ?? l} ${s === "complete" ? "done" : "missing"}`).join(", ")}`,
   };
 }

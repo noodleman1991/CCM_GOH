@@ -37,7 +37,7 @@ describe("translationStatus", () => {
 describe("statusLine", () => {
   it("spells the status out, English first", () => {
     expect(statusLine({ en: "complete", es: "missing", fr: "complete", ar: "missing" })).toEqual({
-      text: "EN ✓ · ES missing · FR ✓ · AR missing",
+      text: "Not translated yet: ES, AR — visitors see English",
       spoken: "Translations: English done, Spanish missing, French done, Arabic missing",
     });
   });

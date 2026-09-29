@@ -27,6 +27,7 @@ import { RegionalCommunityPages } from "./payload/collections/regional-community
 import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
+import { withPublishState } from "./payload/fields/publish-state";
 import { withContentRevalidation, withGlobalRevalidation } from "./payload/hooks/revalidate-content";
 import { withAnonymousReadCap } from "./payload/hooks/anonymous-read-cap";
 import { richTextEditor } from "./payload/blocks/rich-text-embeds";
@@ -149,8 +150,9 @@ export default buildConfig({
     CaseStudyDrafts,
   ]
     .map(withContentRevalidation)
-    .map(withAnonymousReadCap),
-  globals: globals.map(withGlobalRevalidation),
+    .map(withAnonymousReadCap)
+    .map(withPublishState),
+  globals: globals.map(withGlobalRevalidation).map(withPublishState),
   // Nothing in this app reads Payload over GraphQL — the readers use the Local
   // API — and an unused endpoint that accepts arbitrary queries from anonymous
   // callers is only attack surface and cold-start work. The two generated
@@ -203,6 +205,15 @@ export default buildConfig({
       },
     }),
   ],
+  // Plain words for the draft buttons and the language picker (editor-experience spec §3.3–3.4).
+  i18n: {
+    translations: {
+      en: {
+        version: { saveDraft: "Save without publishing", revertToPublished: "Discard my changes" },
+        general: { locale: "Editing" },
+      },
+    },
+  },
   localization: {
     locales: [
       { label: "English", code: "en" },
