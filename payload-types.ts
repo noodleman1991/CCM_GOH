@@ -604,6 +604,8 @@ export interface Organization {
   createdAt: string;
 }
 /**
+ * One record per regional community: its details and its page.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "regionalCommunities".
  */
@@ -613,11 +615,11 @@ export interface RegionalCommunity {
    * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
   sanityUpdatedAt?: string | null;
-  name: string;
   /**
    * Leave empty and it is made from the name when you save.
    */
   slug: string;
+  name: string;
   /**
    * Fixed-7 region short code.
    */
@@ -664,8 +666,68 @@ export interface RegionalCommunity {
    * Sanity's LexoRank orderRank string, preserved for editorial ordering.
    */
   orderRank?: string | null;
+  /**
+   * Off: every language shows the same sections, with the words translated. On: each language gets its own list.
+   */
+  layoutPerLanguage?: boolean | null;
+  sections?:
+    | (
+        | CommunityHeaderBlock
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+        | CommunityMembersBlock
+      )[]
+    | null;
+  sectionsByLanguage?:
+    | (
+        | CommunityHeaderBlock
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+        | CommunityMembersBlock
+      )[]
+    | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -714,6 +776,763 @@ export interface Author {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityHeaderBlock".
+ */
+export interface CommunityHeaderBlock {
+  intro?: string | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'communityHeader';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero1Block".
+ */
+export interface Hero1Block {
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  links?:
+    | {
+        /**
+         * Button text.
+         */
+        title?: string | null;
+        /**
+         * Full URL (https://…) or an internal path starting with /
+         */
+        href?: string | null;
+        target?: boolean | null;
+        buttonVariant?: {
+          variant?:
+            | (
+                | 'default'
+                | 'secondary'
+                | 'outline'
+                | 'ghost'
+                | 'link'
+                | 'invert'
+                | 'light-invert'
+                | 'destructive'
+                | 'primary'
+              )
+            | null;
+          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+          stroke?: ('none' | 'light' | 'midnight') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  imagePosition?: ('right' | 'left') | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero2Block".
+ */
+export interface Hero2Block {
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  links?:
+    | {
+        /**
+         * Button text.
+         */
+        title?: string | null;
+        /**
+         * Full URL (https://…) or an internal path starting with /
+         */
+        href?: string | null;
+        target?: boolean | null;
+        buttonVariant?: {
+          variant?:
+            | (
+                | 'default'
+                | 'secondary'
+                | 'outline'
+                | 'ghost'
+                | 'link'
+                | 'invert'
+                | 'light-invert'
+                | 'destructive'
+                | 'primary'
+              )
+            | null;
+          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+          stroke?: ('none' | 'light' | 'midnight') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero2';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectionHeaderBlock".
+ */
+export interface SectionHeaderBlock {
+  tagLine?: string | null;
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  sectionWidth?: ('default' | 'narrow') | null;
+  stackAlign?: ('left' | 'center') | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sectionHeader';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitRowBlock".
+ */
+export interface SplitRowBlock {
+  splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  /**
+   * Remove gap between columns
+   */
+  noGap?: boolean | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitRow';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitContentBlock".
+ */
+export interface SplitContentBlock {
+  /**
+   * Sticky column on desktop
+   */
+  sticky?: boolean | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  link?: {
+    /**
+     * Button text.
+     */
+    title?: string | null;
+    /**
+     * Full URL (https://…) or an internal path starting with /
+     */
+    href?: string | null;
+    target?: boolean | null;
+    buttonVariant?: {
+      variant?:
+        | (
+            | 'default'
+            | 'secondary'
+            | 'outline'
+            | 'ghost'
+            | 'link'
+            | 'invert'
+            | 'light-invert'
+            | 'destructive'
+            | 'primary'
+          )
+        | null;
+      size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+      stroke?: ('none' | 'light' | 'midnight') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitImageBlock".
+ */
+export interface SplitImageBlock {
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitImage';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel1Block".
+ */
+export interface Carousel1Block {
+  title?: string | null;
+  description?: string | null;
+  images?:
+    | {
+        asset: string | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  size?: ('one' | 'two' | 'three') | null;
+  indicators?: ('none' | 'dots' | 'count') | null;
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (string | null) | Media;
+    image?: {
+      asset?: (string | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineRowBlock".
+ */
+export interface TimelineRowBlock {
+  timelines?:
+    | {
+        title?: string | null;
+        tagLine?: string | null;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timelineRow';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqsBlock".
+ */
+export interface FaqsBlock {
+  faqs?:
+    | {
+        title: string;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentFeedBlock".
+ */
+export interface ContentFeedBlock {
+  heading?: string | null;
+  intro?: string | null;
+  kinds: ('caseStudies' | 'newsPosts' | 'events' | 'livedExperiences' | 'researchOutputs' | 'agendas')[];
+  fill?: ('automatic' | 'automaticWithPicks' | 'picksOnly') | null;
+  /**
+   * Drag to set the order. Only published items can be picked.
+   */
+  picks?:
+    | (
+        | {
+            relationTo: 'caseStudies';
+            value: string | CaseStudy;
+          }
+        | {
+            relationTo: 'newsPosts';
+            value: string | NewsPost;
+          }
+        | {
+            relationTo: 'events';
+            value: string | Event;
+          }
+        | {
+            relationTo: 'livedExperiences';
+            value: string | LivedExperience;
+          }
+        | {
+            relationTo: 'researchOutputs';
+            value: string | ResearchOutput;
+          }
+        | {
+            relationTo: 'agendas';
+            value: string | Agenda;
+          }
+      )[]
+    | null;
+  /**
+   * Leave these empty to show everything that matches. They don't apply to your picks.
+   */
+  filters?: {
+    regions?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam')[] | null;
+    communities?: (string | RegionalCommunity)[] | null;
+    tags?: (string | Tag)[] | null;
+    organizations?: (string | Organization)[] | null;
+    /**
+     * Events have no featured flag, so they won't appear when this is on.
+     */
+    featuredOnly?: boolean | null;
+    upcomingOnly?: boolean | null;
+  };
+  sort?: ('newest' | 'featuredFirst' | 'upcomingSoonest' | 'myOrder') | null;
+  count?: number | null;
+  layout?: ('grid' | 'carousel' | 'list') | null;
+  /**
+   * Showing one kind? The link goes to its page automatically. Showing several? Add your own link and text.
+   */
+  viewAll?: {
+    show?: boolean | null;
+    href?: string | null;
+    label?: string | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contentFeed';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsPosts".
+ */
+export interface NewsPost {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  title: string;
+  subtitle?: string | null;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
+  slug: string;
+  excerpt?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  author: string | Author;
+  publishedAt?: string | null;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  organizations?: (string | Organization)[] | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Optional for news, unlike other content types.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  themes?: ('displacement' | 'livelihoods' | 'youth' | 'indigenous')[] | null;
+  populations?: ('youth' | 'women' | 'indigenous' | 'farmers' | 'displaced')[] | null;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  location?: [number, number] | null;
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    countryCode?: string | null;
+  };
+  locationDetails?: {
+    city?: string | null;
+    country?: string | null;
+    region?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  sources?:
+    | {
+        title: string;
+        url: string;
+        publisher?: string | null;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  featured?: boolean | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  /**
+   * Leave empty and it is made from the title when you save.
+   */
+  slug: string;
+  description?: string | null;
+  scope?: ('community' | 'project') | null;
+  startAt: string;
+  endAt?: string | null;
+  mode?: ('online' | 'in_person' | 'hybrid') | null;
+  /**
+   * Venue name or city (for in-person/hybrid). Not localized — venue names are proper nouns.
+   */
+  locationName?: string | null;
+  /**
+   * The reusable geotag (spec A2).
+   */
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    /**
+     * Human-readable place, e.g. "Nakuru, Kenya".
+     */
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    /**
+     * ISO alpha-3, e.g. KEN.
+     */
+    countryCode?: string | null;
+  };
+  url?: string | null;
+  coverImage?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Posted after the event — flips the public page into recap mode.
+   */
+  recordingUrl?: string | null;
+  /**
+   * Prisma Collaboration id of the organising workspace, set by the app.
+   */
+  relatedCollaboration?: string | null;
+  /**
+   * If scope = project: the Collaboration id this event belongs to.
+   */
+  linkedProject?: string | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Only 'Approved' events are public. Member/project submissions start as 'Pending Review'. Sanity's `status`.
+   */
+  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
+  /**
+   * Clerk User ID of the submitter (set on in-app submission).
+   */
+  submittedBy?: string | null;
+  /**
+   * Internal notes / feedback to the submitter.
+   */
+  reviewNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -970,181 +1789,6 @@ export interface ResearchOutput {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
- */
-export interface Event {
-  id: string;
-  title: string;
-  /**
-   * Leave empty and it is made from the title when you save.
-   */
-  slug: string;
-  description?: string | null;
-  scope?: ('community' | 'project') | null;
-  startAt: string;
-  endAt?: string | null;
-  mode?: ('online' | 'in_person' | 'hybrid') | null;
-  /**
-   * Venue name or city (for in-person/hybrid). Not localized — venue names are proper nouns.
-   */
-  locationName?: string | null;
-  /**
-   * The reusable geotag (spec A2).
-   */
-  place?: {
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    point?: [number, number] | null;
-    /**
-     * Human-readable place, e.g. "Nakuru, Kenya".
-     */
-    text?: string | null;
-    precision?: ('exact' | 'city' | 'country' | 'region') | null;
-    /**
-     * ISO alpha-3, e.g. KEN.
-     */
-    countryCode?: string | null;
-  };
-  url?: string | null;
-  coverImage?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Posted after the event — flips the public page into recap mode.
-   */
-  recordingUrl?: string | null;
-  /**
-   * Prisma Collaboration id of the organising workspace, set by the app.
-   */
-  relatedCollaboration?: string | null;
-  /**
-   * If scope = project: the Collaboration id this event belongs to.
-   */
-  linkedProject?: string | null;
-  relatedCommunity?: (string | null) | RegionalCommunity;
-  /**
-   * Only 'Approved' events are public. Member/project submissions start as 'Pending Review'. Sanity's `status`.
-   */
-  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
-  /**
-   * Clerk User ID of the submitter (set on in-app submission).
-   */
-  submittedBy?: string | null;
-  /**
-   * Internal notes / feedback to the submitter.
-   */
-  reviewNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsPosts".
- */
-export interface NewsPost {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  title: string;
-  subtitle?: string | null;
-  /**
-   * Leave empty and it is made from the title when you save.
-   */
-  slug: string;
-  excerpt?: string | null;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  author: string | Author;
-  publishedAt?: string | null;
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  organizations?: (string | Organization)[] | null;
-  relatedCommunity?: (string | null) | RegionalCommunity;
-  /**
-   * Optional for news, unlike other content types.
-   */
-  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
-  themes?: ('displacement' | 'livelihoods' | 'youth' | 'indigenous')[] | null;
-  populations?: ('youth' | 'women' | 'indigenous' | 'farmers' | 'displaced')[] | null;
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  location?: [number, number] | null;
-  place?: {
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    point?: [number, number] | null;
-    text?: string | null;
-    precision?: ('exact' | 'city' | 'country' | 'region') | null;
-    countryCode?: string | null;
-  };
-  locationDetails?: {
-    city?: string | null;
-    country?: string | null;
-    region?: string | null;
-  };
-  tags?: (string | Tag)[] | null;
-  sources?:
-    | {
-        title: string;
-        url: string;
-        publisher?: string | null;
-        date?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  featured?: boolean | null;
-  meta_title?: string | null;
-  meta_description?: string | null;
-  noindex?: boolean | null;
-  ogImage?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "agendas".
  */
 export interface Agenda {
@@ -1199,267 +1843,59 @@ export interface Agenda {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
+ * via the `definition` "EventsCalendarBlock".
  */
-export interface Page {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  title?: string | null;
-  /**
-   * Shared by all four languages of this page — it is what groups them into one document. Leave empty and it is made from the title when you save.
-   */
-  slug: string;
-  /**
-   * Compose the page from reusable blocks (drag to reorder). Each language has its own list.
-   */
-  blocks?:
-    | (
-        | Hero1Block
-        | SectionHeaderBlock
-        | SplitRowBlock
-        | GridRowBlock
-        | Carousel2Block
-        | Cta1Block
-        | LogoCloud1Block
-        | Hero2Block
-        | Carousel1Block
-        | TimelineRowBlock
-        | FaqsBlock
-        | ContentFeedBlock
-        | EventsCalendarBlock
-        | PeopleWidgetBlock
-        | RegionMapBlock
-        | AtlasEmbedBlock
-        | SubmitStoryBannerBlock
-        | FormNewsletterBlock
-      )[]
-    | null;
-  meta_title?: string | null;
-  meta_description?: string | null;
-  noindex?: boolean | null;
-  ogImage?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Hero1Block".
- */
-export interface Hero1Block {
-  tagLine?: string | null;
-  title?: string | null;
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  links?:
-    | {
-        /**
-         * Button text.
-         */
-        title?: string | null;
-        /**
-         * Full URL (https://…) or an internal path starting with /
-         */
-        href?: string | null;
-        target?: boolean | null;
-        buttonVariant?: {
-          variant?:
-            | (
-                | 'default'
-                | 'secondary'
-                | 'outline'
-                | 'ghost'
-                | 'link'
-                | 'invert'
-                | 'light-invert'
-                | 'destructive'
-                | 'primary'
-              )
-            | null;
-          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
-          stroke?: ('none' | 'light' | 'midnight') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-    /**
-     * Hex color code (e.g. #205596)
-     */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  imagePosition?: ('right' | 'left') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'hero1';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SectionHeaderBlock".
- */
-export interface SectionHeaderBlock {
-  tagLine?: string | null;
+export interface EventsCalendarBlock {
   title?: string | null;
   description?: string | null;
   /**
+   * Events appear here automatically once approved.
+   */
+  upcomingLimit?: number | null;
+  /**
    * Add padding to the section.
    */
   padding?: {
     top?: boolean | null;
     bottom?: boolean | null;
   };
-  sectionWidth?: ('default' | 'narrow') | null;
-  stackAlign?: ('left' | 'center') | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'sectionHeader';
+  blockType: 'eventsCalendar';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SplitRowBlock".
+ * via the `definition` "PeopleWidgetBlock".
  */
-export interface SplitRowBlock {
-  splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  /**
-   * Remove gap between columns
-   */
-  noGap?: boolean | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'splitRow';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SplitContentBlock".
- */
-export interface SplitContentBlock {
-  /**
-   * Sticky column on desktop
-   */
-  sticky?: boolean | null;
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  tagLine?: string | null;
+export interface PeopleWidgetBlock {
   title?: string | null;
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  link?: {
+  description?: string | null;
+  limit?: number | null;
+  /**
+   * Visitors can still switch regions.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  chapter?: {
     /**
-     * Button text.
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
-    title?: string | null;
-    /**
-     * Full URL (https://…) or an internal path starting with /
-     */
-    href?: string | null;
-    target?: boolean | null;
-    buttonVariant?: {
-      variant?:
-        | (
-            | 'default'
-            | 'secondary'
-            | 'outline'
-            | 'ghost'
-            | 'link'
-            | 'invert'
-            | 'light-invert'
-            | 'destructive'
-            | 'primary'
-          )
-        | null;
-      size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
-      stroke?: ('none' | 'light' | 'midnight') | null;
-    };
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'splitContent';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SplitImageBlock".
- */
-export interface SplitImageBlock {
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'splitImage';
+  blockType: 'peopleWidget';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1541,6 +1977,15 @@ export interface GridRowBlock {
    * How many cards to show before the Show More button. Leave empty to always show all.
    */
   initialDisplayCount?: number | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'gridRow';
@@ -1651,96 +2096,43 @@ export interface GridNewsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Carousel2Block".
+ * via the `definition` "RegionMapBlock".
  */
-export interface Carousel2Block {
+export interface RegionMapBlock {
   title?: string | null;
   description?: string | null;
-  testimonial?: (string | Testimonial)[] | null;
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'carousel2';
+  blockType: 'regionMap';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
+ * via the `definition` "AtlasEmbedBlock".
  */
-export interface Testimonial {
-  id: string;
-  /**
-   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
-   */
-  sanityUpdatedAt?: string | null;
-  name: string;
-  /**
-   * Role/title, in each language.
-   */
-  jobTitle?: string | null;
-  /**
-   * Deprecated — use the localized Job Title field above.
-   */
-  title?: string | null;
-  image?: {
-    asset?: (string | null) | Media;
-    alt?: string | null;
+export interface AtlasEmbedBlock {
+  region: 'ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam';
+  showBreakdown?: boolean | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
   };
-  /**
-   * The testimonial quote (rich text), in each language.
-   */
-  quote?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Deprecated — use the localized Testimonial field above.
-   */
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Rating from 1 to 5 stars.
-   */
-  rating?: number | null;
-  relatedCommunity?: (string | null) | RegionalCommunity;
-  organization?: (string | null) | Organization;
-  featured?: boolean | null;
-  /**
-   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
-   */
-  orderRank?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'atlasEmbed';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1824,9 +2216,78 @@ export interface Cta1Block {
   };
   sectionWidth?: ('default' | 'narrow') | null;
   stackAlign?: ('left' | 'center') | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'cta1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SubmitStoryBannerBlock".
+ */
+export interface SubmitStoryBannerBlock {
+  title?: string | null;
+  subtitle?: string | null;
+  ctaLabel?: string | null;
+  illustration?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'submitStoryBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormNewsletterBlock".
+ */
+export interface FormNewsletterBlock {
+  consentText?: string | null;
+  buttonText?: string | null;
+  successMessage?: string | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formNewsletter';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1884,17 +2345,91 @@ export interface LogoCloud1Block {
    * Only applies to the marquee layout.
    */
   motionSpeed?: ('default' | 'slow') | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'logoCloud1';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Hero2Block".
+ * via the `definition` "Carousel2Block".
  */
-export interface Hero2Block {
-  tagLine?: string | null;
+export interface Carousel2Block {
   title?: string | null;
+  description?: string | null;
+  testimonial?: (string | Testimonial)[] | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel2';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  name: string;
+  /**
+   * Role/title, in each language.
+   */
+  jobTitle?: string | null;
+  /**
+   * Deprecated — use the localized Job Title field above.
+   */
+  title?: string | null;
+  image?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * The testimonial quote (rich text), in each language.
+   */
+  quote?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Deprecated — use the localized Testimonial field above.
+   */
   body?: {
     root: {
       type: string;
@@ -1910,360 +2445,101 @@ export interface Hero2Block {
     };
     [k: string]: unknown;
   } | null;
-  links?:
-    | {
-        /**
-         * Button text.
-         */
-        title?: string | null;
-        /**
-         * Full URL (https://…) or an internal path starting with /
-         */
-        href?: string | null;
-        target?: boolean | null;
-        buttonVariant?: {
-          variant?:
-            | (
-                | 'default'
-                | 'secondary'
-                | 'outline'
-                | 'ghost'
-                | 'link'
-                | 'invert'
-                | 'light-invert'
-                | 'destructive'
-                | 'primary'
-              )
-            | null;
-          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
-          stroke?: ('none' | 'light' | 'midnight') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
-    /**
-     * Hex color code (e.g. #205596)
-     */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
   /**
-   * Add padding to the section.
+   * Rating from 1 to 5 stars.
    */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'hero2';
+  rating?: number | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  organization?: (string | null) | Organization;
+  featured?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Carousel1Block".
+ * via the `definition` "CommunityMembersBlock".
  */
-export interface Carousel1Block {
+export interface CommunityMembersBlock {
   title?: string | null;
-  description?: string | null;
-  images?:
-    | {
-        asset: string | Media;
-        alt?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  size?: ('one' | 'two' | 'three') | null;
-  indicators?: ('none' | 'dots' | 'count') | null;
-  background?: {
-    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
-    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  chapter?: {
     /**
-     * Hex color code (e.g. #205596)
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
-    color?: string | null;
-    gradient?: {
-      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
-      startColor?: string | null;
-      endColor?: string | null;
-    };
-    svgPattern?: (string | null) | Media;
-    image?: {
-      asset?: (string | null) | Media;
-      alt?: string | null;
-    };
-    lightText?: boolean | null;
-    blobAccent?: boolean | null;
-  };
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'carousel1';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TimelineRowBlock".
- */
-export interface TimelineRowBlock {
-  timelines?:
-    | {
-        title?: string | null;
-        tagLine?: string | null;
-        body?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'timelineRow';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FaqsBlock".
- */
-export interface FaqsBlock {
-  faqs?:
-    | {
-        title: string;
-        body?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faqs';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentFeedBlock".
- */
-export interface ContentFeedBlock {
-  heading?: string | null;
-  intro?: string | null;
-  kinds: ('caseStudies' | 'newsPosts' | 'events' | 'livedExperiences' | 'researchOutputs' | 'agendas')[];
-  fill?: ('automatic' | 'automaticWithPicks' | 'picksOnly') | null;
-  /**
-   * Drag to set the order. Only published items can be picked.
-   */
-  picks?:
-    | (
-        | {
-            relationTo: 'caseStudies';
-            value: string | CaseStudy;
-          }
-        | {
-            relationTo: 'newsPosts';
-            value: string | NewsPost;
-          }
-        | {
-            relationTo: 'events';
-            value: string | Event;
-          }
-        | {
-            relationTo: 'livedExperiences';
-            value: string | LivedExperience;
-          }
-        | {
-            relationTo: 'researchOutputs';
-            value: string | ResearchOutput;
-          }
-        | {
-            relationTo: 'agendas';
-            value: string | Agenda;
-          }
-      )[]
-    | null;
-  /**
-   * Leave these empty to show everything that matches. They don't apply to your picks.
-   */
-  filters?: {
-    regions?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam')[] | null;
-    communities?: (string | RegionalCommunity)[] | null;
-    tags?: (string | Tag)[] | null;
-    organizations?: (string | Organization)[] | null;
-    /**
-     * Events have no featured flag, so they won't appear when this is on.
-     */
-    featuredOnly?: boolean | null;
-    upcomingOnly?: boolean | null;
-  };
-  sort?: ('newest' | 'featuredFirst' | 'upcomingSoonest' | 'myOrder') | null;
-  count?: number | null;
-  layout?: ('grid' | 'carousel' | 'list') | null;
-  /**
-   * Showing one kind? The link goes to its page automatically. Showing several? Add your own link and text.
-   */
-  viewAll?: {
-    show?: boolean | null;
-    href?: string | null;
+    kind?:
+      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | null;
     label?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'contentFeed';
+  blockType: 'communityMembers';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "EventsCalendarBlock".
+ * via the `definition` "pages".
  */
-export interface EventsCalendarBlock {
-  title?: string | null;
-  description?: string | null;
+export interface Page {
+  id: string;
   /**
-   * Events appear here automatically once approved.
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
-  upcomingLimit?: number | null;
+  sanityUpdatedAt?: string | null;
+  title?: string | null;
   /**
-   * Add padding to the section.
+   * Shared by all four languages of this page — it is what groups them into one document. Leave empty and it is made from the title when you save.
    */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'eventsCalendar';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PeopleWidgetBlock".
- */
-export interface PeopleWidgetBlock {
-  title?: string | null;
-  description?: string | null;
-  limit?: number | null;
+  slug: string;
   /**
-   * Visitors can still switch regions.
+   * Compose the page from reusable blocks (drag to reorder). Each language has its own list.
    */
-  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'peopleWidget';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RegionMapBlock".
- */
-export interface RegionMapBlock {
-  title?: string | null;
-  description?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'regionMap';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "AtlasEmbedBlock".
- */
-export interface AtlasEmbedBlock {
-  region: 'ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam';
-  showBreakdown?: boolean | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'atlasEmbed';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SubmitStoryBannerBlock".
- */
-export interface SubmitStoryBannerBlock {
-  title?: string | null;
-  subtitle?: string | null;
-  ctaLabel?: string | null;
-  illustration?: {
+  blocks?:
+    | (
+        | Hero1Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | GridRowBlock
+        | Carousel2Block
+        | Cta1Block
+        | LogoCloud1Block
+        | Hero2Block
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+      )[]
+    | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
     asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
-   * Add padding to the section.
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
    */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'submitStoryBanner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormNewsletterBlock".
- */
-export interface FormNewsletterBlock {
-  consentText?: string | null;
-  buttonText?: string | null;
-  successMessage?: string | null;
-  /**
-   * Add padding to the section.
-   */
-  padding?: {
-    top?: boolean | null;
-    bottom?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'formNewsletter';
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3670,6 +3946,12 @@ export interface Hero1BlockSelect<T extends boolean = true> {
         bottom?: T;
       };
   imagePosition?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3689,6 +3971,12 @@ export interface SectionHeaderBlockSelect<T extends boolean = true> {
       };
   sectionWidth?: T;
   stackAlign?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3710,6 +3998,12 @@ export interface SplitRowBlockSelect<T extends boolean = true> {
         bottom?: T;
       };
   noGap?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3814,6 +4108,12 @@ export interface GridRowBlockSelect<T extends boolean = true> {
   gridColumns?: T;
   cardVariant?: T;
   initialDisplayCount?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3887,6 +4187,12 @@ export interface Carousel2BlockSelect<T extends boolean = true> {
         top?: T;
         bottom?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3944,6 +4250,12 @@ export interface Cta1BlockSelect<T extends boolean = true> {
       };
   sectionWidth?: T;
   stackAlign?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -3972,6 +4284,12 @@ export interface LogoCloud1BlockSelect<T extends boolean = true> {
         bottom?: T;
       };
   motionSpeed?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4027,6 +4345,12 @@ export interface Hero2BlockSelect<T extends boolean = true> {
         top?: T;
         bottom?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4075,6 +4399,12 @@ export interface Carousel1BlockSelect<T extends boolean = true> {
         top?: T;
         bottom?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4097,6 +4427,12 @@ export interface TimelineRowBlockSelect<T extends boolean = true> {
         top?: T;
         bottom?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4117,6 +4453,12 @@ export interface FaqsBlockSelect<T extends boolean = true> {
     | {
         top?: T;
         bottom?: T;
+      };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
       };
   id?: T;
   blockName?: T;
@@ -4151,6 +4493,12 @@ export interface ContentFeedBlockSelect<T extends boolean = true> {
         href?: T;
         label?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4168,6 +4516,12 @@ export interface EventsCalendarBlockSelect<T extends boolean = true> {
         top?: T;
         bottom?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4180,6 +4534,12 @@ export interface PeopleWidgetBlockSelect<T extends boolean = true> {
   description?: T;
   limit?: T;
   region?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4190,6 +4550,12 @@ export interface PeopleWidgetBlockSelect<T extends boolean = true> {
 export interface RegionMapBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4200,6 +4566,12 @@ export interface RegionMapBlockSelect<T extends boolean = true> {
 export interface AtlasEmbedBlockSelect<T extends boolean = true> {
   region?: T;
   showBreakdown?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4223,6 +4595,12 @@ export interface SubmitStoryBannerBlockSelect<T extends boolean = true> {
         top?: T;
         bottom?: T;
       };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -4239,6 +4617,12 @@ export interface FormNewsletterBlockSelect<T extends boolean = true> {
     | {
         top?: T;
         bottom?: T;
+      };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
       };
   id?: T;
   blockName?: T;
@@ -4609,8 +4993,8 @@ export interface OrganizationsSelect<T extends boolean = true> {
 export interface RegionalCommunitiesSelect<T extends boolean = true> {
   id?: T;
   sanityUpdatedAt?: T;
-  name?: T;
   slug?: T;
+  name?: T;
   region?: T;
   coverImage?:
     | T
@@ -4642,8 +5026,109 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
   featured?: T;
   active?: T;
   orderRank?: T;
+  layoutPerLanguage?: T;
+  sections?:
+    | T
+    | {
+        communityHeader?: T | CommunityHeaderBlockSelect<T>;
+        hero1?: T | Hero1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
+        communityMembers?: T | CommunityMembersBlockSelect<T>;
+      };
+  sectionsByLanguage?:
+    | T
+    | {
+        communityHeader?: T | CommunityHeaderBlockSelect<T>;
+        hero1?: T | Hero1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
+        communityMembers?: T | CommunityMembersBlockSelect<T>;
+      };
+  meta_title?: T;
+  meta_description?: T;
+  noindex?: T;
+  ogImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityHeaderBlock_select".
+ */
+export interface CommunityHeaderBlockSelect<T extends boolean = true> {
+  intro?: T;
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityMembersBlock_select".
+ */
+export interface CommunityMembersBlockSelect<T extends boolean = true> {
+  title?: T;
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

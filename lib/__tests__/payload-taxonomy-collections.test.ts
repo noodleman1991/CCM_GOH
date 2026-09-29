@@ -71,10 +71,14 @@ describe("payload taxonomy collections", () => {
     expect(Authors.versions).toMatchObject({ drafts: true });
   });
 
-  it("workTypes, expertiseAreas, organizations, regionalCommunities have no Sanity drafts and don't enable them", () => {
-    for (const c of [WorkTypes, ExpertiseAreas, Organizations, RegionalCommunities]) {
+  it("workTypes, expertiseAreas, organizations have no Sanity drafts and don't enable them", () => {
+    for (const c of [WorkTypes, ExpertiseAreas, Organizations]) {
       expect(c.versions).toBeFalsy();
     }
+  });
+
+  it("regionalCommunities enables drafts since it holds its community's page (CMS project 3)", () => {
+    expect(RegionalCommunities.versions).toMatchObject({ drafts: expect.anything() });
   });
 
   it("tags stores tag.value as plain text, not the Sanity slug object — production_2's tag.value is {_type:'slug', current:'...'}", () => {

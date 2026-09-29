@@ -12,6 +12,7 @@ import * as migration_20260926_175525_draft_layout_and_suggestions from './20260
 import * as migration_20260927_094948_atlas_embed_enabled_default from './20260927_094948_atlas_embed_enabled_default';
 import * as migration_20260928_130239_page_sections_and_drafts from './20260928_130239_page_sections_and_drafts';
 import * as migration_20260928_152904_homepage_sections_and_organisations from './20260928_152904_homepage_sections_and_organisations';
+import * as migration_20260929_063611_community_records_with_pages from './20260929_063611_community_records_with_pages';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20260928_152904_homepage_sections_and_organisations.up,
     down: migration_20260928_152904_homepage_sections_and_organisations.down,
     name: '20260928_152904_homepage_sections_and_organisations'
+  },
+  {
+    up: migration_20260929_063611_community_records_with_pages.up,
+    down: migration_20260929_063611_community_records_with_pages.down,
+    name: '20260929_063611_community_records_with_pages'
   },
 ];

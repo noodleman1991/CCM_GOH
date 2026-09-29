@@ -89,6 +89,10 @@ export const RegionalCommunityPages: CollectionConfig = {
     group: "Site pages",
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
+    // Hidden since CMS project 3: each community's page now lives on its
+    // Regional community record. Kept as the backup the move script's
+    // --revert falls back to.
+    hidden: true,
   },
   access: {
     read: publishedOnly,

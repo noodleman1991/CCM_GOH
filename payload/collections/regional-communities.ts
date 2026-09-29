@@ -1,11 +1,24 @@
-import type { CollectionConfig } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import type { Block, CollectionConfig } from "payload";
+import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
-import { localizedText } from "@/payload/fields/localized";
+import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
 import { REGION_OPTIONS } from "@/payload/fields/regions";
+import { sectionsField } from "@/payload/fields/sections";
+import { livePreviewAt } from "@/payload/fields/live-preview";
+import { withChapter } from "@/payload/blocks/chapter";
+import { withShortEnumNames } from "@/payload/fields/short-enum-names";
+import { communityHeader, communityMembers } from "@/payload/blocks";
+import { HOMEPAGE_SECTIONS } from "@/payload/globals/homepage";
+
+/** What a community page can hold (CMS project 3): its own header and
+ *  members, plus the whole homepage library — each with a "Page menu" setting. */
+export const COMMUNITY_SECTIONS: Block[] = [communityHeader, ...HOMEPAGE_SECTIONS, communityMembers]
+  .map(withChapter)
+  // `regional_communities` is a long table name; keep every enum within Postgres's 63 characters.
+  .map(withShortEnumNames);
 
 /**
  * Mirrors sanity/schemas/documents/regional-community.ts. Verified against
@@ -33,12 +46,18 @@ import { REGION_OPTIONS } from "@/payload/fields/regions";
 export const RegionalCommunities: CollectionConfig = {
   slug: "regionalCommunities",
   admin: {
-    group: "People & places",
+    group: "Site pages",
     useAsTitle: "name",
-    defaultColumns: ["name", "region", "active", "featured"],
+    defaultColumns: ["name", "region", "_status"],
+    description: "One record per regional community: its details and its page.",
+    livePreview: livePreviewAt((data, locale) => `/${locale}/communities/${String(data.slug ?? "")}`),
   },
+  // Drafts (CMS project 3): the community's page edits autosave as a draft.
+  // Every community was marked published by the migration that added this —
+  // reads of a drafts-enabled collection are published-only everywhere.
+  versions: { drafts: { autosave: { interval: 1500 } }, maxPerDoc: 50 },
   access: {
-    read: isAnyone,
+    read: publishedOnly,
     create: isEditor,
     update: isEditor,
     delete: isEditor,
@@ -48,47 +67,60 @@ export const RegionalCommunities: CollectionConfig = {
     // handful of Prisma rows referencing content ids keep working.
     documentIdField,
     sanityUpdatedAt,
-    localizedText("name", { required: true }),
+    // The community's address — kept up front, outside "Details".
     slugField("name"),
     {
-      name: "region",
-      type: "select",
-      options: REGION_OPTIONS,
-      admin: { description: "Fixed-7 region short code." },
-    },
-    imageField("coverImage"),
-    {
-      name: "boundaries",
-      type: "array",
-      admin: { description: "Geographic boundary points." },
-      fields: [{ name: "point", type: "point" }],
-    },
-    {
-      name: "members",
-      type: "array",
-      admin: { description: "Members and authors associated with this community." },
+      type: "collapsible",
+      label: "Details",
+      admin: { initCollapsed: true },
       fields: [
-        relationshipField("person", "authors", { required: true }),
-        { name: "role", type: "text", admin: { description: "Their role or position within this community." } },
+        localizedText("name", { required: true }),
+        {
+          name: "region",
+          type: "select",
+          options: REGION_OPTIONS,
+          admin: { description: "Fixed-7 region short code." },
+        },
+        imageField("coverImage"),
+        {
+          name: "boundaries",
+          type: "array",
+          admin: { description: "Geographic boundary points." },
+          fields: [{ name: "point", type: "point" }],
+        },
+        {
+          name: "members",
+          type: "array",
+          admin: { description: "Members and authors associated with this community." },
+          fields: [
+            relationshipField("person", "authors", { required: true }),
+            { name: "role", type: "text", admin: { description: "Their role or position within this community." } },
+          ],
+        },
+        {
+          name: "contact",
+          type: "group",
+          label: "Regional Contact",
+          fields: [
+            { name: "name", type: "text" },
+            { name: "email", type: "email" },
+            { name: "phone", type: "text" },
+            relationshipField("organization", "organizations"),
+          ],
+        },
+        { name: "featured", type: "checkbox", defaultValue: false },
+        { name: "active", type: "checkbox", defaultValue: true },
       ],
     },
-    {
-      name: "contact",
-      type: "group",
-      label: "Regional Contact",
-      fields: [
-        { name: "name", type: "text" },
-        { name: "email", type: "email" },
-        { name: "phone", type: "text" },
-        relationshipField("organization", "organizations"),
-      ],
-    },
-    { name: "featured", type: "checkbox", defaultValue: false },
-    { name: "active", type: "checkbox", defaultValue: true },
     {
       name: "orderRank",
       type: "text",
       admin: { hidden: true, description: "Sanity's LexoRank orderRank string, preserved for editorial ordering." },
     },
+    ...sectionsField({ blocks: COMMUNITY_SECTIONS }),
+    localizedText("meta_title", { label: "Meta Title" }),
+    localizedTextarea("meta_description", { label: "Meta Description" }),
+    { name: "noindex", type: "checkbox", defaultValue: false, label: "No Index" },
+    imageField("ogImage"),
   ],
 };

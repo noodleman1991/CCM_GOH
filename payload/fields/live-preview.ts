@@ -25,3 +25,14 @@ export const livePreview: LivePreviewConfig = {
     { label: "Desktop", name: "desktop", width: 1280, height: 800 },
   ],
 };
+
+/** Live preview for a collection whose page lives at its own address, e.g.
+ *  `/<lang>/communities/<slug>` (CMS project 3). Same sizes as `livePreview`. */
+export function livePreviewAt(path: (data: Record<string, unknown>, locale: string) => string): LivePreviewConfig {
+  return {
+    url: ({ data, locale, req }) =>
+      `${siteOrigin(req)}/api/preview?path=${encodeURIComponent(path((data ?? {}) as Record<string, unknown>, locale?.code ?? "en"))}`,
+    breakpoints: livePreview.breakpoints,
+  };
+}
+
