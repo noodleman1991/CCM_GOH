@@ -10,7 +10,8 @@ import { notFound } from "next/navigation";
 import { redirect } from "@/i18n/navigation";
 import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
-import { getViewerUserId } from "@/lib/authz";
+import { getActor, getViewerUserId, isStaff } from "@/lib/authz";
+import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({
     params
@@ -69,6 +70,12 @@ export default async function Page({
     // the session, so this adds no new dynamic dependency.
     const userId = await getViewerUserId();
 
+    // Staff get an "Edit this section" link per section once the page is built
+    // from the CMS Sections list (CMS project 4). The old per-language list has
+    // no row anchors to link to.
+    const canEdit = Boolean(page.fromSections && page.id) && isStaff(await getActor());
+    const editLabel = canEdit ? (await getTranslations({ locale, namespace: "blocks" }))("editSection") : undefined;
+
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
             {/* Generic page: render its block array. (RC pages are redirected
@@ -80,6 +87,8 @@ export default async function Page({
                 blocks={page.blocks as unknown as ComponentProps<typeof Blocks>["blocks"]}
                 locale={locale}
                 userId={userId}
+                editHref={canEdit ? (i) => `/admin/collections/pages/${page.id}#sections-row-${i}` : undefined}
+                editLabel={editLabel}
             />
         </main>
     );
