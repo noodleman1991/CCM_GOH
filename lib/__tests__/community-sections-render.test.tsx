@@ -40,8 +40,8 @@ describe("CommunitySections", () => {
       await CommunitySections({ sections: [s("a", "overview"), s("b"), s("c", "news")], communityId: "c1", communitySlug: "oceania", locale: "en", canEdit: true, editLabel: "Edit" }),
     );
     expect(screen.getAllByTestId("blocks").map((e) => e.textContent)).toEqual([
-      "a,b@c1#/admin/collections/regionalCommunities/c1#sections-row-0",
-      "c@c1#/admin/collections/regionalCommunities/c1#sections-row-2",
+      "a,b@c1#/admin/collections/regionalCommunities/c1?from=%2Fen%2Fcommunities%2Foceania#sections-row-0",
+      "c@c1#/admin/collections/regionalCommunities/c1?from=%2Fen%2Fcommunities%2Foceania#sections-row-2",
     ]);
   });
 

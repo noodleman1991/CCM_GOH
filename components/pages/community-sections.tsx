@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Blocks from "@/components/blocks";
+import { sectionEditHref } from "@/lib/cms/edit-links";
 import { RegionSectionSpine } from "@/components/regions/region-section-spine";
 import { CHAPTER_MESSAGE, groupIntoChapters } from "@/lib/content/chapters";
 import { resolveContentFeed } from "@/lib/content/feeds/resolve";
@@ -27,6 +28,7 @@ export default async function CommunitySections({
   userId,
   canEdit = false,
   editLabel,
+  returnTo,
 }: {
   sections: Section[];
   communityId: string;
@@ -35,6 +37,8 @@ export default async function CommunitySections({
   userId?: string;
   canEdit?: boolean;
   editLabel?: string;
+  /** The site path "Back to the page" returns to from the admin. */
+  returnTo?: string;
 }) {
   const feedLocale = LOCALES.includes(locale as FeedContext["locale"]) ? (locale as FeedContext["locale"]) : "en";
   const [t, counts] = await Promise.all([
@@ -77,7 +81,7 @@ export default async function CommunitySections({
               locale={locale}
               userId={userId}
               context={{ communityId, communitySlug }}
-              editHref={canEdit ? (i) => `/admin/collections/regionalCommunities/${communityId}#sections-row-${rows[i]}` : undefined}
+              editHref={canEdit ? (i) => sectionEditHref(`/admin/collections/regionalCommunities/${communityId}`, rows[i], returnTo ?? `/${locale}/communities/${communitySlug}`) : undefined}
               editLabel={editLabel}
             />
           </section>

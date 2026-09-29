@@ -12,6 +12,7 @@ import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadat
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getActor, getViewerUserId, isStaff } from "@/lib/authz";
 import { getTranslations } from "next-intl/server";
+import { sectionEditHref } from "@/lib/cms/edit-links";
 
 export async function generateMetadata({
     params
@@ -87,7 +88,7 @@ export default async function Page({
                 blocks={page.blocks as unknown as ComponentProps<typeof Blocks>["blocks"]}
                 locale={locale}
                 userId={userId}
-                editHref={canEdit ? (i) => `/admin/collections/pages/${page.id}#sections-row-${i}` : undefined}
+                editHref={canEdit ? (i) => sectionEditHref(`/admin/collections/pages/${page.id}`, i, `/${locale}/${slug}`) : undefined}
                 editLabel={editLabel}
             />
         </main>

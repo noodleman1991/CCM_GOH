@@ -1,4 +1,5 @@
 import Hero1 from "@/components/blocks/hero/hero-1";
+import { sectionEditHref } from "@/lib/cms/edit-links";
 import SplitRow from "@/components/blocks/split/split-row";
 import GridRow from "@/components/blocks/grid/grid-row";
 import Carousel2 from "@/components/blocks/carousel/carousel-2";
@@ -52,6 +53,8 @@ interface HomepageProps {
   /** Staff see an "Edit this section" link on each section (CMS project 2). */
   canEdit?: boolean;
   editLabel?: string;
+  /** The site path "Back to the page" returns to from the admin. */
+  returnTo?: string;
 }
 
 /** The fields the dynamic-section fetchers' items are read by below. */
@@ -198,7 +201,7 @@ async function resolveAgendasSection(
   }
 }
 
-export default async function Homepage({ homepage, locale, userId, canEdit = false, editLabel }: HomepageProps) {
+export default async function Homepage({ homepage, locale, userId, canEdit = false, editLabel, returnTo }: HomepageProps) {
   const rtl = isRTL(locale);
 
   if (!homepage) {
@@ -214,7 +217,7 @@ export default async function Homepage({ homepage, locale, userId, canEdit = fal
           blocks={homepage.sections}
           locale={locale}
           userId={userId}
-          editHref={canEdit ? (index) => `/admin/globals/homepage#sections-row-${index}` : undefined}
+          editHref={canEdit ? (index) => sectionEditHref("/admin/globals/homepage", index, returnTo ?? `/${locale}`) : undefined}
           editLabel={editLabel}
         />
       </div>

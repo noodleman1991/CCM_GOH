@@ -28,7 +28,7 @@ describe("page route edit links", () => {
     getPage.mockResolvedValue({ id: "p1", slug: "about", fromSections: true, blocks: [] });
     render(await Page({ params }));
     const blocks = screen.getByTestId("blocks");
-    expect(blocks.dataset.href).toBe("/admin/collections/pages/p1#sections-row-2");
+    expect(blocks.dataset.href).toBe("/admin/collections/pages/p1?from=%2Fen%2Fabout#sections-row-2");
     expect(blocks.dataset.label).toBe("t:editSection");
   });
 

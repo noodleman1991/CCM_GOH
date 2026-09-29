@@ -72,6 +72,7 @@ export default async function IndexPage({ params }: IndexPageProps) {
                 userId={await getViewerUserId()}
                 canEdit={isStaff(await getActor())}
                 editLabel={(await getTranslations({ locale, namespace: "blocks" }))("editSection")}
+                returnTo={`/${locale}`}
             />
         );
     }

@@ -69,6 +69,7 @@ export default async function RegionalCommunityPage({
                     userId={userId ?? undefined}
                     canEdit={canEdit}
                     editLabel={editLabel}
+                    returnTo={`/${locale}/communities/${slug}`}
                 />
             </div>
         );
