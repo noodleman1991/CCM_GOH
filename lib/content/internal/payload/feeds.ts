@@ -199,6 +199,17 @@ function filterWhere(kind: FeedKind, filters: FeedFilters, ctx: FeedContext): Wh
   return and(...parts);
 }
 
+/** An agenda's own document (its first file), so its card opens the agenda
+ *  itself; agendas have no page. Public agendas only; only web or site addresses. */
+function agendaDocument(row: Row): string | null {
+  // Registered-only and members-only agendas keep their gated download buttons on the hub.
+  if (row.accessLevel && row.accessLevel !== "public") return null;
+  const files = Array.isArray(row.files) ? row.files : [];
+  const first = files[0] && typeof files[0] === "object" ? (files[0] as Row).file : null;
+  const url = first && typeof first === "object" ? text((first as Row).url) : null;
+  return url && (/^https?:\/\//i.test(url) || (url.startsWith("/") && !url.startsWith("//"))) ? url : null;
+}
+
 function toCard(kind: FeedKind, row: Row, locale: FeedContext["locale"]): FeedCard | null {
   const config = KINDS[kind];
   const id = text(row.id) ?? (typeof row.id === "number" ? String(row.id) : null);
@@ -211,7 +222,7 @@ function toCard(kind: FeedKind, row: Row, locale: FeedContext["locale"]): FeedCa
     type: config.card,
     id,
     title: inLocale(row.title, locale) ?? "",
-    href: config.href(slug),
+    href: (kind === "agendas" ? agendaDocument(row) : null) ?? config.href(slug),
     excerpt: inLocale(row[config.excerpt], locale),
     image: image ? imageUrl(image, { width: 800 }) || null : null,
     imageLqip: image ? (blurDataURL(image) ?? null) : null,

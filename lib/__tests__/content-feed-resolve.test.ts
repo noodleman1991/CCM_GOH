@@ -117,6 +117,26 @@ describe("resolveContentFeed", () => {
     expect(where).not.toContain("page-community");
   });
 
+  it("agenda cards open the agenda's document, or the hub when it has none", async () => {
+    query.mockResolvedValue({
+      docs: [
+        { id: "a1", slug: "a-1", title: { en: "A1" }, publishDate: "2026-01-01", files: [{ file: { url: "https://cdn.example/a1.pdf" } }] },
+        { id: "a2", slug: "a-2", title: { en: "A2" }, publishDate: "2025-01-01", files: [] },
+        { id: "a3", slug: "a-3", title: { en: "A3" }, publishDate: "2024-01-01", files: [{ file: { url: "javascript:alert(1)" } }] },
+      ],
+    });
+    const r = await resolveContentFeed({ kinds: ["agendas"] }, { locale: "en" });
+    expect(r.items.map((i) => i.href)).toEqual(["https://cdn.example/a1.pdf", "/research-and-action", "/research-and-action"]);
+  });
+
+  it("never links straight to a document that is for registered users or members only", async () => {
+    query.mockResolvedValue({
+      docs: [{ id: "a4", slug: "a-4", title: { en: "A4" }, publishDate: "2026-01-01", accessLevel: "members", files: [{ file: { url: "https://cdn.example/private.pdf" } }] }],
+    });
+    const r = await resolveContentFeed({ kinds: ["agendas"] }, { locale: "en" });
+    expect(r.items[0].href).toBe("/research-and-action");
+  });
+
   it("shows nothing on the old content backend", async () => {
     backend.mockReturnValue("sanity");
     const r = await resolveContentFeed({ kinds: ["caseStudies"] }, { locale: "en" });
