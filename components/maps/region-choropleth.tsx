@@ -168,29 +168,15 @@ export function RegionChoropleth({
           />
         )
       })}
-      {/* Committed selection — matches the brand region artworks exactly
-          (user 2026-08-05, sampled from the welcome-hero illustrations):
-          flat #FFBF05 gold fill with a DASHED gold fringe just outside the
-          boundary. The fringe trick: a wide dashed stroke painted UNDER the
-          fill, so only its outer half shows — reading like the artwork's
-          offset dashed outline. The old thick white halo is gone.
+      {/* Committed selection: a flat #FFBF05 gold shape with a clean edge
+          (user 2026-09-29). No outline — a dashed gold stroke on the
+          boundary showed only its outer half, as a row of rounded gold nibs
+          that read as a grainy, bitten coastline at every size.
           Pointer-events off — the base path underneath keeps handling
           interaction, so keyboard/AT behaviour is unchanged. */}
       {selectedCode && regions[selectedCode] && (
         <g className="pointer-events-none animate-in fade-in duration-300 motion-reduce:animate-none" aria-hidden="true">
           <path d={regions[selectedCode].d} fill={CCM.gold} />
-          <path
-            d={regions[selectedCode].d}
-            fill="none"
-            stroke={CCM.gold}
-            strokeWidth={2.5 * s}
-            strokeDasharray={`${7 * s} ${5 * s}`}
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            /* Thin crisp dashed outline ON the boundary, drawn over the fill —
-               the artwork's treatment. The earlier wide under-fill fringe read
-               as muddy nibs on the dark ocean (user 2026-08-05). */
-          />
         </g>
       )}
       {pins?.map((c, i) => {
