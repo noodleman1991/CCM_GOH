@@ -306,8 +306,11 @@ export function AtlasExplorer({
       {/* Locked embeds (community pages): filters and the demoted map share a
           two-column row at lg — the map stays (pins + locator) but no longer
           dominates the section, and results follow immediately below.
-          Unlocked keeps the classic full-width stack. */}
-      <div className={cn(lockedRegion ? 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,44%)] lg:items-start' : 'space-y-8')}>
+          Unlocked keeps the classic full-width stack. `grid-cols-1` below lg
+          is load-bearing: an unsized grid column grows to its widest content
+          (the sideways-scrolling chip rows), which pushed the filters 726px
+          wide on a 375px phone. */}
+      <div className={cn(lockedRegion ? 'grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,44%)] lg:items-start' : 'space-y-8')}>
       <div className={cn(lockedRegion ? 'space-y-4' : 'space-y-8')}>
       {/* Search q — part of the shared state. SearchInput is THE hub-wide
           search pill (user 2026-08-05: all search bars share one style). */}
