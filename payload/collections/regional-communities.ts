@@ -83,6 +83,7 @@ export const RegionalCommunities: CollectionConfig = {
       access: { update: staffOnlyField },
       admin: {
         description: "People who can edit and publish this community's page. They get access once this community is published.",
+        components: { Field: "@/payload/components/lead-picker#LeadPicker" },
       },
     },
     {

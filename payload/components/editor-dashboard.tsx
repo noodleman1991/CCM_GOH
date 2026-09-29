@@ -65,9 +65,44 @@ async function recentChanges(payload: Awaited<ReturnType<typeof getPayload>>): P
   return latestChanges(changes.filter((c) => c.updatedAt), 8);
 }
 
-export async function EditorDashboard({ user }: { user?: { role?: string | null } | null }) {
-  // Community leads get their own home (Task 8 of the editor-experience plan).
-  if (user?.role === "community_editor") return null;
+/** A community lead's home: the communities they look after, with Edit and View on site. */
+async function LeadHome({ clerkId }: { clerkId: string }) {
+  const payload = await getPayload({ config });
+  const res = await payload
+    .find({
+      collection: "regionalCommunities",
+      where: { leadIds: { in: [clerkId] } },
+      select: { name: true, slug: true, updatedAt: true } as never,
+      draft: true,
+      depth: 0,
+      locale: "en",
+      overrideAccess: true,
+    })
+    .catch(() => ({ docs: [] }));
+  const communities = res.docs as Row[];
+  return (
+    <div style={card}>
+      <h2 style={{ margin: 0, fontSize: "1.1rem" }}>{communities.length === 1 ? "Your community" : "Your communities"}</h2>
+      {communities.length === 0 ? (
+        <p style={{ margin: "0.75rem 0 0", opacity: 0.8 }}>You aren&apos;t a lead for any community yet — ask the team to add you.</p>
+      ) : (
+        <ul style={{ margin: "0.75rem 0 0", padding: 0, listStyle: "none", display: "grid", gap: "0.75rem" }}>
+          {communities.map((c) => (
+            <li key={String(c.id)} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.75rem 1.25rem" }}>
+              <strong>{str(c.name) || "Community"}</strong>
+              {str(c.updatedAt) && <span style={{ opacity: 0.7 }}>Last changed {ago(str(c.updatedAt))}</span>}
+              <Link href={`/admin/collections/regionalCommunities/${String(c.id)}`}>Edit</Link>
+              <a href={`/en/communities/${str(c.slug)}`}>View on site</a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export async function EditorDashboard({ user }: { user?: { role?: string | null; clerkId?: string | null } | null }) {
+  if (user?.role === "community_editor") return user.clerkId ? <LeadHome clerkId={user.clerkId} /> : null;
 
   const payload = await getPayload({ config });
   const [rows, changes] = await Promise.all([

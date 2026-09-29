@@ -12,7 +12,8 @@ import { isRTL } from "@/i18n/i18n-helpers";
 import { FollowButton } from "@/components/follow/follow-button";
 import { RegionHero } from "@/components/regions/region-hero";
 import { slugToShortCode } from "@/lib/maps/region-codes";
-import { getActor, isStaff } from "@/lib/authz";
+import { getActor } from "@/lib/authz";
+import { canEditCommunity } from "@/lib/cms/can-edit-community";
 
 export async function generateMetadata({
     params,
@@ -57,7 +58,7 @@ export default async function RegionalCommunityPage({
     // exactly as before — that is also what `--revert` falls back to.
     const community = await getCommunity(slug, locale as Locale);
     if (community && community.sections.length > 0) {
-        const canEdit = isStaff(await getActor());
+        const canEdit = canEditCommunity(await getActor(), community.leadIds);
         const editLabel = canEdit ? (await getTranslations({ locale, namespace: "blocks" }))("editSection") : undefined;
         return (
             <div dir={rtl ? 'rtl' : 'ltr'}>

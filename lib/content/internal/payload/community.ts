@@ -21,6 +21,8 @@ export interface CommunityPage {
   slug: string;
   name: string;
   sections: unknown[];
+  /** User ids of the community's leads — they see "Edit this section" here (editor-experience spec §3.5). */
+  leadIds: string[];
   meta_title: string | null;
   meta_description: string | null;
   noindex: boolean;
@@ -56,6 +58,7 @@ export async function findCommunity(slug: string, locale: Locale): Promise<Commu
       layoutPerLanguage: true,
       sections: true,
       sectionsByLanguage: true,
+      leadIds: true,
       meta_title: true,
       meta_description: true,
       noindex: true,
@@ -80,6 +83,7 @@ export async function findCommunity(slug: string, locale: Locale): Promise<Commu
     slug: String(record.slug ?? slug),
     name: text(collapseLocales(record.name, locale)) ?? "",
     sections,
+    leadIds: Array.isArray(record.leadIds) ? record.leadIds.map(String) : [],
     meta_title: text(collapseLocales(record.meta_title, locale)),
     meta_description: text(collapseLocales(record.meta_description, locale)),
     noindex: record.noindex === true,
