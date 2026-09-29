@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Field } from "payload";
 import config from "@payload-config";
-import { publishedOnly } from "@/payload/access";
+import { communityRead } from "@/payload/access";
 import { COMMUNITY_SECTIONS } from "@/payload/collections/regional-communities";
 import { readdirSync, readFileSync } from "node:fs";
 
@@ -29,7 +29,7 @@ describe("one record per community", async () => {
     expect(await named(rc.fields, "sections")!.validate([], { req: { context: {}, t: (k: string) => k }, required: false })).toBe(true);
     for (const f of ["meta_title", "meta_description", "noindex", "ogImage"]) expect(named(rc.fields, f), f).toBeTruthy();
     expect(rc.versions).toMatchObject({ drafts: expect.anything() });
-    expect(rc.access.read).toBe(publishedOnly);
+    expect(rc.access.read).toBe(communityRead);
     expect(rc.admin.livePreview?.breakpoints?.map((b) => b.width)).toEqual([375, 768, 1280]);
     expect(rc.admin.group).toBe("Site pages");
   });
@@ -50,7 +50,10 @@ describe("one record per community", async () => {
   });
 
   it("keeps the old Community pages as a hidden backup", () => {
-    expect(pages.admin.hidden).toBe(true);
+    // Hidden from everyone — wrapped so community leads are hidden too (editor-experience spec §3.5).
+    const hidden = pages.admin.hidden as (a: { user: unknown }) => boolean;
+    expect(hidden({ user: { role: "team_editor" } })).toBe(true);
+    expect(hidden({ user: { role: "community_editor" } })).toBe(true);
   });
 
   it("offers the whole library plus the community sections, each with a page-menu setting", () => {

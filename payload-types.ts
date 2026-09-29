@@ -619,6 +619,10 @@ export interface RegionalCommunity {
    * Leave empty and it is made from the name when you save.
    */
   slug: string;
+  /**
+   * People who can edit and publish this community's page. They get access once this community is published.
+   */
+  leadIds?: string[] | null;
   name: string;
   /**
    * Fixed-7 region short code.
@@ -5089,6 +5093,7 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
   id?: T;
   sanityUpdatedAt?: T;
   slug?: T;
+  leadIds?: T;
   name?: T;
   region?: T;
   coverImage?:

@@ -14,6 +14,7 @@ import * as migration_20260928_130239_page_sections_and_drafts from './20260928_
 import * as migration_20260928_152904_homepage_sections_and_organisations from './20260928_152904_homepage_sections_and_organisations';
 import * as migration_20260929_063611_community_records_with_pages from './20260929_063611_community_records_with_pages';
 import * as migration_20260929_102614_pages_sections from './20260929_102614_pages_sections';
+import * as migration_20260929_150919_community_leads from './20260929_150919_community_leads';
 
 export const migrations = [
   {
@@ -94,6 +95,11 @@ export const migrations = [
   {
     up: migration_20260929_102614_pages_sections.up,
     down: migration_20260929_102614_pages_sections.down,
-    name: '20260929_102614_pages_sections'
+    name: '20260929_102614_pages_sections',
+  },
+  {
+    up: migration_20260929_150919_community_leads.up,
+    down: migration_20260929_150919_community_leads.down,
+    name: '20260929_150919_community_leads'
   },
 ];

@@ -1,5 +1,5 @@
 import type { CollectionConfig, ImageSize } from "payload";
-import { editorOrStaticFile, isEditor } from "@/payload/access";
+import { editorOrStaticFile, hasEditorRole, isEditor, isLead } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
 import { setUploadCacheControl } from "@/payload/hooks/upload-cache-control";
 import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
@@ -215,7 +215,8 @@ export const Media: CollectionConfig = {
   },
   access: {
     read: editorOrStaticFile,
-    create: isEditor,
+    // Community leads may add pictures for their page; changing or removing others' stays staff-only.
+    create: ({ req }) => hasEditorRole(req.user) || isLead(req.user),
     update: isEditor,
     delete: isEditor,
   },

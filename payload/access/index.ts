@@ -35,6 +35,8 @@ export const isAdmin: Access = ({ req }) => (req.user as WithRole)?.role === "ad
 
 export const isEditor: Access = ({ req }) => hasEditorRole(req.user);
 
+export { communityRead, communityUpdate, hideFromLeads, isLead, leadOf, mayUseAdmin, nextRole, staffOnlyField } from "./leads";
+
 export const isAnyone: Access = () => true;
 
 /**

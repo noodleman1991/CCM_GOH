@@ -28,6 +28,7 @@ import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
 import { withPublishState } from "./payload/fields/publish-state";
+import { hideFromLeads } from "./payload/access/leads";
 import { withContentRevalidation, withGlobalRevalidation } from "./payload/hooks/revalidate-content";
 import { withAnonymousReadCap } from "./payload/hooks/anonymous-read-cap";
 import { richTextEditor } from "./payload/blocks/rich-text-embeds";
@@ -151,8 +152,10 @@ export default buildConfig({
   ]
     .map(withContentRevalidation)
     .map(withAnonymousReadCap)
-    .map(withPublishState),
-  globals: globals.map(withGlobalRevalidation).map(withPublishState),
+    .map(withPublishState)
+    // Community leads see only their community and media in the menu (server access is the real gate).
+    .map((c) => (c.slug === "regionalCommunities" || c.slug === "media" ? c : hideFromLeads(c))),
+  globals: globals.map(withGlobalRevalidation).map(withPublishState).map(hideFromLeads),
   // Nothing in this app reads Payload over GraphQL — the readers use the Local
   // API — and an unused endpoint that accepts arbitrary queries from anonymous
   // callers is only attack surface and cold-start work. The two generated

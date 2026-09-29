@@ -177,7 +177,7 @@ describe("clerkStrategy.authenticate", () => {
     expect(result.user).toMatchObject({ collection: "users", role: "admin" });
   });
 
-  it.each(["community_member", "community_editor"])(
+  it.each(["community_member"])(
     "does not create a users row for a signed-in %s — the write-on-read finding",
     async (role) => {
       // This runs on EVERY authenticated /admin or /payload-api request. With
@@ -193,6 +193,20 @@ describe("clerkStrategy.authenticate", () => {
       expect(result).toEqual({ user: null });
     }
   );
+
+  it("creates a users row for a community lead, who may now use the admin for their community", async () => {
+    authMock.mockResolvedValueOnce({ userId: "clerk_lead" });
+    findUniqueMock.mockResolvedValueOnce({ id: "clerk_lead", role: "community_editor", email: "lead@example.org" });
+    findMock.mockResolvedValueOnce({ docs: [] });
+    createMock.mockResolvedValueOnce({ id: "docL", collection: "users", clerkId: "clerk_lead", role: "community_editor", email: "lead@example.org" });
+
+    const result = await authenticate();
+
+    expect(createMock).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: "users", data: expect.objectContaining({ clerkId: "clerk_lead", role: "community_editor" }) }),
+    );
+    expect(result.user).toMatchObject({ role: "community_editor" });
+  });
 
   it("still refreshes an existing row for a demoted user, so the roster shows the demotion", async () => {
     authMock.mockResolvedValueOnce({ userId: "clerk_3" });

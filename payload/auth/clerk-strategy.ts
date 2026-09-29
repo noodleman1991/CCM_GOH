@@ -1,6 +1,6 @@
 import type { AuthStrategy } from "payload";
 import { prisma, safeQuery } from "@/lib/prisma";
-import { hasEditorRole } from "@/payload/access";
+import { mayUseAdmin } from "@/payload/access";
 
 /**
  * Clerk is the sole identity system (spec D4). Nobody signs up in Payload —
@@ -81,12 +81,13 @@ export const clerkStrategy: AuthStrategy = {
     let doc = existing.docs[0];
 
     if (!doc) {
-      // **Create only for editors.** This runs on every authenticated request
+      // **Create only for people who may use the admin (staff and community
+      // leads).** This runs on every authenticated request
       // to /admin and /payload-api, so creating a row for any signed-in Clerk
       // user is an unbounded write on a read path — 674 accounts exist, and
-      // Phase 3 exposes /payload-api publicly. `hasEditorRole` is the same
-      // predicate `isEditor` uses, so the set of people who get a Payload user
-      // is exactly the set who may use the admin.
+      // Phase 3 exposes /payload-api publicly. `mayUseAdmin` is the same
+      // predicate `users.access.admin` uses, so the set of people who get a
+      // Payload user is exactly the set who may use the admin.
       //
       // A non-editor therefore authenticates as nobody and is served by the
       // anonymous access rules, which is what the public read surface is
@@ -96,7 +97,7 @@ export const clerkStrategy: AuthStrategy = {
       // with `overrideAccess: true`. It does not today; if it ever does, this
       // is the line to revisit, and it should be revisited deliberately rather
       // than by leaving the write-on-read open.
-      if (!hasEditorRole(actor)) return { user: null };
+      if (!mayUseAdmin(actor)) return { user: null };
       doc = await payload.create({
         collection: "users",
         data: {

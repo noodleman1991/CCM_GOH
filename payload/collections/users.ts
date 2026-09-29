@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { clerkStrategy } from "@/payload/auth/clerk-strategy";
-import { isAdmin, isEditor } from "@/payload/access";
+import { isAdmin, isEditor, mayUseAdmin } from "@/payload/access";
 
 /**
  * Clerk remains the sole identity system (spec D4) — nobody signs up in
@@ -39,7 +39,9 @@ export const Users: CollectionConfig = {
     // out. Wrapped (rather than passed directly) because `access.admin`'s
     // type requires a plain boolean return, while `Access` more broadly
     // allows a `Where` query — isEditor never returns one in practice.
-    admin: ({ req }) => Boolean(isEditor({ req })),
+    // Since the editor-experience project, community leads may sign in too —
+    // collection access then scopes them to their own communities.
+    admin: ({ req }) => mayUseAdmin(req.user),
     // Only admins manage user documents directly through the admin UI — the
     // clerk strategy itself writes with overrideAccess: true and is
     // unaffected by these rules.
