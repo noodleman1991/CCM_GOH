@@ -417,6 +417,6 @@ What visitors will notice after the move (all intended):
 6. Signed-in checklist:
    1. **Site pages → Pages → About** shows **Sections** (each row with its translation status); the old "Page blocks" list is not shown.
    2. Switch the editor's language to Arabic: the same sections, Arabic text.
-   3. **Separate layout per language** exists and is off.
+   3. **This page has its own layout in each language** exists and is off.
    4. **Live preview** opens the page at phone/tablet/desktop sizes and follows edits.
    5. On the site, each section has **Edit this section** (staff only), opening that section in the editor.
