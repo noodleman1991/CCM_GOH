@@ -13,6 +13,7 @@ import * as migration_20260927_094948_atlas_embed_enabled_default from './202609
 import * as migration_20260928_130239_page_sections_and_drafts from './20260928_130239_page_sections_and_drafts';
 import * as migration_20260928_152904_homepage_sections_and_organisations from './20260928_152904_homepage_sections_and_organisations';
 import * as migration_20260929_063611_community_records_with_pages from './20260929_063611_community_records_with_pages';
+import * as migration_20260929_102614_pages_sections from './20260929_102614_pages_sections';
 
 export const migrations = [
   {
@@ -83,11 +84,16 @@ export const migrations = [
   {
     up: migration_20260928_152904_homepage_sections_and_organisations.up,
     down: migration_20260928_152904_homepage_sections_and_organisations.down,
-    name: '20260928_152904_homepage_sections_and_organisations'
+    name: '20260928_152904_homepage_sections_and_organisations',
   },
   {
     up: migration_20260929_063611_community_records_with_pages.up,
     down: migration_20260929_063611_community_records_with_pages.down,
-    name: '20260929_063611_community_records_with_pages'
+    name: '20260929_063611_community_records_with_pages',
+  },
+  {
+    up: migration_20260929_102614_pages_sections.up,
+    down: migration_20260929_102614_pages_sections.down,
+    name: '20260929_102614_pages_sections'
   },
 ];

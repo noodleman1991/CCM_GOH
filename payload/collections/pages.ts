@@ -27,6 +27,11 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
 import { livePreview } from "@/payload/fields/live-preview";
+import { sectionsField } from "@/payload/fields/sections";
+import { HOMEPAGE_SECTIONS } from "@/payload/globals/homepage";
+
+/** Regular pages offer the same section library as the homepage (CMS project 4). */
+export const PAGE_SECTIONS = HOMEPAGE_SECTIONS;
 
 /**
  * Mirrors sanity/schemas/documents/page.ts. Verified against production_2
@@ -90,6 +95,7 @@ export const Pages: CollectionConfig = {
     group: "Site pages",
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
+    description: "The page shows the Sections below, in order. (The old per-language lists are kept hidden as a backup.)",
     livePreview,
   },
   // Drafts (2026-09-28): edits autosave as a draft and only reach visitors on
@@ -112,7 +118,8 @@ export const Pages: CollectionConfig = {
       type: "blocks",
       localized: true,
       label: "Page blocks",
-      admin: { description: "Compose the page from reusable blocks (drag to reorder). Each language has its own list." },
+      // Hidden since project 4: the page reads `sections` once it has any. Kept as the backup.
+      admin: { hidden: true, description: "Compose the page from reusable blocks (drag to reorder). Each language has its own list." },
       // The first seven keep their order; the rest follow the picker's groups (spec §3.1).
       blocks: [
         hero1,
@@ -135,6 +142,8 @@ export const Pages: CollectionConfig = {
         formNewsletter,
       ].map(withTranslationStatus),
     },
+    // Declared AFTER `blocks` so Payload's `_2` table suffixing leaves the old tables intact.
+    ...sectionsField({ blocks: PAGE_SECTIONS }),
     localizedText("meta_title", { label: "Meta Title" }),
     localizedTextarea("meta_description", { label: "Meta Description" }),
     { name: "noindex", type: "checkbox", defaultValue: false, label: "No Index" },

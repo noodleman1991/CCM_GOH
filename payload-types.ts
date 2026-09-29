@@ -2487,6 +2487,8 @@ export interface CommunityMembersBlock {
   blockType: 'communityMembers';
 }
 /**
+ * The page shows the Sections below, in order. (The old per-language lists are kept hidden as a backup.)
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
@@ -2524,6 +2526,54 @@ export interface Page {
         | AtlasEmbedBlock
         | SubmitStoryBannerBlock
         | FormNewsletterBlock
+      )[]
+    | null;
+  /**
+   * Off: every language shows the same sections, with the words translated. On: each language gets its own list.
+   */
+  layoutPerLanguage?: boolean | null;
+  sections?:
+    | (
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
+      )[]
+    | null;
+  sectionsByLanguage?:
+    | (
+        | Hero1Block
+        | Hero2Block
+        | SectionHeaderBlock
+        | SplitRowBlock
+        | Carousel1Block
+        | TimelineRowBlock
+        | FaqsBlock
+        | ContentFeedBlock
+        | EventsCalendarBlock
+        | PeopleWidgetBlock
+        | GridRowBlock
+        | RegionMapBlock
+        | AtlasEmbedBlock
+        | Cta1Block
+        | SubmitStoryBannerBlock
+        | FormNewsletterBlock
+        | LogoCloud1Block
+        | Carousel2Block
       )[]
     | null;
   meta_title?: string | null;
@@ -3872,6 +3922,51 @@ export interface PagesSelect<T extends boolean = true> {
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
         formNewsletter?: T | FormNewsletterBlockSelect<T>;
+      };
+  layoutPerLanguage?: T;
+  sections?:
+    | T
+    | {
+        hero1?: T | Hero1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
+      };
+  sectionsByLanguage?:
+    | T
+    | {
+        hero1?: T | Hero1BlockSelect<T>;
+        hero2?: T | Hero2BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        carousel1?: T | Carousel1BlockSelect<T>;
+        timelineRow?: T | TimelineRowBlockSelect<T>;
+        faqs?: T | FaqsBlockSelect<T>;
+        contentFeed?: T | ContentFeedBlockSelect<T>;
+        eventsCalendar?: T | EventsCalendarBlockSelect<T>;
+        peopleWidget?: T | PeopleWidgetBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        regionMap?: T | RegionMapBlockSelect<T>;
+        atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
+        formNewsletter?: T | FormNewsletterBlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
       };
   meta_title?: T;
   meta_description?: T;
