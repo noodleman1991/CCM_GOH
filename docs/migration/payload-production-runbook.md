@@ -420,3 +420,30 @@ What visitors will notice after the move (all intended):
    3. **This page has its own layout in each language** exists and is off.
    4. **Live preview** opens the page at phone/tablet/desktop sizes and follows edits.
    5. On the site, each section has **Edit this section** (staff only), opening that section in the editor.
+
+## 2026-09-29 editing that feels natural
+
+What shipped (spec `docs/superpowers/specs/2026-09-29-editor-experience-design.md`):
+- **Editing starts on the site.** "Edit this section" (homepage, community pages, regular pages) opens the editor on that section, folds the others, turns live preview on and shows **← Back to the page**. Staff also get **Edit this page** on news, lived experiences, case studies, research outputs and events.
+- **Plain words.** "Save without publishing", "Discard my changes", "Editing: English"; a line at the top of every drafts-enabled document says whether visitors see the latest version; missing translations read "Not translated yet: ES, AR — visitors see English".
+- **One review queue.** `/moderation` opens on **Waiting for review**: pending case studies, events, lived experiences, research outputs and held/flagged comments, newest first, with Approve / Ask for changes / Reject (a note is required for the last two; only case-study senders are emailed, as before). The staff menu shows the count.
+- **Admin home.** Shortcuts (homepage, pages, communities, review queue), the review panel and Recent changes; menu groups renamed Site pages · Hub content · People & organisations · Media · Settings.
+- **Community leads.** Staff add leads on a regional community (**Community leads** → search a member → **Publish**). A lead signs into the admin and sees only their community (and Media): they can edit and publish it, but not its members, address, region or leads, and nothing else in the admin. Adding makes their role `community_editor`; removing them from every community returns them to `community_member`. Staff are never changed.
+
+One migration: `20260929_150919_community_leads` — two new tables for the leads list. Nothing dropped or renamed.
+
+1. Pre-check: `PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status` — expect the migration not yet run.
+2. Deploy: `vercel --prod`. Re-run `migrate:status`: applied. `/admin` loads; `/en/moderation` opens for staff.
+3. Signed-in checklist (staff):
+   1. On `/en/about` click a section's **Edit this section** → the editor opens on that section with live preview beside it; **← Back to the page** returns.
+   2. The top line reads "Everything you see is live."; change a word → "Visitors still see the published version…"; **Discard my changes** puts it back.
+   3. The language picker reads "Editing: English".
+   4. The admin home shows the shortcuts, the review count and Recent changes.
+   5. `/en/moderation`: "Waiting for review" lists what is pending; Reject needs a note; the item leaves the list after a decision.
+4. Making a lead (staff): open a regional community → **Community leads** → type two letters of their name or email → pick them → **Publish**.
+5. Signed-in checklist (lead — ask the person, or use a test account):
+   1. The admin home shows "Your community" with **Edit** and **View on site**; the menu shows only Regional communities and Media.
+   2. They can change a section and **Publish changes**; Members, the page address, Region and Community leads are read-only.
+   3. Opening another community, a page or the homepage by address is refused.
+   4. On the site, their community page shows **Edit this section**; other communities don't.
+6. Removing a lead: take them out of **Community leads** and **Publish** — they return to a normal member at once.
