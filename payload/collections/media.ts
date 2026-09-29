@@ -214,7 +214,8 @@ export const Media: CollectionConfig = {
     defaultColumns: ["filename", "mimeType", "filesize", "width", "height"],
   },
   access: {
-    read: editorOrStaticFile,
+    // Community leads can browse and pick pictures for their page (editor-experience spec §3.5).
+    read: (args) => editorOrStaticFile(args) || isLead(args.req.user),
     // Community leads may add pictures for their page; changing or removing others' stays staff-only.
     create: ({ req }) => hasEditorRole(req.user) || isLead(req.user),
     update: isEditor,

@@ -48,4 +48,10 @@ describe("community leads", () => {
       expect([name, fields[name]?.access?.update?.(req(staff))]).toEqual([name, true]);
     }
   });
+  it("lets a lead see and pick pictures, not just upload them", async () => {
+    const media = (await config).collections.find((c) => c.slug === "media")!;
+    const read = media.access.read as (a: unknown) => unknown;
+    expect(Boolean(await read({ req: { user: lead }, isReadingStaticFile: false }))).toBe(true);
+    expect(await read({ req: { user: member }, isReadingStaticFile: false })).toBe(false);
+  });
 });

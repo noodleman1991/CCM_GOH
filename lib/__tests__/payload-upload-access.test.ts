@@ -47,10 +47,16 @@ describe("upload collections: read access", () => {
     expect(await read({ req: req("admin") })).toBe(true);
   });
 
-  it.each(uploadCollections)("$slug does not admit community roles to the listing", async (collection) => {
+  it.each(uploadCollections)("$slug does not admit members to the listing", async (collection) => {
     const read = collection.access?.read as Access;
     expect(await read({ req: req("community_member") })).toBe(false);
-    expect(await read({ req: req("community_editor") })).toBe(false);
+  });
+
+  it("admits community leads to the picture library only — they pick images for their page (editor-experience spec §3.5)", async () => {
+    const media = uploadCollections.find((c) => c.slug === "media")!;
+    const files = uploadCollections.find((c) => c.slug === "files")!;
+    expect(await (media.access?.read as Access)({ req: req("community_editor") })).toBe(true);
+    expect(await (files.access?.read as Access)({ req: req("community_editor") })).toBe(false);
   });
 });
 
