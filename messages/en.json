@@ -2826,7 +2826,28 @@
       "approve": "Approve",
       "remove": "Remove",
       "dismissReport": "Dismiss report",
-      "title": "Moderation"
+      "title": "Moderation",
+      "tabReview": "Waiting for review",
+      "askChanges": "Ask for changes",
+      "reject": "Reject",
+      "openInAdmin": "Open in the admin",
+      "note": "Note to the sender",
+      "send": "Send",
+      "cancel": "Cancel",
+      "unknownSender": "Unknown sender",
+      "presets": {
+        "moreDetail": "Please add more detail.",
+        "offTopic": "This is outside the hub's focus.",
+        "duplicate": "This has already been shared.",
+        "consent": "Please confirm you have consent to share this."
+      },
+      "types": {
+        "caseStudies": "Case study",
+        "events": "Event",
+        "livedExperiences": "Lived experience",
+        "researchOutputs": "Research output",
+        "comment": "Comment"
+      }
     }
   },
   "requests": {

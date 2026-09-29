@@ -18,7 +18,7 @@ import { jsonFetcher } from "@/lib/swr";
 /** Staff-only sidebar group (Moderation + Broadcast). Hidden for non-staff. */
 export function StaffNav() {
   const t = useTranslations("navigation");
-  const { data } = useSWR<{ isStaff: boolean }>("/api/me/role", jsonFetcher, { revalidateOnFocus: false });
+  const { data } = useSWR<{ isStaff: boolean; reviewCount?: number }>("/api/me/role", jsonFetcher, { revalidateOnFocus: false });
   if (!data?.isStaff) return null;
 
   return (
@@ -33,6 +33,11 @@ export function StaffNav() {
                   centers cleanly (see nav-main.tsx for why truncate/shrink
                   alone isn't reliable here). */}
               <span className="group-data-[collapsible=icon]:hidden">{t("moderation")}</span>
+              {data.reviewCount ? (
+                <span className="ms-auto rounded-full bg-ccm-gold px-1.5 text-xs font-bold text-ccm-midnight group-data-[collapsible=icon]:hidden">
+                  {data.reviewCount}
+                </span>
+              ) : null}
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>

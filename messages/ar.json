@@ -2826,7 +2826,28 @@
       "approve": "الموافقة",
       "remove": "إزالة",
       "dismissReport": "رفض البلاغ",
-      "title": "الإشراف"
+      "title": "الإشراف",
+      "tabReview": "بانتظار المراجعة",
+      "askChanges": "طلب تعديلات",
+      "reject": "رفض",
+      "openInAdmin": "فتح في لوحة الإدارة",
+      "note": "ملاحظة للمرسل",
+      "send": "إرسال",
+      "cancel": "إلغاء",
+      "unknownSender": "مرسل غير معروف",
+      "presets": {
+        "moreDetail": "يرجى إضافة مزيد من التفاصيل.",
+        "offTopic": "هذا خارج نطاق اهتمام المنصة.",
+        "duplicate": "تمت مشاركة هذا من قبل.",
+        "consent": "يرجى تأكيد حصولك على الموافقة لمشاركة هذا."
+      },
+      "types": {
+        "caseStudies": "دراسة حالة",
+        "events": "فعالية",
+        "livedExperiences": "تجربة معاشة",
+        "researchOutputs": "مخرج بحثي",
+        "comment": "تعليق"
+      }
     }
   },
   "requests": {

@@ -10,9 +10,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { approveComment, removeComment, dismissReports } from "@/lib/actions/moderation";
 import type { QueueItem, QueueTab } from "@/lib/comments/moderation-queue";
 import { RelativeTime } from "@/components/ui/relative-time";
+import { ReviewList } from "@/components/moderation/review-list";
+import type { ReviewItem } from "@/lib/moderation/review-items";
+
+/** The page's tabs: "Waiting for review" first, then the comment-only views. */
+export type ModerationTab = QueueTab | "review";
 
 
-const TABS: { id: QueueTab; labelKey: string }[] = [
+const TABS: { id: ModerationTab; labelKey: string }[] = [
+  { id: "review", labelKey: "tabReview" },
   { id: "pending", labelKey: "tabPending" },
   { id: "flagged", labelKey: "tabFlagged" },
   { id: "reported", labelKey: "tabReported" },
@@ -22,10 +28,12 @@ export function ModerationQueue({
   tab,
   items,
   counts,
+  reviewItems = [],
 }: {
-  tab: QueueTab;
+  tab: ModerationTab;
   items: QueueItem[];
-  counts: Record<QueueTab, number>;
+  counts: Record<ModerationTab, number>;
+  reviewItems?: ReviewItem[];
 }) {
   const router = useRouter();
   const t = useTranslations("moderation.queue");
@@ -69,7 +77,9 @@ export function ModerationQueue({
         ))}
       </div>
 
-      {visible.length === 0 ? (
+      {tab === "review" ? (
+        <ReviewList items={reviewItems} />
+      ) : visible.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t("empty")}</p>
       ) : (
         <div className="space-y-4">

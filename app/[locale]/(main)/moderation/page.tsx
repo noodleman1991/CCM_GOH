@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { redirect } from "@/i18n/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getActor, isStaff } from "@/lib/authz";
-import { getQueue, getQueueCounts, type QueueTab } from "@/lib/comments/moderation-queue";
-import { ModerationQueue } from "@/components/comments/moderation-queue";
+import { getQueue, getQueueCounts } from "@/lib/comments/moderation-queue";
+import { ModerationQueue, type ModerationTab } from "@/components/comments/moderation-queue";
+import { getReviewQueue } from "@/lib/moderation/review-queue";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,9 @@ export async function generateMetadata({
 
 /**
  * In-app moderation queue. Gated on the Prisma role (team_editor | admin).
- * Reads from Postgres (Studio can't see comments). Tabs: pending (anon) /
- * flagged (wordlist) / reported.
+ * Tabs: "Waiting for review" (member submissions + held and flagged comments,
+ * the default — editor-experience spec §3.7) / pending (anon) / flagged
+ * (wordlist) / reported.
  */
 export default async function ModerationPage({
   searchParams,
@@ -34,16 +36,20 @@ export default async function ModerationPage({
   }
 
   const { tab: rawTab } = await searchParams;
-  const tab: QueueTab =
-    rawTab === "flagged" || rawTab === "reported" ? rawTab : "pending";
+  const tab: ModerationTab =
+    rawTab === "flagged" || rawTab === "reported" || rawTab === "pending" ? rawTab : "review";
 
   const tMod = await getTranslations("moderation");
-  const [items, counts] = await Promise.all([getQueue(tab), getQueueCounts()]);
+  const [items, counts, reviewItems] = await Promise.all([
+    tab === "review" ? Promise.resolve([]) : getQueue(tab),
+    getQueueCounts(),
+    getReviewQueue(locale),
+  ]);
 
   return (
     <div className="container max-w-4xl py-8">
       <h1 className="mb-6 text-3xl font-heading font-bold text-ccm-midnight">{tMod("queue.title")}</h1>
-      <ModerationQueue tab={tab} items={items} counts={counts} />
+      <ModerationQueue tab={tab} items={items} counts={{ ...counts, review: reviewItems.length }} reviewItems={reviewItems} />
     </div>
   );
 }

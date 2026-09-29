@@ -2826,7 +2826,28 @@
       "approve": "Aprobar",
       "remove": "Eliminar",
       "dismissReport": "Descartar denuncia",
-      "title": "Moderación"
+      "title": "Moderación",
+      "tabReview": "Pendiente de revisión",
+      "askChanges": "Pedir cambios",
+      "reject": "Rechazar",
+      "openInAdmin": "Abrir en el administrador",
+      "note": "Nota para quien lo envió",
+      "send": "Enviar",
+      "cancel": "Cancelar",
+      "unknownSender": "Remitente desconocido",
+      "presets": {
+        "moreDetail": "Por favor, añade más detalles.",
+        "offTopic": "Esto está fuera del enfoque del hub.",
+        "duplicate": "Esto ya se ha compartido.",
+        "consent": "Confirma que tienes consentimiento para compartir esto."
+      },
+      "types": {
+        "caseStudies": "Estudio de caso",
+        "events": "Evento",
+        "livedExperiences": "Experiencia vivida",
+        "researchOutputs": "Resultado de investigación",
+        "comment": "Comentario"
+      }
     }
   },
   "requests": {
