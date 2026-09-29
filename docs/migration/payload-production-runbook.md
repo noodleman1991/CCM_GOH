@@ -352,3 +352,38 @@ One additive migration: `20260928_152904_homepage_sections_and_organisations` �
    5. The Logo strip's **Partner organisations** picker lists only shown organisations; add one, Publish, and see it in the strip.
    6. An organisation's **Preview** opens its hub page; setting its type (most new partners are "Other") shows on that page.
    7. Live preview shows the homepage sections at phone, tablet and desktop sizes.
+
+## 2026-09-29 regional communities on sections
+
+What shipped (CMS project 3, spec `docs/superpowers/specs/2026-09-28-communities-on-sections-design.md`): each regional community is one record, edited in one place — **Site pages → Regional communities** now holds the community's page as a Sections list (with drafts and live preview), and the old "Community pages" entry is hidden (its data kept as the backup). Two new sections: **Community header** and **Community members**. Any section can start a chapter in the page's sticky menu ("Show in the page menu as"). Feeds on a community page show that community's content by default. Agenda cards (everywhere) open the agenda's PDF when the agenda is public.
+
+One migration: `20260929_063611_community_records_with_pages` — new section tables for communities (a few enum names shortened to fit Postgres's 63-character limit), drafts columns, and **every existing community marked published** (without that, communities would vanish from the whole site). Three "may be empty" loosenings Payload needs for drafts. Nothing dropped or renamed.
+
+**Deploying changes nothing a visitor sees**: until the move script runs, each community's Sections list is empty and its page renders from the old Community page exactly as today.
+
+What visitors will notice after the move (all intended):
+- **Hand-picked items now show.** The old pages never displayed hand-picked cards (the old reader dropped them); the moved feeds show the editors' picks first.
+- **Logo strips move to a "Partners" chapter at the end** (they had been landing in Overview near the top by mistake).
+- A community may gain a News chapter where the new feed finds news linked to it.
+- The members heading reads "Community members".
+
+1. Pre-check: `PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status` — expect the migration not yet run.
+2. Deploy: `vercel --prod`. Re-run `migrate:status`: applied. Check a case study card still shows its community and `/en/atlas` loads.
+3. Dry run (reads only; slow over the network — a few minutes):
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/communities/move-to-sections.ts --production
+   ```
+   Per community: the section list with its chapter and heading in en/es/fr/ar, any picks that no longer exist, and notes (the welcome/why-join heroes and testimonials are not moved — they were never shown).
+4. Execute: same command with `--execute`; clear the cache and load a community page twice:
+   ```
+   curl -X POST https://<site>/api/cache/revalidate -H "Authorization: Bearer $ADMIN_API_KEY" -H 'content-type: application/json' -d '{"all":true}'
+   ```
+   `--only=<slug>` moves one community; a community that already has sections is skipped unless `--replace`.
+5. Roll back (all, or `--only=<slug>`): same command with `--revert`, then clear the cache — the old page returns at once.
+6. Signed-in checklist:
+   1. **Site pages → Regional communities** lists the seven communities; "Community pages" is gone from the menu.
+   2. A community's editor shows **Sections** (Community header first) and a folded **Details** group with its name, region, members and contact.
+   3. Open a section's **Page menu**: pick a standard chapter or **Custom…** with a label per language; the site's menu follows.
+   4. A Content feed on a community page shows that community's items without a filter; setting a Community filter shows that community instead.
+   5. **Live preview** opens `/…/communities/<slug>` at phone/tablet/desktop sizes.
+   6. On the site, each section has **Edit this section** (staff only), opening the community's editor.
