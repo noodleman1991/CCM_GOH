@@ -387,3 +387,36 @@ What visitors will notice after the move (all intended):
    4. A Content feed on a community page shows that community's items without a filter; setting a Community filter shows that community instead.
    5. **Live preview** opens `/…/communities/<slug>` at phone/tablet/desktop sizes.
    6. On the site, each section has **Edit this section** (staff only), opening the community's editor.
+
+## 2026-09-29 pages on shared layouts
+
+What shipped (CMS project 4, spec `docs/superpowers/specs/2026-09-29-pages-on-sections-design.md`): every regular page (About, Feedback and the seven Research & action pages) gets one **Sections** list shared by all four languages — only the words are translated, the layout is edited once. The old per-language lists are hidden in the editor and kept untouched as the backup. Staff see **Edit this section** on each section of a moved page. Agenda/report cards on shared sections keep their record's own translations (this also applies to the homepage and community pages).
+
+One migration: `20260929_102614_pages_sections` — new section tables for pages and a `layout_per_language` column. Nothing dropped or renamed.
+
+**Deploying changes nothing a visitor sees**: until the move script runs, every page's Sections list is empty and it renders from its old per-language list exactly as today.
+
+What visitors will notice after the move (all intended):
+- **Toolkits and Impact reports** show the three download cards in every language (Spanish, French and Arabic had only text columns, without downloads); the card titles come from the report records in each language.
+- **About** shows "The Connecting Climate Minds Journey" heading in English too (the other languages already had it). The English heading has no intro line — add one in the editor if wanted.
+- The other seven pages look the same in every language.
+
+1. Pre-check: `PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status` — expect the migration not yet run.
+2. Deploy: `vercel --prod`. Re-run `migrate:status`: applied. Load `/en/about` and `/ar/research-and-action/toolkits`: unchanged.
+3. Dry run (reads only):
+   ```
+   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec tsx scripts/pages/move-to-sections.ts --production
+   ```
+   Per page: `SHARED` (same in every language) or `ALIGNED TO ENGLISH`, the section list with its heading in en/es/fr/ar, and for aligned pages which sections of the other languages are left out (they stay in the hidden backup). Expected on dev data: 6 shared, 3 aligned (About, Impact reports, Toolkits).
+4. Execute: same command with `--execute`; clear the cache, wait a few seconds, and load a page twice:
+   ```
+   curl -X POST https://<site>/api/cache/revalidate -H "Authorization: Bearer $ADMIN_API_KEY" -H 'content-type: application/json' -d '{"all":true}'
+   ```
+   `--only=<slug>` moves one page (e.g. `--only=research-and-action/toolkits`); a page that already has sections is skipped unless `--replace`.
+5. Roll back (all, or `--only=<slug>`): same command with `--revert`, then clear the cache — the old per-language page returns.
+6. Signed-in checklist:
+   1. **Site pages → Pages → About** shows **Sections** (each row with its translation status); the old "Page blocks" list is not shown.
+   2. Switch the editor's language to Arabic: the same sections, Arabic text.
+   3. **Separate layout per language** exists and is off.
+   4. **Live preview** opens the page at phone/tablet/desktop sizes and follows edits.
+   5. On the site, each section has **Edit this section** (staff only), opening that section in the editor.
