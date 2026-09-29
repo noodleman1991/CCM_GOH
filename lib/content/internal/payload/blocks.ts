@@ -853,6 +853,10 @@ function mapBlock(row: unknown): Row | undefined {
       return atlasEmbedBlock(row);
     case "contentFeed":
       return contentFeedBlock(row);
+    case "communityHeader":
+      return groqObject({ _key: blockKey(row), _type: "community-header", intro: orNull(text(row.intro)), padding: paddingObject(row.padding) });
+    case "communityMembers":
+      return groqObject({ _key: blockKey(row), _type: "community-members", padding: paddingObject(row.padding), title: orNull(text(row.title)) });
     default:
       return undefined;
   }

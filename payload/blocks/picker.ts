@@ -23,6 +23,7 @@ export const SECTION_PICTURES = {
   newsletter: "/admin/sections/newsletter.svg",
   "logo-strip": "/admin/sections/logo-strip.svg",
   testimonials: "/admin/sections/testimonials.svg",
+  "community-header": "/admin/sections/community-header.svg",
 } as const;
 export type SectionPictureKey = keyof typeof SECTION_PICTURES;
 
