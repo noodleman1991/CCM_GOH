@@ -49,7 +49,12 @@ function perLanguage(lists: Record<string, Row[]>, index: number, field: string)
   return Object.keys(map).length > 0 ? map : undefined;
 }
 
-export function planCommunitySections(page: Row, region: string | null): CommunityPlan {
+export function planCommunitySections(
+  page: Row,
+  region: string | null,
+  opts: { mediaExists?: (id: string) => boolean } = {},
+): CommunityPlan {
+  const mediaExists = opts.mediaExists ?? (() => true);
   const sections: Row[] = [];
   const differences: Difference[] = [];
   const notes: string[] = [];
@@ -120,10 +125,19 @@ export function planCommunitySections(page: Row, region: string | null): Communi
     notes.push(`An unknown section type "${type}" was skipped.`);
   });
 
+  // The logo strip showed only when its pictures existed; rows whose media is
+  // gone are dropped, and a strip left empty isn't added.
   const logos = slot("logoCloud");
-  const logoRows = logos && isRow(logos.en) ? (logos.en as Row).images : logos?.images;
-  if (logos && Array.isArray(logoRows) && logoRows.length > 0) {
-    sections.push({ ...planSection(logoCloud1, isRow(logos.en) ? viewByLanguage(logos) : logos, "logoCloud", differences), chapter: { kind: "partners" } });
+  if (logos) {
+    const view = isRow(logos.en) ? viewByLanguage(logos) : logos;
+    const planned = planSection(logoCloud1, view, "logoCloud", differences);
+    const rows = Array.isArray(planned.images) ? (planned.images as Row[]) : [];
+    const kept = rows.filter((row) => {
+      const id = idOf(row.asset);
+      return id !== null && mediaExists(id);
+    });
+    if (kept.length > 0) sections.push({ ...planned, images: kept, chapter: { kind: "partners" } });
+    else if (rows.length > 0) notes.push("The logo strip's pictures are missing, so it never showed — not added.");
   }
 
   return { sections, differences, notes, picks };

@@ -64,6 +64,23 @@ async function main() {
   const pages = (await payload.find({ collection: "regionalCommunityPages", pagination: false, depth: 0, locale: "all", draft: false }))
     .docs as unknown as Row[];
 
+  // Which logo pictures still exist (the old page hid logos whose media is gone).
+  const logoIds = new Set<string>();
+  for (const page of pages) {
+    const slot = page.logoCloud as Row | undefined;
+    for (const arm of slot ? Object.values(slot) : []) {
+      const images = arm && typeof arm === "object" ? (arm as Row).images : null;
+      for (const image of Array.isArray(images) ? (images as Row[]) : []) {
+        const id = idOf(image.asset);
+        if (id) logoIds.add(id);
+      }
+    }
+  }
+  const media = logoIds.size
+    ? await payload.find({ collection: "media", where: { id: { in: [...logoIds] } }, depth: 0, limit: logoIds.size, select: { id: true } as never })
+    : { docs: [] };
+  const existingMedia = new Set((media.docs as Row[]).map((d) => String(d.id)));
+
   let failures = 0;
   for (const page of pages) {
     const communityId = idOf(page.regionalCommunity);
@@ -81,7 +98,9 @@ async function main() {
       continue;
     }
 
-    const plan = planCommunitySections(page, typeof community.region === "string" ? community.region : null);
+    const plan = planCommunitySections(page, typeof community.region === "string" ? community.region : null, {
+      mediaExists: (id) => existingMedia.has(id),
+    });
 
     // Which picks still exist and are published.
     // One query per kind, not per pick.

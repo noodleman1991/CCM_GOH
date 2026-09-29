@@ -94,4 +94,19 @@ describe("planCommunitySections", () => {
     expect(p.sections[2]).toMatchObject({ blockType: "contentFeed", kinds: ["newsPosts"], fill: "automatic", sort: "newest", picks: [] });
     expect(p.notes).toContain("news was hand-picked with nothing picked — it fills automatically, as it did before.");
   });
+
+  it("leaves out a logo strip whose pictures no longer exist, as the old page hid it", () => {
+    const logoCloud = { en: { title: null, images: [{ id: "i", asset: "gone-media" }] } };
+    const p = planCommunitySections({ ...page([]), logoCloud }, "oce", { mediaExists: () => false });
+    expect(p.sections.map((x) => x.blockType)).toEqual(["communityHeader", "atlasEmbed"]);
+    expect(p.notes).toContain("The logo strip's pictures are missing, so it never showed — not added.");
+  });
+
+  it("keeps a logo strip with real pictures, in the Partners chapter", () => {
+    const logoCloud = { en: { title: null, images: [{ id: "i", asset: "m1", alt: "A" }, { id: "j", asset: "gone" }] } };
+    const p = planCommunitySections({ ...page([]), logoCloud }, "oce", { mediaExists: (id) => id === "m1" });
+    const strip = p.sections.at(-1)!;
+    expect(strip).toMatchObject({ blockType: "logoCloud1", chapter: { kind: "partners" } });
+    expect((strip.images as Array<{ asset: string }>).map((i) => i.asset)).toEqual(["m1"]);
+  });
 });
