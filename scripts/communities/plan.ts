@@ -61,13 +61,16 @@ export function planCommunitySections(page: Row, region: string | null): Communi
   if (atlas.enabled !== false && region) sections.push({ blockType: "atlasEmbed", region, showBreakdown: atlas.showBreakdown !== false });
   else notes.push(region ? "The atlas was switched off — no atlas section added." : "This community has no region — no atlas section added.");
 
-  // The heroes and logo strip were empty on every page when this was written;
-  // carried over only when an editor has filled them since.
+  // The welcome and why-join heroes: on a region page the region header has
+  // always replaced them (never shown), so they aren't carried over; on a
+  // community without a region they were shown, so they are.
   const slot = (name: string) => (isRow(page[name]) ? (page[name] as Row) : null);
   for (const name of ["welcomeHero", "whyJoinCTA"]) {
     const s = slot(name);
     const title = s && isRow(s.en) ? text(s.en.title) : s ? text((s as Row).title) : null;
-    if (s && title) sections.push(planSection(hero1, isRow(s.en) ? viewByLanguage(s) : s, name, differences));
+    if (!s || !title) continue;
+    if (region) notes.push(`${name} was never shown (the region header replaced it) — not added.`);
+    else sections.push(planSection(hero1, isRow(s.en) ? viewByLanguage(s) : s, name, differences));
   }
 
   const lists: Record<string, Row[]> = Object.fromEntries(
@@ -85,20 +88,23 @@ export function planCommunitySections(page: Row, region: string | null): Communi
       });
       picked.forEach((p) => picks.push({ kind: p.relationTo, id: p.value }));
       const { fill, sort } = FILL[text(grid.mode) ?? "dynamic-recent"] ?? FILL["dynamic-recent"];
+      // The old page fetched automatically when a hand-picked section had
+      // nothing picked (regional-community-template.tsx) — so does the feed.
+      const empty = fill === "picksOnly" && picked.length === 0;
+      if (empty) notes.push(`${type} was hand-picked with nothing picked — it fills automatically, as it did before.`);
       const count = typeof grid.maxItems === "number" && grid.maxItems > 0 ? Math.min(24, grid.maxItems) : 6;
       sections.push({
         blockType: "contentFeed",
         heading,
         kinds: [feed.kind],
-        fill: picked.length > 0 ? fill : fill === "picksOnly" ? "automatic" : fill,
-        sort: picked.length > 0 || sort !== "myOrder" ? sort : "newest",
+        fill: empty ? "automatic" : fill,
+        sort: empty ? "newest" : sort,
         picks: picked,
         count,
         layout: feed.layout,
         viewAll: { show: true },
         chapter: { kind: feed.chapter },
       });
-      if (fill === "picksOnly" && picked.length === 0) notes.push(`${type} was hand-picked with nothing picked — it now fills automatically.`);
       return;
     }
     if (type === "team") {
@@ -106,9 +112,9 @@ export function planCommunitySections(page: Row, region: string | null): Communi
       return;
     }
     if (type === "testimonials") {
-      const chosen = Array.isArray(grid.manualTestimonials) ? grid.manualTestimonials.map(idOf).filter((id): id is string => !!id) : [];
-      if (chosen.length > 0) sections.push({ blockType: "carousel2", title: heading, testimonial: chosen });
-      else notes.push("testimonials had nothing picked — no section added.");
+      // The old template never rendered its testimonials section, so adding
+      // one would change the page; an editor can add a Testimonials section.
+      notes.push("testimonials were never shown on this page — not added (add a Testimonials section to show them).");
       return;
     }
     notes.push(`An unknown section type "${type}" was skipped.`);
