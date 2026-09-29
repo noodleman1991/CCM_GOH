@@ -92,7 +92,7 @@ async function main() {
     if (only && community.slug !== only) continue;
 
     console.log(`\n=== ${community.slug} ===`);
-    const refusal = guardExisting(Array.isArray(community.sections) ? community.sections : [], { replace });
+    const refusal = guardExisting(Array.isArray(community.sections) ? community.sections : [], { replace, subject: String(community.slug) });
     if (refusal) {
       console.log(`  ${refusal}`);
       continue;

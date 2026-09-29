@@ -30,10 +30,10 @@ export function withIdsFrom(saved: unknown, data: unknown): unknown {
 }
 
 /** The refusal to print when the homepage already has sections, or `null` to go ahead. */
-export function guardExisting(existing: unknown[], { replace }: { replace: boolean }): string | null {
+export function guardExisting(existing: unknown[], { replace, subject = "The homepage" }: { replace: boolean; subject?: string }): string | null {
   if (existing.length === 0 || replace) return null;
   const n = existing.length;
-  return `The homepage already has ${n} section${n === 1 ? "" : "s"}. Nothing was changed. Run with --replace to overwrite them, or --revert to empty the list first.`;
+  return `${subject} already has ${n} section${n === 1 ? "" : "s"}. Nothing was changed. Run with --replace to overwrite them, or --revert to empty the list first.`;
 }
 
 /** Placeholder ids (`new:<name>`) → the ids of the organisations just created; unresolved ones are dropped. */

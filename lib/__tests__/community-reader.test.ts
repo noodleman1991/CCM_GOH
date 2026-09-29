@@ -49,4 +49,14 @@ describe("findCommunity", () => {
     q.mockResolvedValue({ docs: [rec({ sections: [] })] });
     expect((await findCommunity("oceania", "en"))!.sections).toEqual([]);
   });
+
+  it("reads only what the page needs, so the answer stays small enough to cache", async () => {
+    q.mockResolvedValue({ docs: [rec()] });
+    await findCommunity("oceania", "en");
+    const descriptor = q.mock.calls[0][0] as { depth: number; select: Record<string, true> };
+    expect(descriptor.depth).toBe(2);
+    expect(Object.keys(descriptor.select).sort()).toEqual(
+      ["layoutPerLanguage", "meta_description", "meta_title", "name", "noindex", "ogImage", "sections", "sectionsByLanguage", "slug"].sort(),
+    );
+  });
 });

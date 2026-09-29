@@ -22,6 +22,12 @@ describe("writing the move", () => {
     expect(guardExisting([], { replace: false })).toBeNull();
   });
 
+  it("names what already has sections", () => {
+    expect(guardExisting([{}, {}], { replace: false, subject: "Oceania" })).toBe(
+      "Oceania already has 2 sections. Nothing was changed. Run with --replace to overwrite them, or --revert to empty the list first.",
+    );
+  });
+
   it("swaps placeholder ids for the organisations just created, keeping order and dropping unknowns", () => {
     expect(swapNewIds(["o1", "new:wellcome", "new:gone"], new Map([["new:wellcome", "o9"]]))).toEqual(["o1", "o9"]);
   });

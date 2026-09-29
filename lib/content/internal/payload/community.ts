@@ -45,7 +45,22 @@ export async function findCommunity(slug: string, locale: Locale): Promise<Commu
     collection: "regionalCommunities",
     where: { slug: { equals: slug } },
     locale: "all",
-    depth: 3,
+    // Only what the page needs: the whole record at depth 3 in every language
+    // came to ~2.4 MB, over Next's 2 MB data-cache limit, so it could never be
+    // cached (and a stale answer kept being served). Depth 2 reaches an
+    // organisation's logo inside a logo strip.
+    depth: 2,
+    select: {
+      slug: true,
+      name: true,
+      layoutPerLanguage: true,
+      sections: true,
+      sectionsByLanguage: true,
+      meta_title: true,
+      meta_description: true,
+      noindex: true,
+      ogImage: true,
+    },
     limit: 1,
     pagination: false,
   });
