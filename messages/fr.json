@@ -1992,7 +1992,8 @@
       "policy": "Politique",
       "other": "Externe"
     },
-    "editSection": "Modifier cette section"
+    "editSection": "Modifier cette section",
+    "editPage": "Modifier cette page"
   },
   "map": {
     "title": "Explorer par région",

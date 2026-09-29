@@ -18,6 +18,7 @@ import { heading } from "@/lib/design-tokens";
 import { sortedTags, normalizeTagColor } from "@/lib/tags";
 import type { LocalizedString } from "@/types/case-study";
 import { absoluteUrl } from "@/lib/seo/site-url";
+import { StaffEditLink } from "@/components/cms/staff-edit-link";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;
@@ -48,6 +49,7 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
 
   return (
     <div className={cn("container py-8 space-y-8", layout === "report" ? "max-w-5xl" : "max-w-4xl")} data-layout={layout}>
+      <StaffEditLink collection="researchOutputs" id={String(ro._id ?? "")} from={`/${locale}/research-and-action/research-outputs/${slug}`} />
       <BackLink href="/research-and-action" label={t("backToResearch")} />
 
       {/* Header — feature archetype renders a bold navy panel. */}

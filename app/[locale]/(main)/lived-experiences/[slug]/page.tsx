@@ -17,6 +17,7 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { JsonLd, articleJsonLd } from "@/lib/seo/json-ld";
 import { FollowButton } from "@/components/follow/follow-button";
 import { siteUrl } from "@/lib/seo/site-url"
+import { StaffEditLink } from "@/components/cms/staff-edit-link";
 
 export async function generateMetadata({
   params,
@@ -74,6 +75,7 @@ export default async function LivedExperiencePage({
       data-layout={layout}
       dir={isRTL ? "rtl" : "ltr"}
     >
+      <StaffEditLink collection="livedExperiences" id={String(le._id ?? "")} from={`/${locale}/lived-experiences/${slug}`} />
       <JsonLd
         data={articleJsonLd({
           title: title || "Lived experience",

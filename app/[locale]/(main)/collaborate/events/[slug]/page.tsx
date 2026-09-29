@@ -15,6 +15,7 @@ import { ShareButton } from "@/components/events/share-button";
 import { CommentIsland } from "@/components/comments/comment-island";
 import { JsonLd, eventJsonLd } from "@/lib/seo/json-ld";
 import { siteUrl } from "@/lib/seo/site-url"
+import { StaffEditLink } from "@/components/cms/staff-edit-link";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +68,7 @@ export default async function EventPage({
 
   return (
     <div className="container max-w-3xl space-y-8 py-8">
+      <StaffEditLink collection="events" id={String(event._id ?? "")} from={`/${locale}/collaborate/events/${slug}`} />
       <JsonLd
         data={eventJsonLd({
           name: event.title,

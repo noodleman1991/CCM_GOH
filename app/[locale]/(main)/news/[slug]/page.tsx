@@ -20,6 +20,7 @@ import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { FollowButton } from "@/components/follow/follow-button";
 import { absoluteUrl, siteUrl } from "@/lib/seo/site-url"
+import { StaffEditLink } from "@/components/cms/staff-edit-link";
 
 // Generate static params for all news posts
 export async function generateMetadata({
@@ -94,6 +95,7 @@ export default async function NewsDetailPage({
 
   return (
     <div className="container max-w-4xl py-8 space-y-8">
+      <StaffEditLink collection="newsPosts" id={String(newsPost._id ?? "")} from={`/${locale}/news/${slug}`} />
       <JsonLd
         data={articleJsonLd({
           title,

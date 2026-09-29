@@ -21,6 +21,7 @@ import { heading } from '@/lib/design-tokens'
 import { sortedTags, normalizeTagColor } from '@/lib/tags'
 import { siteUrl } from '@/lib/seo/site-url'
 import { OriginalLanguageNote } from '@/components/case-studies/original-language-note'
+import { StaffEditLink } from "@/components/cms/staff-edit-link";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params
@@ -82,6 +83,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
 
   return (
     <div className={cn("container py-8 space-y-8", layout === 'report' ? "max-w-5xl" : "max-w-4xl")} data-layout={layout}>
+      <StaffEditLink collection="caseStudies" id={String(caseStudy._id ?? "")} from={`/${locale}/research-and-action/case-studies/${slug}`} />
       <JsonLd
         data={articleJsonLd({
           title,
