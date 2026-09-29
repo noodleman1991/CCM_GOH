@@ -17,4 +17,9 @@ describe("pages on sections", async () => {
   it("requires nothing", async () => {
     expect(await named(pages.fields, "sections")!.validate([], { req: { context: {}, t: (k: string) => k }, required: false })).toBe(true);
   });
+  it("opens on the section an edit link names", () => {
+    const focus = named(pages.fields, "sectionFocus");
+    expect(focus?.type).toBe("ui");
+    expect(focus?.admin?.components?.Field).toBe("@/payload/components/section-focus#SectionFocus");
+  });
 });

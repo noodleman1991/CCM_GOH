@@ -17,7 +17,7 @@ type AnyField = {
 };
 
 describe("sectionsField", () => {
-  const [toggle, shared, perLanguage] = sectionsField({ blocks: [hero, map] }) as unknown as AnyField[];
+  const [, toggle, shared, perLanguage] = sectionsField({ blocks: [hero, map] }) as unknown as AnyField[];
 
   it("has the opt-out switch, a shared list and a per-language list", () => {
     expect(toggle).toMatchObject({
@@ -56,7 +56,7 @@ describe("sectionsField", () => {
 
   it("only validates when some sections are required", () => {
     expect(shared.validate).toBeUndefined();
-    const [, withRequired] = sectionsField({ blocks: [hero, map], required: ["atlasEmbed"] }) as unknown as AnyField[];
+    const [, , withRequired] = sectionsField({ blocks: [hero, map], required: ["atlasEmbed"] }) as unknown as AnyField[];
     expect(withRequired.validate!([{ blockType: "hero1" }])).toBe("This page always keeps its Atlas. You can move it, but not remove it.");
   });
 });
@@ -88,7 +88,7 @@ describe("one-of required sections", () => {
 describe("nested sections get their own copies", () => {
   const column: Block = { slug: "splitContent", fields: [{ name: "title", type: "text", localized: true }] };
   const row: Block = { slug: "splitRow", fields: [{ name: "splitColumns", type: "blocks", blocks: [column] }] };
-  const [, shared, perLanguage] = sectionsField({ blocks: [row] }) as unknown as Array<{ blocks: Array<{ fields: Array<{ blocks: Block[] }> }> }>;
+  const [, , shared, perLanguage] = sectionsField({ blocks: [row] }) as unknown as Array<{ blocks: Array<{ fields: Array<{ blocks: Block[] }> }> }>;
 
   it("gives each list its own copy of blocks nested inside a section, so Payload can give them their own tables", () => {
     expect(shared.blocks[0].fields[0].blocks[0]).not.toBe(column);
@@ -103,7 +103,7 @@ describe("nested sections get their own copies", () => {
 
 describe("emptying a list on purpose", () => {
   it("lets a script that says so empty the list (the homepage move's --revert), and nobody else", () => {
-    const [, shared] = sectionsField({ blocks: [hero, map], required: ["atlasEmbed"] }) as unknown as Array<{ validate: (v: unknown, o?: unknown) => true | string }>;
+    const [, , shared] = sectionsField({ blocks: [hero, map], required: ["atlasEmbed"] }) as unknown as Array<{ validate: (v: unknown, o?: unknown) => true | string }>;
     expect(shared.validate([], { req: { context: { [SKIP_REQUIRED_SECTIONS]: true } } })).toBe(true);
     expect(shared.validate([], { req: { context: {} } })).toBe("This page always keeps its Atlas. You can move it, but not remove it.");
   });

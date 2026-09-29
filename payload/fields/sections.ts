@@ -56,6 +56,12 @@ export function sectionsField({
         options?.req?.context?.[SKIP_REQUIRED_SECTIONS] === true ? true : check(value)
     : undefined;
 
+  // Reads an "Edit this section" link: opens that row with live preview on (editor-experience spec §3.2).
+  const focus: Field = {
+    name: "sectionFocus",
+    type: "ui",
+    admin: { components: { Field: "@/payload/components/section-focus#SectionFocus" } },
+  };
   const toggle: CheckboxField = {
     name: "layoutPerLanguage",
     type: "checkbox",
@@ -80,5 +86,5 @@ export function sectionsField({
     admin: { condition: (data) => Boolean(data?.layoutPerLanguage) },
     ...(validate ? { validate } : {}),
   };
-  return [toggle, shared, perLanguage];
+  return [focus, toggle, shared, perLanguage];
 }
