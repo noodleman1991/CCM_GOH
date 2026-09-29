@@ -23,10 +23,12 @@ interface BlocksProps {
     /** Staff only: where each section is edited in the admin (by position). */
     editHref?: (index: number) => string;
     editLabel?: string;
+    /** The page's community, so its sections (feeds, header, members) know it. */
+    context?: { communityId?: string; communitySlug?: string };
 }
 
 
-export default function Blocks({ blocks, locale, userId, editHref, editLabel }: BlocksProps) {
+export default function Blocks({ blocks, locale, userId, editHref, editLabel, context }: BlocksProps) {
     const rtl = isRTL(locale);
 
     // Filter out PortableText blocks that should not be rendered here.
@@ -61,6 +63,8 @@ export default function Blocks({ blocks, locale, userId, editHref, editLabel }: 
                         {editHref && <SectionEditLink href={editHref(index)} label={editLabel ?? "Edit"} />}
                         <Component
                             {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
+                            communityId={context?.communityId}
+                            communitySlug={context?.communitySlug}
                             locale={locale}
                             isRTL={rtl}
                             userId={userId} // Pass userId for download tracking

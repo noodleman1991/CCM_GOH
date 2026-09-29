@@ -109,6 +109,14 @@ describe("resolveContentFeed", () => {
     expect(whereOf("caseStudies")).toContain('"organizations":{"in":["o1"]}');
   });
 
+  it("an editor's community filter wins over the page's community", async () => {
+    query.mockResolvedValue({ docs: [] });
+    await resolveContentFeed({ kinds: ["newsPosts"], filters: { communityIds: ["chosen"] } }, { locale: "en", communityId: "page-community" });
+    const where = whereOf("newsPosts");
+    expect(where).toContain('"chosen"');
+    expect(where).not.toContain("page-community");
+  });
+
   it("shows nothing on the old content backend", async () => {
     backend.mockReturnValue("sanity");
     const r = await resolveContentFeed({ kinds: ["caseStudies"] }, { locale: "en" });
