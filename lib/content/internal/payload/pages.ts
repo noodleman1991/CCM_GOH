@@ -108,6 +108,7 @@
  */
 import "server-only";
 import { imageGroup } from "@/lib/content/internal/image-shape";
+import { collapseLocales } from "@/lib/content/internal/localize";
 import { pageBlocks } from "@/lib/content/internal/payload/blocks";
 import { localized, type LocalizedRaw } from "@/lib/content/internal/localized";
 import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
@@ -126,6 +127,11 @@ interface PageRow {
   slug?: string | null;
   title?: LocalizedRaw;
   blocks?: Partial<Record<Locale, unknown[]>> | null;
+  /** CMS project 4: the shared Sections list (text localized inside it)… */
+  sections?: unknown[] | null;
+  /** …or, with `layoutPerLanguage` on, one list per language. */
+  layoutPerLanguage?: boolean | null;
+  sectionsByLanguage?: Partial<Record<Locale, unknown[]>> | null;
   meta_title?: LocalizedRaw;
   meta_description?: LocalizedRaw;
   noindex?: boolean | null;
@@ -138,6 +144,10 @@ interface PageRow {
  * the envelope cannot be shaped two ways.
  */
 export interface RawPayloadPage {
+  /** The Payload row id, for staff "Edit this section" links. */
+  _id?: string;
+  /** True when `blocks` came from the Sections list rather than the old per-language list. */
+  fromSections?: boolean;
   blocks?: unknown[] | null;
   meta_title?: string;
   meta_description?: string;
@@ -172,6 +182,16 @@ function carriesLocale(row: PageRow, locale: Locale): boolean {
   return Boolean(
     arm(row.title, locale) ?? arm(row.meta_title, locale) ?? arm(row.meta_description, locale),
   );
+}
+
+/** The Sections list this page shows in `locale`: the shared one, or — with
+ *  one layout per language — that language's own list, else English's. */
+function sectionsFor(row: PageRow, locale: Locale): unknown[] {
+  if (row.layoutPerLanguage === true && row.sectionsByLanguage) {
+    const own = row.sectionsByLanguage[locale];
+    return Array.isArray(own) && own.length > 0 ? own : (row.sectionsByLanguage.en ?? []);
+  }
+  return Array.isArray(row.sections) ? row.sections : [];
 }
 
 /** The locales a document carries, in `payload.config.ts`'s order. */
@@ -225,11 +245,29 @@ export async function findPage(slug: string, locale: Locale): Promise<RawPayload
   const row = result?.docs?.[0];
   if (!row) return null;
 
+  // CMS project 4: once a page has sections they are the page, in every
+  // language — each text field falls back to English on its own, so the
+  // per-language document rule below no longer applies.
+  const sections = sectionsFor(row, locale);
+  if (sections.length > 0) {
+    return {
+      _id: String(row.id ?? ""),
+      fromSections: true,
+      blocks: pageBlocks(collapseLocales(sections, locale)),
+      meta_title: arm(row.meta_title, locale) ?? arm(row.meta_title, "en"),
+      meta_description: arm(row.meta_description, locale) ?? arm(row.meta_description, "en"),
+      noindex: row.noindex ?? undefined,
+      ogImage: ogImageProjection(row.ogImage),
+    };
+  }
+
   // The English fallback `fetchSanityPageBySlug` performs. See note 3.
   const chosen = carriesLocale(row, locale) ? locale : "en";
   if (!carriesLocale(row, chosen)) return null;
 
   return {
+    _id: String(row.id ?? ""),
+    fromSections: false,
     // 14c. `internal/payload/blocks.ts` maps one family at a time and drops a
     // block type it has not reached yet, so a page renders the families that
     // have landed and the parity harness reports the rest as deletions —

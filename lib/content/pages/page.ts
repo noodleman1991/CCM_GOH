@@ -95,6 +95,10 @@ import {
  * Blocks>['blocks']`).
  */
 export interface Page {
+  /** The Payload row id (Payload arm only). */
+  id?: string;
+  /** True when the page renders the CMS Sections list (staff get "Edit this section" links). */
+  fromSections?: boolean;
   slug: string;
   locale: Locale;
   blocks: ContentBlock[];
@@ -105,6 +109,8 @@ export interface Page {
 }
 
 interface RawPageDoc {
+  _id?: string;
+  fromSections?: boolean;
   blocks?: unknown[] | null;
   meta_title?: string;
   meta_description?: string;
@@ -114,6 +120,8 @@ interface RawPageDoc {
 
 function toPage(raw: RawPageDoc, slug: string, locale: Locale): Page {
   return {
+    ...(raw._id ? { id: raw._id } : {}),
+    ...(raw.fromSections ? { fromSections: true } : {}),
     slug,
     locale,
     blocks: (raw.blocks ?? []) as unknown as ContentBlock[],
