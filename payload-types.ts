@@ -2343,6 +2343,10 @@ export interface PeopleWidgetBlock {
 export interface RegionMapBlock {
   title?: string | null;
   description?: string | null;
+  /**
+   * One newest story per region under the map. Turn off when a Community carousel on the same page already shows it.
+   */
+  showRegionStories?: boolean | null;
   chapter?: {
     /**
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
@@ -4625,6 +4629,7 @@ export interface PeopleWidgetBlockSelect<T extends boolean = true> {
 export interface RegionMapBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  showRegionStories?: T;
   chapter?:
     | T
     | {

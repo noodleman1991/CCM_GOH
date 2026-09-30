@@ -8,5 +8,15 @@ export const regionMap: Block = {
   interfaceName: "RegionMapBlock",
   labels: { singular: "Region map", plural: "Region maps" },
   admin: pickerAdmin("region-map", "Maps", "A world map of the hub's regions"),
-  fields: [localizedText("title", { label: "Title (optional)" }), localizedTextarea("description", { label: "Intro (optional)" })],
+  fields: [
+    localizedText("title", { label: "Title (optional)" }),
+    localizedTextarea("description", { label: "Intro (optional)" }),
+    {
+      name: "showRegionStories",
+      type: "checkbox",
+      label: "Show the latest from each region",
+      defaultValue: true,
+      admin: { description: "One newest story per region under the map. Turn off when a Community carousel on the same page already shows it." },
+    },
+  ],
 };

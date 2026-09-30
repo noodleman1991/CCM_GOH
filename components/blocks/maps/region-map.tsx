@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 type RegionMapProps = {
   title?: unknown;
   description?: unknown;
+  /** "Show the latest from each region" — on unless an editor turned it off. */
+  showRegionStories?: boolean;
   /** Legacy CMS props from the pre-unification block — still accepted so
    *  existing homepage docs keep validating, but the unified explorer always
    *  offers every facet (its chips carry live counts; hiding facets hid
@@ -32,6 +34,7 @@ type RegionMapProps = {
 export default async function RegionMapBlock({
   title,
   description,
+  showRegionStories = true,
   locale = "en",
 }: RegionMapProps) {
   const [themes, communities, regionArt] = await Promise.all([getThemeOptions(), getCommunityOptions(), getRegionArt()]);
@@ -66,7 +69,7 @@ export default async function RegionMapBlock({
               regions") — breadth the homepage doesn't have elsewhere; the
               fresh-content block already owns recency. showHeader off: the CMS
               block title above replaces the explorer's own "Atlas" h1. */}
-          <AtlasExplorer themes={themes} communities={communities} regionArt={regionArt} showBreakdown={false} recentVariant="highlights" showHeader={false} />
+          <AtlasExplorer themes={themes} communities={communities} regionArt={regionArt} showBreakdown={false} recentVariant={showRegionStories ? "highlights" : "none"} showHeader={false} />
         </Suspense>
       </div>
     </SectionContainer>

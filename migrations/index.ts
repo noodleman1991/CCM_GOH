@@ -20,6 +20,7 @@ import * as migration_20260930_153429_events_across_the_hub from './20260930_153
 import * as migration_20260930_180818_community_tagline from './20260930_180818_community_tagline';
 import * as migration_20260930_181925_community_carousel from './20260930_181925_community_carousel';
 import * as migration_20260930_191639_logo_wall from './20260930_191639_logo_wall';
+import * as migration_20260930_212354_region_map_stories_switch from './20260930_212354_region_map_stories_switch';
 
 export const migrations = [
   {
@@ -130,6 +131,11 @@ export const migrations = [
   {
     up: migration_20260930_191639_logo_wall.up,
     down: migration_20260930_191639_logo_wall.down,
-    name: '20260930_191639_logo_wall'
+    name: '20260930_191639_logo_wall',
+  },
+  {
+    up: migration_20260930_212354_region_map_stories_switch.up,
+    down: migration_20260930_212354_region_map_stories_switch.down,
+    name: '20260930_212354_region_map_stories_switch'
   },
 ];

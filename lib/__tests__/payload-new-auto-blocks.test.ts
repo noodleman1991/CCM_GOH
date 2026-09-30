@@ -41,6 +41,11 @@ describe("built-in automatic sections", () => {
     });
   });
 
+  it("passes the region map's 'latest from each region' switch — on unless an editor turned it off", () => {
+    expect(one({ id: "r", blockType: "regionMap", title: null, description: null })).toMatchObject({ showRegionStories: true });
+    expect(one({ id: "r", blockType: "regionMap", title: null, description: null, showRegionStories: false })).toMatchObject({ showRegionStories: false });
+  });
+
   it("drops an atlas whose region isn't one of the seven (the component needs a valid one)", () => {
     expect(one({ id: "a", blockType: "atlasEmbed", region: "xx", showBreakdown: true })).toBeUndefined();
     expect(one({ id: "a2", blockType: "atlasEmbed", region: "lac", showBreakdown: false })).toMatchObject({

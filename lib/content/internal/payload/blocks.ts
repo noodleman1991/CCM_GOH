@@ -993,6 +993,8 @@ function regionMapBlock(row: Row): Row {
     _key: blockKey(row),
     _type: "region-map",
     description: orNull(text(row.description)),
+    // Unset (every section saved before the switch existed) means on.
+    showRegionStories: row.showRegionStories !== false,
     title: orNull(text(row.title)),
   });
 }
