@@ -58,6 +58,6 @@ describe("CommunitySections", () => {
     expect(screen.getByTestId("menu").textContent).toBe(
       "overview=t:sectionTitles.overview,agendas=t:sectionTitles.agendas(2),members=t:sectionTitles.members",
     );
-    expect(resolve).toHaveBeenCalledWith({ kinds: ["newsPosts"] }, { locale: "en", communityId: "c1" });
+    expect(resolve).toHaveBeenCalledWith({ kinds: ["newsPosts"] }, { locale: "en", communityId: "c1", communityRegion: null });
   });
 });

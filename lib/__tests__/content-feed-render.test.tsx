@@ -76,7 +76,7 @@ describe("ContentFeed", () => {
 
   it("passes the page's language and community to the feed", async () => {
     resolve.mockResolvedValue({ items: [], skipped: [] });
-    await ContentFeed({ settings: { kinds: ["newsPosts"] }, locale: "ar", communityId: "c-1" });
-    expect(resolve).toHaveBeenCalledWith({ kinds: ["newsPosts"] }, { locale: "ar", communityId: "c-1" });
+    await ContentFeed({ settings: { kinds: ["newsPosts"] }, locale: "ar", communityId: "c-1", communityRegion: "oce" });
+    expect(resolve).toHaveBeenCalledWith({ kinds: ["newsPosts"] }, { locale: "ar", communityId: "c-1", communityRegion: "oce" });
   });
 });
