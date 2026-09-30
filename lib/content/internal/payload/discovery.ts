@@ -187,6 +187,7 @@ import type {
   EventFilter,
   EventInput,
   EventRsvpMeta,
+  MySuggestion,
   ForYouCandidateRow,
   ModerationSettings,
   NewsPostBlockItem,
@@ -1281,6 +1282,17 @@ function eventFields(patch: Partial<EventInput>): Record<string, unknown> {
     locationName: patch.locationName ?? undefined,
     url: patch.url ?? undefined,
     linkedProject: patch.scope === "project" ? patch.linkedProject ?? undefined : undefined,
+    origin: patch.origin ?? undefined,
+    organiserName: patch.organiserName ?? undefined,
+    // Payload's point is [longitude, latitude].
+    place: patch.place
+      ? {
+          text: patch.place.text ?? undefined,
+          point: patch.place.point ?? undefined,
+          precision: patch.place.precision ?? undefined,
+          countryCode: patch.place.countryCode ?? undefined,
+        }
+      : undefined,
   };
 }
 
@@ -1325,6 +1337,57 @@ export async function updateEvent(id: string, patch: Partial<EventInput>): Promi
   if (patch.regionalCommunityId) data.relatedCommunity = patch.regionalCommunityId;
   if (patch.relatedCollaboration) data.relatedCollaboration = patch.relatedCollaboration;
   await updateDocument({ collection: "events", id, locale: "en", data });
+}
+
+// ---------------------------------------------------------------------------
+// Member suggestions — the editors' controls and "Your suggestions"
+// ---------------------------------------------------------------------------
+
+/** `queryLive`: it gates a write, so no cache. A missing global means open, nobody blocked. */
+export async function getEventSuggestionSettings(): Promise<{ open: boolean; blocked: string[] }> {
+  const row = await queryLive<Row | null>({ type: "global", slug: "eventSuggestions", depth: 0 }).catch(() => null);
+  const blocked = Array.isArray(row?.blocked)
+    ? (row.blocked as unknown[]).flatMap((b) => {
+        const id = isRow(b) ? text(b.userId) : undefined;
+        return id ? [id] : [];
+      })
+    : [];
+  return { open: row?.open !== false, blocked };
+}
+
+/** `queryLive`: the cap of 5 counts what is waiting right now. */
+export async function countPendingEventSuggestions(userId: string): Promise<number> {
+  return queryLive<number>({
+    type: "count",
+    collection: "events",
+    where: and({ submittedBy: { equals: userId } }, { moderationStatus: { equals: "pending" } }),
+  });
+}
+
+const SUGGESTION_STATUSES = new Set(["pending", "approved", "revision", "rejected"]);
+
+/** `queryLive`: a member checking the outcome should see it at once. */
+export async function listMyEventSuggestions(userId: string): Promise<MySuggestion[]> {
+  const result = await queryLive<Paginated<Row>>({
+    type: "find",
+    collection: "events",
+    where: { submittedBy: { equals: userId } },
+    sort: "-createdAt",
+    pagination: false,
+    locale: "all",
+    depth: 0,
+  });
+  return result.docs.map((row) => {
+    const status = text(row.moderationStatus) ?? "pending";
+    return {
+      id: docId(row),
+      title: enArm(row.title) ?? text(row.title) ?? "",
+      startAt: isoDate(row.startAt) ?? null,
+      status: (SUGGESTION_STATUSES.has(status) ? status : "pending") as MySuggestion["status"],
+      reviewNotes: text(row.reviewNotes) ?? null,
+      slug: text(row.slug) ?? null,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------

@@ -848,6 +848,47 @@ export interface EventInput {
   /** Only set when present; never cleared on edit if omitted — mirrors the
    *  original route's `if (data.collaborationId) doc.relatedCollaboration = ...`. */
   relatedCollaboration?: string;
+  /** Who runs it (events spec §3.1). Omitted = CCM. */
+  origin?: "ccm" | "external";
+  /** The organiser's name when it isn't an organisation on the hub. */
+  organiserName?: string | null;
+  /** The shared place picker's value (in person / hybrid). */
+  place?: EventPlaceInput | null;
+}
+
+export interface EventPlaceInput {
+  text: string | null;
+  point: [number, number] | null;
+  precision: "exact" | "city" | "country" | "region" | null;
+  countryCode: string | null;
+}
+
+/** One of a member's own event suggestions, for "Your suggestions". */
+export interface MySuggestion {
+  id: string;
+  title: string;
+  startAt: string | null;
+  status: "pending" | "approved" | "revision" | "rejected";
+  reviewNotes: string | null;
+  slug: string | null;
+}
+
+/** The editors' switch and block list (the `eventSuggestions` global). Live — it gates a write. */
+export async function getEventSuggestionSettings(): Promise<{ open: boolean; blocked: string[] }> {
+  if (onPayload()) return payloadDiscovery.getEventSuggestionSettings();
+  return { open: true, blocked: [] };
+}
+
+/** How many of a member's suggestions are waiting for review. Live — it gates a write. */
+export async function countPendingEventSuggestions(userId: string): Promise<number> {
+  if (onPayload()) return payloadDiscovery.countPendingEventSuggestions(userId);
+  return 0;
+}
+
+/** A member's own suggestions, newest first, with the outcome and the team's note. */
+export async function listMyEventSuggestions(userId: string): Promise<MySuggestion[]> {
+  if (onPayload()) return payloadDiscovery.listMyEventSuggestions(userId);
+  return [];
 }
 
 /** The minimal existence+ownership gate the submit route checks before

@@ -36,6 +36,8 @@ export const LIMITS = {
     title: 160,
     description: 2000,
     locationName: 200,
+    placeText: 200,
+    organiserName: 160,
   },
   profile: {
     firstName: 50,

@@ -450,6 +450,14 @@
         "rateLimited": "You've sent this a few times in a row. Wait a minute and try again.",
         "notAllowed": "You can't edit this any more — it may already be published.",
         "signIn": "Your session has ended. Sign in again to continue — your work is saved."
+      },
+      "events": {
+        "paused": "Event suggestions are paused for now — please try again later.",
+        "blocked": "You can't suggest events at the moment.",
+        "tooMany": "You have 5 suggestions waiting — the team will look at those first.",
+        "websiteRequired": "Add the event's website — visitors go there for outside events.",
+        "startRequired": "Pick the day and time it starts",
+        "websiteFormat": "Paste the full web address, starting with https://"
       }
     },
     "whatsLeft": {

@@ -23,6 +23,12 @@ export const ERROR_KEYS = {
   formRateLimited: "form.rateLimited",
   formNotAllowed: "form.notAllowed",
   formSignIn: "form.signIn",
+  eventSuggestionsPaused: "events.paused",
+  eventSuggestionsBlocked: "events.blocked",
+  eventSuggestionsTooMany: "events.tooMany",
+  eventWebsiteRequired: "events.websiteRequired",
+  eventWebsiteFormat: "events.websiteFormat",
+  eventStartRequired: "events.startRequired",
 } as const;
 
 export type ErrorKey = (typeof ERROR_KEYS)[keyof typeof ERROR_KEYS];

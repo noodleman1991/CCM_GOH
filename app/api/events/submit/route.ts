@@ -1,19 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { eventSubmissionSchema } from "@/lib/validation/event";
-import { getEventEditGate, submitEvent, updateEvent, type EventInput } from "@/lib/content/discovery";
+import { eventSubmissionSchema, toEventPlace } from "@/lib/validation/event";
+import {
+  countPendingEventSuggestions,
+  getEventEditGate,
+  getEventSuggestionSettings,
+  submitEvent,
+  updateEvent,
+  type EventInput,
+} from "@/lib/content/discovery";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
-import { FEATURES } from "@/lib/features";
 import { captureAfterResponse } from "@/lib/analytics/server";
+import { formErrorResponse } from "@/lib/api/form-error";
+import { ERROR_KEYS } from "@/lib/validation/error-keys";
+import { suggestionRefusal, type SuggestionRefusal } from "@/lib/events/suggestion-guard";
+
+const REFUSAL: Record<Exclude<SuggestionRefusal, "signIn">, { key: (typeof ERROR_KEYS)[keyof typeof ERROR_KEYS]; status: number }> = {
+  paused: { key: ERROR_KEYS.eventSuggestionsPaused, status: 403 },
+  blocked: { key: ERROR_KEYS.eventSuggestionsBlocked, status: 403 },
+  tooMany: { key: ERROR_KEYS.eventSuggestionsTooMany, status: 429 },
+};
 
 /**
- * Member/project submission of an event. Creates a PENDING `event` for editor
- * review (mirrors the lived-experience flow). Only approved events are public;
- * status is forced to "pending" regardless of input.
+ * Member/project suggestion of an event. Creates a PENDING `event` for editor
+ * review. Only approved events are public; status is forced to "pending"
+ * regardless of input. Open to any signed-in member (events spec E1/E5) —
+ * behind the editors' switch, their block list and the cap of 5 waiting.
  */
 export async function POST(request: NextRequest) {
-  if (!FEATURES.engagement) return NextResponse.json({ error: "feature_disabled" }, { status: 403 });
   const limited = await rateLimitRequest(request, "event:submit", { limit: 5, windowSeconds: 600 });
   if (limited) return limited;
 
@@ -27,16 +42,19 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric });
+  }
+
+  // All three editor controls, checked here and nowhere else (spec §3.3).
+  const isEdit = Boolean((body as { editId?: unknown } | null)?.editId);
+  const [settings, pendingCount] = await Promise.all([getEventSuggestionSettings(), countPendingEventSuggestions(userId)]);
+  const refusal = suggestionRefusal({ userId, open: settings.open, blocked: settings.blocked, pendingCount, isEdit });
+  if (refusal && refusal !== "signIn") {
+    return formErrorResponse({ request, formKey: REFUSAL[refusal].key, status: REFUSAL[refusal].status });
   }
 
   const parsed = eventSubmissionSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Validation failed", details: parsed.error.flatten() },
-      { status: 400 }
-    );
-  }
+  if (!parsed.success) return formErrorResponse({ request, issues: parsed.error, input: body });
   const data = parsed.data;
 
   const fields: Omit<EventInput, "submittedBy"> = {
@@ -51,6 +69,9 @@ export async function POST(request: NextRequest) {
     linkedProject: data.scope === "project" ? data.linkedProject || null : null,
     regionalCommunityId: data.regionalCommunityId || undefined,
     relatedCollaboration: data.collaborationId || undefined,
+    origin: data.origin,
+    organiserName: data.origin === "external" ? data.organiserName || null : null,
+    place: data.mode === "online" ? null : toEventPlace(data.place),
   };
 
   try {
@@ -74,7 +95,7 @@ export async function POST(request: NextRequest) {
         isWorkspaceMember = !!row;
       }
       if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
-        return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
+        return formErrorResponse({ request, formKey: ERROR_KEYS.formNotAllowed, status: 403 });
       }
 
       await updateEvent(existing._id, fields);
@@ -111,6 +132,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, id: created.id });
   } catch (error) {
     console.error("Event submission failed:", error);
-    return NextResponse.json({ error: "Submission failed" }, { status: 500 });
+    return formErrorResponse({ request, formKey: ERROR_KEYS.formGeneric, status: 500 });
   }
 }

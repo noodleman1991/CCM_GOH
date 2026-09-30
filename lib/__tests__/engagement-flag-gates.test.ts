@@ -51,7 +51,6 @@ import { createCollaboration } from "@/lib/actions/collaboration";
 import { startConversation } from "@/lib/actions/messaging";
 import { requestContact } from "@/lib/actions/requests";
 import { setRsvp } from "@/lib/actions/rsvp";
-import { POST as submitEvent } from "@/app/api/events/submit/route";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -88,16 +87,6 @@ describe("engagement server actions with the flag off", () => {
   });
 });
 
-describe("POST /api/events/submit with the flag off", () => {
-  it("answers 403 feature_disabled", async () => {
-    const res = await submitEvent(
-      new NextRequest("http://localhost/api/events/submit", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ title: "x" }),
-      }),
-    );
-    expect(res.status).toBe(403);
-    expect(await res.json()).toEqual({ error: "feature_disabled" });
-  });
-});
+// POST /api/events/submit is no longer behind the flag: any signed-in member may
+// suggest an event (events spec E1/E5); its own guards are tested in
+// event-submit-route.test.ts.

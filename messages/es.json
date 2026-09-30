@@ -576,6 +576,14 @@
         "rateLimited": "Lo has enviado varias veces seguidas. Espera un minuto y vuelve a intentarlo.",
         "notAllowed": "Ya no puedes editar esto: puede que ya esté publicado.",
         "signIn": "Tu sesión ha terminado. Vuelve a iniciar sesión para continuar: tu trabajo está guardado."
+      },
+      "events": {
+        "paused": "Las sugerencias de eventos están en pausa por ahora; inténtalo más tarde.",
+        "blocked": "No puedes sugerir eventos en este momento.",
+        "tooMany": "Tienes 5 sugerencias en espera; el equipo las revisará primero.",
+        "websiteRequired": "Añade el sitio web del evento: los visitantes irán allí en los eventos externos.",
+        "startRequired": "Elige el día y la hora de inicio",
+        "websiteFormat": "Pega la dirección web completa, empezando por https://"
       }
     },
     "whatsLeft": {

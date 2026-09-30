@@ -576,6 +576,14 @@
         "rateLimited": "Vous l'avez envoyé plusieurs fois de suite. Attendez une minute et réessayez.",
         "notAllowed": "Vous ne pouvez plus modifier ceci : il est peut-être déjà publié.",
         "signIn": "Votre session a expiré. Reconnectez-vous pour continuer : votre travail est enregistré."
+      },
+      "events": {
+        "paused": "Les suggestions d'événements sont en pause pour le moment — réessayez plus tard.",
+        "blocked": "Vous ne pouvez pas suggérer d'événements pour le moment.",
+        "tooMany": "Vous avez 5 suggestions en attente — l'équipe les examinera d'abord.",
+        "websiteRequired": "Ajoutez le site de l'événement — les visiteurs s'y rendent pour les événements externes.",
+        "startRequired": "Choisissez le jour et l'heure de début",
+        "websiteFormat": "Collez l'adresse web complète, commençant par https://"
       }
     },
     "whatsLeft": {
