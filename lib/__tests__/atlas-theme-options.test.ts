@@ -39,11 +39,29 @@ describe("atlas filter options from real content", () => {
 });
 
 describe("the atlas tag condition", () => {
-  it("matches any theme and any community, both required when both are set", () => {
-    expect(tagFilterWhere({ themes: ["drought", "trauma"], communities: [] })).toEqual({ "tags.value": { in: ["drought", "trauma"] } });
-    expect(tagFilterWhere({ themes: ["drought"], communities: ["youth"] })).toEqual({ and: [{ "tags.value": { in: ["drought"] } }, { "tags.value": { in: ["youth"] } }] });
-    expect(tagFilterWhere({ themes: [], communities: [] })).toBeNull();
-    expect(tagFilterWhere("drought")).toEqual({ "tags.value": { in: ["drought"] } });
-    expect(tagFilterWhere(null)).toBeNull();
+  it("matches any theme, or any community, with one tag condition", async () => {
+    expect(await tagFilterWhere("caseStudies", { themes: ["drought", "trauma"], communities: [] })).toEqual({ "tags.value": { in: ["drought", "trauma"] } });
+    expect(await tagFilterWhere("caseStudies", { themes: [], communities: ["youth"] })).toEqual({ "tags.value": { in: ["youth"] } });
+    expect(await tagFilterWhere("caseStudies", "drought")).toEqual({ "tags.value": { in: ["drought"] } });
+    expect(await tagFilterWhere("caseStudies", { themes: [], communities: [] })).toBeNull();
+    expect(await tagFilterWhere("caseStudies", null)).toBeNull();
+    expect(query).not.toHaveBeenCalled();
+  });
+
+  // Payload joins the tags once per query, so two ANDed conditions on
+  // `tags.value` must hold on the SAME tag — never true for a theme and a
+  // community (dev DB: drought + farmers gave 0, not 1). The communities are
+  // resolved to item ids first.
+  it("with both set, resolves the communities to items first, then asks for a theme among them", async () => {
+    query.mockResolvedValue({ docs: [{ id: "cs-1" }, { id: "cs-7" }] });
+    expect(await tagFilterWhere("caseStudies", { themes: ["drought"], communities: ["farmers"] })).toEqual({
+      and: [{ "tags.value": { in: ["drought"] } }, { id: { in: ["cs-1", "cs-7"] } }],
+    });
+    expect(query).toHaveBeenCalledWith(expect.objectContaining({ collection: "caseStudies", where: { "tags.value": { in: ["farmers"] } } }));
+  });
+
+  it("with both set and no item in those communities, matches nothing", async () => {
+    query.mockResolvedValue({ docs: [] });
+    expect(await tagFilterWhere("caseStudies", { themes: ["drought"], communities: ["farmers"] })).toEqual({ id: { exists: false } });
   });
 });

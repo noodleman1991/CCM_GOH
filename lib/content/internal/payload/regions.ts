@@ -474,14 +474,28 @@ function moderationWhere(shape: TypeShape): Where | null {
  *  string is the old single theme, still accepted from older links. */
 export type TagFilter = string | { themes: string[]; communities: string[] } | null | undefined;
 
-/** Any chosen theme AND any chosen community — a join onto the tag's slug column. */
-export function tagFilterWhere(filter: TagFilter): Where | null {
+/**
+ * Any chosen theme AND any chosen community — a join onto the tag's slug column.
+ *
+ * Payload joins the tags once per query, so two ANDed `tags.value` conditions
+ * must hold on the SAME tag, which a theme and a community never do. With both
+ * chosen, the communities are resolved to item ids first.
+ */
+export async function tagFilterWhere(collection: CollectionSlug, filter: TagFilter): Promise<Where | null> {
   const { themes, communities } = typeof filter === "string" ? { themes: filter ? [filter] : [], communities: [] } : (filter ?? { themes: [], communities: [] });
-  const parts: Where[] = [];
-  if (themes.length) parts.push({ "tags.value": { in: themes } });
-  if (communities.length) parts.push({ "tags.value": { in: communities } });
-  if (parts.length === 0) return null;
-  return parts.length === 1 ? parts[0] : { and: parts };
+  if (!themes.length && !communities.length) return null;
+  if (!communities.length) return { "tags.value": { in: themes } };
+  if (!themes.length) return { "tags.value": { in: communities } };
+  const inCommunities = await query<Paginated<{ id?: unknown }>>({
+    type: "find",
+    collection,
+    depth: 0,
+    pagination: false,
+    where: { "tags.value": { in: communities } },
+    select: { id: true },
+  });
+  const ids = (inCommunities?.docs ?? []).map((d) => String(d.id));
+  return ids.length ? { and: [{ "tags.value": { in: themes } }, { id: { in: ids } }] } : MATCHES_NOTHING;
 }
 
 /** A `Where` no row satisfies. Every document has an id. */
@@ -509,14 +523,14 @@ function regionWhere(
   return branches.length === 1 ? branches[0] : { or: branches };
 }
 
-function whereFor(
+async function whereFor(
   shape: TypeShape,
   params: {
     theme?: TagFilter;
     region?: { region: string; slug: string; regionCountries: string[] };
   },
-): Where | undefined {
-  const parts = [moderationWhere(shape), tagFilterWhere(params.theme)].filter((w): w is Where => w !== null);
+): Promise<Where | undefined> {
+  const parts = [moderationWhere(shape), await tagFilterWhere(shape.collection, params.theme)].filter((w): w is Where => w !== null);
   if (params.region) parts.push(regionWhere(shape, params.region));
   if (parts.length === 0) return undefined;
   return parts.length === 1 ? parts[0] : { and: parts };
@@ -704,7 +718,7 @@ async function rows(
     // and an image field to its media row.
     depth: 1,
     pagination: false,
-    where: whereFor(shape, { theme: opts.theme, region: opts.region }),
+    where: await whereFor(shape, { theme: opts.theme, region: opts.region }),
     select: selectFor(shape, opts.select),
   });
 
