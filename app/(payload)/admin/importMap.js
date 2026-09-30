@@ -23,11 +23,11 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { ModerationActions as ModerationActions_57f9ce9aedc9389a0e52a58f32510b64 } from '@/payload/components/moderation-actions'
 import { SectionRowLabel as SectionRowLabel_a3836b4cc6000e04c6e944bb5c15f7a7 } from '@/payload/components/section-row-label'
 import { FeedPreview as FeedPreview_b30692c4dc1487013c633e1aa29d8f29 } from '@/payload/components/feed-preview'
 import { SectionFocus as SectionFocus_c928c5604af8f6bcfb1f70f4325f8de9 } from '@/payload/components/section-focus'
 import { LeadPicker as LeadPicker_72ace8e6e197fc51142c6f19a5458a61 } from '@/payload/components/lead-picker'
+import { ModerationActions as ModerationActions_57f9ce9aedc9389a0e52a58f32510b64 } from '@/payload/components/moderation-actions'
 import { ReportIssue as ReportIssue_7563ac9ec89234b97cf5859415a7095d } from '@/payload/components/report-issue'
 import { BrandIcon as BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { BrandLogo as BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
@@ -64,11 +64,11 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UnderlineFeatureClient": UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  "@/payload/components/moderation-actions#ModerationActions": ModerationActions_57f9ce9aedc9389a0e52a58f32510b64,
   "@/payload/components/section-row-label#SectionRowLabel": SectionRowLabel_a3836b4cc6000e04c6e944bb5c15f7a7,
   "@/payload/components/feed-preview#FeedPreview": FeedPreview_b30692c4dc1487013c633e1aa29d8f29,
   "@/payload/components/section-focus#SectionFocus": SectionFocus_c928c5604af8f6bcfb1f70f4325f8de9,
   "@/payload/components/lead-picker#LeadPicker": LeadPicker_72ace8e6e197fc51142c6f19a5458a61,
+  "@/payload/components/moderation-actions#ModerationActions": ModerationActions_57f9ce9aedc9389a0e52a58f32510b64,
   "@/payload/components/report-issue#ReportIssue": ReportIssue_7563ac9ec89234b97cf5859415a7095d,
   "@/payload/components/brand-logo#BrandIcon": BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/brand-logo#BrandLogo": BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31,

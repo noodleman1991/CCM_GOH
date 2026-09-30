@@ -75,10 +75,25 @@ describe("resolveContentFeed", () => {
     expect(where).not.toContain("atlantis");
   });
 
-  it("skips kinds with no region when a region filter is set", async () => {
+  it("matches a region through the item's community too, so events and agendas aren't dropped", async () => {
     query.mockResolvedValue({ docs: [] });
     await resolveContentFeed({ kinds: ["events", "agendas", "newsPosts"], filters: { regions: ["ssa"] } }, { locale: "en" });
-    expect(calls().map((d) => d.collection)).toEqual(["newsPosts"]);
+    expect(calls().map((d) => d.collection).sort()).toEqual(["agendas", "events", "newsPosts"]);
+    expect(whereOf("events")).toContain('"relatedCommunity.region":{"in":["ssa"]}');
+    expect(whereOf("agendas")).toContain('"regionalCommunities.region":{"in":["ssa"]}');
+    const news = whereOf("newsPosts");
+    expect(news).toContain('"or":[');
+    expect(news).toContain('"region":{"in":["ssa"]}');
+    expect(news).toContain('"relatedCommunity.region":{"in":["ssa"]}');
+  });
+
+  it("filters by the Communities (audience) tags, leaving out kinds with no tags", async () => {
+    query.mockResolvedValue({ docs: [] });
+    await resolveContentFeed({ kinds: ["caseStudies", "events"], filters: { audienceTagIds: ["aud-1"], tagIds: ["t-1"] } }, { locale: "en" });
+    expect(calls().map((d) => d.collection)).toEqual(["caseStudies"]);
+    const where = whereOf("caseStudies");
+    expect(where).toContain('"tags":{"in":["aud-1"]}');
+    expect(where).toContain('"tags":{"in":["t-1"]}');
   });
 
   it("limits events to upcoming ones when asked", async () => {

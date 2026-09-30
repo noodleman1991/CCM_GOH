@@ -25,6 +25,8 @@ export interface FeedPick {
 export interface FeedFilters {
   regions: string[];
   communityIds: string[];
+  /** "Communities" in the editor: audience tags (Indigenous communities, Youth, Fisher people…). */
+  audienceTagIds: string[];
   tagIds: string[];
   organizationIds: string[];
   featuredOnly: boolean;

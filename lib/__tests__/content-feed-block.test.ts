@@ -45,6 +45,14 @@ describe("content feed section (admin)", () => {
     expect(await picks.validate!([{ relationTo: "caseStudies", value: "unpublished-id" }], {})).toBe(true);
   });
 
+  it("offers one Region filter, a Communities filter of audience tags, and Themes without them", () => {
+    const f = (name: string) => field("filters")!.fields!.find((x) => x.name === name) as AnyField & { label?: string; filterOptions?: unknown; relationTo?: string; hasMany?: boolean };
+    expect(f("regions")).toMatchObject({ label: "Region", hasMany: true });
+    expect((f("communities")?.admin as { hidden?: boolean } | undefined)?.hidden).toBe(true);
+    expect(f("audiences")).toMatchObject({ label: "Communities", type: "relationship", relationTo: "tags", hasMany: true, filterOptions: { category: { equals: "audience" } } });
+    expect(f("tags")).toMatchObject({ label: "Themes", filterOptions: { category: { not_equals: "audience" } } });
+  });
+
   it("tells editors events have no featured flag", () => {
     const featured = field("filters")!.fields!.find((f) => f.name === "featuredOnly");
     expect(featured?.admin?.description).toBe("Events have no featured flag, so they won't appear when this is on.");
@@ -76,7 +84,7 @@ describe("content feed section (site)", () => {
           { relationTo: "caseStudies", value: "c2" },
           { relationTo: "caseStudies", value: null },
         ],
-        filters: { regions: ["ssa"], communities: [{ id: "rc1" }, "rc2"], tags: [{ id: "t1" }], organizations: [{ id: "o9" }, "o8"], featuredOnly: false, upcomingOnly: false },
+        filters: { regions: ["ssa"], communities: [{ id: "rc1" }, "rc2"], audiences: [{ id: "a1" }], tags: [{ id: "t1" }], organizations: [{ id: "o9" }, "o8"], featuredOnly: false, upcomingOnly: false },
         sort: "newest",
         count: 4,
         layout: "carousel",
@@ -93,7 +101,7 @@ describe("content feed section (site)", () => {
         { kind: "newsPosts", id: "n1" },
         { kind: "caseStudies", id: "c2" },
       ],
-      filters: { regions: ["ssa"], communityIds: ["rc1", "rc2"], tagIds: ["t1"], organizationIds: ["o9", "o8"], featuredOnly: false, upcomingOnly: false },
+      filters: { regions: ["ssa"], communityIds: ["rc1", "rc2"], audienceTagIds: ["a1"], tagIds: ["t1"], organizationIds: ["o9", "o8"], featuredOnly: false, upcomingOnly: false },
       sort: "newest",
       count: 4,
       layout: "carousel",

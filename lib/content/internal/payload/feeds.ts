@@ -176,14 +176,20 @@ function filterWhere(kind: FeedKind, filters: FeedFilters, ctx: FeedContext): Wh
   const config = KINDS[kind];
   const parts: Where[] = [baseWhere(config)];
   if (filters.regions.length > 0) {
-    if (!config.region) return null;
-    parts.push({ [config.region]: { in: filters.regions } });
+    // A region matches on the item's own region OR its community's region, so
+    // kinds that only link a community (events, agendas) aren't dropped.
+    const paths = [...new Set([config.region, `${config.community}.region`].filter((p): p is string => Boolean(p)))];
+    parts.push(paths.length === 1 ? { [paths[0]]: { in: filters.regions } } : { or: paths.map((p) => ({ [p]: { in: filters.regions } })) });
   }
   const communities = filters.communityIds.length > 0 ? filters.communityIds : ctx.communityId ? [ctx.communityId] : [];
   if (communities.length > 0) parts.push({ [config.community]: { in: communities } });
   if (filters.tagIds.length > 0) {
     if (!config.tags) return null;
     parts.push({ [config.tags]: { in: filters.tagIds } });
+  }
+  if (filters.audienceTagIds.length > 0) {
+    if (!config.tags) return null;
+    parts.push({ [config.tags]: { in: filters.audienceTagIds } });
   }
   if (filters.organizationIds.length > 0) {
     if (!config.organizations) return null;

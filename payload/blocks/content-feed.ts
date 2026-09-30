@@ -88,9 +88,34 @@ export const contentFeed: Block = {
       type: "group",
       admin: { description: "Leave these empty to show everything that matches. They don't apply to your picks." },
       fields: [
-        { name: "regions", label: "Region", type: "select", hasMany: true, options: REGION_OPTIONS },
-        { name: "communities", label: "Community", type: "relationship", relationTo: "regionalCommunities", hasMany: true },
-        { name: "tags", label: "Themes and tags", type: "relationship", relationTo: "tags", hasMany: true },
+        {
+          name: "regions",
+          label: "Region",
+          type: "select",
+          hasMany: true,
+          options: REGION_OPTIONS,
+          admin: { description: "Pick one or more. Matches items from that region or linked to its regional community." },
+        },
+        // Merged into Region (2026-09-30); hidden but still honoured for feeds that already use it.
+        { name: "communities", label: "Regional community (old)", type: "relationship", relationTo: "regionalCommunities", hasMany: true, admin: { hidden: true } },
+        {
+          name: "audiences",
+          label: "Communities",
+          type: "relationship",
+          relationTo: "tags",
+          hasMany: true,
+          filterOptions: { category: { equals: "audience" } },
+          admin: { description: "Pick one or more — e.g. Indigenous communities, Youth, Fisher people. New ones appear when added as audience tags." },
+        },
+        {
+          name: "tags",
+          label: "Themes",
+          type: "relationship",
+          relationTo: "tags",
+          hasMany: true,
+          filterOptions: { category: { not_equals: "audience" } },
+          admin: { description: "Pick one or more." },
+        },
         {
           name: "organizations",
           label: "Organisation",
