@@ -301,13 +301,14 @@ function useViewAllLabel() {
 export function RegionContentCards({
   region,
   facet,
-  theme,
+  tags = "",
   q,
   when,
 }: {
   region: string;
   facet: string;
-  theme?: string | null;
+  /** The `&themes=…&communities=…` fragment (lib/maps/tag-filter.ts). */
+  tags?: string;
   q?: string;
   when?: string | null;
 }) {
@@ -315,7 +316,7 @@ export function RegionContentCards({
   const viewAllLabel = useViewAllLabel();
   // Theme/q/when ride along so the cards always show the same filtered set the
   // choropleth counts describe (count↔cards consistency).
-  const filterQS = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${encodeURIComponent(when)}` : ""}`;
+  const filterQS = `${tags}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${encodeURIComponent(when)}` : ""}`;
   const { data, isLoading } = useSWR<{ items: Item[] }>(
     `/api/maps/region-items?region=${region}&facet=${facet}${filterQS}`,
     jsonFetcher,
@@ -336,12 +337,13 @@ export function RegionContentCards({
  * homepage's fresh-content block already owns recency.
  */
 export function RegionHighlightsCards({
-  theme,
+  tags = "",
   q,
   when,
   facets,
 }: {
-  theme?: string | null;
+  /** The `&themes=…&communities=…` fragment (lib/maps/tag-filter.ts). */
+  tags?: string;
   q?: string;
   when?: string | null;
   facets?: string | null;
@@ -349,7 +351,7 @@ export function RegionHighlightsCards({
   const t = useCardLabels();
   const tRegions = useTranslations("navigation.regions");
   // Theme/q/when/facets ride along — same trust contract as RecentEverywhereCards.
-  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
+  const fq = `${tags}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
   const { data, isLoading } = useSWR<{ items: Item[] }>(
     `/api/maps/region-items?mode=highlights${fq}`,
     jsonFetcher,
@@ -393,13 +395,14 @@ export function RegionHighlightsCards({
  */
 export function RecentEverywhereCards({
   limit = 6,
-  theme,
+  tags = "",
   q,
   when,
   facets,
 }: {
   limit?: number;
-  theme?: string | null;
+  /** The `&themes=…&communities=…` fragment (lib/maps/tag-filter.ts). */
+  tags?: string;
   q?: string;
   when?: string | null;
   /** Active "Show" layer ids, comma-joined — narrows the strip to the types
@@ -409,7 +412,7 @@ export function RecentEverywhereCards({
   const t = useCardLabels();
   // Theme/q/when/facets ride along so the strip lists exactly what the counts
   // and pins describe (trust contract — it previously ignored active filters).
-  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
+  const fq = `${tags}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
   const { data, isLoading } = useSWR<{ items: Item[] }>(
     `/api/maps/region-items?region=all&limit=${limit}${fq}`,
     jsonFetcher,

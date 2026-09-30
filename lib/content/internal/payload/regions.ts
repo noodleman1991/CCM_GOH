@@ -175,45 +175,80 @@ function geoPoint(value: unknown): { lat: number; lng: number } | null {
 // Theme options
 // ---------------------------------------------------------------------------
 
-interface ThemeTagRow {
+
+/** Atlas collections whose tags feed the Themes and Communities options. */
+const TAGGED_SHAPES = ["caseStudy", "livedExperience", "newsPost", "researchOutput"] as const;
+const COMMON_SHARE = 0.9;
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+interface OptionTagRow {
+  id?: unknown;
   value?: string | null;
-  label?: LocalizedRaw;
+  label?: Partial<Record<PayloadLocale, string | null>> | null;
+  category?: string | null;
 }
 
 /**
- * The CMS-driven theme facet: any `tag` flagged `useAsTheme`, ordered by the
- * tag's `orderRank`. Returns whatever it finds — the fallback to
- * `FALLBACK_THEMES` for an empty result belongs to `regions.ts`, where it is
- * shared with the Sanity path and with `safe()`'s failure fallback.
- *
- * The four-key label object is built explicitly, key by key, rather than
- * copied: the GROQ twin does the same, and `toEqual` against a three-key
- * object is not the same assertion.
+ * The atlas's filter options, from the tags content actually carries (spec
+ * 2026-09-30): a tag is offered when at least one approved item on the atlas
+ * uses it, and not when nearly every item does (over 90% can't narrow
+ * anything). Topic and impact tags are Themes; audience tags are Communities.
+ * No fixed fallback list — nothing tagged means no option.
  */
-export async function getThemeOptions(): Promise<ThemeOption[]> {
-  const result = await query<Paginated<ThemeTagRow>>({
-    type: "find",
-    collection: "tags",
-    locale: "all",
-    depth: 0,
-    pagination: false,
-    sort: "orderRank",
-    where: { useAsTheme: { equals: true } },
-    select: { value: true, label: true },
-  });
-  return (result?.docs ?? [])
-    .filter((row): row is { value: string; label: Partial<Record<PayloadLocale, string | null>> } => {
-      return typeof row?.value === "string" && row.value.length > 0 && row.label != null && typeof row.label === "object";
-    })
-    .map((row) => ({
-      slug: row.value,
+async function usedTagOptions(categories: readonly string[]): Promise<ThemeOption[]> {
+  const [tags, ...perCollection] = await Promise.all([
+    query<Paginated<OptionTagRow>>({
+      type: "find",
+      collection: "tags",
+      locale: "all",
+      depth: 0,
+      pagination: false,
+      select: { value: true, label: true, category: true },
+    }),
+    ...TAGGED_SHAPES.map((key) =>
+      query<Paginated<{ tags?: unknown }>>({
+        type: "find",
+        collection: SHAPES[key].collection,
+        depth: 0,
+        pagination: false,
+        where: moderationWhere(SHAPES[key]) ?? undefined,
+        select: { tags: true },
+      }),
+    ),
+  ]);
+  const uses = new Map<string, number>();
+  let items = 0;
+  for (const result of perCollection) {
+    for (const doc of result?.docs ?? []) {
+      items += 1;
+      const ids = new Set((Array.isArray(doc.tags) ? doc.tags : []).map((t) => String(isObj(t) ? t.id : t)));
+      for (const id of ids) uses.set(id, (uses.get(id) ?? 0) + 1);
+    }
+  }
+  return (tags?.docs ?? [])
+    .filter((row) => typeof row.value === "string" && row.value.length > 0 && categories.includes(row.category ?? ""))
+    .map((row) => ({ row, count: uses.get(String(row.id)) ?? 0 }))
+    .filter(({ count }) => count > 0 && !(items > 4 && count / items > COMMON_SHARE))
+    .sort((x, y) => y.count - x.count || String(x.row.label?.en ?? x.row.value).localeCompare(String(y.row.label?.en ?? y.row.value)))
+    .map(({ row }) => ({
+      slug: row.value as string,
       label: {
-        en: text(row.label.en) ?? undefined,
-        es: text(row.label.es) ?? undefined,
-        fr: text(row.label.fr) ?? undefined,
-        ar: text(row.label.ar) ?? undefined,
+        en: text(row.label?.en) ?? undefined,
+        es: text(row.label?.es) ?? undefined,
+        fr: text(row.label?.fr) ?? undefined,
+        ar: text(row.label?.ar) ?? undefined,
       },
     }));
+}
+
+/** Themes: topic and impact tags in use. */
+export async function getThemeOptions(): Promise<ThemeOption[]> {
+  return usedTagOptions(["topic", "impact"]);
+}
+
+/** Communities: audience tags in use (Indigenous communities, Youth, Fisher people…). */
+export async function getCommunityOptions(): Promise<ThemeOption[]> {
+  return usedTagOptions(["audience"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -435,9 +470,18 @@ function moderationWhere(shape: TypeShape): Where | null {
   return null;
 }
 
-/** `$themeSlug in tags[]->value.current` — a join onto the tag's slug column. */
-function themeWhere(theme: string | null | undefined): Where | null {
-  return theme ? { "tags.value": { equals: theme } } : null;
+/** The atlas's tag choice: Themes and Communities (spec 2026-09-30). A bare
+ *  string is the old single theme, still accepted from older links. */
+export type TagFilter = string | { themes: string[]; communities: string[] } | null | undefined;
+
+/** Any chosen theme AND any chosen community — a join onto the tag's slug column. */
+export function tagFilterWhere(filter: TagFilter): Where | null {
+  const { themes, communities } = typeof filter === "string" ? { themes: filter ? [filter] : [], communities: [] } : (filter ?? { themes: [], communities: [] });
+  const parts: Where[] = [];
+  if (themes.length) parts.push({ "tags.value": { in: themes } });
+  if (communities.length) parts.push({ "tags.value": { in: communities } });
+  if (parts.length === 0) return null;
+  return parts.length === 1 ? parts[0] : { and: parts };
 }
 
 /** A `Where` no row satisfies. Every document has an id. */
@@ -468,11 +512,11 @@ function regionWhere(
 function whereFor(
   shape: TypeShape,
   params: {
-    theme?: string | null;
+    theme?: TagFilter;
     region?: { region: string; slug: string; regionCountries: string[] };
   },
 ): Where | undefined {
-  const parts = [moderationWhere(shape), themeWhere(params.theme)].filter((w): w is Where => w !== null);
+  const parts = [moderationWhere(shape), tagFilterWhere(params.theme)].filter((w): w is Where => w !== null);
   if (params.region) parts.push(regionWhere(shape, params.region));
   if (parts.length === 0) return undefined;
   return parts.length === 1 ? parts[0] : { and: parts };
@@ -641,7 +685,7 @@ function regionKeyOf(row: Record<string, unknown>, shape: TypeShape): string | n
 async function rows(
   type: string,
   opts: {
-    theme?: string | null;
+    theme?: TagFilter;
     q: string;
     when: WhenFilter;
     region?: { region: string; slug: string; regionCountries: string[] };
@@ -683,7 +727,7 @@ function newestFirst<T extends { date: string | null }>(list: T[], limit: number
 
 export async function getRegionHighlightItems(
   type: string,
-  params: { theme: string; q: string; when: WhenFilter },
+  params: { theme: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionHighlightItemRow[]> {
   const shape = SHAPES[type];
   const candidates = await rows(type, { ...params, requireGeotag: true, select: { card: true } });
@@ -696,7 +740,7 @@ export async function getRegionHighlightItems(
 
 export async function getRegionRecentItems(
   type: string,
-  params: { theme: string; q: string; when: WhenFilter; limit: number },
+  params: { theme: TagFilter; q: string; when: WhenFilter; limit: number },
 ): Promise<RegionItemRow[]> {
   const shape = SHAPES[type];
   const candidates = await rows(type, { ...params, requireGeotag: true, select: { card: true } });
@@ -706,7 +750,7 @@ export async function getRegionRecentItems(
 
 export async function getRegionFacetItems(
   type: string,
-  params: { region: string; slug: string; regionCountries: string[]; theme: string; q: string; when: WhenFilter },
+  params: { region: string; slug: string; regionCountries: string[]; theme: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionItemRow[]> {
   const shape = SHAPES[type];
   const candidates = await rows(type, {
@@ -726,7 +770,7 @@ export async function getRegionFacetItems(
 
 export async function getRegionPinRows(
   type: FacetContentType,
-  params: { region: string; slug: string; regionCountries: string[]; themeSlug: string | null; q: string; when: WhenFilter },
+  params: { region: string; slug: string; regionCountries: string[]; themeSlug: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionPinRow[]> {
   const shape = SHAPES[type];
   const candidates = await rows(type, {
@@ -776,7 +820,7 @@ export async function getRegionPinRows(
 
 export async function getRegionFacetCounts(
   type: FacetContentType,
-  params: { theme: string | null; q: string; when: WhenFilter },
+  params: { theme: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionFacetCountRow[]> {
   const shape = SHAPES[type];
   const candidates = await rows(type, {

@@ -18,6 +18,7 @@ import {
   type FacetId, type RegionDatumWithBreakdown, type ThemeOption,
 } from '@/lib/maps/region-facets'
 import type { PinCluster, PinItem } from '@/lib/maps/cluster-pins'
+import { pickTagFilter, tagQuery } from '@/lib/maps/tag-filter'
 import { parseWhen, type WhenBucket } from '@/lib/maps/date-filter'
 import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
 import { useRouter, usePathname } from '@/i18n/navigation'
@@ -74,9 +75,13 @@ function groupClusterItems(cluster: PinCluster) {
  * set (count per active layer) instead of a separate caption bar.
  * `lockedRegion` renders the region-scoped embed variant (spec A4).
  */
+/** A stable empty list, so the default doesn't change on every render. */
+const NO_OPTIONS: ThemeOption[] = []
+
 export function AtlasExplorer({
   lockedRegion,
   themes,
+  communities = NO_OPTIONS,
   recentVariant = 'everywhere',
   showHeader = true,
   regionArt,
@@ -84,6 +89,8 @@ export function AtlasExplorer({
 }: {
   lockedRegion?: RegionCode
   themes: ThemeOption[]
+  /** Communities (audience tags content uses), spec 2026-09-30. */
+  communities?: ThemeOption[]
   /** Regional-spotlight banner art per region (server-fetched community
    *  welcome-hero images) — regions absent from the map use the gradient +
    *  silhouette fallback. */
@@ -103,6 +110,7 @@ export function AtlasExplorer({
 } = { themes: [] }) {
   const t = useTranslations('map')
   const tAtlas = useTranslations('atlas')
+  const tFilters = useTranslations('filters')
   const tRegions = useTranslations('navigation.regions')
   const locale = useLocale()
   const router = useRouter()
@@ -118,11 +126,16 @@ export function AtlasExplorer({
     [searchParams]
   )
   const layerSet = useMemo(() => new Set(layers), [layers])
-  // `theme` URL param holds a tag SLUG (CMS-driven); validated against the
-  // passed `themes` list — an unrecognized slug is ignored rather than 400ing
-  // the whole page.
-  const rawTheme = searchParams.get('theme') ?? ''
-  const theme: string | null = themes.some((th) => th.slug === rawTheme) ? rawTheme : null
+  // Themes and Communities (spec 2026-09-30): tag slugs from the tags content
+  // actually uses, several allowed; the old single `theme` link still works.
+  // Unrecognized slugs are dropped rather than 400ing the page.
+  const tagFilter = useMemo(
+    () => pickTagFilter(new URLSearchParams(searchParams.toString()), new Set(themes.map((th) => th.slug)), new Set(communities.map((c) => c.slug))),
+    [searchParams, themes, communities]
+  )
+  const tagQS = tagQuery(tagFilter)
+  // The follow button follows one theme, so it shows when exactly one is chosen.
+  const theme: string | null = tagFilter.themes.length === 1 ? tagFilter.themes[0] : null
   const rawRegion = lockedRegion ?? searchParams.get('region') ?? ''
   const selected: RegionCode | null = isRegionCode(rawRegion) ? rawRegion : null
   const q = (searchParams.get('q') ?? '').slice(0, 100)
@@ -166,6 +179,12 @@ export function AtlasExplorer({
     [router, pathname, searchParams]
   )
 
+  const toggleTag = (key: 'themes' | 'communities', slug: string) => {
+    const current = tagFilter[key]
+    const next = current.includes(slug) ? current.filter((s) => s !== slug) : [...current, slug]
+    setParams({ [key]: next.join(',') || null, theme: null })
+  }
+
   const toggleLayer = (id: FacetId) => {
     const next = nextLayers(layers, id)
     const isDefault = next.length === DEFAULT_LAYERS.length && DEFAULT_LAYERS.every((d) => next.includes(d))
@@ -175,7 +194,7 @@ export function AtlasExplorer({
 
   // ── Data ───────────────────────────────────────────────────────────────────
   const facetsQS = layers.join(',')
-  const dataKey = `/api/maps/region-data?facets=${facetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
+  const dataKey = `/api/maps/region-data?facets=${facetsQS}${tagQS}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
   const { data } = useSWR<{ facets: FacetId[]; data: RegionDatumWithBreakdown[] }>(dataKey, jsonFetcher, {
     revalidateOnFocus: false, dedupingInterval: 60000,
   })
@@ -185,7 +204,7 @@ export function AtlasExplorer({
   // facet row is informative before anything is clicked. One counts-only fetch
   // across ALL facets, theme/q-aware so the numbers always match the filters.
   const allFacetsQS = FACETS.map((f) => f.id).join(',')
-  const totalsKey = `/api/maps/region-data?facets=${allFacetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
+  const totalsKey = `/api/maps/region-data?facets=${allFacetsQS}${tagQS}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
   const { data: totalsData } = useSWR<{
     data: RegionDatumWithBreakdown[]
     /** GLOBAL per-facet counts (no region predicate) — includes docs with no
@@ -222,7 +241,7 @@ export function AtlasExplorer({
   // world map read as an empty atlas).
   const pinFacets = layers.filter((l) => CARD_FACETS.has(l))
   const pinsKey = pinFacets.length > 0
-    ? `/api/maps/region-pins?region=${effectiveRegion ?? 'all'}&locale=${locale}&facets=${pinFacets.join(',')}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
+    ? `/api/maps/region-pins?region=${effectiveRegion ?? 'all'}&locale=${locale}&facets=${pinFacets.join(',')}${tagQS}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
     : null
   const { data: pinsData } = useSWR<{
     pins: PinCluster[]
@@ -353,13 +372,13 @@ export function AtlasExplorer({
           })}
         </FilterRow>
         {themes.length > 0 && (
-          <FilterRow label={tAtlas('theme')}>
+          <FilterRow label={tFilters('themes')}>
             {themes.map((th) => (
               <FilterChip
                 key={th.slug}
                 label={labelForTheme(th)}
-                active={theme === th.slug}
-                onClick={() => setParams({ theme: theme === th.slug ? null : th.slug })}
+                active={tagFilter.themes.includes(th.slug)}
+                onClick={() => toggleTag('themes', th.slug)}
               />
             ))}
             {/* The first (and so far only) THEME follow surface — feeds the
@@ -373,6 +392,18 @@ export function AtlasExplorer({
                 followLabel={tAtlas('followTheme')}
               />
             )}
+          </FilterRow>
+        )}
+        {communities.length > 0 && (
+          <FilterRow label={tFilters('communities')}>
+            {communities.map((c) => (
+              <FilterChip
+                key={c.slug}
+                label={labelForTheme(c)}
+                active={tagFilter.communities.includes(c.slug)}
+                onClick={() => toggleTag('communities', c.slug)}
+              />
+            ))}
           </FilterRow>
         )}
         <FilterRow label={tAtlas('when')}>
@@ -574,7 +605,7 @@ export function AtlasExplorer({
           singleFacet={Boolean(singleFacet && destinationHref)}
           singleCardFacet={singleCardFacet}
           cardFacetsQS={cardFacetsQS}
-          theme={theme}
+          tags={tagQS}
           q={q}
           when={when}
           facetLabelFor={(id) => {
@@ -599,8 +630,8 @@ export function AtlasExplorer({
                 {recentVariant === 'highlights' ? tAtlas('aroundTheRegions') : tAtlas('latestEverywhere')}
               </h2>
               {recentVariant === 'highlights'
-                ? <RegionHighlightsCards theme={theme} q={q} when={when} facets={facetsQS} />
-                : <RecentEverywhereCards limit={6} theme={theme} q={q} when={when} facets={facetsQS} />}
+                ? <RegionHighlightsCards tags={tagQS} q={q} when={when} facets={facetsQS} />
+                : <RecentEverywhereCards limit={6} tags={tagQS} q={q} when={when} facets={facetsQS} />}
             </div>
           )}
         </section>

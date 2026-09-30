@@ -5,7 +5,7 @@ import SectionContainer from "@/components/ui/section-container";
 import { heading } from "@/lib/design-tokens";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { getRegionArt } from "@/lib/maps/region-art";
-import { getThemeOptions } from "@/lib/maps/themes";
+import { getCommunityOptions, getThemeOptions } from "@/lib/maps/themes";
 import { cn } from "@/lib/utils";
 
 type RegionMapProps = {
@@ -34,7 +34,7 @@ export default async function RegionMapBlock({
   description,
   locale = "en",
 }: RegionMapProps) {
-  const [themes, regionArt] = await Promise.all([getThemeOptions(), getRegionArt()]);
+  const [themes, communities, regionArt] = await Promise.all([getThemeOptions(), getCommunityOptions(), getRegionArt()]);
   const supported = (locale || "en") as "en" | "es" | "fr" | "ar";
   const localizedTitle =
     typeof title === "string" ? title : getLocalizedField(title as never, supported, "");
@@ -66,7 +66,7 @@ export default async function RegionMapBlock({
               regions") — breadth the homepage doesn't have elsewhere; the
               fresh-content block already owns recency. showHeader off: the CMS
               block title above replaces the explorer's own "Atlas" h1. */}
-          <AtlasExplorer themes={themes} regionArt={regionArt} showBreakdown={false} recentVariant="highlights" showHeader={false} />
+          <AtlasExplorer themes={themes} communities={communities} regionArt={regionArt} showBreakdown={false} recentVariant="highlights" showHeader={false} />
         </Suspense>
       </div>
     </SectionContainer>

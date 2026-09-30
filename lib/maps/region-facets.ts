@@ -124,34 +124,6 @@ export interface ThemeOption {
   label: Record<"en" | "es" | "fr" | "ar", string | undefined>;
 }
 
-/**
- * Hardcoded fallback, used only when the CMS has no tag flagged
- * `useAsTheme` (see `lib/maps/themes.ts::getThemeOptions`) — taxonomy is
- * CMS-driven; this is an explicit degraded-mode fallback, not the source of
- * truth. IMPORTANT: because theme matching is now an exact slug match
- * (`$themeSlug in tags[]->value.current`), these fallback options only
- * surface content actually tagged with a `tag` document whose slug equals
- * one of these 4 values — they no longer do substring matching against tag
- * titles. That's an acceptable degradation for a fallback path.
- */
-export const FALLBACK_THEMES: ThemeOption[] = [
-  {
-    slug: "displacement",
-    label: { en: "Displacement", es: "Desplazamiento", fr: "Déplacement", ar: "النزوح" },
-  },
-  {
-    slug: "livelihoods",
-    label: { en: "Livelihoods", es: "Medios de vida", fr: "Moyens de subsistance", ar: "سُبل العيش" },
-  },
-  {
-    slug: "youth",
-    label: { en: "Youth", es: "Juventud", fr: "Jeunesse", ar: "الشباب" },
-  },
-  {
-    slug: "indigenous",
-    label: { en: "Indigenous", es: "Pueblos indígenas", fr: "Peuples autochtones", ar: "الشعوب الأصلية" },
-  },
-];
 
 /** `FacetId` → the Sanity content type it counts (mirrors the server-side
  *  `FACET_TO_TYPE` in `app/api/maps/region-pins/route.ts`) — used client-side

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { REGION_CODES, RC_SLUG_TO_REGION, isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
 import { aggregateRegionData, FACET_TO_CONTENT_TYPE, parseLayers, type FacetId } from "@/lib/maps/region-facets";
-import { getThemeOptions } from "@/lib/maps/themes";
+import { readTagFilter } from "@/lib/maps/tag-filter-param";
+import type { TagFilter } from "@/lib/content/regions";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
 import { isoToRegion } from "@/lib/maps/iso-to-region";
 import { getRegionFacetCounts } from "@/lib/content/regions";
@@ -25,7 +26,7 @@ function emptyCounts(): Record<string, number> {
  */
 async function countsForFacet(
   facet: FacetId,
-  theme: string | null,
+  theme: TagFilter,
   q: string,
   when: WhenFilter
 ): Promise<{ byRegion: Record<string, number>; total: number }> {
@@ -98,15 +99,8 @@ export async function GET(req: NextRequest) {
   const legacyFacet = sp.get("facet");
   const facets = parseLayers(facetsParam ?? legacyFacet);
 
-  const themeParam = sp.get("theme");
-  let theme: string | null = null;
-  if (themeParam) {
-    const themeOptions = await getThemeOptions();
-    if (!themeOptions.some((t) => t.slug === themeParam)) {
-      return NextResponse.json({ error: "Unknown theme" }, { status: 400 });
-    }
-    theme = themeParam;
-  }
+  // Themes + Communities from the tags content uses; unknown values are dropped (spec 2026-09-30).
+  const theme: TagFilter = await readTagFilter(sp);
 
   const qParam = sp.get("q") ?? "";
   if (qParam.length > 100) {

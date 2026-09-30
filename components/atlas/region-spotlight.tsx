@@ -75,7 +75,7 @@ export function RegionSpotlight({
   singleFacet,
   singleCardFacet,
   cardFacetsQS,
-  theme,
+  tags = "",
   q,
   when,
   facetLabelFor,
@@ -96,7 +96,8 @@ export function RegionSpotlight({
   singleFacet: boolean
   singleCardFacet?: FacetId | null
   cardFacetsQS?: string | null
-  theme?: string | null
+  /** The `&themes=…&communities=…` fragment (lib/maps/tag-filter.ts). */
+  tags?: string
   q?: string
   when?: string | null
   facetLabelFor: (id: FacetId) => string
@@ -233,10 +234,10 @@ export function RegionSpotlight({
           {total > 0 ? (
             <>
               {singleFacet && singleCardFacet && (
-                <RegionContentCards region={region} facet={singleCardFacet} theme={theme} q={q} when={when} />
+                <RegionContentCards region={region} facet={singleCardFacet} tags={tags} q={q} when={when} />
               )}
               {!singleFacet && cardFacetsQS && (
-                <RegionContentCards region={region} facet={cardFacetsQS} theme={theme} q={q} when={when} />
+                <RegionContentCards region={region} facet={cardFacetsQS} tags={tags} q={q} when={when} />
               )}
             </>
           ) : (

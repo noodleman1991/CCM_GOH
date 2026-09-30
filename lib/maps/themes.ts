@@ -4,4 +4,4 @@
 // app/api/maps/region-pins/route.ts, app/api/maps/region-data/route.ts,
 // components/blocks/maps/region-map.tsx, components/blocks/maps/atlas-embed.tsx)
 // keep their import path unchanged.
-export { getThemeOptions } from "@/lib/content/regions";
+export { getCommunityOptions, getThemeOptions } from "@/lib/content/regions";

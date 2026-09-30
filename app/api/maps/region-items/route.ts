@@ -3,6 +3,7 @@ import { isRegionCode, RC_SLUG_TO_REGION, REGION_CODES as REGION_CODES_ORDER, RE
 import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
 import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
 import { getRegionFacetItems, getRegionHighlightItems, getRegionRecentItems, type RegionHighlightItemRow } from "@/lib/content/regions";
+import { readTagFilter } from "@/lib/maps/tag-filter-param";
 import { interleaveByType } from "@/lib/maps/interleave";
 
 // Content for a selected region/facet(s), as cards for the Atlas panel (D2, E1).
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
     // Same theme/q/when facets as counts and pins (trust contract, user
     // 2026-08-05) — and country-coded docs belong since the country-pin
     // amendment made them pinnable.
-    const hlTheme = req.nextUrl.searchParams.get("theme") || "";
+    const hlTheme = await readTagFilter(req.nextUrl.searchParams);
     const hlQ = req.nextUrl.searchParams.get("q") || "";
     const hlWhen = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
     const hlTypes = typesForFacetParam(req.nextUrl.searchParams.get("facet"));
@@ -104,7 +105,7 @@ export async function GET(req: NextRequest) {
     // zeroed the map while the gallery kept showing unfiltered items (user
     // 2026-08-05). Membership also widened to country-coded docs: since the
     // country-pin amendment they pin and count, so they belong here too.
-    const recentTheme = req.nextUrl.searchParams.get("theme") || "";
+    const recentTheme = await readTagFilter(req.nextUrl.searchParams);
     const recentQ = req.nextUrl.searchParams.get("q") || "";
     const recentWhen = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
     // Active "Show" layers narrow the type set (user 2026-08-05: the strip
@@ -146,7 +147,7 @@ export async function GET(req: NextRequest) {
   // doc with a backfilled country but no community ref still matches.
   const regionCountries = alpha3sForRegion(region);
 
-  const theme = req.nextUrl.searchParams.get("theme") || "";
+  const theme = await readTagFilter(req.nextUrl.searchParams);
   const q = req.nextUrl.searchParams.get("q") || "";
   // "When" date facet — same bound-param predicate the map counts use, so the
   // cards list exactly the documents the counts describe.

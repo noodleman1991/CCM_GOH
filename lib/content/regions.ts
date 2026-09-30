@@ -7,7 +7,12 @@ import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/map
 import type { WhenFilter } from "@/lib/maps/date-filter";
 import type { RegionCode } from "@/lib/maps/region-codes";
 import { RC_SLUG_TO_REGION } from "@/lib/maps/region-codes";
-import { FALLBACK_THEMES, type ThemeOption } from "@/lib/maps/region-facets";
+import type { ThemeOption } from "@/lib/maps/region-facets";
+import type { TagFilter } from "@/lib/content/internal/payload/regions";
+export type { TagFilter } from "@/lib/content/internal/payload/regions";
+
+/** The Sanity branch only knows one theme: the first of the chosen themes. */
+const legacyTheme = (f: TagFilter): string | null => (typeof f === "string" ? f : (f?.themes[0] ?? null));
 import type { FacetContentType } from "@/lib/maps/cluster-pins";
 
 /**
@@ -61,17 +66,17 @@ interface RawThemeTagRow {
 }
 
 /**
- * Server-side fetch of the CMS-driven Atlas theme facet: any `tag` document
- * flagged `useAsTheme` becomes a selectable theme, ordered by the tag's
- * orderRank. Falls back to `FALLBACK_THEMES` (see lib/maps/region-facets.ts)
- * when the CMS has none flagged, or when the fetch itself fails — the Atlas
- * theme facet should never hard-fail the page.
+ * The Atlas's Themes: topic and impact tags that content on the atlas actually
+ * uses (spec 2026-09-30). No fixed fallback list — if nothing is tagged, or the
+ * read fails, the atlas simply shows no Themes row; it never hard-fails.
  */
 export async function getThemeOptions(): Promise<ThemeOption[]> {
-  return safe("region-themes", FALLBACK_THEMES, async () => {
-    const options = onPayload() ? await payloadRegions.getThemeOptions() : await sanityThemeOptions();
-    return options.length > 0 ? options : FALLBACK_THEMES;
-  });
+  return safe("region-themes", [], async () => (onPayload() ? await payloadRegions.getThemeOptions() : await sanityThemeOptions()));
+}
+
+/** The Atlas's Communities: audience tags content uses (Payload only; the old store had none). */
+export async function getCommunityOptions(): Promise<ThemeOption[]> {
+  return safe("region-communities", [], async () => (onPayload() ? await payloadRegions.getCommunityOptions() : []));
 }
 
 async function sanityThemeOptions(): Promise<ThemeOption[]> {
@@ -202,11 +207,11 @@ export interface RegionHighlightItemRow extends RegionItemRow {
  */
 export async function getRegionHighlightItems(
   type: string,
-  params: { theme: string; q: string; when: WhenFilter },
+  params: { theme: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionHighlightItemRow[]> {
   if (onPayload()) return payloadRegions.getRegionHighlightItems(type, params);
   return query<RegionHighlightItemRow[]>(
-    `*[_type == $type${statusFilter(type)}${themeFilter(params.theme)}${qFilter(params.q)}${params.when.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
+    `*[_type == $type${statusFilter(type)}${themeFilter(legacyTheme(params.theme))}${qFilter(params.q)}${params.when.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
       "id": _id,
       "type": _type,
       "title": coalesce(title.en, title, ""),
@@ -229,11 +234,11 @@ export async function getRegionHighlightItems(
  */
 export async function getRegionRecentItems(
   type: string,
-  params: { theme: string; q: string; when: WhenFilter; limit: number },
+  params: { theme: TagFilter; q: string; when: WhenFilter; limit: number },
 ): Promise<RegionItemRow[]> {
   if (onPayload()) return payloadRegions.getRegionRecentItems(type, params);
   return query<RegionItemRow[]>(
-    `*[_type == $type${statusFilter(type)}${themeFilter(params.theme)}${qFilter(params.q)}${params.when.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${params.limit}]{
+    `*[_type == $type${statusFilter(type)}${themeFilter(legacyTheme(params.theme))}${qFilter(params.q)}${params.when.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${params.limit}]{
       "id": _id,
       "type": _type,
       "title": coalesce(title.en, title, ""),
@@ -255,11 +260,11 @@ export async function getRegionRecentItems(
  */
 export async function getRegionFacetItems(
   type: string,
-  params: { region: string; slug: string; regionCountries: string[]; theme: string; q: string; when: WhenFilter },
+  params: { region: string; slug: string; regionCountries: string[]; theme: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionItemRow[]> {
   if (onPayload()) return payloadRegions.getRegionFacetItems(type, params);
   return query<RegionItemRow[]>(
-    `*[_type == $type${statusFilter(type)}${regionMatchFilter()}${themeFilter(params.theme)}${qFilter(params.q)}${params.when.filter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
+    `*[_type == $type${statusFilter(type)}${regionMatchFilter()}${themeFilter(legacyTheme(params.theme))}${qFilter(params.q)}${params.when.filter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
       "id": _id,
       "type": _type,
       "title": coalesce(title.en, title, ""),
@@ -322,11 +327,11 @@ function regionPinPlaceProjection(type: FacetContentType): string {
  */
 export async function getRegionPinRows(
   type: FacetContentType,
-  params: { region: string; slug: string; regionCountries: string[]; themeSlug: string | null; q: string; when: WhenFilter },
+  params: { region: string; slug: string; regionCountries: string[]; themeSlug: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionPinRow[]> {
   if (onPayload()) return payloadRegions.getRegionPinRows(type, params);
   return query<RegionPinRow[]>(
-    `*[_type == $type${statusFilter(type)}${regionMatchFilter(params.region === "all" ? "all" : "region")}${themeFilter(params.themeSlug)}${qFilter(params.q)}${params.when.filter}]{
+    `*[_type == $type${statusFilter(type)}${regionMatchFilter(params.region === "all" ? "all" : "region")}${themeFilter(legacyTheme(params.themeSlug))}${qFilter(params.q)}${params.when.filter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${regionPinPlaceProjection(type)}
     }`,
     {
@@ -367,10 +372,10 @@ export interface RegionFacetCountRow {
  */
 export async function getRegionFacetCounts(
   type: FacetContentType,
-  params: { theme: string | null; q: string; when: WhenFilter },
+  params: { theme: TagFilter; q: string; when: WhenFilter },
 ): Promise<RegionFacetCountRow[]> {
   if (onPayload()) return payloadRegions.getRegionFacetCounts(type, params);
-  const filters = statusFilter(type) + themeFilter(params.theme) + qFilter(params.q);
+  const filters = statusFilter(type) + themeFilter(legacyTheme(params.theme)) + qFilter(params.q);
   return query<RegionFacetCountRow[]>(
     `*[_type == "${type}"${filters}${params.when.filter}]{
            "code": region,

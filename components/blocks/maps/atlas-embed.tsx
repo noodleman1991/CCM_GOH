@@ -6,7 +6,7 @@ import { AtlasExplorer } from '@/components/atlas/atlas-explorer'
 import { Link } from '@/i18n/navigation'
 import { isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
 import { getRegionArt } from '@/lib/maps/region-art'
-import { getThemeOptions } from '@/lib/maps/themes'
+import { getCommunityOptions, getThemeOptions } from '@/lib/maps/themes'
 
 /**
  * Server wrapper for the region-scoped atlas (spec A4). The country breakdown
@@ -21,7 +21,7 @@ export default async function AtlasEmbedBlock({
 }) {
   if (!region || !isRegionCode(region)) return null
   const t = await getTranslations('atlas')
-  const [themes, regionArt] = await Promise.all([getThemeOptions(), getRegionArt()])
+  const [themes, communities, regionArt] = await Promise.all([getThemeOptions(), getCommunityOptions(), getRegionArt()])
 
   return (
     <SectionContainer>
@@ -38,7 +38,7 @@ export default async function AtlasEmbedBlock({
             <ArrowRight className="ms-1 inline size-4 rtl:-scale-x-100" aria-hidden="true" />
           </Link>
         </div>
-        <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} regionArt={regionArt} showBreakdown={showBreakdown} />
+        <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} communities={communities} regionArt={regionArt} showBreakdown={showBreakdown} />
       </div>
     </SectionContainer>
   )

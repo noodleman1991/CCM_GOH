@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aggregateRegionData, atlasDestination, DEFAULT_LAYERS, FACETS, FALLBACK_THEMES, parseLayers, type FacetId } from "../region-facets";
+import { aggregateRegionData, atlasDestination, DEFAULT_LAYERS, FACETS, parseLayers, type FacetId } from "../region-facets";
 import { REGION_CODES } from "../region-codes";
 
 const zero = () =>
@@ -46,17 +46,6 @@ describe("aggregateRegionData", () => {
 });
 
 describe("themes + destinations", () => {
-  it("defines the four fallback theme slugs", () => {
-    expect(FALLBACK_THEMES.map((t) => t.slug)).toEqual(["displacement", "livelihoods", "youth", "indigenous"]);
-  });
-  it("gives every fallback theme a label in all 4 locales", () => {
-    for (const theme of FALLBACK_THEMES) {
-      expect(theme.label.en).toBeTruthy();
-      expect(theme.label.es).toBeTruthy();
-      expect(theme.label.fr).toBeTruthy();
-      expect(theme.label.ar).toBeTruthy();
-    }
-  });
   it("routes each facet to its listing", () => {
     expect(atlasDestination("caseStudyCount", "sub-saharan-africa"))
       .toBe("/research-and-action/case-studies?communities=sub-saharan-africa");

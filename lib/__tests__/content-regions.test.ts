@@ -26,7 +26,6 @@ import {
   getRegionPinRows,
   getRegionFacetCounts,
 } from "@/lib/content/regions";
-import { FALLBACK_THEMES } from "@/lib/maps/region-facets";
 import type { WhenFilter } from "@/lib/maps/date-filter";
 
 const mockQuery = vi.mocked(query);
@@ -76,15 +75,15 @@ describe("getThemeOptions", () => {
     expect(result[0].slug).toBe("indigenous");
   });
 
-  it("falls back to FALLBACK_THEMES when the source returns no valid rows", async () => {
+  it("offers no themes — no fixed list — when the source returns no valid rows", async () => {
     mockQuery.mockResolvedValue([]);
-    await expect(getThemeOptions()).resolves.toEqual(FALLBACK_THEMES);
+    await expect(getThemeOptions()).resolves.toEqual([]);
   });
 
-  it("falls back to FALLBACK_THEMES (degrades) when the source fails", async () => {
+  it("offers no themes (degrades quietly) when the source fails", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     mockQuery.mockRejectedValue(new Error("402 plan_limit_reached"));
-    await expect(getThemeOptions()).resolves.toEqual(FALLBACK_THEMES);
+    await expect(getThemeOptions()).resolves.toEqual([]);
   });
 
   it("uses query, not queryPreviewable — the original called client.fetch directly", async () => {
@@ -310,58 +309,8 @@ function payloadDocs(...docs: Record<string, unknown>[]): void {
   mockPayloadQuery.mockResolvedValue({ docs });
 }
 
-describe("the same contract, answered by Payload — getThemeOptions", () => {
-  it("maps valid rows to ThemeOption[]", async () => {
-    onPayload();
-    payloadDocs({ value: "displacement", label: { en: "Displacement", es: "Desplazamiento" } });
-    await expect(getThemeOptions()).resolves.toEqual([
-      { slug: "displacement", label: { en: "Displacement", es: "Desplazamiento", fr: undefined, ar: undefined } },
-    ]);
-  });
-
-  it("filters out rows with no slug or no label", async () => {
-    onPayload();
-    payloadDocs(
-      { value: null, label: { en: "No slug" } },
-      { value: "youth", label: null },
-      { value: "indigenous", label: { en: "Indigenous" } },
-    );
-    const result = await getThemeOptions();
-    expect(result).toHaveLength(1);
-    expect(result[0].slug).toBe("indigenous");
-  });
-
-  it("falls back to FALLBACK_THEMES when the source returns no valid rows", async () => {
-    onPayload();
-    payloadDocs();
-    await expect(getThemeOptions()).resolves.toEqual(FALLBACK_THEMES);
-  });
-
-  it("falls back to FALLBACK_THEMES (degrades) when the source fails", async () => {
-    onPayload();
-    vi.spyOn(console, "error").mockImplementation(() => {});
-    mockPayloadQuery.mockRejectedValue(new Error("connection terminated"));
-    await expect(getThemeOptions()).resolves.toEqual(FALLBACK_THEMES);
-  });
-
-  it("uses query, not queryPreviewable — the same primitive the Sanity twin picks", async () => {
-    onPayload();
-    payloadDocs();
-    await getThemeOptions();
-    expect(mockPayloadQuery).toHaveBeenCalledTimes(1);
-    expect(mockPayloadQueryPreviewable).not.toHaveBeenCalled();
-    expect(mockQuery).not.toHaveBeenCalled();
-  });
-
-  it("asks only for tags flagged useAsTheme", async () => {
-    onPayload();
-    payloadDocs();
-    await getThemeOptions();
-    expect(mockPayloadQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ collection: "tags", where: { useAsTheme: { equals: true } } }),
-    );
-  });
-});
+// Payload's getThemeOptions / getCommunityOptions now come from the tags content
+// actually uses (spec 2026-09-30) — see lib/__tests__/atlas-theme-options.test.ts.
 
 describe("the same contract, answered by Payload — getRegionArt", () => {
   const heroWith = (url: string, lqip: string | null) => ({
@@ -560,7 +509,8 @@ describe("the same contract, answered by Payload — the five atlas reads", () =
         where: {
           and: [
             { moderationStatus: { equals: "approved" } },
-            { "tags.value": { equals: "youth" } },
+            // One theme is "any of [youth]" since the tag filter carries lists (2026-09-30).
+            { "tags.value": { in: ["youth"] } },
             {
               or: [
                 { region: { equals: "oce" } },

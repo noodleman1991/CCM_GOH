@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { AtlasExplorer } from "@/components/atlas/atlas-explorer";
 import { getRegionArt } from "@/lib/maps/region-art";
-import { getThemeOptions } from "@/lib/maps/themes";
+import { getCommunityOptions, getThemeOptions } from "@/lib/maps/themes";
 import { getHubIllustrations } from "@/lib/content/illustrations";
 import { HeaderIllustration } from "@/components/ui/header-illustration";
 
@@ -22,8 +22,9 @@ export async function generateMetadata({
 }
 
 export default async function AtlasPage() {
-  const [themes, regionArt, { atlasHeader }] = await Promise.all([
+  const [themes, communities, regionArt, { atlasHeader }] = await Promise.all([
     getThemeOptions(),
+    getCommunityOptions(),
     getRegionArt(),
     getHubIllustrations(),
   ]);
@@ -45,7 +46,7 @@ export default async function AtlasPage() {
       )}
       <div className={atlasHeader ? "pe-20 sm:pe-28 lg:pe-40" : undefined}>
         <Suspense fallback={null}>
-          <AtlasExplorer themes={themes} regionArt={regionArt} />
+          <AtlasExplorer themes={themes} communities={communities} regionArt={regionArt} />
         </Suspense>
       </div>
     </div>

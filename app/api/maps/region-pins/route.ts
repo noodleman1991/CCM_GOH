@@ -6,7 +6,8 @@ import frLocale from "i18n-iso-countries/langs/fr.json";
 import arLocale from "i18n-iso-countries/langs/ar.json";
 import { isRegionCode, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
 import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
-import { getThemeOptions } from "@/lib/maps/themes";
+import { readTagFilter } from "@/lib/maps/tag-filter-param";
+import type { TagFilter } from "@/lib/content/regions";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
 import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
 import { projectPoint } from "@/lib/maps/project-point";
@@ -53,7 +54,7 @@ async function fetchRowsForType(
   type: FacetContentType,
   region: string,
   slug: string,
-  themeSlug: string | null,
+  themeSlug: TagFilter,
   q: string,
   when: WhenFilter
 ): Promise<RegionPinRow[]> {
@@ -79,7 +80,6 @@ export async function GET(req: NextRequest) {
   const facetsParam = sp.get("facets");
   const legacyFacet = sp.get("facet");
   const facets = parseLayers(facetsParam ?? legacyFacet);
-  const theme = sp.get("theme");
   const q = (sp.get("q") ?? "").slice(0, 100).trim();
 
   // `region=all` = the global (no-selection) map: every region's geotagged
@@ -95,11 +95,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ pins: [], countries: [] }, { status: 400 });
   }
 
-  let themeSlug: string | null = null;
-  if (theme) {
-    const themeOptions = await getThemeOptions();
-    if (themeOptions.some((t) => t.slug === theme)) themeSlug = theme;
-  }
+  // Themes + Communities from the tags content uses; unknown values are dropped (spec 2026-09-30).
+  const themeSlug: TagFilter = await readTagFilter(sp);
 
   const when = whenFilter(parseWhen(sp.get("when")), new Date());
 
