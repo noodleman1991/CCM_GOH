@@ -1711,7 +1711,7 @@ export interface Tag {
    */
   color?: string | null;
   /**
-   * Show this tag as a Theme filter on the Atlas and other discovery surfaces.
+   * Retired — filters now come from the tags content carries.
    */
   useAsTheme?: boolean | null;
   /**

@@ -447,3 +447,17 @@ One migration: `20260929_150919_community_leads` — two new tables for the lead
    3. Opening another community, a page or the homepage by address is refused.
    4. On the site, their community page shows **Edit this section**; other communities don't.
 6. Removing a lead: take them out of **Community leads** and **Publish** — they return to a normal member at once.
+
+## 2026-09-30 one filter system
+
+What shipped (spec `docs/superpowers/specs/2026-09-30-filters-from-real-content-design.md`):
+- **Every list filters the same way.** Case studies, news, lived experiences, research outputs (new) and the atlas share one bar: **Region**, **Communities** (audience tags), **Themes** (topic and impact tags), **When**, plus search. Several choices per row; choices in a row match any, rows combine. Each choice shows how many items it finds, and only choices that find something are offered — a tag nearly every item carries (e.g. the lived experiences' four generic tags) is left out because it can't narrow anything.
+- **Themes come from the tags content carries.** The fixed atlas list (Displacement, Livelihoods, Youth, Indigenous) is gone, and the tag editor's "use as theme" tick is hidden (its data is kept). To add a theme, tag content with a topic or impact tag.
+- **Old links keep working.** `?tags=`, `?theme=`, `?topics=` become Themes or Communities by the tag's kind; `?regions=` and `?communities=<community page>` become Region. An unknown value is ignored rather than an error.
+- **Needs tags** on the admin home: per content type, how many items visitors can see have no Themes and how many no Communities tag, each linking to exactly those items. Tagging them is editorial — nothing is tagged automatically.
+
+Nothing to run on production: no migration, no script. After the deploy:
+1. `/en/atlas`: the Themes and Communities rows list real tags with counts; "Livelihoods" is gone.
+2. `/en/research-and-action/case-studies?themes=drought`: the chip's count equals the results shown.
+3. An old link, e.g. `/en/news?tags=<a tag>`, still filters.
+4. `/admin` (staff): **Needs tags** lists research outputs and agendas (untagged today); a link opens those items.
