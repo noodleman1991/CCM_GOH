@@ -110,3 +110,22 @@ export function externalToFilterable(source: NewsLike, locale: string): Filterab
     text: textOf(locale, source.title, source.excerpt),
   };
 }
+
+type LivedLike = {
+  id: string;
+  title?: unknown;
+  publishedAt?: string | null;
+  region?: { slug?: string | null } | null;
+  rawRegion?: unknown;
+  tags?: unknown;
+};
+
+export function livedExperienceToFilterable(story: LivedLike, locale: string): FilterableItem {
+  return {
+    id: story.id,
+    tags: toFilterTags(story.tags),
+    regions: regionsOf(story.region?.slug, typeof story.rawRegion === "string" ? story.rawRegion : null),
+    date: story.publishedAt ?? null,
+    text: textOf(locale, story.title),
+  };
+}

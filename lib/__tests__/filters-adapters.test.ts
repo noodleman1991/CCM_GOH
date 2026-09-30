@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { caseStudyToFilterable, externalToFilterable, newsToFilterable, regionsOf, toFilterTags } from "@/lib/filters/adapters";
+import { caseStudyToFilterable, externalToFilterable, livedExperienceToFilterable, newsToFilterable, regionsOf, toFilterTags } from "@/lib/filters/adapters";
 
 describe("filter adapters", () => {
   it("reads tags whether the slug is a string or a slug object", () => {
@@ -44,5 +44,14 @@ describe("filter adapters", () => {
   it("turns an external source into a filterable item", () => {
     const item = externalToFilterable({ _id: "e1", title: { en: "Eco-anxiety" }, excerpt: null, publishedAt: "2026-03-25T00:00:00.000Z", communitySlug: null, tags: null } as never, "en");
     expect(item).toEqual({ id: "e1", tags: [], regions: [], date: "2026-03-25T00:00:00.000Z", text: { en: "Eco-anxiety" } });
+  });
+  it("turns a lived experience into a filterable item, region from its community or a legacy code", () => {
+    expect(
+      livedExperienceToFilterable(
+        { id: "l1", title: { en: "Sunday's story" }, publishedAt: "2025-06-01", region: { id: "rc", slug: "oceania", name: {} }, rawRegion: null, tags: [{ id: "t", value: "storytelling", category: "topic", label: { en: "Storytelling" } }] } as never,
+        "en",
+      ),
+    ).toEqual({ id: "l1", tags: [{ slug: "storytelling", category: "topic", label: { en: "Storytelling" } }], regions: ["oce"], date: "2025-06-01", text: { en: "Sunday's story" } });
+    expect(livedExperienceToFilterable({ id: "l2", title: "x", region: null, rawRegion: "ssa", tags: [] } as never, "en").regions).toEqual(["ssa"]);
   });
 });

@@ -222,6 +222,7 @@ interface TagRow {
   label?: LocalizedRaw;
   value?: string | null;
   color?: string | null;
+  category?: string | null;
 }
 
 /** A `regionalCommunities` relationship populated to depth >= 1. */
@@ -238,7 +239,7 @@ function isRow(value: unknown): value is Record<string, unknown> {
 }
 
 /** `tags[]->{ _id, label, "value": value.current, color }`. */
-function tagProjection(rows: unknown): { _id: string; label?: Localized; value?: string; color?: string }[] {
+function tagProjection(rows: unknown): { _id: string; label?: Localized; value?: string; color?: string; category?: string }[] {
   if (!Array.isArray(rows)) return [];
   return rows.filter(isRow).map((row) => {
     const tag = row as unknown as TagRow;
@@ -249,7 +250,9 @@ function tagProjection(rows: unknown): { _id: string; label?: Localized; value?:
       label: orNull(localized(tag.label)),
       value: orNull(text(tag.value)),
       color: orNull(text(tag.color)),
-    } as { _id: string; label?: Localized; value?: string; color?: string };
+      // For the shared filters (Communities vs Themes), 2026-09-30.
+      category: orNull(text(tag.category)),
+    } as { _id: string; label?: Localized; value?: string; color?: string; category?: string };
   });
 }
 
@@ -286,6 +289,7 @@ interface IndexVideoRow {
   thumbnail?: { asset?: unknown } | null;
   region?: unknown;
   createdAt?: unknown;
+  publishedAt?: unknown;
 }
 
 /**
@@ -372,8 +376,9 @@ export async function getLivedExperienceIndex(): Promise<LivedExperienceIndex> {
         format: orNull(text(row.format) as LivedExperienceIndex["videos"][number]["format"]),
         videoUrl: orNull(text(row.videoUrl)),
         thumbnailUrl: orNull(text(asset?.url)),
-        tags: tagProjection(row.tags).map((t) => ({ id: t._id, label: t.label ?? {}, value: t.value, color: t.color })),
+        tags: tagProjection(row.tags).map((t) => ({ id: t._id, label: t.label ?? {}, value: t.value, color: t.color, category: t.category ?? null })),
         region: region ? { id: region._id, name: region.name ?? {}, slug: region.slug ?? "" } : null,
+        publishedAt: orNull(isoDate(row.publishedAt)),
         // The undereferenced field, in the shape Sanity emits it in — including
         // its key ORDER, which Sanity serializes alphabetically (`_ref` before
         // `_type`) and which reaches the flight payload verbatim. See header.

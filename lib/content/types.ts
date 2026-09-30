@@ -61,6 +61,8 @@ export interface ContentTag {
    */
   value?: string;
   color?: string;
+  /** The tag's kind (topic, impact, audience, location, method), when the reader includes it. */
+  category?: string | null;
 }
 
 export interface ContentRegion {

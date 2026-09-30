@@ -27,6 +27,7 @@ export interface LivedExperience {
   region: ContentRegion | null;
   /** Legacy docs stored region as a bare short code, so `region->` is null. */
   rawRegion?: unknown;
+  publishedAt?: string | null;
 }
 
 export interface LivedExperienceIndex {

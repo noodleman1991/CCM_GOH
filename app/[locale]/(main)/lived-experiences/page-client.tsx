@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { FilterBar } from '@/components/filters/filter-bar'
+import { isFiltering, type ActiveFilters, type FilterOptions } from '@/lib/filters/core'
 import { useTranslations } from 'next-intl'
 import { Video } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
@@ -14,125 +14,31 @@ import Image from "next/image";
 import SectionContainer from "@/components/ui/section-container";
 import { ScrollRow } from "@/components/ui/scroll-row";
 import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-card";
-import { ContentFilters } from "@/components/ui/content-filters";
 import type { LivedExperience } from "@/lib/content/lived-experiences";
-import type { ContentRegion, ContentTag } from "@/lib/content/types";
 
 interface LivedExperiencesPageClientProps {
-  initialCommunityVideos: Record<string, LivedExperience[]>
-  communities: ContentRegion[]
-  allTags: ContentTag[]
+  /** Already filtered on the server by the shared engine, grouped by community. */
+  communityVideos: Record<string, LivedExperience[]>
   locale: string
-  initialSearch: string
-  initialFilters: {
-    regions: string[]
-    tags: string[]
-  }
+  /** The shared filter bar's options and the current selection, from the server page. */
+  filterOptions: FilterOptions
+  activeFilters: ActiveFilters
 }
 
 export default function LivedExperiencesPageClient({
-  initialCommunityVideos,
-  communities,
-  allTags,
+  communityVideos,
   locale,
-  initialSearch,
-  initialFilters
+  filterOptions,
+  activeFilters,
 }: LivedExperiencesPageClientProps) {
+  const filtering = isFiltering(activeFilters)
   const t = useTranslations('livedExperiences')
-  const router = useRouter()
+  const tFilters = useTranslations('filters')
   const isRTL = rtlLocales.includes(locale)
 
-  const [searchQuery, setSearchQuery] = useState(initialSearch)
-
-  // Inclusion model: empty selection = show everything; selecting narrows.
-  const [selectedRegions, setSelectedRegions] = useState<string[]>(initialFilters.regions)
-  const [selectedTags, setSelectedTags] = useState<string[]>(initialFilters.tags)
-
-  // Update URL when filters change
-  useEffect(() => {
-    const params = new URLSearchParams()
-    if (searchQuery) params.set('search', searchQuery)
-    if (selectedRegions.length > 0) params.set('regions', selectedRegions.join(','))
-    if (selectedTags.length > 0) params.set('tags', selectedTags.join(','))
-
-    const newUrl = params.toString() ? `?${params.toString()}` : ''
-    router.replace(`/${locale}/lived-experiences${newUrl}`, { scroll: false })
-  }, [searchQuery, selectedRegions, selectedTags, locale, router])
-
-  // Filter videos. Inclusion: no region/tag selected = no filter on that axis.
-  const filteredCommunityVideos = useMemo(() => {
-    const filtered: Record<string, LivedExperience[]> = {}
-
-    for (const [communityName, videos] of Object.entries(initialCommunityVideos)) {
-      const community = communities.find(c => {
-        const name = typeof c.name === 'string' ? c.name : c.name.en
-        return name === communityName
-      })
-
-      // Region filter (inclusion): if any regions selected, this one must be among them.
-      if (selectedRegions.length > 0 && (!community || !selectedRegions.includes(community.slug))) {
-        continue
-      }
-
-      const filteredVideos = videos.filter(video => {
-        // Tag filter (inclusion): if any tags selected, the video must match one.
-        // Tags are now dereferenced docs — match on value (fall back to _id).
-        if (selectedTags.length > 0) {
-          const hasMatchingTag = video.tags?.some((tag) =>
-            selectedTags.includes(tag?.value as string) || selectedTags.includes(tag?.id)
-          )
-          if (!hasMatchingTag) return false
-        }
-
-        // Check search query
-        if (searchQuery) {
-          const query = searchQuery.toLowerCase()
-          const title = typeof video.title === 'string' ? undefined : video.title
-          const titleMatch = title?.en?.toLowerCase().includes(query) ||
-            title?.es?.toLowerCase().includes(query) ||
-            title?.fr?.toLowerCase().includes(query) ||
-            title?.ar?.toLowerCase().includes(query)
-
-          if (!titleMatch) return false
-        }
-
-        return true
-      })
-
-      if (filteredVideos.length > 0) {
-        filtered[communityName] = filteredVideos
-      }
-    }
-
-    return filtered
-  }, [initialCommunityVideos, selectedRegions, selectedTags, searchQuery, communities])
-
-  const toggleRegion = (slug: string) => {
-    setSelectedRegions(prev =>
-      prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug]
-    )
-  }
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev =>
-      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
-    )
-  }
-
-  const clearFilters = () => {
-    setSearchQuery('')
-    setSelectedRegions([])
-    setSelectedTags([])
-  }
-
-  const hasActiveFilters = Boolean(searchQuery) ||
-    selectedRegions.length > 0 ||
-    selectedTags.length > 0
-
   // Rows keep the CMS order (region order, newest videos first within each row).
-  const sortedEntries = Object.entries(filteredCommunityVideos)
-
-  const totalVideos = Object.values(filteredCommunityVideos).flat().length
+  const sortedEntries = Object.entries(communityVideos)
+  const totalVideos = Object.values(communityVideos).flat().length
 
   return (
     <div className="py-8 space-y-8">
@@ -180,40 +86,9 @@ export default function LivedExperiencesPageClient({
 
       {/* Search, Filters, and Results Container */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Unified content filters — collapsed, multi-select (shared with news
-            + case studies). Sort + count sit alongside. */}
+        {/* The hub's one filter bar (spec 2026-09-30). */}
         <div className="space-y-3">
-          <ContentFilters
-            search={{ value: searchQuery, onChange: setSearchQuery, placeholder: t('searchPlaceholder') }}
-            onClearAll={clearFilters}
-            groups={[
-              {
-                id: 'regions',
-                label: t('filterByRegion'),
-                selected: selectedRegions,
-                onToggle: toggleRegion,
-                options: communities.map((community) => ({
-                  value: community.slug,
-                  label: typeof community.name === 'string'
-                    ? community.name
-                    : getLocalizedText(community.name, locale, community.name as unknown as string),
-                })),
-              },
-              {
-                id: 'tags',
-                label: t('filterByTag'),
-                selected: selectedTags,
-                // De-surface the 'Other' tag from the chips.
-                options: allTags
-                  .filter((tag) => (tag.value || tag.id) !== 'other')
-                  .map((tag) => ({
-                    value: tag.value || tag.id,
-                    label: getLocalizedText(tag.label, locale, tag.value || tag.id),
-                  })),
-                onToggle: toggleTag,
-              },
-            ]}
-          />
+          <FilterBar options={filterOptions} active={activeFilters} />
 
           <span className="text-sm text-muted-foreground">
             {t('videoCount', { count: totalVideos })}
@@ -223,8 +98,13 @@ export default function LivedExperiencesPageClient({
       {/* Results */}
       <div className="space-y-12">
         {sortedEntries.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">{t('noResults')}</p>
+          <div className="text-center py-12 space-y-3">
+            <p className="text-muted-foreground">{filtering ? tFilters('empty') : t('noResults')}</p>
+            {filtering && (
+              <Link href="/lived-experiences" className="text-sm font-semibold text-ccm-sea hover:underline">
+                {tFilters('clear')}
+              </Link>
+            )}
           </div>
         ) : (
           sortedEntries.map(([communityName, videos]) => (
