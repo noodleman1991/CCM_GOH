@@ -43,7 +43,7 @@ export function SectionFocus() {
 
   if (!from) return null;
   return (
-    <a href={from} style={{ display: "inline-block", marginBottom: "1rem", fontWeight: 600 }}>
+    <a href={from} className="ccm-button ccm-button--secondary" style={{ marginBottom: "1rem" }}>
       ← Back to the page
     </a>
   );

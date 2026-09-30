@@ -9,6 +9,8 @@ import { latestChanges, type Change } from "./recent-changes";
  * shortcuts to what they edit most, what is waiting for a decision, and the
  * latest changes. Payload's own collection grid follows below.
  *
+ * Styles: the hub's card / shortcut / button classes in app/(payload)/custom.scss.
+ *
  * A server component (a `beforeDashboard` slot, which receives `user`), so it
  * may read through the Local API. It imports pure modules only — see
  * payload-admin-client-import-gotcha.
@@ -20,23 +22,7 @@ const LABELS: Record<string, string> = {
   researchOutputs: "Research outputs",
 };
 
-const card: React.CSSProperties = {
-  border: "1px solid var(--theme-elevation-150)",
-  borderRadius: "0.5rem",
-  padding: "1rem 1.25rem",
-  marginBottom: "1.5rem",
-  background: "var(--theme-elevation-0)",
-};
 const list: React.CSSProperties = { display: "flex", flexWrap: "wrap", gap: "0.75rem 2rem", margin: "0.75rem 0 0", padding: 0, listStyle: "none" };
-const shortcut: React.CSSProperties = {
-  display: "block",
-  border: "1px solid var(--theme-elevation-150)",
-  borderRadius: "0.5rem",
-  padding: "0.9rem 1.1rem",
-  background: "var(--theme-elevation-0)",
-  fontWeight: 600,
-  textDecoration: "none",
-};
 
 const DAY = 24 * 60 * 60 * 1000;
 const ago = (iso: string) => {
@@ -81,8 +67,8 @@ async function LeadHome({ clerkId }: { clerkId: string }) {
     .catch(() => ({ docs: [] }));
   const communities = res.docs as Row[];
   return (
-    <div style={card}>
-      <h2 style={{ margin: 0, fontSize: "1.1rem" }}>{communities.length === 1 ? "Your community" : "Your communities"}</h2>
+    <div className="ccm-card">
+      <h2>{communities.length === 1 ? "Your community" : "Your communities"}</h2>
       {communities.length === 0 ? (
         <p style={{ margin: "0.75rem 0 0", opacity: 0.8 }}>You aren&apos;t a lead for any community yet — ask the team to add you.</p>
       ) : (
@@ -91,8 +77,8 @@ async function LeadHome({ clerkId }: { clerkId: string }) {
             <li key={String(c.id)} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.75rem 1.25rem" }}>
               <strong>{str(c.name) || "Community"}</strong>
               {str(c.updatedAt) && <span style={{ opacity: 0.7 }}>Last changed {ago(str(c.updatedAt))}</span>}
-              <Link href={`/admin/collections/regionalCommunities/${String(c.id)}`}>Edit</Link>
-              <a href={`/en/communities/${str(c.slug)}`}>View on site</a>
+              <Link className="ccm-button" href={`/admin/collections/regionalCommunities/${String(c.id)}`}>Edit</Link>
+              <a className="ccm-button ccm-button--secondary" href={`/en/communities/${str(c.slug)}`}>View on site</a>
             </li>
           ))}
         </ul>
@@ -132,16 +118,17 @@ export async function EditorDashboard({ user }: { user?: { role?: string | null;
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))", gap: "0.75rem", marginBottom: "1.5rem" }}>
+      <div className="ccm-shortcuts">
         {shortcuts.map((s) => (
-          <Link key={s.href} href={s.href} style={shortcut}>
-            {s.label} →
+          <Link key={s.href} href={s.href} className="ccm-shortcut">
+            <span>{s.label}</span>
+            <span aria-hidden="true">→</span>
           </Link>
         ))}
       </div>
 
-      <div style={card}>
-        <h2 style={{ margin: 0, fontSize: "1.1rem" }}>
+      <div className="ccm-card">
+        <h2>
           <Link href="/en/moderation">
             {waiting === 0 ? "Nothing waiting for review" : `${waiting} submission${waiting === 1 ? "" : "s"} waiting for review`}
           </Link>
@@ -162,8 +149,8 @@ export async function EditorDashboard({ user }: { user?: { role?: string | null;
       </div>
 
       {changes.length > 0 && (
-        <div style={card}>
-          <h2 style={{ margin: 0, fontSize: "1.1rem" }}>Recent changes</h2>
+        <div className="ccm-card">
+          <h2>Recent changes</h2>
           <ul style={{ margin: "0.75rem 0 0", padding: 0, listStyle: "none", display: "grid", gap: "0.4rem" }}>
             {changes.map((c) => (
               <li key={`${c.href}-${c.updatedAt}`}>

@@ -12,16 +12,6 @@ import type { TextFieldClientComponent } from "payload";
  */
 type Member = { id: string; name: string; email: string | null };
 
-const chip: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "0.35rem",
-  padding: "0.25rem 0.6rem",
-  borderRadius: "999px",
-  background: "var(--theme-elevation-100)",
-  fontSize: "0.9rem",
-};
-
 export const LeadPicker: TextFieldClientComponent = ({ path, field, readOnly }) => {
   const { value, setValue } = useField<string[]>({ path });
   const ids = Array.isArray(value) ? value : [];
@@ -78,10 +68,10 @@ export const LeadPicker: TextFieldClientComponent = ({ path, field, readOnly }) 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", margin: "0.4rem 0" }}>
         {ids.length === 0 && <span style={{ opacity: 0.7 }}>No leads yet.</span>}
         {ids.map((id) => (
-          <span key={id} style={chip}>
+          <span key={id} className="ccm-chip">
             {names[id]?.name ?? id}
             {!readOnly && (
-              <button type="button" aria-label={`Remove ${names[id]?.name ?? id}`} onClick={() => remove(id)} style={{ border: 0, background: "none", cursor: "pointer", fontSize: "1rem", lineHeight: 1 }}>
+              <button type="button" aria-label={`Remove ${names[id]?.name ?? id}`} onClick={() => remove(id)}>
                 ×
               </button>
             )}
