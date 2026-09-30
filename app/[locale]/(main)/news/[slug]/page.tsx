@@ -14,7 +14,8 @@ import { cn } from '@/lib/utils'
 import { imageUrl } from '@/lib/content/images'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
-import { PortableText } from '@portabletext/react'
+import PortableTextRenderer from '@/components/portable-text-renderer'
+import { softBreaksToParagraphs } from '@/lib/content/soft-breaks-to-paragraphs'
 import { getNewsPostBySlug, getRelatedNews } from '@/lib/content/news'
 import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
@@ -227,23 +228,28 @@ export default async function NewsDetailPage({
         </div>
       )}
 
-      {/* Excerpt — editorial pull-quote (same vocabulary as the portable-text
-          blockquote: ccm-water start rule on a whisper of ccm-sky). */}
+      {/* Excerpt — the story's standfirst: the same ccm-water start rule, in
+          calm body type (2026-09-30: the heading-size version out-shouted the
+          story itself). */}
       {excerpt && (
-        <blockquote className="border-s-4 border-ccm-water bg-ccm-sky/5 rounded-e-lg ps-6 pe-4 py-4">
-          <p className="font-heading text-xl sm:text-2xl font-medium leading-snug text-balance text-ccm-midnight">
+        <blockquote className="mx-auto max-w-prose border-s-4 border-ccm-water ps-5 py-1">
+          <p dir="auto" className="text-lg sm:text-xl leading-relaxed text-ccm-midnight/90">
             {excerpt}
           </p>
         </blockquote>
       )}
 
       {/* Main Content */}
+      {/* The hub's own text renderer (as case studies and lived experiences):
+          real paragraph spacing, headings, quotes, images — no box around it. */}
       {newsPost.content && (
-        <Card>
-          <CardContent className="prose prose-lg mx-auto max-w-prose pt-6 dark:prose-invert">
-            <PortableText value={newsPost.content as never} />
-          </CardContent>
-        </Card>
+        <div className="mx-auto max-w-prose text-lg leading-relaxed">
+          <PortableTextRenderer
+            value={(Array.isArray(newsPost.content) ? softBreaksToParagraphs(newsPost.content) : newsPost.content) as never}
+            locale={supportedLocale}
+            isRTL={supportedLocale === 'ar'}
+          />
+        </div>
       )}
 
       {/* Discussion — lazy, ISR-safe island */}
