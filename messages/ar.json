@@ -2908,5 +2908,21 @@
       "past": "السابقة"
     },
     "showingLatest": "إليك أحدث الأخبار بدلًا من ذلك."
+  },
+  "communityCarousel": {
+    "heading": "مجتمعاتنا الإقليمية",
+    "members": "{count, plural, zero {لا أعضاء} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}",
+    "stories": "{count, plural, zero {لا قصص} one {قصة واحدة} two {قصتان} few {# قصص} many {# قصة} other {# قصة}}",
+    "events": "{count, plural, zero {لا فعاليات قادمة} one {فعالية قادمة واحدة} two {فعاليتان قادمتان} few {# فعاليات قادمة} many {# فعالية قادمة} other {# فعالية قادمة}}",
+    "beFirst": "مجتمع جديد — كن من أوائل المنضمين.",
+    "latestStory": "قصة جديدة: {title}",
+    "latestEvent": "قريبًا: {title} · {date}",
+    "latestMember": "أهلًا بك، {name}",
+    "moreFaces": "+{count}",
+    "previous": "المجتمع السابق",
+    "next": "المجتمع التالي",
+    "slide": "{n} من {total}",
+    "goTo": "عرض {name}",
+    "visit": "زيارة {name}"
   }
 }

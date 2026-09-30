@@ -2908,5 +2908,21 @@
       "past": "Passés"
     },
     "showingLatest": "Voici les dernières nouvelles à la place."
+  },
+  "communityCarousel": {
+    "heading": "Nos communautés régionales",
+    "members": "{count, plural, one {# membre} other {# membres}}",
+    "stories": "{count, plural, one {# témoignage} other {# témoignages}}",
+    "events": "{count, plural, one {# événement à venir} other {# événements à venir}}",
+    "beFirst": "Une nouvelle communauté — soyez parmi les premiers à la rejoindre.",
+    "latestStory": "Nouveau témoignage : {title}",
+    "latestEvent": "À venir : {title} · {date}",
+    "latestMember": "Bienvenue, {name}",
+    "moreFaces": "+{count}",
+    "previous": "Communauté précédente",
+    "next": "Communauté suivante",
+    "slide": "{n} sur {total}",
+    "goTo": "Afficher {name}",
+    "visit": "Visiter {name}"
   }
 }

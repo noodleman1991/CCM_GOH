@@ -25,6 +25,7 @@ import EventsCalendar from "@/components/blocks/events/events-calendar";
 import FreshContent from "@/components/blocks/fresh-content";
 import SubmitStoryBanner from "@/components/blocks/cta/submit-story-banner";
 import ContentFeed from "@/components/blocks/content-feed";
+import CommunityCarousel from "@/components/blocks/community-carousel/community-carousel";
 import CommunityHeader from "@/components/blocks/community-header";
 import CommunityMembers from "@/components/blocks/community-members";
 
@@ -51,6 +52,7 @@ export const componentMap: Record<string, React.ElementType> = {
     "fresh-content": FreshContent,
     "submit-story-banner": SubmitStoryBanner,
     "content-feed": ContentFeed,
+    "community-carousel": CommunityCarousel,
     "community-header": CommunityHeader,
     "community-members": CommunityMembers,
 };

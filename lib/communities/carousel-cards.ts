@@ -6,6 +6,8 @@
 import type { RegionCode } from "@/lib/maps/region-codes";
 
 export interface RawCommunity {
+  /** The community record's id (what the section's Communities picker stores). */
+  id?: string;
   slug: string;
   code: RegionCode;
   name: string;
@@ -28,6 +30,7 @@ export interface LatestItem {
 }
 
 export interface CarouselCard {
+  id: string | null;
   slug: string;
   code: RegionCode;
   name: string;
@@ -55,6 +58,7 @@ export function buildCarouselCards(raw: RawCommunity[], locale: string): Carouse
       if (c.nextEvent) latest.push({ kind: "event", title: c.nextEvent.title, startAt: c.nextEvent.startAt, href: c.nextEvent.href });
       if (c.newestMember) latest.push({ kind: "member", title: c.newestMember.firstName, startAt: null, href: null });
       return {
+        id: c.id ?? null,
         slug: c.slug,
         code: c.code,
         name: c.name,

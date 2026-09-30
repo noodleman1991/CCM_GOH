@@ -24,6 +24,7 @@ export const SECTION_PICTURES = {
   "logo-strip": "/admin/sections/logo-strip.svg",
   testimonials: "/admin/sections/testimonials.svg",
   "community-header": "/admin/sections/community-header.svg",
+  "community-carousel": "/admin/sections/community-carousel.svg",
 } as const;
 export type SectionPictureKey = keyof typeof SECTION_PICTURES;
 

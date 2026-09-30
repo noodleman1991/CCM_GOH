@@ -35,6 +35,7 @@ export const HOMEPAGE_SECTIONS: Block[] = [
   library.peopleWidget,
   library.gridRow,
   library.regionMap,
+  library.communityCarousel,
   library.atlasEmbed,
   library.cta1,
   library.submitStoryBanner,

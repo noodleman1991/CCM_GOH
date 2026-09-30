@@ -853,6 +853,8 @@ function mapBlock(row: unknown): Row | undefined {
       return atlasEmbedBlock(row);
     case "contentFeed":
       return contentFeedBlock(row);
+    case "communityCarousel":
+      return communityCarouselBlock(row);
     case "communityHeader":
       return groqObject({ _key: blockKey(row), _type: "community-header", intro: orNull(text(row.intro)), padding: paddingObject(row.padding) });
     case "communityMembers":
@@ -1038,6 +1040,22 @@ export function contentFeedSettings(row: Row): Row {
 
 function contentFeedBlock(row: Row): Row {
   return { _key: blockKey(row), _type: "content-feed", settings: contentFeedSettings(row) };
+}
+
+/** The Community carousel's settings; the cards themselves are read at render time. */
+function communityCarouselBlock(row: Row): Row {
+  const show = isRow(row.show) ? row.show : {};
+  const on = (v: unknown) => v !== false;
+  return {
+    _key: blockKey(row),
+    _type: "community-carousel",
+    heading: text(row.heading) ?? null,
+    intro: text(row.intro) ?? null,
+    communities: Array.isArray(row.communities) ? row.communities.map(relationIdOf).filter((id): id is string => Boolean(id)) : [],
+    show: { members: on(show.members), stories: on(show.stories), events: on(show.events), faces: on(show.faces), latest: on(show.latest) },
+    autoplay: row.autoplay !== false,
+    speed: row.speed === "normal" ? "normal" : "calm",
+  };
 }
 
 /** Dropped (like an unknown block) without a valid region: the component

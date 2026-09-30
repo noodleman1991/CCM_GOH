@@ -248,6 +248,7 @@ export interface Page {
         | PeopleWidgetBlock
         | GridRowBlock
         | RegionMapBlock
+        | CommunityCarouselBlock
         | AtlasEmbedBlock
         | Cta1Block
         | SubmitStoryBannerBlock
@@ -270,6 +271,7 @@ export interface Page {
         | PeopleWidgetBlock
         | GridRowBlock
         | RegionMapBlock
+        | CommunityCarouselBlock
         | AtlasEmbedBlock
         | Cta1Block
         | SubmitStoryBannerBlock
@@ -1130,6 +1132,7 @@ export interface RegionalCommunity {
         | PeopleWidgetBlock
         | GridRowBlock
         | RegionMapBlock
+        | CommunityCarouselBlock
         | AtlasEmbedBlock
         | Cta1Block
         | SubmitStoryBannerBlock
@@ -1154,6 +1157,7 @@ export interface RegionalCommunity {
         | PeopleWidgetBlock
         | GridRowBlock
         | RegionMapBlock
+        | CommunityCarouselBlock
         | AtlasEmbedBlock
         | Cta1Block
         | SubmitStoryBannerBlock
@@ -2362,6 +2366,53 @@ export interface RegionMapBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'regionMap';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityCarouselBlock".
+ */
+export interface CommunityCarouselBlock {
+  heading?: string | null;
+  intro?: string | null;
+  /**
+   * Leave empty to show every community, in alphabetical order. Taglines are edited on each community.
+   */
+  communities?: (string | RegionalCommunity)[] | null;
+  show?: {
+    members?: boolean | null;
+    stories?: boolean | null;
+    events?: boolean | null;
+    faces?: boolean | null;
+    latest?: boolean | null;
+  };
+  /**
+   * It always stops when a visitor hovers, tabs into it or uses the arrows, and never moves for visitors who ask for less motion.
+   */
+  autoplay?: boolean | null;
+  speed?: ('calm' | 'normal') | null;
+  chapter?: {
+    /**
+     * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
+     */
+    kind?:
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
+      | null;
+    label?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'communityCarousel';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3847,6 +3898,7 @@ export interface PagesSelect<T extends boolean = true> {
         peopleWidget?: T | PeopleWidgetBlockSelect<T>;
         gridRow?: T | GridRowBlockSelect<T>;
         regionMap?: T | RegionMapBlockSelect<T>;
+        communityCarousel?: T | CommunityCarouselBlockSelect<T>;
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
@@ -3869,6 +3921,7 @@ export interface PagesSelect<T extends boolean = true> {
         peopleWidget?: T | PeopleWidgetBlockSelect<T>;
         gridRow?: T | GridRowBlockSelect<T>;
         regionMap?: T | RegionMapBlockSelect<T>;
+        communityCarousel?: T | CommunityCarouselBlockSelect<T>;
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
@@ -4633,6 +4686,34 @@ export interface FormNewsletterBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityCarouselBlock_select".
+ */
+export interface CommunityCarouselBlockSelect<T extends boolean = true> {
+  heading?: T;
+  intro?: T;
+  communities?: T;
+  show?:
+    | T
+    | {
+        members?: T;
+        stories?: T;
+        events?: T;
+        faces?: T;
+        latest?: T;
+      };
+  autoplay?: T;
+  speed?: T;
+  chapter?:
+    | T
+    | {
+        kind?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "regionalCommunities_select".
  */
 export interface RegionalCommunitiesSelect<T extends boolean = true> {
@@ -4690,6 +4771,7 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
         peopleWidget?: T | PeopleWidgetBlockSelect<T>;
         gridRow?: T | GridRowBlockSelect<T>;
         regionMap?: T | RegionMapBlockSelect<T>;
+        communityCarousel?: T | CommunityCarouselBlockSelect<T>;
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
@@ -4714,6 +4796,7 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
         peopleWidget?: T | PeopleWidgetBlockSelect<T>;
         gridRow?: T | GridRowBlockSelect<T>;
         regionMap?: T | RegionMapBlockSelect<T>;
+        communityCarousel?: T | CommunityCarouselBlockSelect<T>;
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
@@ -6468,6 +6551,7 @@ export interface Homepage {
         | PeopleWidgetBlock
         | GridRowBlock
         | RegionMapBlock
+        | CommunityCarouselBlock
         | AtlasEmbedBlock
         | Cta1Block
         | SubmitStoryBannerBlock
@@ -6490,6 +6574,7 @@ export interface Homepage {
         | PeopleWidgetBlock
         | GridRowBlock
         | RegionMapBlock
+        | CommunityCarouselBlock
         | AtlasEmbedBlock
         | Cta1Block
         | SubmitStoryBannerBlock
@@ -7379,6 +7464,7 @@ export interface HomepageSelect<T extends boolean = true> {
         peopleWidget?: T | PeopleWidgetBlockSelect<T>;
         gridRow?: T | GridRowBlockSelect<T>;
         regionMap?: T | RegionMapBlockSelect<T>;
+        communityCarousel?: T | CommunityCarouselBlockSelect<T>;
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;
@@ -7401,6 +7487,7 @@ export interface HomepageSelect<T extends boolean = true> {
         peopleWidget?: T | PeopleWidgetBlockSelect<T>;
         gridRow?: T | GridRowBlockSelect<T>;
         regionMap?: T | RegionMapBlockSelect<T>;
+        communityCarousel?: T | CommunityCarouselBlockSelect<T>;
         atlasEmbed?: T | AtlasEmbedBlockSelect<T>;
         cta1?: T | Cta1BlockSelect<T>;
         submitStoryBanner?: T | SubmitStoryBannerBlockSelect<T>;

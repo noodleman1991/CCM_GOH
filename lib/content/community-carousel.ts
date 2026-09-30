@@ -105,6 +105,7 @@ export async function getCommunityCarouselCards(locale: Locale, now: Date = new 
       }));
       const firstPublic = m?.members?.[0]?.user.firstName ?? null;
       return {
+        id: String(c.id),
         slug,
         code,
         name: str(c.name) ?? slug,

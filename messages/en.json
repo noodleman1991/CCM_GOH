@@ -2908,5 +2908,21 @@
       "past": "Past"
     },
     "showingLatest": "Here's what's new instead."
+  },
+  "communityCarousel": {
+    "heading": "Our regional communities",
+    "members": "{count, plural, one {# member} other {# members}}",
+    "stories": "{count, plural, one {# story} other {# stories}}",
+    "events": "{count, plural, one {# upcoming event} other {# upcoming events}}",
+    "beFirst": "A new community — be one of the first to join.",
+    "latestStory": "New story: {title}",
+    "latestEvent": "Coming up: {title} · {date}",
+    "latestMember": "Welcome, {name}",
+    "moreFaces": "+{count}",
+    "previous": "Previous community",
+    "next": "Next community",
+    "slide": "{n} of {total}",
+    "goTo": "Show {name}",
+    "visit": "Visit {name}"
   }
 }
