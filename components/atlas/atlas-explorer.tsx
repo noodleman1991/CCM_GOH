@@ -11,6 +11,7 @@ import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RecentEverywhereCards, RegionHighlightsCards } from '@/components/atlas/region-content-cards'
 import { RegionSpotlight } from '@/components/atlas/region-spotlight'
 import { RegionLocator } from '@/components/atlas/region-locator'
+import { regionChips } from '@/lib/maps/region-chips'
 import { regionCrop } from '@/lib/maps/region-crop'
 import type { RegionArt } from '@/lib/maps/region-art'
 import {
@@ -20,7 +21,7 @@ import {
 import type { PinCluster, PinItem } from '@/lib/maps/cluster-pins'
 import { pickTagFilter, tagQuery } from '@/lib/maps/tag-filter'
 import { parseWhen, type WhenBucket } from '@/lib/maps/date-filter'
-import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
+import { REGION_COLOR, REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
 import { useRouter, usePathname } from '@/i18n/navigation'
 import { COLOR } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
@@ -348,12 +349,25 @@ export function AtlasExplorer({
 
       {/* Labelled filter rows (punch-list revision of §filter-bar): Show ·
           Theme · When each get their OWN row with an aligned label column —
-          one cramped bar wrapped badly on mobile. The region chip row is
-          still GONE — the map itself carries region selection (paths are
-          focusable buttons with name+count hover/focus labels), which stays
-          the keyboard/screen-reader path. Region still rides the same
-          `region` URL param, so deep links keep working. */}
+          one cramped bar wrapped badly on mobile. Region is back as the
+          first row (user, 2026-09-30): all seven, equal, alphabetical in the
+          reader's language, counted from the same data the map shades. It
+          drives the same `region` param as clicking the map. */}
       <FilterRowGroup>
+        {!lockedRegion && (
+          <FilterRow label={tFilters('region')}>
+            {regionChips(regionData, labelFor, locale).map((c) => (
+              <FilterChip
+                key={c.code}
+                label={c.label}
+                count={c.count}
+                active={selected === c.code}
+                icon={<span className="size-2.5 rounded-full ring-1 ring-black/10" style={{ backgroundColor: REGION_COLOR[c.code] }} />}
+                onClick={() => onSelect(c.code)}
+              />
+            ))}
+          </FilterRow>
+        )}
         <FilterRow label={tAtlas('show')}>
           {FACETS.map((f) => {
             const isActive = layerSet.has(f.id)

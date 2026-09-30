@@ -37,7 +37,7 @@ export function FilterRow({
 }) {
   return (
     <div className={cn('flex items-start gap-2 sm:gap-3', className)}>
-      <span className="w-14 flex-none select-none pt-2.5 font-heading text-[10px] font-bold uppercase tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)] sm:w-16">
+      <span className="w-20 flex-none select-none break-words pt-2.5 font-heading text-[10px] font-bold uppercase leading-tight tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)] [hyphens:auto] sm:w-24">
         {label}
       </span>
       <div

@@ -33,6 +33,13 @@ describe("chips and badges clip long labels and keep them reachable", () => {
     expect(screen.getByRole("button").getAttribute("title")).toBe(long);
   });
 
+  it("FilterChip with an icon keeps it before the label, hidden from screen readers", () => {
+    render(<FilterChip label="Oceania" icon={<svg data-testid="icon" />} active={false} onClick={() => {}} />);
+    const icon = screen.getByTestId("icon");
+    expect(icon.parentElement?.getAttribute("aria-hidden")).toBe("true");
+    expect(icon.parentElement?.nextElementSibling?.textContent).toBe("Oceania");
+  });
+
   it("RemovableChip", () => {
     render(wrap(<RemovableChip label={long} onRemove={() => {}} />));
     const label = screen.getByText(long);

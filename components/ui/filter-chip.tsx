@@ -1,4 +1,5 @@
 'use client'
+import type * as React from 'react'
 import { useTranslations } from 'next-intl'
 
 import { X, type LucideIcon } from 'lucide-react'
@@ -19,8 +20,11 @@ export function FilterChip({
   className,
   disabled = false,
   title,
+  icon,
 }: {
   label: string
+  /** A small decorative mark before the label (always shown, so the width never jumps). */
+  icon?: React.ReactNode
   /** Result count rendered as a quiet trailing figure (tabular-nums so
    *  neighbouring chips' counts align). Pass the number — never bake
    *  "label · n" into the label string. */
@@ -52,6 +56,7 @@ export function FilterChip({
         className
       )}
     >
+      {icon && <span aria-hidden="true" className="flex shrink-0 items-center">{icon}</span>}
       {/* A CMS tag label can run to a sentence; clip it rather than the row (Slice 13b). */}
       <span className="min-w-0 max-w-[min(100%,18rem)] truncate text-start">{label}</span>
       {count !== undefined && (
