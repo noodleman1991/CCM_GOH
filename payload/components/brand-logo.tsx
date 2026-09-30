@@ -11,9 +11,10 @@ export function BrandLogo() {
   return <img className="ccm-brand-logo" src="/connecting-climate-minds-logo.png" alt="Connecting Climate Minds" />;
 }
 
+/** The breadcrumb's home link (`graphics.Icon`): the plain word "Admin" —
+ *  the logo lives at the top of the side panel (user, 2026-09-30). */
 export function BrandIcon() {
-  // eslint-disable-next-line @next/next/no-img-element -- same
-  return <img className="ccm-brand-icon" src="/connecting-climate-minds-logo.png" alt="" aria-hidden="true" />;
+  return <span className="ccm-admin-crumb">Admin</span>;
 }
 
 /** The logo at the top of the side panel — also the phone menu drawer
