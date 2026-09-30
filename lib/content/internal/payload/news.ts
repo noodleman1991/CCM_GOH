@@ -514,6 +514,8 @@ function newsPostProjection(row: Row): NewsPost {
     locationDetails: locationDetailsProjection(row.locationDetails),
     tags: tagProjection(row.tags, FULL_TAG_FIELDS),
     relatedCommunity: communityProjection(row.relatedCommunity),
+    // The post's own region code — for the shared filters (2026-09-30).
+    regionCode: orNull(text(row.region)),
     // Note 1a.
     language: null,
     // No Payload column, 0/4 populated in Sanity.
@@ -926,6 +928,8 @@ export async function getApprovedExternalSources(
       // `title` is not a field on `tag`, so GROQ emits `null` for it. 0/1
       // external sources carry a tag.
       tags: externalTagProjection(row.tags),
+      // For the shared filters' Region (2026-09-30).
+      communitySlug: isRow(row.relatedCommunity) ? orNull(text((row.relatedCommunity as Row).slug)) : null,
     })) as unknown as NewsExternalSource[];
 }
 

@@ -2,11 +2,11 @@ import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import NewsFilters from '@/components/news/news-filters'
+import { FilterBar } from '@/components/filters/filter-bar'
 import NewsHeroSection from '@/components/news/news-hero-section'
 import NewsPostCard from '@/components/ui/news-post-card'
 import { SectionHeader } from '@/components/ui/section-header'
@@ -14,18 +14,16 @@ import {
   getFeaturedNews,
   getRegularNews,
   getAllNews,
-  getNewsTags,
-  getRegionalCommunities,
   getApprovedExternalSources,
 } from '@/lib/content/news'
 import ExternalSourceCard from '@/components/ui/external-source-card'
-import { FollowButton } from '@/components/follow/follow-button'
-import { hasActiveFilters, GLOBAL_REGION } from '@/lib/news-utils'
 import { mergeNewsFeed } from '@/lib/news-feed'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
-import { getLocalizedValue } from '@/i18n/i18n-helpers'
-import type { NewsFilters as NewsFiltersType } from '@/lib/news-utils'
+import { applyFilters, buildOptions, isFiltering, type ActiveFilters, type FilterTag } from '@/lib/filters/core'
+import { parseFilterParams } from '@/lib/filters/params'
+import { externalToFilterable, newsToFilterable } from '@/lib/filters/adapters'
+import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, type RegionCode } from '@/lib/maps/region-codes'
 import { getHubIllustrations } from '@/lib/content/illustrations'
 
 function LoadingSkeleton() {
@@ -58,6 +56,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
+const COMMUNITY_SLUG_TO_REGION: Record<string, string> = Object.fromEntries(
+  REGION_CODES.map((code) => [REGION_TO_RC_SLUG[code], code]),
+)
+
+type NewsList = Awaited<ReturnType<typeof getAllNews>>
+type ExternalList = Awaited<ReturnType<typeof getApprovedExternalSources>>
+
 export default async function NewsPage({
   params,
   searchParams,
@@ -66,8 +71,22 @@ export default async function NewsPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { locale } = await params
-  const filters = await searchParams
-  const t = await getTranslations({ locale, namespace: 'news' })
+  const sp = await searchParams
+  const [t, tRegions, allNews, externalSources] = await Promise.all([
+    getTranslations({ locale, namespace: 'news' }),
+    getTranslations({ locale, namespace: 'navigation.regions' }),
+    getAllNews(),
+    getApprovedExternalSources({ limit: 100 }),
+  ])
+
+  // One list, one engine: results and every option's count (spec 2026-09-30).
+  const items = [
+    ...allNews.map((n) => newsToFilterable(n as never, locale)),
+    ...externalSources.map((e) => externalToFilterable(e as never, locale)),
+  ]
+  const knownTags: FilterTag[] = [...new Map(items.flatMap((i) => i.tags).map((tag) => [tag.slug, tag])).values()]
+  const active = parseFilterParams(sp, { tags: knownTags, communitySlugToRegion: COMMUNITY_SLUG_TO_REGION })
+  const options = buildOptions(items, active, { locale, regionLabel: (code) => tRegions(REGION_I18N_KEY[code as RegionCode]) })
 
   return (
     <div className="container max-w-7xl py-8 space-y-8">
@@ -81,159 +100,46 @@ export default async function NewsPage({
         </p>
       </div>
 
-      {/* Filters */}
-      <Suspense fallback={<Skeleton className="h-24 w-full" />}>
-        <NewsFiltersWrapper locale={locale} currentFilters={filters} />
-      </Suspense>
+      {/* The hub's one filter bar: Region · Communities · Themes · When · Search. */}
+      <FilterBar options={options} active={active} />
 
       {/* Content */}
       <Suspense fallback={<LoadingSkeleton />}>
-        <NewsContent locale={locale} filters={filters} />
+        <NewsContent locale={locale} active={active} allNews={allNews} externalSources={externalSources} />
       </Suspense>
     </div>
   )
 }
 
-// Parse a comma-separated multi-value URL param (e.g. ?tags=a,b) into an array.
-function toArr(param: string | string[] | undefined): string[] {
-  if (!param) return []
-  const raw = Array.isArray(param) ? param : param.split(',')
-  return raw.map((s) => s.trim()).filter(Boolean)
-}
-
-// The raw (already-awaited) searchParams object for this page.
-type NewsSearchParams = { [key: string]: string | string[] | undefined }
-
-function parseNewsFilters(p: NewsSearchParams): NewsFiltersType {
-  return {
-    tags: toArr(p.tags),
-    communities: toArr(p.communities),
-    dateFrom: typeof p.dateFrom === 'string' ? p.dateFrom : undefined,
-    dateTo: typeof p.dateTo === 'string' ? p.dateTo : undefined,
-    search: typeof p.search === 'string' ? p.search : undefined,
-  }
-}
-
-async function NewsFiltersWrapper({
-  locale,
-  currentFilters,
-}: {
-  locale: string
-  currentFilters: NewsSearchParams
-}) {
-  const [tags, communities] = await Promise.all([
-    getNewsTags(),
-    getRegionalCommunities(),
-  ])
-
-  return (
-    <NewsFilters
-      currentFilters={parseNewsFilters(currentFilters)}
-      tags={tags}
-      communities={communities}
-    />
-  )
-}
-
-/**
- * Empty state for filtered results. When the selection includes a specific
- * region with no news, use the STATES §2 region-empty copy ("No updates in
- * {region} yet") with a "Follow this region" CTA (existing Follow infra,
- * REGION target keyed by the community slug — same as the community page).
- * Otherwise fall back to the generic no-results card.
- */
-async function NewsEmptyState({
-  locale,
-  filters,
-}: {
-  locale: string
-  filters: NewsFiltersType
-}) {
-  const t = await getTranslations({ locale, namespace: 'news' })
-
-  const regionSlugs = (filters.communities || []).filter((c) => c !== GLOBAL_REGION)
-  const regionSlug = regionSlugs[0]
-  const region = regionSlug
-    ? (await getRegionalCommunities()).find(
-        (c: { slug: string }) => c.slug === regionSlug
-      )
-    : undefined
-
-  if (region) {
-    const regionName = getLocalizedValue(region.name, locale)
-    return (
-      <Card className="p-12 text-center">
-        <div className="space-y-3">
-          <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
-          <h3 className="font-heading text-lg font-medium text-ccm-midnight">
-            {t('regionEmpty.title', { region: regionName })}
-          </h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            {t('regionEmpty.description')}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <FollowButton
-              targetType="REGION"
-              targetId={region.slug}
-              size="default"
-              className="min-h-11"
-              followLabel={t('regionEmpty.cta')}
-            />
-            <Button variant="ghost" className="min-h-11" asChild>
-              <Link href={`/news`}>{t('clearFilters')}</Link>
-            </Button>
-          </div>
-        </div>
-      </Card>
-    )
-  }
-
-  return (
-    <Card className="p-12 text-center">
-      <div className="space-y-3">
-        <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
-        <h3 className="text-lg font-medium">{t('noResults')}</h3>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          {t('noResultsDescription')}
-        </p>
-        <Button variant="outline" asChild className="mt-4">
-          <Link href={`/news`}>
-            {t('clearFilters')}
-          </Link>
-        </Button>
-      </div>
-    </Card>
-  )
-}
-
 async function NewsContent({
   locale,
-  filters,
+  active,
+  allNews,
+  externalSources: allExternal,
 }: {
   locale: string
-  filters: NewsSearchParams
+  active: ActiveFilters
+  allNews: NewsList
+  externalSources: ExternalList
 }) {
-  const [t, { newsFallback }] = await Promise.all([
+  const [t, tFilters, { newsFallback }] = await Promise.all([
     getTranslations({ locale, namespace: 'news' }),
+    getTranslations({ locale, namespace: 'filters' }),
     getHubIllustrations(),
   ])
 
-  const filterObj: NewsFiltersType = parseNewsFilters(filters)
-
-  const hasFilters = hasActiveFilters(filterObj)
-
-  // If filters are active, show all matching news (including featured) + external sources
-  if (hasFilters) {
-    const [allNews, externalSources] = await Promise.all([
-      getAllNews(filterObj),
-      getApprovedExternalSources({
-        tags: filterObj.tags,
-        communities: filterObj.communities,
-        search: filterObj.search,
-      }),
-    ])
-
-    const resultsFeed = mergeNewsFeed(allNews, externalSources)
+  // With filters: every matching news post (featured included) and external source.
+  if (isFiltering(active)) {
+    const visible = new Set(
+      applyFilters(
+        [...allNews.map((n) => newsToFilterable(n as never, locale)), ...allExternal.map((e) => externalToFilterable(e as never, locale))],
+        active,
+      ).map((i) => i.id),
+    )
+    const resultsFeed = mergeNewsFeed(
+      allNews.filter((n) => visible.has(n._id)),
+      allExternal.filter((e) => visible.has((e as { _id: string })._id)),
+    )
     const totalResults = resultsFeed.length
 
     return (
@@ -290,7 +196,15 @@ async function NewsContent({
 
         {/* Empty State */}
         {totalResults === 0 && (
-          <NewsEmptyState locale={locale} filters={filterObj} />
+          <Card className="p-12 text-center">
+            <div className="space-y-3">
+              <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
+              <h3 className="text-lg font-medium">{tFilters('empty')}</h3>
+              <Button variant="outline" asChild className="mt-2">
+                <Link href="/news">{tFilters('clear')}</Link>
+              </Button>
+            </div>
+          </Card>
         )}
       </div>
     )

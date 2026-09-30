@@ -79,3 +79,34 @@ export function caseStudyToFilterable(cs: CaseStudyListItem & { regionCode?: str
     text: textOf(locale, cs.title, cs.excerpt),
   };
 }
+
+type NewsLike = {
+  _id: string;
+  title?: unknown;
+  excerpt?: unknown;
+  publishedAt?: string | null;
+  regionCode?: string | null;
+  relatedCommunity?: { slug?: string | null } | null;
+  communitySlug?: string | null;
+  tags?: unknown;
+};
+
+export function newsToFilterable(post: NewsLike, locale: string): FilterableItem {
+  return {
+    id: post._id,
+    tags: toFilterTags(post.tags),
+    regions: regionsOf(post.regionCode, post.relatedCommunity?.slug),
+    date: post.publishedAt ?? null,
+    text: textOf(locale, post.title, post.excerpt),
+  };
+}
+
+export function externalToFilterable(source: NewsLike, locale: string): FilterableItem {
+  return {
+    id: source._id,
+    tags: toFilterTags(source.tags),
+    regions: regionsOf(source.regionCode, source.communitySlug),
+    date: source.publishedAt ?? null,
+    text: textOf(locale, source.title, source.excerpt),
+  };
+}
