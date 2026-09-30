@@ -5,7 +5,6 @@ import { Link } from '@/i18n/navigation'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { FilterBar } from '@/components/filters/filter-bar'
 import NewsHeroSection from '@/components/news/news-hero-section'
 import NewsPostCard from '@/components/ui/news-post-card'
@@ -21,6 +20,7 @@ import { mergeNewsFeed } from '@/lib/news-feed'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { applyFilters, buildOptions, isFiltering, type ActiveFilters, type FilterTag } from '@/lib/filters/core'
+import { newsView } from '@/lib/news/view'
 import { parseFilterParams } from '@/lib/filters/params'
 import { externalToFilterable, newsToFilterable } from '@/lib/filters/adapters'
 import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, type RegionCode } from '@/lib/maps/region-codes'
@@ -129,6 +129,7 @@ async function NewsContent({
   ])
 
   // With filters: every matching news post (featured included) and external source.
+  // No matches never leaves the page empty: a short note, then featured and the latest.
   if (isFiltering(active)) {
     const visible = new Set(
       applyFilters(
@@ -141,6 +142,20 @@ async function NewsContent({
       allExternal.filter((e) => visible.has((e as { _id: string })._id)),
     )
     const totalResults = resultsFeed.length
+
+    if (newsView(active, totalResults) === 'noMatchesThenLatest') {
+      return (
+        <div className="space-y-10">
+          <div className="flex items-start gap-3 rounded-2xl border border-dashed border-ccm-sea/30 bg-ccm-sea/5 p-5" role="status">
+            <Search className="mt-0.5 size-5 shrink-0 text-ccm-sea" aria-hidden />
+            <p className="text-ccm-midnight">
+              <span className="font-semibold">{tFilters('empty')}</span> {tFilters('showingLatest')}
+            </p>
+          </div>
+          <LatestNews locale={locale} latestLabel={t('latest')} countLabel={(count) => t('resultsCount', { count })} noNews={null} newsFallback={newsFallback} />
+        </div>
+      )
+    }
 
     return (
       <div className="space-y-6">
@@ -155,8 +170,7 @@ async function NewsContent({
         </div>
 
         {/* Unified results grid (site + external, date-sorted, badged) */}
-        {resultsFeed.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {resultsFeed.map((item) =>
               item.kind === 'site' ? (
                 <Link key={item.id} href={`/news/${item.data.slug}`}>
@@ -191,25 +205,37 @@ async function NewsContent({
                 />
               )
             )}
-          </div>
-        )}
+        </div>
 
-        {/* Empty State */}
-        {totalResults === 0 && (
-          <Card className="p-12 text-center">
-            <div className="space-y-3">
-              <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
-              <h3 className="text-lg font-medium">{tFilters('empty')}</h3>
-              <Button variant="outline" asChild className="mt-2">
-                <Link href="/news">{tFilters('clear')}</Link>
-              </Button>
-            </div>
-          </Card>
-        )}
       </div>
     )
   }
 
+  return (
+    <LatestNews
+      locale={locale}
+      latestLabel={t('latest')}
+      countLabel={(count) => t('resultsCount', { count })}
+      noNews={{ title: t('noNews'), description: t('noNewsDescription') }}
+      newsFallback={newsFallback}
+    />
+  )
+}
+
+/** Featured on top, then CCM news and external sources in one date-sorted grid. */
+async function LatestNews({
+  locale,
+  latestLabel,
+  countLabel,
+  noNews,
+  newsFallback,
+}: {
+  locale: string
+  latestLabel: string
+  countLabel: (count: number) => string
+  noNews: { title: string; description: string } | null
+  newsFallback: Parameters<typeof NewsPostCard>[0]['fallbackIllustration']
+}) {
   // No filters - show hero section + a single merged feed (CCM + external)
   const [featuredNews, regularNews, externalSources] = await Promise.all([
     getFeaturedNews(3),
@@ -235,8 +261,8 @@ async function NewsContent({
       {feed.length > 0 && (
         <section className="space-y-6">
           <SectionHeader
-            title={t('latest')}
-            subtitle={t('resultsCount', { count: feed.length })}
+            title={latestLabel}
+            subtitle={countLabel(feed.length)}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -278,13 +304,13 @@ async function NewsContent({
       )}
 
       {/* Empty State - No News */}
-      {featuredNews.length === 0 && regularNews.length === 0 && (
+      {noNews && featuredNews.length === 0 && regularNews.length === 0 && (
         <Card className="p-12 text-center">
           <div className="space-y-3">
             <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
-            <h3 className="text-lg font-medium">{t('noNews')}</h3>
+            <h3 className="text-lg font-medium">{noNews.title}</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              {t('noNewsDescription')}
+              {noNews.description}
             </p>
           </div>
         </Card>
