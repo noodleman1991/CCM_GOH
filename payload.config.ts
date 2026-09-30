@@ -59,6 +59,9 @@ export default buildConfig({
       beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],
       // The hub's "Report a problem" bubble, on every signed-in admin page.
       header: ["@/payload/components/report-issue#ReportIssue"],
+      // Keeps the hub (Clerk) session renewed while editors work — without it
+      // the admin logged editors out about a minute in (payload/components/clerk-session.tsx).
+      providers: ["@/payload/components/clerk-session#ClerkSession"],
     },
   },
   // The REST API must not mount at /api — this app already has 71 route
