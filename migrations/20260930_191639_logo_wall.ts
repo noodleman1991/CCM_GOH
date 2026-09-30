@@ -1,0 +1,121 @@
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+
+export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+  await db.execute(sql`
+   ALTER TYPE "public"."enum_pages_blocks_logo_cloud1_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_pages_blocks_logo_cloud1_2_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__pages_v_blocks_logo_cloud1_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__pages_v_blocks_logo_cloud1_2_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_regional_communities_blocks_logo_cloud1_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_regional_communities_blocks_logo_cloud1_2_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_2_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_regional_pages_logo_cloud_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__regional_pages_v_version_logo_cloud_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_homepage_blocks_logo_cloud1_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_homepage_blocks_logo_cloud1_2_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum_homepage_partner_logos_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__homepage_v_blocks_logo_cloud1_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__homepage_v_blocks_logo_cloud1_2_layout" ADD VALUE 'carousel' BEFORE 'marquee';
+  ALTER TYPE "public"."enum__homepage_v_version_partner_logos_layout" ADD VALUE 'carousel' BEFORE 'marquee';`)
+}
+
+export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+  await db.execute(sql`
+   ALTER TABLE "pages_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "pages_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_pages_blocks_logo_cloud1_layout";
+  CREATE TYPE "public"."enum_pages_blocks_logo_cloud1_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "pages_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum_pages_blocks_logo_cloud1_layout";
+  ALTER TABLE "pages_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE "public"."enum_pages_blocks_logo_cloud1_layout" USING "layout"::"public"."enum_pages_blocks_logo_cloud1_layout";
+  ALTER TABLE "pages_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "pages_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_pages_blocks_logo_cloud1_2_layout";
+  CREATE TYPE "public"."enum_pages_blocks_logo_cloud1_2_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "pages_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum_pages_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "pages_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE "public"."enum_pages_blocks_logo_cloud1_2_layout" USING "layout"::"public"."enum_pages_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "_pages_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "_pages_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__pages_v_blocks_logo_cloud1_layout";
+  CREATE TYPE "public"."enum__pages_v_blocks_logo_cloud1_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_pages_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum__pages_v_blocks_logo_cloud1_layout";
+  ALTER TABLE "_pages_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE "public"."enum__pages_v_blocks_logo_cloud1_layout" USING "layout"::"public"."enum__pages_v_blocks_logo_cloud1_layout";
+  ALTER TABLE "_pages_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "_pages_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__pages_v_blocks_logo_cloud1_2_layout";
+  CREATE TYPE "public"."enum__pages_v_blocks_logo_cloud1_2_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_pages_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum__pages_v_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "_pages_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE "public"."enum__pages_v_blocks_logo_cloud1_2_layout" USING "layout"::"public"."enum__pages_v_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "regional_communities_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "regional_communities_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_regional_communities_blocks_logo_cloud1_layout";
+  CREATE TYPE "public"."enum_regional_communities_blocks_logo_cloud1_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "regional_communities_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum_regional_communities_blocks_logo_cloud1_layout";
+  ALTER TABLE "regional_communities_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE "public"."enum_regional_communities_blocks_logo_cloud1_layout" USING "layout"::"public"."enum_regional_communities_blocks_logo_cloud1_layout";
+  ALTER TABLE "regional_communities_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "regional_communities_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_regional_communities_blocks_logo_cloud1_2_layout";
+  CREATE TYPE "public"."enum_regional_communities_blocks_logo_cloud1_2_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "regional_communities_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum_regional_communities_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "regional_communities_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE "public"."enum_regional_communities_blocks_logo_cloud1_2_layout" USING "layout"::"public"."enum_regional_communities_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_layout";
+  CREATE TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum__regional_communities_v_blocks_logo_cloud1_layout";
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_layout" USING "layout"::"public"."enum__regional_communities_v_blocks_logo_cloud1_layout";
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_2_layout";
+  CREATE TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_2_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum__regional_communities_v_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "_regional_communities_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE "public"."enum__regional_communities_v_blocks_logo_cloud1_2_layout" USING "layout"::"public"."enum__regional_communities_v_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "regional_pages_locales" ALTER COLUMN "logo_cloud_layout" SET DATA TYPE text;
+  ALTER TABLE "regional_pages_locales" ALTER COLUMN "logo_cloud_layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_regional_pages_logo_cloud_layout";
+  CREATE TYPE "public"."enum_regional_pages_logo_cloud_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "regional_pages_locales" ALTER COLUMN "logo_cloud_layout" SET DEFAULT 'marquee'::"public"."enum_regional_pages_logo_cloud_layout";
+  ALTER TABLE "regional_pages_locales" ALTER COLUMN "logo_cloud_layout" SET DATA TYPE "public"."enum_regional_pages_logo_cloud_layout" USING "logo_cloud_layout"::"public"."enum_regional_pages_logo_cloud_layout";
+  ALTER TABLE "_regional_pages_v_locales" ALTER COLUMN "version_logo_cloud_layout" SET DATA TYPE text;
+  ALTER TABLE "_regional_pages_v_locales" ALTER COLUMN "version_logo_cloud_layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__regional_pages_v_version_logo_cloud_layout";
+  CREATE TYPE "public"."enum__regional_pages_v_version_logo_cloud_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_regional_pages_v_locales" ALTER COLUMN "version_logo_cloud_layout" SET DEFAULT 'marquee'::"public"."enum__regional_pages_v_version_logo_cloud_layout";
+  ALTER TABLE "_regional_pages_v_locales" ALTER COLUMN "version_logo_cloud_layout" SET DATA TYPE "public"."enum__regional_pages_v_version_logo_cloud_layout" USING "version_logo_cloud_layout"::"public"."enum__regional_pages_v_version_logo_cloud_layout";
+  ALTER TABLE "homepage_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "homepage_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_homepage_blocks_logo_cloud1_layout";
+  CREATE TYPE "public"."enum_homepage_blocks_logo_cloud1_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "homepage_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum_homepage_blocks_logo_cloud1_layout";
+  ALTER TABLE "homepage_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE "public"."enum_homepage_blocks_logo_cloud1_layout" USING "layout"::"public"."enum_homepage_blocks_logo_cloud1_layout";
+  ALTER TABLE "homepage_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "homepage_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_homepage_blocks_logo_cloud1_2_layout";
+  CREATE TYPE "public"."enum_homepage_blocks_logo_cloud1_2_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "homepage_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum_homepage_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "homepage_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE "public"."enum_homepage_blocks_logo_cloud1_2_layout" USING "layout"::"public"."enum_homepage_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "homepage" ALTER COLUMN "partner_logos_layout" SET DATA TYPE text;
+  ALTER TABLE "homepage" ALTER COLUMN "partner_logos_layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum_homepage_partner_logos_layout";
+  CREATE TYPE "public"."enum_homepage_partner_logos_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "homepage" ALTER COLUMN "partner_logos_layout" SET DEFAULT 'marquee'::"public"."enum_homepage_partner_logos_layout";
+  ALTER TABLE "homepage" ALTER COLUMN "partner_logos_layout" SET DATA TYPE "public"."enum_homepage_partner_logos_layout" USING "partner_logos_layout"::"public"."enum_homepage_partner_logos_layout";
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__homepage_v_blocks_logo_cloud1_layout";
+  CREATE TYPE "public"."enum__homepage_v_blocks_logo_cloud1_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum__homepage_v_blocks_logo_cloud1_layout";
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1" ALTER COLUMN "layout" SET DATA TYPE "public"."enum__homepage_v_blocks_logo_cloud1_layout" USING "layout"::"public"."enum__homepage_v_blocks_logo_cloud1_layout";
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE text;
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__homepage_v_blocks_logo_cloud1_2_layout";
+  CREATE TYPE "public"."enum__homepage_v_blocks_logo_cloud1_2_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DEFAULT 'marquee'::"public"."enum__homepage_v_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "_homepage_v_blocks_logo_cloud1_2" ALTER COLUMN "layout" SET DATA TYPE "public"."enum__homepage_v_blocks_logo_cloud1_2_layout" USING "layout"::"public"."enum__homepage_v_blocks_logo_cloud1_2_layout";
+  ALTER TABLE "_homepage_v" ALTER COLUMN "version_partner_logos_layout" SET DATA TYPE text;
+  ALTER TABLE "_homepage_v" ALTER COLUMN "version_partner_logos_layout" SET DEFAULT 'marquee'::text;
+  DROP TYPE "public"."enum__homepage_v_version_partner_logos_layout";
+  CREATE TYPE "public"."enum__homepage_v_version_partner_logos_layout" AS ENUM('grid', 'marquee');
+  ALTER TABLE "_homepage_v" ALTER COLUMN "version_partner_logos_layout" SET DEFAULT 'marquee'::"public"."enum__homepage_v_version_partner_logos_layout";
+  ALTER TABLE "_homepage_v" ALTER COLUMN "version_partner_logos_layout" SET DATA TYPE "public"."enum__homepage_v_version_partner_logos_layout" USING "version_partner_logos_layout"::"public"."enum__homepage_v_version_partner_logos_layout";`)
+}

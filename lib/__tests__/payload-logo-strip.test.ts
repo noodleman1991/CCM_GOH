@@ -22,4 +22,18 @@ describe("logo strip organisations", () => {
     const { images } = strip({ organizations: [org({ logo: null })] });
     expect(images![0]).toMatchObject({ name: "Wellcome", href: "/organizations/wellcome", asset: null });
   });
+  it("puts Funded by and Hosted by on top of a grid, once each, and not again among the partners", () => {
+    const ccc = org({ id: "o2", name: "Climate Cares Centre", slug: "climate-cares-centre" });
+    const imperial = org({ id: "o3", name: "Imperial College London", slug: "imperial" });
+    const block = pageBlocks([{ id: "s", blockType: "logoCloud1", layout: "grid", fundedBy: [org()], hostedBy: [ccc], organizations: [imperial, org()] }])![0] as {
+      leads?: Array<Record<string, unknown>>;
+      images: Array<Record<string, unknown>> | null;
+    };
+    expect(block.leads!.map((l) => [l.name, l.role])).toEqual([["Wellcome", "fundedBy"], ["Climate Cares Centre", "hostedBy"]]);
+    expect(block.images!.map((i) => i.name)).toEqual(["Imperial College London"]);
+  });
+  it("ignores Funded by and Hosted by outside the grid layout", () => {
+    const block = pageBlocks([{ id: "s", blockType: "logoCloud1", layout: "carousel", fundedBy: [org()], organizations: [org()] }])![0] as { leads?: unknown };
+    expect(block.leads).toBeUndefined();
+  });
 });

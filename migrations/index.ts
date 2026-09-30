@@ -19,6 +19,7 @@ import * as migration_20260930_090407_news_fallback_illustration from './2026093
 import * as migration_20260930_153429_events_across_the_hub from './20260930_153429_events_across_the_hub';
 import * as migration_20260930_180818_community_tagline from './20260930_180818_community_tagline';
 import * as migration_20260930_181925_community_carousel from './20260930_181925_community_carousel';
+import * as migration_20260930_191639_logo_wall from './20260930_191639_logo_wall';
 
 export const migrations = [
   {
@@ -124,6 +125,11 @@ export const migrations = [
   {
     up: migration_20260930_181925_community_carousel.up,
     down: migration_20260930_181925_community_carousel.down,
-    name: '20260930_181925_community_carousel'
+    name: '20260930_181925_community_carousel',
+  },
+  {
+    up: migration_20260930_191639_logo_wall.up,
+    down: migration_20260930_191639_logo_wall.down,
+    name: '20260930_191639_logo_wall'
   },
 ];

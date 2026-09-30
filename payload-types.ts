@@ -2641,13 +2641,21 @@ export interface LogoCloud1Block {
   title?: string | null;
   description?: string | null;
   /**
-   * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
+   * Grid: a calm wall of named logos, with Funded by and Hosted by on top. One line: a single row visitors move with arrows or a swipe. Marquee: the old auto-scrolling strip.
    */
-  layout?: ('grid' | 'marquee') | null;
+  layout?: ('grid' | 'carousel' | 'marquee') | null;
   /**
    * Each logo links to the organisation's page on the hub. Drag to reorder.
    */
   organizations?: (string | Organization)[] | null;
+  /**
+   * Shown larger, above the partners, labelled “Funded by”. Grid layout only.
+   */
+  fundedBy?: (string | Organization)[] | null;
+  /**
+   * Shown larger, above the partners, labelled “Hosted by”. Grid layout only.
+   */
+  hostedBy?: (string | Organization)[] | null;
   /**
    * Logos with no organisation on the hub. Prefer Partner organisations.
    */
@@ -3105,13 +3113,21 @@ export interface RegionalCommunityPage {
     title?: string | null;
     description?: string | null;
     /**
-     * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
+     * Grid: a calm wall of named logos, with Funded by and Hosted by on top. One line: a single row visitors move with arrows or a swipe. Marquee: the old auto-scrolling strip.
      */
-    layout?: ('grid' | 'marquee') | null;
+    layout?: ('grid' | 'carousel' | 'marquee') | null;
     /**
      * Each logo links to the organisation's page on the hub. Drag to reorder.
      */
     organizations?: (string | Organization)[] | null;
+    /**
+     * Shown larger, above the partners, labelled “Funded by”. Grid layout only.
+     */
+    fundedBy?: (string | Organization)[] | null;
+    /**
+     * Shown larger, above the partners, labelled “Hosted by”. Grid layout only.
+     */
+    hostedBy?: (string | Organization)[] | null;
     /**
      * Logos with no organisation on the hub. Prefer Partner organisations.
      */
@@ -4324,6 +4340,8 @@ export interface LogoCloud1BlockSelect<T extends boolean = true> {
   description?: T;
   layout?: T;
   organizations?: T;
+  fundedBy?: T;
+  hostedBy?: T;
   images?:
     | T
     | {
@@ -5004,6 +5022,8 @@ export interface RegionalCommunityPagesSelect<T extends boolean = true> {
         description?: T;
         layout?: T;
         organizations?: T;
+        fundedBy?: T;
+        hostedBy?: T;
         images?:
           | T
           | {
@@ -6484,13 +6504,21 @@ export interface Homepage {
     title?: string | null;
     description?: string | null;
     /**
-     * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
+     * Grid: a calm wall of named logos, with Funded by and Hosted by on top. One line: a single row visitors move with arrows or a swipe. Marquee: the old auto-scrolling strip.
      */
-    layout?: ('grid' | 'marquee') | null;
+    layout?: ('grid' | 'carousel' | 'marquee') | null;
     /**
      * Each logo links to the organisation's page on the hub. Drag to reorder.
      */
     organizations?: (string | Organization)[] | null;
+    /**
+     * Shown larger, above the partners, labelled “Funded by”. Grid layout only.
+     */
+    fundedBy?: (string | Organization)[] | null;
+    /**
+     * Shown larger, above the partners, labelled “Hosted by”. Grid layout only.
+     */
+    hostedBy?: (string | Organization)[] | null;
     /**
      * Logos with no organisation on the hub. Prefer Partner organisations.
      */
@@ -7431,6 +7459,8 @@ export interface HomepageSelect<T extends boolean = true> {
         description?: T;
         layout?: T;
         organizations?: T;
+        fundedBy?: T;
+        hostedBy?: T;
         images?:
           | T
           | {

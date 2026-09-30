@@ -93,6 +93,7 @@
  * (grepped `components/blocks/`; the only `_type` reads are the two block
  * dispatchers).
  */
+import { groupLogos } from "@/lib/logos/group-logos";
 import "server-only";
 import { createHash } from "node:crypto";
 import { imageGroup, mediaOf } from "@/lib/content/internal/image-shape";
@@ -538,17 +539,24 @@ function sectionHeaderBlock(row: Row): Row {
  * would have been visible, and where the flattened media keys are.
  */
 function logoCloud1Block(row: Row, key: string | null = blockKey(row)): Row {
+  const orgs = (value: unknown) =>
+    (Array.isArray(value) ? value.map(logoFromOrganization).filter((i): i is Row => i !== null) : []).map((r) => ({ ...r, id: String(r._key) }));
+  // Funded by / Hosted by lead the wall; an organisation shows once (spec §3.4).
+  const grouped = groupLogos({
+    fundedBy: row.layout === "grid" ? orgs(row.fundedBy) : [],
+    hostedBy: row.layout === "grid" ? orgs(row.hostedBy) : [],
+    partners: orgs(row.organizations),
+    others: (Array.isArray(row.images) ? row.images.filter(isRow).map(logoCloudImage).filter((i): i is Row => i !== null) : []).map((r) => ({ ...r, id: String(r._key) })),
+  });
+  const strip = (row: Row): Row => { const rest = { ...row }; delete rest.id; return rest; };
   return groqObject({
     _key: key,
     _type: "logo-cloud-1",
     description: orNull(text(row.description)),
+    // Only present when set, so a strip without them keeps its old shape.
+    ...(grouped.leads.length ? { leads: grouped.leads.map(({ item, role }) => ({ ...strip(item), role })) } : {}),
     // Partner organisations first (CMS project 2), then any unlinked logos.
-    images: listOrNull([
-      ...(Array.isArray(row.organizations)
-        ? row.organizations.map(logoFromOrganization).filter((i): i is Row => i !== null)
-        : []),
-      ...(Array.isArray(row.images) ? row.images.filter(isRow).map(logoCloudImage).filter((i): i is Row => i !== null) : []),
-    ]),
+    images: listOrNull([...grouped.partners.map(strip), ...grouped.others.map(strip)]),
     layout: orNull(text(row.layout)),
     motionSpeed: orNull(text(row.motionSpeed)),
     padding: paddingObject(row.padding),

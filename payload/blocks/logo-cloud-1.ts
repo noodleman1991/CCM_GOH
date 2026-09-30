@@ -32,10 +32,11 @@ export const logoCloud1: Block = {
       defaultValue: "marquee",
       admin: {
         description:
-          "Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.",
+          "Grid: a calm wall of named logos, with Funded by and Hosted by on top. One line: a single row visitors move with arrows or a swipe. Marquee: the old auto-scrolling strip.",
       },
       options: [
         { label: "Grid — calm, spacious", value: "grid" },
+        { label: "One line — scrolls sideways", value: "carousel" },
         { label: "Marquee — scrolling strip", value: "marquee" },
       ],
     },
@@ -46,7 +47,7 @@ export const logoCloud1: Block = {
       defaultValue: "default",
       admin: {
         description: "Only applies to the marquee layout.",
-        condition: (_, siblingData) => siblingData?.layout !== "grid",
+        condition: (_, siblingData) => siblingData?.layout === "marquee" || !siblingData?.layout,
       },
       options: [
         { label: "Default", value: "default" },
@@ -61,6 +62,30 @@ export const logoCloud1: Block = {
       hasMany: true,
       filterOptions: { showOnSite: { not_equals: false } },
       admin: { description: "Each logo links to the organisation's page on the hub. Drag to reorder." },
+    },
+    {
+      name: "fundedBy",
+      label: "Funded by",
+      type: "relationship",
+      relationTo: "organizations",
+      hasMany: true,
+      filterOptions: { showOnSite: { not_equals: false } },
+      admin: {
+        description: "Shown larger, above the partners, labelled “Funded by”. Grid layout only.",
+        condition: (_, siblingData) => siblingData?.layout === "grid",
+      },
+    },
+    {
+      name: "hostedBy",
+      label: "Hosted by",
+      type: "relationship",
+      relationTo: "organizations",
+      hasMany: true,
+      filterOptions: { showOnSite: { not_equals: false } },
+      admin: {
+        description: "Shown larger, above the partners, labelled “Hosted by”. Grid layout only.",
+        condition: (_, siblingData) => siblingData?.layout === "grid",
+      },
     },
     {
       name: "images",
