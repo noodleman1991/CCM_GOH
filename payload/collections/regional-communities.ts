@@ -93,6 +93,11 @@ export const RegionalCommunities: CollectionConfig = {
       admin: { initCollapsed: true },
       fields: [
         localizedText("name", { required: true }),
+        localizedTextarea("tagline", {
+          label: "Tagline",
+          maxLength: 140,
+          admin: { description: "One line about this community, shown on its card on the homepage." },
+        }),
         {
           name: "region",
           type: "select",

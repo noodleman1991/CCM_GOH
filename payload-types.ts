@@ -1062,6 +1062,10 @@ export interface RegionalCommunity {
   leadIds?: string[] | null;
   name: string;
   /**
+   * One line about this community, shown on its card on the homepage.
+   */
+  tagline?: string | null;
+  /**
    * Fixed-7 region short code.
    */
   region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
@@ -4637,6 +4641,7 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
   slug?: T;
   leadIds?: T;
   name?: T;
+  tagline?: T;
   region?: T;
   coverImage?:
     | T
