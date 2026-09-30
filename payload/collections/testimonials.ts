@@ -33,10 +33,14 @@ import { documentIdField } from "@/payload/fields/document-id";
  */
 export const Testimonials: CollectionConfig = {
   slug: "testimonials",
+  // "Quotes" in the admin (2026-09-30): short quotes shown in quote carousels —
+  // not lived experiences, which are full member stories.
+  labels: { singular: "Quote", plural: "Quotes" },
   versions: { drafts: true },
   admin: {
-    group: "Site pages",
+    group: "Hub content",
     useAsTitle: "name",
+    description: "Short quotes — a sentence or two with the person's name and role — shown in quote carousels. Full member stories go in Lived experiences.",
     defaultColumns: ["name", "jobTitle", "featured"],
   },
   access: {
@@ -57,7 +61,7 @@ export const Testimonials: CollectionConfig = {
       admin: { hidden: true, description: "Deprecated — use the localized Job Title field above." },
     },
     imageField("image"),
-    localizedRichText("quote", { label: "Testimonial", admin: { description: "The testimonial quote (rich text), in each language." } }),
+    localizedRichText("quote", { label: "Quote", admin: { description: "The quote itself, in each language." } }),
     {
       name: "body",
       type: "richText",
