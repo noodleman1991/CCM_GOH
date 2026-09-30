@@ -43,8 +43,45 @@ const centroidCache = new Map<string, { x: number; y: number } | null>();
  *  Keep this list of codes in sync with scripts/backfill-country-codes.mjs's
  *  own copy — that script runs outside the server-only bundle and can't
  *  import this module. */
+// Countries too small for the map's shapes (mostly island states) still get a
+// country-level pin, at roughly their capital (2026-09-30: a Barbados case
+// study had no pin, so the atlas showed 2 pins where its count said 3).
 const CENTROID_FALLBACK_COORDS: Record<string, { lat: number; lng: number }> = {
   MLT: { lat: 35.9, lng: 14.4 }, // Malta
+  // Africa
+  CPV: { lat: 15.1, lng: -23.6 }, // Cabo Verde
+  COM: { lat: -11.7, lng: 43.3 }, // Comoros
+  MUS: { lat: -20.3, lng: 57.6 }, // Mauritius
+  STP: { lat: 0.3, lng: 6.7 }, // São Tomé and Príncipe
+  SYC: { lat: -4.6, lng: 55.5 }, // Seychelles
+  // Asia
+  BHR: { lat: 26.1, lng: 50.6 }, // Bahrain
+  MDV: { lat: 4.2, lng: 73.5 }, // Maldives
+  SGP: { lat: 1.35, lng: 103.8 }, // Singapore
+  // Caribbean
+  ATG: { lat: 17.1, lng: -61.8 }, // Antigua and Barbuda
+  BRB: { lat: 13.2, lng: -59.55 }, // Barbados
+  DMA: { lat: 15.4, lng: -61.35 }, // Dominica
+  GRD: { lat: 12.1, lng: -61.7 }, // Grenada
+  KNA: { lat: 17.3, lng: -62.75 }, // Saint Kitts and Nevis
+  LCA: { lat: 13.9, lng: -60.97 }, // Saint Lucia
+  VCT: { lat: 13.25, lng: -61.2 }, // Saint Vincent and the Grenadines
+  // Pacific
+  FSM: { lat: 6.9, lng: 158.2 }, // Micronesia
+  KIR: { lat: 1.45, lng: 173.0 }, // Kiribati (Tarawa)
+  MHL: { lat: 7.1, lng: 171.2 }, // Marshall Islands
+  NRU: { lat: -0.53, lng: 166.93 }, // Nauru
+  PLW: { lat: 7.5, lng: 134.6 }, // Palau
+  WSM: { lat: -13.8, lng: -172.1 }, // Samoa
+  TON: { lat: -21.2, lng: -175.2 }, // Tonga
+  TUV: { lat: -8.5, lng: 179.2 }, // Tuvalu
+  // Europe
+  AND: { lat: 42.5, lng: 1.5 }, // Andorra
+  XKX: { lat: 42.6, lng: 20.9 }, // Kosovo
+  LIE: { lat: 47.15, lng: 9.55 }, // Liechtenstein
+  MCO: { lat: 43.74, lng: 7.42 }, // Monaco
+  SMR: { lat: 43.94, lng: 12.46 }, // San Marino
+  VAT: { lat: 41.9, lng: 12.45 }, // Vatican City
 };
 
 const CENTROID_FALLBACKS: Record<string, { x: number; y: number }> = Object.fromEntries(
