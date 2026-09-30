@@ -55,6 +55,8 @@ export default buildConfig({
         Icon: "@/payload/components/brand-logo#BrandIcon",
       },
       beforeLogin: ["@/payload/components/clerk-sign-in#ClerkSignIn"],
+      // The hub logo at the top of the side panel and the phone menu drawer.
+      beforeNavLinks: ["@/payload/components/brand-logo#BrandNavLogo"],
       // The review queue above the collection list (payload/components/editor-dashboard.tsx).
       beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],
       // The hub's "Report a problem" bubble, on every signed-in admin page.
@@ -131,13 +133,13 @@ export default buildConfig({
     DocsChapters,
     // Hub content
     NewsPosts,
+    ExternalSources,
     Events,
     CaseStudies,
     LivedExperiences,
     Testimonials,
     ResearchOutputs,
     Agendas,
-    ExternalSources,
     // People & organisations
     Organizations,
     Authors,

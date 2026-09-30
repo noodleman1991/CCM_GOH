@@ -21,7 +21,7 @@ describe("admin menu order", () => {
     const groups = [...new Set(visible.map((x) => x.admin?.group).filter((g): g is string => typeof g === "string"))];
     expect(groups).toEqual(["Site pages", "Hub content", "People & organisations", "Media", "Settings"]);
     const hub = visible.filter((x) => x.admin?.group === "Hub content").map((x) => x.slug);
-    expect(hub).toEqual(["newsPosts", "events", "caseStudies", "livedExperiences", "testimonials", "researchOutputs", "agendas", "externalSources"]);
+    expect(hub).toEqual(["newsPosts", "externalSources", "events", "caseStudies", "livedExperiences", "testimonials", "researchOutputs", "agendas"]);
     const site = visible.filter((x) => x.admin?.group === "Site pages").map((x) => x.slug);
     expect(site).toEqual(["pages", "regionalCommunities", "docsChapters"]);
   });

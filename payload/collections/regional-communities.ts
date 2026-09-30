@@ -46,6 +46,7 @@ export const COMMUNITY_SECTIONS: Block[] = [communityHeader, ...HOMEPAGE_SECTION
 
 export const RegionalCommunities: CollectionConfig = {
   slug: "regionalCommunities",
+  defaultSort: "name",
   admin: {
     group: "Site pages",
     useAsTitle: "name",

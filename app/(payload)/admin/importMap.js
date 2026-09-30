@@ -33,6 +33,7 @@ import { BrandIcon as BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/paylo
 import { BrandLogo as BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { EditorDashboard as EditorDashboard_5df917fba379ec882678fdcecffedd2d } from '@/payload/components/editor-dashboard'
 import { ClerkSignIn as ClerkSignIn_dfe5865ffd8614070d524de0d3c68776 } from '@/payload/components/clerk-sign-in'
+import { BrandNavLogo as BrandNavLogo_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { ClerkSession as ClerkSession_19baad9472c59c56c2a83f9b790255b5 } from '@/payload/components/clerk-session'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -74,6 +75,7 @@ export const importMap = {
   "@/payload/components/brand-logo#BrandLogo": BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/editor-dashboard#EditorDashboard": EditorDashboard_5df917fba379ec882678fdcecffedd2d,
   "@/payload/components/clerk-sign-in#ClerkSignIn": ClerkSignIn_dfe5865ffd8614070d524de0d3c68776,
+  "@/payload/components/brand-logo#BrandNavLogo": BrandNavLogo_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/clerk-session#ClerkSession": ClerkSession_19baad9472c59c56c2a83f9b790255b5,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1

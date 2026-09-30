@@ -91,6 +91,8 @@ export const PAGE_SECTIONS = HOMEPAGE_SECTIONS;
  */
 export const Pages: CollectionConfig = {
   slug: "pages",
+  // A–Z by title in the admin list (user, 2026-09-30).
+  defaultSort: "title",
   admin: {
     group: "Site pages",
     useAsTitle: "title",

@@ -15,7 +15,8 @@
   --ccm-sea: #205596;
   --ccm-water: #4186c3;
   --ccm-mist: #eef4fb;
-  --ccm-radius: 0.625rem;
+  /* The hub's buttons: Poppins 700, rounded-lg (components/ui/button.tsx). */
+  --ccm-radius: 0.5rem;
   --ccm-font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --ccm-font-body: "Lato", ui-sans-serif, system-ui, sans-serif;
 }
@@ -140,6 +141,7 @@
     border-radius: var(--ccm-radius);
     background: var(--ccm-sea);
     color: #fff;
+    font-family: var(--ccm-font-heading);
     font-weight: 700;
     font-size: 1rem;
     text-decoration: none;
@@ -173,10 +175,33 @@
 
 /* ------------------------------------------------------------------ nav */
 
+/* The side panel's logo: 20% larger than before (1.75rem → 2.1rem), never
+   wider than the panel — so it fits the desktop panel, tablet and the
+   mobile drawer alike. */
 .nav .graphic-icon,
 .ccm-brand-icon {
-  height: 1.75rem;
+  height: 2.1rem;
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* The logo at the top of the side panel (desktop) and the menu drawer
+   (phones): as wide as the panel allows, never taller than 3.25rem. */
+.ccm-nav-logo {
+  display: block;
+  margin: 0.25rem 0 1.25rem;
+  line-height: 0;
+  img {
+    display: block;
+    width: 100%;
+    max-width: 11rem;
+    height: auto;
+    max-height: 3.25rem;
+    object-fit: contain;
+    object-position: left center;
+  }
+  &:focus-visible { outline: 3px solid var(--ccm-water); outline-offset: 4px; border-radius: 0.25rem; }
 }
 
 /* The breadcrumb's home link: Payload boxes its graphic in an 18px square,
@@ -187,10 +212,13 @@
   display: inline-flex;
   align-items: center;
   .ccm-brand-icon {
-    height: 18px;
+    /* 20% larger than Payload's 18px box (user, 2026-09-30), capped so it
+       never crowds the breadcrumbs on a phone or beside the open drawer. */
+    height: 22px;
     width: auto;
-    max-width: none;
+    max-width: min(9rem, 32vw);
     object-fit: contain;
+    @media (max-width: 47.9rem) { height: 20px; }
   }
 }
 
@@ -252,7 +280,7 @@
   border-radius: var(--ccm-radius);
   background: var(--ccm-sea);
   color: #fff;
-  font: 700 0.9rem/1 var(--ccm-font-body);
+  font: 700 0.9rem/1 var(--ccm-font-heading);
   text-decoration: none;
   cursor: pointer;
   transition: background 150ms ease, transform 150ms ease;

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { clerkStrategy } from "@/payload/auth/clerk-strategy";
-import { isAdmin, isEditor, mayUseAdmin } from "@/payload/access";
+import { isAdmin, mayUseAdmin } from "@/payload/access";
 
 /**
  * Clerk remains the sole identity system (spec D4) — nobody signs up in
@@ -45,7 +45,14 @@ export const Users: CollectionConfig = {
     // Only admins manage user documents directly through the admin UI — the
     // clerk strategy itself writes with overrideAccess: true and is
     // unaffected by these rules.
-    read: isAdmin,
+    // …but everyone may read their OWN record: Payload's "who am I" call
+    // (/payload-api/users/me) reads it with access applied, and returned 403
+    // for every team editor and community lead on each admin load (2026-09-30).
+    read: ({ req }) => {
+      if ((req.user as { role?: string } | null)?.role === "admin") return true;
+      const id = (req.user as { id?: string | number } | null)?.id;
+      return id !== undefined && id !== null ? { id: { equals: id } } : false;
+    },
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
