@@ -2907,7 +2907,9 @@
       "upcoming": "À venir",
       "past": "Passés"
     },
-    "showingLatest": "Voici les dernières nouvelles à la place."
+    "showingLatest": "Voici les dernières nouvelles à la place.",
+    "showMore": "+{count} de plus",
+    "showLess": "Afficher moins"
   },
   "communityCarousel": {
     "heading": "Nos communautés régionales",
@@ -2924,5 +2926,12 @@
     "slide": "{n} sur {total}",
     "goTo": "Afficher {name}",
     "visit": "Visiter {name}"
+  },
+  "logos": {
+    "fundedBy": "Financé par",
+    "hostedBy": "Hébergé par",
+    "partners": "Partenaires",
+    "previous": "Logos précédents",
+    "next": "Plus de logos"
   }
 }

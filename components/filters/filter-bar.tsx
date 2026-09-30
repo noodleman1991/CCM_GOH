@@ -11,6 +11,8 @@ import { toSearchParams } from "@/lib/filters/params";
 type Row = "regions" | "communities" | "themes";
 const ROWS: Array<[Row, string]> = [["regions", "region"], ["communities", "communities"], ["themes", "themes"]];
 const DEFAULT_WHEN = ["past-year", "past-3-years", "earlier"];
+/** Tag rows show their most-used chips first and collapse the rest (user, 2026-09-30). */
+const TAG_ROW_LIMIT = 6;
 
 /** The hub's one filter bar (spec 2026-09-30): Region · Communities · Themes · When · Search. */
 export function FilterBar({ options, active, whenOptions = DEFAULT_WHEN }: { options: FilterOptions; active: ActiveFilters; whenOptions?: string[] }) {
@@ -39,7 +41,11 @@ export function FilterBar({ options, active, whenOptions = DEFAULT_WHEN }: { opt
       />
       <FilterRowGroup>
         {ROWS.filter(([row]) => options[row].length > 0).map(([row, key]) => (
-          <FilterRow key={row} label={t(key)}>
+          <FilterRow
+            key={row}
+            label={t(key)}
+            collapse={row === "regions" ? undefined : { limit: TAG_ROW_LIMIT, more: (count) => t("showMore", { count }), less: t("showLess") }}
+          >
             {options[row].map((o) => (
               <FilterChip key={o.value} label={o.label} count={o.count} active={active[row].includes(o.value)} onClick={() => toggle(row, o.value)} />
             ))}

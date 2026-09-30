@@ -288,6 +288,9 @@ export function AtlasExplorer({
     return totals
   }, [layers, regionData, effectiveRegion, totalsData])
 
+  // Long tag rows show their most-used chips and collapse the rest (user, 2026-09-30).
+  const tagCollapse = { limit: 6, more: (count: number) => tFilters('showMore', { count }), less: tFilters('showLess') }
+
   const onSelect = (code: RegionCode) => {
     if (lockedRegion) return
     setParams({ region: selected === code ? null : code })
@@ -386,7 +389,7 @@ export function AtlasExplorer({
           })}
         </FilterRow>
         {themes.length > 0 && (
-          <FilterRow label={tFilters('themes')}>
+          <FilterRow label={tFilters('themes')} collapse={tagCollapse}>
             {themes.map((th) => (
               <FilterChip
                 key={th.slug}
@@ -409,7 +412,7 @@ export function AtlasExplorer({
           </FilterRow>
         )}
         {communities.length > 0 && (
-          <FilterRow label={tFilters('communities')}>
+          <FilterRow label={tFilters('communities')} collapse={tagCollapse}>
             {communities.map((c) => (
               <FilterChip
                 key={c.slug}

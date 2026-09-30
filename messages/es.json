@@ -2907,7 +2907,9 @@
       "upcoming": "Próximos",
       "past": "Pasados"
     },
-    "showingLatest": "Aquí tienes lo más reciente."
+    "showingLatest": "Aquí tienes lo más reciente.",
+    "showMore": "+{count} más",
+    "showLess": "Mostrar menos"
   },
   "communityCarousel": {
     "heading": "Nuestras comunidades regionales",
@@ -2924,5 +2926,12 @@
     "slide": "{n} de {total}",
     "goTo": "Mostrar {name}",
     "visit": "Visitar {name}"
+  },
+  "logos": {
+    "fundedBy": "Con financiación de",
+    "hostedBy": "Con sede en",
+    "partners": "Socios",
+    "previous": "Logotipos anteriores",
+    "next": "Más logotipos"
   }
 }

@@ -2907,7 +2907,9 @@
       "upcoming": "القادمة",
       "past": "السابقة"
     },
-    "showingLatest": "إليك أحدث الأخبار بدلًا من ذلك."
+    "showingLatest": "إليك أحدث الأخبار بدلًا من ذلك.",
+    "showMore": "+{count} أخرى",
+    "showLess": "عرض أقل"
   },
   "communityCarousel": {
     "heading": "مجتمعاتنا الإقليمية",
@@ -2924,5 +2926,12 @@
     "slide": "{n} من {total}",
     "goTo": "عرض {name}",
     "visit": "زيارة {name}"
+  },
+  "logos": {
+    "fundedBy": "بتمويل من",
+    "hostedBy": "باستضافة",
+    "partners": "الشركاء",
+    "previous": "الشعارات السابقة",
+    "next": "مزيد من الشعارات"
   }
 }

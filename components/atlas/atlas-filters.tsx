@@ -1,5 +1,6 @@
 'use client'
 
+import { Children, isValidElement, useState } from 'react'
 import { FILTER_EDGE_FADE, FILTER_SCROLLBAR_HIDDEN } from '@/components/ui/filter-bar'
 import { cn } from '@/lib/utils'
 
@@ -10,9 +11,10 @@ import { cn } from '@/lib/utils'
  * every breakpoint — instead of one long bar that crams labels and chips
  * together and wraps unpredictably on mobile.
  *
- * Mobile: each row scrolls horizontally on its own, with the shared edge fade
- * from filter-bar.tsx as the "more here" affordance. From `sm` up the chips
- * wrap inside their row instead (no fade — nothing is cut off).
+ * Mobile: the label sits above its row, and each row scrolls horizontally on
+ * its own, with the shared edge fade from filter-bar.tsx as the "more here"
+ * affordance. From `sm` up the label moves beside its row and the chips wrap
+ * (no fade — nothing is cut off). Long tag rows collapse behind "+N more".
  */
 export function FilterRowGroup({
   className,
@@ -20,7 +22,7 @@ export function FilterRowGroup({
   ...props
 }: React.ComponentProps<'div'>) {
   return (
-    <div data-slot="filter-rows" role="group" className={cn('space-y-1', className)} {...props}>
+    <div data-slot="filter-rows" role="group" className={cn('space-y-3 sm:space-y-1', className)} {...props}>
       {children}
     </div>
   )
@@ -30,14 +32,27 @@ export function FilterRow({
   label,
   className,
   children,
+  collapse,
 }: {
   label: string
   className?: string
   children: React.ReactNode
+  /** Long tag rows show their first `limit` chips and a "+N more" chip; a
+   *  selected chip always stays visible (user, 2026-09-30). */
+  collapse?: { limit: number; more: (hidden: number) => string; less: string }
 }) {
+  const [open, setOpen] = useState(false)
+  const items = Children.toArray(children)
+  const collapsible = Boolean(collapse && items.length > collapse.limit + 1)
+  const shown =
+    collapsible && !open
+      ? items.filter((child, i) => i < collapse!.limit || (isValidElement<{ active?: boolean }>(child) && child.props.active === true))
+      : items
+  const hidden = items.length - shown.length
+
   return (
-    <div className={cn('flex items-start gap-2 sm:gap-3', className)}>
-      <span className="w-20 flex-none select-none break-words pt-2.5 font-heading text-[10px] font-bold uppercase leading-tight tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)] [hyphens:auto] sm:w-24">
+    <div className={cn('flex flex-col gap-1 sm:flex-row sm:items-start sm:gap-3', className)}>
+      <span className="flex-none select-none break-words font-heading text-[10px] font-bold uppercase leading-tight tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)] [hyphens:auto] sm:w-24 sm:pt-2.5">
         {label}
       </span>
       <div
@@ -48,7 +63,17 @@ export function FilterRow({
           'sm:flex-wrap sm:overflow-x-visible sm:[-webkit-mask-image:none] sm:[mask-image:none]'
         )}
       >
-        {children}
+        {shown}
+        {collapsible && (
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            className="inline-flex flex-none items-center whitespace-nowrap rounded-full border border-dashed border-[var(--color-ccm-sea)]/40 px-3 py-1.5 text-sm font-semibold text-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-sea)]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {open ? collapse!.less : collapse!.more(hidden)}
+          </button>
+        )}
       </div>
     </div>
   )
