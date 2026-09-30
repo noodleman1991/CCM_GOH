@@ -21,6 +21,18 @@ const str = (v: unknown): string | null => (typeof v === "string" && v.trim() ? 
 const idOf = (v: unknown): string | null =>
   v && typeof v === "object" ? idOf((v as Row).id) : typeof v === "number" ? String(v) : str(v);
 
+/** Members come from a second database; if it stalls, the cards still render — without member numbers. */
+const MEMBERS_TIMEOUT_MS = 4000;
+function within<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(fallback), ms);
+    promise.then(
+      (value) => { clearTimeout(timer); resolve(value); },
+      () => { clearTimeout(timer); resolve(fallback); },
+    );
+  });
+}
+
 const STORY_HREF: Record<string, (slug: string) => string> = {
   caseStudy: (s) => `/research-and-action/case-studies/${s}`,
   livedExperience: (s) => `/lived-experiences/${s}`,
@@ -44,7 +56,7 @@ export async function getCommunityCarouselCards(locale: Locale, now: Date = new 
   minute.setUTCSeconds(0, 0);
   const nowIso = minute.toISOString();
   const [memberRows, events] = await Promise.all([
-    prisma.community.findMany({
+    within(prisma.community.findMany({
       where: { type: "REGIONAL" },
       select: {
         regionalName: true,
@@ -57,7 +69,7 @@ export async function getCommunityCarouselCards(locale: Locale, now: Date = new 
           select: { user: { select: { firstName: true, lastName: true, image: true } } },
         },
       },
-    }),
+    }), MEMBERS_TIMEOUT_MS, []),
     query<{ docs?: Row[] }>({
       type: "find",
       collection: "events",

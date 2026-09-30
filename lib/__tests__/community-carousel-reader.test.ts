@@ -51,4 +51,13 @@ describe("the community carousel's data", () => {
     expect(cards[0].upcomingEvents).toBe(1);
     expect(cards[0].latest.find((l) => l.kind === "event")).toMatchObject({ title: "Coastal circle", href: "/events/coastal" });
   });
+  it("never holds up the page: a stalled members database gives cards without member numbers", async () => {
+    vi.useFakeTimers();
+    findMany.mockReturnValue(new Promise(() => {}));
+    const pending = getCommunityCarouselCards("en", NOW);
+    await vi.advanceTimersByTimeAsync(5000);
+    const cards = await pending;
+    vi.useRealTimers();
+    expect(cards[0]).toMatchObject({ slug: "oceania", members: 0, faces: [], stories: 3 });
+  });
 });
