@@ -41,6 +41,11 @@ export const HubIllustrations: GlobalConfig = {
       admin: { description: "Decorative illustration shown at the end (RTL-safe) of the Collaborate page header." },
     },
     {
+      ...imageField("newsFallback"),
+      label: "News picture when a story has none",
+      admin: { description: "Shown on news cards and at the top of a news story that has no picture of its own. Leave empty for the hub's default pattern." },
+    },
+    {
       ...imageField("emptyState"),
       label: "Empty state illustration",
       admin: { description: "Decorative illustration shown alongside empty-state messaging." },

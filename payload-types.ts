@@ -72,13 +72,13 @@ export interface Config {
     regionalCommunityPages: RegionalCommunityPage;
     docsChapters: DocsChapter;
     newsPosts: NewsPost;
+    externalSources: ExternalSource;
     events: Event;
     caseStudies: CaseStudy;
     livedExperiences: LivedExperience;
     testimonials: Testimonial;
     researchOutputs: ResearchOutput;
     agendas: Agenda;
-    externalSources: ExternalSource;
     organizations: Organization;
     authors: Author;
     projects: Project;
@@ -102,13 +102,13 @@ export interface Config {
     regionalCommunityPages: RegionalCommunityPagesSelect<false> | RegionalCommunityPagesSelect<true>;
     docsChapters: DocsChaptersSelect<false> | DocsChaptersSelect<true>;
     newsPosts: NewsPostsSelect<false> | NewsPostsSelect<true>;
+    externalSources: ExternalSourcesSelect<false> | ExternalSourcesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     caseStudies: CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     livedExperiences: LivedExperiencesSelect<false> | LivedExperiencesSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     researchOutputs: ResearchOutputsSelect<false> | ResearchOutputsSelect<true>;
     agendas: AgendasSelect<false> | AgendasSelect<true>;
-    externalSources: ExternalSourcesSelect<false> | ExternalSourcesSelect<true>;
     organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
@@ -3450,6 +3450,10 @@ export interface PayloadLockedDocument {
         value: string | NewsPost;
       } | null)
     | ({
+        relationTo: 'externalSources';
+        value: string | ExternalSource;
+      } | null)
+    | ({
         relationTo: 'events';
         value: string | Event;
       } | null)
@@ -3472,10 +3476,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'agendas';
         value: string | Agenda;
-      } | null)
-    | ({
-        relationTo: 'externalSources';
-        value: string | ExternalSource;
       } | null)
     | ({
         relationTo: 'organizations';
@@ -4848,6 +4848,42 @@ export interface NewsPostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalSources_select".
+ */
+export interface ExternalSourcesSelect<T extends boolean = true> {
+  id?: T;
+  sanityUpdatedAt?: T;
+  title?: T;
+  sourceUrl?: T;
+  publisher?: T;
+  publishedAt?: T;
+  excerpt?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  tags?: T;
+  organizations?: T;
+  relatedCommunity?: T;
+  authors?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  language?: T;
+  sourceType?: T;
+  featured?: T;
+  approved?: T;
+  addedBy?: T;
+  addedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events_select".
  */
 export interface EventsSelect<T extends boolean = true> {
@@ -5150,42 +5186,6 @@ export interface AgendasSelect<T extends boolean = true> {
   featured?: T;
   accessLevel?: T;
   orderRank?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "externalSources_select".
- */
-export interface ExternalSourcesSelect<T extends boolean = true> {
-  id?: T;
-  sanityUpdatedAt?: T;
-  title?: T;
-  sourceUrl?: T;
-  publisher?: T;
-  publishedAt?: T;
-  excerpt?: T;
-  image?:
-    | T
-    | {
-        asset?: T;
-        alt?: T;
-      };
-  tags?: T;
-  organizations?: T;
-  relatedCommunity?: T;
-  authors?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
-  language?: T;
-  sourceType?: T;
-  featured?: T;
-  approved?: T;
-  addedBy?: T;
-  addedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6337,6 +6337,13 @@ export interface HubIllustration {
     alt?: string | null;
   };
   /**
+   * Shown on news cards and at the top of a news story that has no picture of its own. Leave empty for the hub's default pattern.
+   */
+  newsFallback?: {
+    asset?: (string | null) | Media;
+    alt?: string | null;
+  };
+  /**
    * Decorative illustration shown alongside empty-state messaging.
    */
   emptyState?: {
@@ -7188,6 +7195,12 @@ export interface HubIllustrationsSelect<T extends boolean = true> {
         alt?: T;
       };
   collaborateHeader?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  newsFallback?:
     | T
     | {
         asset?: T;

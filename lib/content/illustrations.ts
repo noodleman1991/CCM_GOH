@@ -27,6 +27,7 @@ interface RawHubIllustrations {
   searchHeader?: RawIllustrationImage | null;
   collaborateHeader?: RawIllustrationImage | null;
   emptyState?: RawIllustrationImage | null;
+  newsFallback?: RawIllustrationImage | null;
 }
 
 /** Resolved illustration ready for rendering: a CDN URL plus alt text and
@@ -43,13 +44,15 @@ export interface HubIllustrations {
   searchHeader?: HubIllustration;
   collaborateHeader?: HubIllustration;
   emptyState?: HubIllustration;
+  newsFallback?: HubIllustration;
 }
 
 const HUB_ILLUSTRATIONS_QUERY = `*[_type == "hubIllustrations"][0]{
   atlasHeader{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
   searchHeader{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
   collaborateHeader{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
-  emptyState{ asset->{ _id, metadata { dimensions { width, height } } }, alt }
+  emptyState{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
+  newsFallback{ asset->{ _id, metadata { dimensions { width, height } } }, alt }
 }`;
 
 function mapImage(image: RawIllustrationImage | null | undefined): HubIllustration | undefined {
@@ -94,6 +97,7 @@ export async function getHubIllustrations(): Promise<HubIllustrations> {
       searchHeader: mapImage(data.searchHeader),
       collaborateHeader: mapImage(data.collaborateHeader),
       emptyState: mapImage(data.emptyState),
+      newsFallback: mapImage(data.newsFallback),
     };
   });
 }

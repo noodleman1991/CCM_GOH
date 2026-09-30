@@ -77,6 +77,7 @@ interface HubIllustrationsGlobal {
   searchHeader?: IllustrationSlot | null;
   collaborateHeader?: IllustrationSlot | null;
   emptyState?: IllustrationSlot | null;
+  newsFallback?: IllustrationSlot | null;
 }
 
 /** The first locale that carries text, `en` first. `""` when none does, which
@@ -136,5 +137,6 @@ export async function getHubIllustrations(): Promise<HubIllustrations> {
     searchHeader: mapImage(data.searchHeader),
     collaborateHeader: mapImage(data.collaborateHeader),
     emptyState: mapImage(data.emptyState),
+    newsFallback: mapImage(data.newsFallback),
   };
 }
