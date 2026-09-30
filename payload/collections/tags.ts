@@ -120,7 +120,8 @@ export const Tags: CollectionConfig = {
       name: "useAsTheme",
       type: "checkbox",
       defaultValue: false,
-      admin: { description: "Show this tag as a Theme filter on the Atlas and other discovery surfaces." },
+      // Retired 2026-09-30: filters now offer every topic/impact tag content uses. Data kept.
+      admin: { hidden: true, description: "Retired — filters now come from the tags content carries." },
     },
     {
       name: "orderRank",

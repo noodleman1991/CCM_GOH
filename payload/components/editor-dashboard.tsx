@@ -3,6 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { MODERATED_COLLECTIONS, MODERATION_WORKFLOWS } from "@/payload/moderation/workflows";
 import { latestChanges, type Change } from "./recent-changes";
+import { countTagGaps, needsTagsRows, type NeedsTagsRow } from "./needs-tags";
 
 /**
  * The first thing an editor sees in /admin (editor-experience spec §3.6):
@@ -51,6 +52,47 @@ async function recentChanges(payload: Awaited<ReturnType<typeof getPayload>>): P
   return latestChanges(changes.filter((c) => c.updatedAt), 8);
 }
 
+/**
+ * Content visitors filter by tags, each with the rule its site reader uses for
+ * "visible" (lib/content/internal/payload/*). Events have no tags yet — they
+ * arrive with the events project.
+ */
+const PUBLISHED = { _status: { equals: "published" } };
+const APPROVED = { moderationStatus: { equals: "approved" } };
+const TAGGED: Array<{ collection: "caseStudies" | "livedExperiences" | "newsPosts" | "researchOutputs" | "agendas"; label: string; where: Row }> = [
+  { collection: "caseStudies", label: "Case studies", where: { and: [PUBLISHED, APPROVED] } },
+  { collection: "livedExperiences", label: "Lived experiences", where: { and: [PUBLISHED, { or: [APPROVED, { moderationStatus: { exists: false } }] }] } },
+  { collection: "newsPosts", label: "News", where: PUBLISHED },
+  { collection: "researchOutputs", label: "Research outputs", where: APPROVED },
+  { collection: "agendas", label: "Agendas", where: {} },
+];
+
+/** Per content type, how many items visitors can see have no Themes / no Communities tag. */
+async function needsTags(payload: Awaited<ReturnType<typeof getPayload>>): Promise<NeedsTagsRow[]> {
+  const tags = await payload
+    .find({ collection: "tags", select: { category: true } as never, pagination: false, depth: 0, overrideAccess: true })
+    .catch(() => ({ docs: [] }));
+  const categories = new Map((tags.docs as Row[]).map((t) => [String(t.id), str(t.category)]));
+  if (categories.size === 0) return [];
+  const counts = await Promise.all(
+    TAGGED.map(async ({ collection, label, where }) => {
+      const res = await payload
+        .find({
+          collection,
+          where: where as never,
+          select: { tags: true } as never,
+          pagination: false,
+          sort: "createdAt",
+          depth: 0,
+          overrideAccess: true,
+        })
+        .catch(() => ({ docs: [] }));
+      return { collection, label, ...countTagGaps(res.docs as Row[], categories) };
+    }),
+  );
+  return needsTagsRows(counts);
+}
+
 /** A community lead's home: the communities they look after, with Edit and View on site. */
 async function LeadHome({ clerkId }: { clerkId: string }) {
   const payload = await getPayload({ config });
@@ -91,7 +133,7 @@ export async function EditorDashboard({ user }: { user?: { role?: string | null;
   if (user?.role === "community_editor") return user.clerkId ? <LeadHome clerkId={user.clerkId} /> : null;
 
   const payload = await getPayload({ config });
-  const [rows, changes] = await Promise.all([
+  const [rows, changes, untagged] = await Promise.all([
     Promise.all(
       MODERATED_COLLECTIONS.map(async (collection) => {
         const [pending, revision] = await Promise.all(
@@ -106,6 +148,7 @@ export async function EditorDashboard({ user }: { user?: { role?: string | null;
       }),
     ),
     recentChanges(payload),
+    needsTags(payload),
   ]);
   const waiting = rows.reduce((n, r) => n + r.pending, 0);
 
@@ -147,6 +190,29 @@ export async function EditorDashboard({ user }: { user?: { role?: string | null;
           Review everything in one list on the site&apos;s moderation page, or open a submission here — the buttons sit at the top of the document.
         </p>
       </div>
+
+      {untagged.length > 0 && (
+        <div className="ccm-card">
+          <h2>Needs tags</h2>
+          <p style={{ margin: "0.5rem 0 0", opacity: 0.8, fontSize: "0.9rem" }}>
+            Visitors filter by Themes and Communities tags. These published items don&apos;t have them yet, so filters can&apos;t find them.
+          </p>
+          <ul style={{ margin: "0.75rem 0 0", padding: 0, listStyle: "none", display: "grid", gap: "0.4rem" }}>
+            {untagged.map((r) => (
+              <li key={r.collection}>
+                <strong>{r.label}</strong> ({r.total}):{" "}
+                {r.noThemes.href ? <Link href={r.noThemes.href}>{r.noThemes.count} without themes</Link> : <span style={{ opacity: 0.7 }}>all have themes</span>}
+                {" · "}
+                {r.noCommunities.href ? (
+                  <Link href={r.noCommunities.href}>{r.noCommunities.count} without communities</Link>
+                ) : (
+                  <span style={{ opacity: 0.7 }}>all have communities</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {changes.length > 0 && (
         <div className="ccm-card">
