@@ -749,6 +749,8 @@ const LIST_SELECT = {
   organizations: true,
   relatedCommunity: true,
   tags: true,
+  // The case study's own region code — 9 of 25 have a region but no community.
+  region: true,
 } as const;
 
 /** `CASE_STUDY_INDEX_FIELDS`'s inputs — everything `caseStudyIndexProjection` reads. */
@@ -1115,6 +1117,7 @@ export async function getFilteredCaseStudies(filters: CaseStudyListFilters): Pro
         image: imageProjection(row.image, "idUrl", ["alt"]),
         organizations: organizationProjection(row.organizations, ["_id", "name"]),
         publishedAt: orNull(isoDate(row.publishedAt)),
+        regionCode: orNull(text(row.region)),
         relatedCommunity: orNull(localized(community?.name)),
         slug: text(row.slug) ?? null,
         tags: tagProjection(row.tags),

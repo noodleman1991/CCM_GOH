@@ -798,6 +798,8 @@ export interface CaseStudyListItem {
   organizations?: Array<{ _id: string; name?: string }>;
   relatedCommunity?: Localized | string | null;
   communitySlug?: string | null;
+  /** The case study's own region code (e.g. "oce"), when set. */
+  regionCode?: string | null;
 }
 
 export async function getFilteredCaseStudies(filters: CaseStudyListFilters): Promise<CaseStudyListItem[]> {

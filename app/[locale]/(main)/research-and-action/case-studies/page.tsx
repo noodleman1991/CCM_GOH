@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import GridCaseStudyComponent from '@/components/blocks/grid/grid-case-study'
-import CaseStudiesFilters from '@/components/case-studies/case-studies-filters'
+import { FilterBar } from '@/components/filters/filter-bar'
 import { CasesMapView, type CasesMapItem } from '@/components/case-studies/cases-map-view'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -10,40 +10,17 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Plus, Search, LayoutGrid, Map as MapIcon } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getLocalizedText } from '@/lib/localization-utils'
-import {
-  getCaseStudyFilterTags,
-  getCaseStudyFilterCommunities,
-  getFilteredCaseStudies,
-  type CaseStudyListFilters,
-} from '@/lib/content/case-studies'
+import { getFilteredCaseStudies, type CaseStudyListItem } from '@/lib/content/case-studies'
+import { applyFilters, buildOptions, isFiltering, type ActiveFilters, type FilterTag } from '@/lib/filters/core'
+import { parseFilterParams, toSearchParams } from '@/lib/filters/params'
+import { caseStudyToFilterable } from '@/lib/filters/adapters'
 import { legacyTopicsToTagSlugs } from '@/lib/case-studies/topic-tag-map'
 import { assignGalleryVariant, spanForVariant } from '@/lib/case-studies/gallery-layout'
-import { REGION_CODES, REGION_I18N_KEY, slugToShortCode, type RegionCode } from '@/lib/maps/region-codes'
+import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, type RegionCode } from '@/lib/maps/region-codes'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import { cn } from '@/lib/utils'
 import { imageUrl } from '@/lib/content/images'
 
-type Filters = CaseStudyListFilters
-
-// Wrapper component to fetch filter data
-async function CaseStudiesFiltersWrapper({
-  currentFilters
-}: {
-  currentFilters: Filters
-}) {
-  const [tags, communities] = await Promise.all([
-    getCaseStudyFilterTags(),
-    getCaseStudyFilterCommunities()
-  ])
-
-  return (
-    <CaseStudiesFilters
-      currentFilters={currentFilters}
-      tags={tags as never}
-      communities={communities as never}
-    />
-  )
-}
 
 function LoadingSkeleton() {
   return (
@@ -73,6 +50,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
+const COMMUNITY_SLUG_TO_REGION: Record<string, string> = Object.fromEntries(
+  REGION_CODES.map((code) => [REGION_TO_RC_SLUG[code], code]),
+)
+
 export default async function CaseStudiesPage({
   params,
   searchParams
@@ -81,48 +62,31 @@ export default async function CaseStudiesPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { locale } = await params
-  const { topics, tags, communities, search, view } = await searchParams
+  const sp = await searchParams
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
+  const tRegions = await getTranslations({ locale, namespace: 'navigation.regions' })
 
-  // Convert a (possibly comma-separated) multi-value param into an array.
-  const toArray = (param: string | string[] | undefined): string[] | undefined => {
-    if (!param) return undefined
-    const raw = Array.isArray(param) ? param : param.split(',')
-    const cleaned = raw.map((s) => s.trim()).filter(Boolean)
-    return cleaned.length ? cleaned : undefined
-  }
+  // Every approved case study, once — the shared filter engine decides both
+  // what shows and every option's count from this one list (spec 2026-09-30).
+  const all = await getFilteredCaseStudies({})
+  const items = all.map((cs) => caseStudyToFilterable(cs, locale))
+  const knownTags: FilterTag[] = [...new Map(items.flatMap((i) => i.tags).map((tag) => [tag.slug, tag])).values()]
+  // The retired fixed Topic list: an old `?topics=` link maps to its theme tag.
+  const legacyTopics = legacyTopicsToTagSlugs(
+    (Array.isArray(sp.topics) ? sp.topics.join(',') : sp.topics ?? '').split(',').map((x) => x.trim()).filter(Boolean),
+  )
+  const active = parseFilterParams(
+    legacyTopics.length ? { ...sp, themes: [sp.themes, legacyTopics.join(',')].flat().filter(Boolean).join(',') } : sp,
+    { tags: knownTags, communitySlugToRegion: COMMUNITY_SLUG_TO_REGION },
+  )
+  const regionLabel = (code: string) => tRegions(REGION_I18N_KEY[code as RegionCode])
+  const options = buildOptions(items, active, { locale, regionLabel })
 
-  // The retired fixed Topic list has no facet of its own any more — an old
-  // `?topics=` link is mapped to its theme-tag replacement's SLUG (once Task 16
-  // fills in LEGACY_TOPIC_TO_TAG) and folded into the same slug-based `tags`
-  // filter. An unmapped/unknown topic value is dropped rather than erroring.
-  const legacyTagSlugs = legacyTopicsToTagSlugs(toArray(topics) ?? [])
-  const tagSlugs = Array.from(new Set([...(toArray(tags) ?? []), ...legacyTagSlugs]))
-
-  const parsed: Filters = {
-    tags: tagSlugs.length ? tagSlugs : undefined,
-    communities: toArray(communities),
-    search: typeof search === 'string' ? search : undefined,
-  }
   // Map is the DEFAULT view (approved mock, B3): the atlas is how the hub
   // presents case studies; the gallery is the ?view=gallery opt-in.
-  const activeView = view === 'gallery' ? 'gallery' : 'map'
-
-  // Raw single-string params, used to build chip-toggle hrefs.
-  const rawParams: Record<string, string | undefined> = {
-    topics: typeof topics === 'string' ? topics : undefined,
-    tags: typeof tags === 'string' ? tags : Array.isArray(tags) ? tags.join(',') : undefined,
-    communities:
-      typeof communities === 'string' ? communities : Array.isArray(communities) ? communities.join(',') : undefined,
-    search: typeof search === 'string' ? search : undefined,
-    view: activeView === 'gallery' ? 'gallery' : undefined,
-  }
-
+  const activeView = sp.view === 'gallery' ? 'gallery' : 'map'
   const viewHref = (v: 'gallery' | 'map') => {
-    const p = new URLSearchParams()
-    for (const [k, val] of Object.entries(rawParams)) {
-      if (k !== 'view' && val) p.set(k, val)
-    }
+    const p = toSearchParams(active)
     if (v === 'gallery') p.set('view', 'gallery')
     const qs = p.toString()
     return `/research-and-action/case-studies${qs ? `?${qs}` : ''}`
@@ -177,20 +141,13 @@ export default async function CaseStudiesPage({
             </Link>
           </Button>
         </div>
-
       </div>
 
-      {/* ONE filter control (punch-list de-bulk): the collapsed Region ·
-          Topic · Tags groups + search below. The always-expanded 7-region
-          and theme pill rows that used to sit here duplicated those groups
-          and dominated the page. */}
-      <Suspense fallback={<Skeleton className="h-16 w-full" />}>
-        <CaseStudiesFiltersWrapper currentFilters={parsed} />
-      </Suspense>
+      {/* The hub's one filter bar: Region · Communities · Themes · When · Search. */}
+      <FilterBar options={options} active={active} />
 
-      {/* Content — one gallery (or map), driven by the shared filter state */}
       <Suspense fallback={<LoadingSkeleton />}>
-        <CaseStudiesContent locale={locale} filters={parsed} view={activeView} />
+        <CaseStudiesContent locale={locale} all={all} active={active} view={activeView} />
       </Suspense>
     </div>
   )
@@ -198,34 +155,36 @@ export default async function CaseStudiesPage({
 
 async function CaseStudiesContent({
   locale,
-  filters,
+  all,
+  active,
   view
 }: {
   locale: string
-  filters: Filters
+  all: CaseStudyListItem[]
+  active: ActiveFilters
   view: 'gallery' | 'map'
 }) {
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
   const tRegions = await getTranslations({ locale, namespace: 'navigation.regions' })
+  const tFilters = await getTranslations({ locale, namespace: 'filters' })
 
-  const caseStudies = await getFilteredCaseStudies(filters)
-
-  const hasFilters = Boolean(
-    filters.tags?.length || filters.communities?.length || filters.search
-  )
+  const items = all.map((cs) => caseStudyToFilterable(cs, locale))
+  const visibleIds = new Set(applyFilters(items, active).map((i) => i.id))
+  const caseStudies = all.filter((cs) => visibleIds.has(cs._id))
+  const hasFilters = isFiltering(active)
 
   const emptyState = (
     <Card className="p-12 text-center">
       <div className="space-y-3">
         <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
-        <h3 className="text-lg font-medium">{t('noResults')}</h3>
+        <h3 className="text-lg font-medium">{hasFilters ? tFilters('empty') : t('noResults')}</h3>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">
           {t('noResultsDescription')}
         </p>
         {hasFilters && (
           <Button variant="outline" asChild className="mt-4">
             <Link href={`/research-and-action/case-studies`}>
-              {t('clearFilters')}
+              {tFilters('clear')}
             </Link>
           </Button>
         )}
@@ -234,16 +193,13 @@ async function CaseStudiesContent({
   )
 
   if (view === 'map') {
-    // The choropleth keeps the full distribution (all filters EXCEPT region)
-    // so the map stays readable while a region chip narrows the list.
-    const mapWide = filters.communities?.length
-      ? await getFilteredCaseStudies({ ...filters, communities: undefined })
-      : caseStudies
-
+    // The choropleth keeps the full distribution (every filter except Region)
+    // so the map stays readable while a region narrows the list. Regions come
+    // from the case study's own code or its community (9 of 25 have only a code).
+    const mapWide = applyFilters(items, { ...active, regions: [] })
     const counts: Partial<Record<RegionCode, number>> = {}
-    for (const cs of mapWide as Array<{ communitySlug?: string | null }>) {
-      const code = cs.communitySlug ? slugToShortCode(cs.communitySlug) : null
-      if (code) counts[code] = (counts[code] ?? 0) + 1
+    for (const item of mapWide) {
+      for (const code of item.regions) counts[code as RegionCode] = (counts[code as RegionCode] ?? 0) + 1
     }
     const max = Math.max(1, ...Object.values(counts).map((n) => n ?? 0))
     const data: RegionDatum[] = REGION_CODES.map((code) => ({
@@ -253,7 +209,7 @@ async function CaseStudiesContent({
       intensity: (counts[code] ?? 0) / max,
     }))
 
-    const items: CasesMapItem[] = (caseStudies as unknown as Array<Record<string, unknown>>).map((cs) => ({
+    const mapItems: CasesMapItem[] = (caseStudies as unknown as Array<Record<string, unknown>>).map((cs) => ({
       id: cs._id as string,
       slug: cs.slug as string,
       title: getLocalizedText(cs.title as Record<string, string>, locale, ''),
@@ -272,9 +228,9 @@ async function CaseStudiesContent({
     return (
       <CasesMapView
         data={data}
-        items={items}
+        items={mapItems}
         regionLabels={regionLabels}
-        emptyLabel={t('noResults')}
+        emptyLabel={hasFilters ? tFilters('empty') : t('noResults')}
         countLabel={t('resultsCount', { count: caseStudies.length })}
         galleryLabel={t('openAsGallery')}
       />
