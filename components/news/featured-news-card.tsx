@@ -3,6 +3,8 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Calendar } from 'lucide-react'
 import { imageUrl } from '@/lib/content/images'
+import type { HubIllustration } from '@/lib/content/illustrations'
+import { NewsImageFallback } from '@/components/news/news-image-fallback'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate } from '@/lib/news-utils'
 import { normalizeTagColor } from '@/lib/tags'
@@ -19,6 +21,8 @@ interface FeaturedNewsCardProps {
    */
   variant?: 'lead' | 'compact'
   className?: string
+  /** Hub Illustrations → "News picture when a story has none". */
+  fallbackIllustration?: HubIllustration | null
 }
 
 /**
@@ -32,6 +36,7 @@ export default function FeaturedNewsCard({
   locale,
   variant = 'compact',
   className,
+  fallbackIllustration,
 }: FeaturedNewsCardProps) {
   const t = useTranslations('news')
   const title = getLocalizedValue(news.title, locale)
@@ -88,16 +93,16 @@ export default function FeaturedNewsCard({
         className
       )}
     >
-      {/* Image (or on-brand gradient fallback) — inline-start half on desktop
+      {/* Image (or the news placeholder) — inline-start half on desktop
           for the lead, unified wide ratio on the compact cards. */}
       <div
         className={cn(
-          'relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30',
+          'relative overflow-hidden bg-ccm-midnight',
           CARD_ASPECT.wide,
           isLead && 'md:aspect-auto md:w-1/2 md:self-stretch'
         )}
       >
-        {image}
+        {image ?? <NewsImageFallback illustration={fallbackIllustration} />}
         {featuredBadge}
       </div>
 

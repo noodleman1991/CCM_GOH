@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
+import type { HubIllustration } from "@/lib/content/illustrations";
+import { NewsImageFallback } from "@/components/news/news-image-fallback";
 import { formatDateShort } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { normalizeTagColor } from "@/lib/tags";
@@ -49,6 +51,8 @@ interface NewsPostCardProps {
     locale?: string;
     featured?: boolean;
     featuredLabel?: string;
+    /** Hub Illustrations → "News picture when a story has none". */
+    fallbackIllustration?: HubIllustration | null;
 }
 
 export default function NewsPostCard({
@@ -64,6 +68,7 @@ export default function NewsPostCard({
                                          locale = 'en',
                                          featured = false,
                                          featuredLabel,
+                                         fallbackIllustration,
                                      }: NewsPostCardProps) {
     const tCommon = useTranslations('common');
     const localizedTitle = getLocalizedValue(title, locale);
@@ -77,9 +82,10 @@ export default function NewsPostCard({
             "hover:shadow-lg hover:border-primary/50",
             featured && "border-primary shadow-md"
         )}>
-            {/* Image — always rendered (real image or an on-brand gradient
-                fallback) so a card without a hero never has a blank top. */}
-            <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", CARD_ASPECT.wide)}>
+            {/* Image — the story's own, or the news placeholder (editors' choice
+                or the hub pattern), so a card never has an empty top. */}
+            <div className={cn("relative overflow-hidden bg-ccm-midnight", CARD_ASPECT.wide)}>
+                {!image?.asset?._id && <NewsImageFallback illustration={fallbackIllustration} />}
                 {image?.asset?._id && (
                     <Image
                         src={imageUrl(image, { width: 800 })}
@@ -119,7 +125,7 @@ export default function NewsPostCard({
                     {/* dir="auto": CMS content can fall back to English on RTL
                         pages (and vice versa) — let the text's own script set
                         direction so punctuation and alignment stay correct. */}
-                    <h3 dir="auto" className="font-heading text-lg sm:text-xl font-bold leading-snug text-balance break-words line-clamp-3 mb-1 group-hover:text-primary transition-colors" title={localizedTitle}>
+                    <h3 dir="auto" className="font-heading text-lg sm:text-xl font-bold leading-snug text-balance break-words line-clamp-4 mb-1 group-hover:text-primary transition-colors" title={localizedTitle}>
                         {localizedTitle}
                     </h3>
                     {localizedSubtitle && (

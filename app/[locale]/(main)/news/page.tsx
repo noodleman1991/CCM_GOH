@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import type { NewsFilters as NewsFiltersType } from '@/lib/news-utils'
+import { getHubIllustrations } from '@/lib/content/illustrations'
 
 function LoadingSkeleton() {
   return (
@@ -212,7 +213,10 @@ async function NewsContent({
   locale: string
   filters: NewsSearchParams
 }) {
-  const t = await getTranslations({ locale, namespace: 'news' })
+  const [t, { newsFallback }] = await Promise.all([
+    getTranslations({ locale, namespace: 'news' }),
+    getHubIllustrations(),
+  ])
 
   const filterObj: NewsFiltersType = parseNewsFilters(filters)
 
@@ -262,6 +266,7 @@ async function NewsContent({
                     publishedAt={item.data.publishedAt}
                     locale={locale}
                     featured={item.data.featured}
+                    fallbackIllustration={newsFallback}
                   />
                 </Link>
               ) : (
@@ -297,7 +302,8 @@ async function NewsContent({
     getRegularNews({ limit: 50 }),
     getApprovedExternalSources({ limit: 12 }),
   ])
-  const feed = mergeNewsFeed(regularNews, externalSources)
+  // One lead story on top; the other featured stories join the date-sorted grid.
+  const feed = mergeNewsFeed([...featuredNews.slice(1), ...regularNews], externalSources)
 
   return (
     <div className="space-y-12">
@@ -306,6 +312,7 @@ async function NewsContent({
         <NewsHeroSection
           featuredNews={featuredNews}
           locale={locale}
+          fallbackIllustration={newsFallback}
         />
       )}
 
@@ -333,6 +340,7 @@ async function NewsContent({
                     location={item.data.locationDetails}
                     publishedAt={item.data.publishedAt}
                     locale={locale}
+                    fallbackIllustration={newsFallback}
                   />
                 </Link>
               ) : (
