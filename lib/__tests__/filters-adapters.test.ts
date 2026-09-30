@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { caseStudyToFilterable, externalToFilterable, livedExperienceToFilterable, newsToFilterable, regionsOf, toFilterTags } from "@/lib/filters/adapters";
+import { caseStudyToFilterable, externalToFilterable, livedExperienceToFilterable, newsToFilterable, regionsOf, researchOutputToFilterable, toFilterTags } from "@/lib/filters/adapters";
 
 describe("filter adapters", () => {
   it("reads tags whether the slug is a string or a slug object", () => {
@@ -53,5 +53,13 @@ describe("filter adapters", () => {
       ),
     ).toEqual({ id: "l1", tags: [{ slug: "storytelling", category: "topic", label: { en: "Storytelling" } }], regions: ["oce"], date: "2025-06-01", text: { en: "Sunday's story" } });
     expect(livedExperienceToFilterable({ id: "l2", title: "x", region: null, rawRegion: "ssa", tags: [] } as never, "en").regions).toEqual(["ssa"]);
+  });
+  it("turns a research output into a filterable item, region from its code or its communities", () => {
+    expect(
+      researchOutputToFilterable(
+        { _id: "r1", title: { en: "Impact report" }, excerpt: { en: "Global event" }, publishDate: "2024-11-01", region: "enam", relatedCommunities: [{ _id: "c", slug: "oceania" }], tags: [{ _id: "t", value: "research", category: "topic", label: { en: "Research" } }] } as never,
+        "en",
+      ),
+    ).toEqual({ id: "r1", tags: [{ slug: "research", category: "topic", label: { en: "Research" } }], regions: ["enam", "oce"], date: "2024-11-01", text: { en: "Impact report Global event" } });
   });
 });

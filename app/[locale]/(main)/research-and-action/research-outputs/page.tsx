@@ -6,6 +6,16 @@ import type { TypedCardItem } from "@/lib/cards/type-style";
 import { getResearchOutputs } from "@/lib/content/outputs";
 import { getLocalizedValue } from "@/i18n/i18n-helpers";
 import { imageUrl } from "@/lib/content/images"
+import { FilterBar } from "@/components/filters/filter-bar";
+import { applyFilters, buildOptions, isFiltering, type FilterTag } from "@/lib/filters/core";
+import { parseFilterParams } from "@/lib/filters/params";
+import { researchOutputToFilterable } from "@/lib/filters/adapters";
+import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
+import { Link } from "@/i18n/navigation";
+
+const COMMUNITY_SLUG_TO_REGION: Record<string, string> = Object.fromEntries(
+  REGION_CODES.map((code) => [REGION_TO_RC_SLUG[code], code]),
+);
 
 /**
  * Research-outputs listing — the code route the Research & Action hub and the
@@ -35,12 +45,28 @@ export async function generateMetadata({
 
 export default async function ResearchOutputsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "researchOutputs" });
-  const outputs: OutputRow[] = (await getResearchOutputs()) as unknown as OutputRow[];
+  const sp = await searchParams;
+  const [t, tFilters, tRegions, all] = await Promise.all([
+    getTranslations({ locale, namespace: "researchOutputs" }),
+    getTranslations({ locale, namespace: "filters" }),
+    getTranslations({ locale, namespace: "navigation.regions" }),
+    getResearchOutputs(),
+  ]);
+  const everything = all as unknown as OutputRow[];
+
+  // The hub's shared filters (spec 2026-09-30): one list, one engine.
+  const filterable = everything.map((o) => researchOutputToFilterable(o as never, locale));
+  const knownTags: FilterTag[] = [...new Map(filterable.flatMap((i) => i.tags).map((tag) => [tag.slug, tag])).values()];
+  const active = parseFilterParams(sp, { tags: knownTags, communitySlugToRegion: COMMUNITY_SLUG_TO_REGION });
+  const options = buildOptions(filterable, active, { locale, regionLabel: (code) => tRegions(REGION_I18N_KEY[code as RegionCode]) });
+  const visible = new Set(applyFilters(filterable, active).map((i) => i.id));
+  const outputs = everything.filter((o) => visible.has(o._id));
 
   const items: TypedCardItem[] = outputs
     .filter((o) => o.slug)
@@ -68,8 +94,18 @@ export default async function ResearchOutputsPage({
         <p className="text-muted-foreground max-w-2xl">{t("pageDescription")}</p>
       </div>
 
+      <FilterBar options={options} active={active} />
+      <p className="text-sm text-muted-foreground">{tFilters("results", { count: items.length })}</p>
+
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("empty")}</p>
+        <div className="space-y-2 py-8 text-center">
+          <p className="text-sm text-muted-foreground">{isFiltering(active) ? tFilters("empty") : t("empty")}</p>
+          {isFiltering(active) && (
+            <Link href="/research-and-action/research-outputs" className="text-sm font-semibold text-ccm-sea hover:underline">
+              {tFilters("clear")}
+            </Link>
+          )}
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {items.map((item) => (

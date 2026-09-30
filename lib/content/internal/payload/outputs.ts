@@ -772,7 +772,7 @@ function researchOutputFragment(row: ResearchOutputRow): Record<string, unknown>
     relatedCommunities: communityProjection(row.relatedCommunities, "researchOutput"),
     slug: orNull(text(row.slug)),
     status: orNull(text(row.moderationStatus)),
-    tags: tagProjection(row.tags, ["_id", "label", "value", "color"]),
+    tags: tagProjection(row.tags, ["_id", "label", "value", "color", "category"]),
     themes: listOrNull(row.themes),
     title: orNull(localized(row.title)),
     versions: versionProjection(row.versions),

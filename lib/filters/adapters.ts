@@ -129,3 +129,24 @@ export function livedExperienceToFilterable(story: LivedLike, locale: string): F
     text: textOf(locale, story.title),
   };
 }
+
+type OutputLike = {
+  _id: string;
+  title?: unknown;
+  excerpt?: unknown;
+  publishDate?: string | null;
+  year?: number | null;
+  region?: string | null;
+  relatedCommunities?: Array<{ slug?: string | null }> | null;
+  tags?: unknown;
+};
+
+export function researchOutputToFilterable(output: OutputLike, locale: string): FilterableItem {
+  return {
+    id: output._id,
+    tags: toFilterTags(output.tags),
+    regions: regionsOf(output.region, (output.relatedCommunities ?? []).map((c) => c.slug)),
+    date: output.publishDate ?? (output.year ? `${output.year}-07-01` : null),
+    text: textOf(locale, output.title, output.excerpt),
+  };
+}
