@@ -12,7 +12,7 @@ import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadat
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getActor, getViewerUserId, isStaff } from "@/lib/authz";
 import { getTranslations } from "next-intl/server";
-import { sectionEditHref } from "@/lib/cms/edit-links";
+import { pageEditHref, sectionEditHref } from "@/lib/cms/edit-links";
 
 export async function generateMetadata({
     params
@@ -75,7 +75,8 @@ export default async function Page({
     // from the CMS Sections list (CMS project 4). The old per-language list has
     // no row anchors to link to.
     const canEdit = Boolean(page.fromSections && page.id) && isStaff(await getActor());
-    const editLabel = canEdit ? (await getTranslations({ locale, namespace: "blocks" }))("editSection") : undefined;
+    const tBlocks = canEdit ? await getTranslations({ locale, namespace: "blocks" }) : null;
+    const editLabel = tBlocks ? tBlocks("editSection") : undefined;
 
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
@@ -90,6 +91,7 @@ export default async function Page({
                 userId={userId}
                 editHref={canEdit ? (i) => sectionEditHref(`/admin/collections/pages/${page.id}`, i, `/${locale}/${slug}`) : undefined}
                 editLabel={editLabel}
+                pageEdit={tBlocks ? { href: pageEditHref(`/admin/collections/pages/${page.id}`, `/${locale}/${slug}`), label: tBlocks("editPage") } : undefined}
             />
         </main>
     );

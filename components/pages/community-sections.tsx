@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Blocks from "@/components/blocks";
-import { sectionEditHref } from "@/lib/cms/edit-links";
+import { pageEditHref, sectionEditHref } from "@/lib/cms/edit-links";
+import { StaffEditPill } from "@/components/cms/staff-edit-pill";
 import { RegionSectionSpine } from "@/components/regions/region-section-spine";
 import { CHAPTER_MESSAGE, groupIntoChapters } from "@/lib/content/chapters";
 import { resolveContentFeed } from "@/lib/content/feeds/resolve";
@@ -44,8 +45,9 @@ export default async function CommunitySections({
   returnTo?: string;
 }) {
   const feedLocale = LOCALES.includes(locale as FeedContext["locale"]) ? (locale as FeedContext["locale"]) : "en";
-  const [t, counts] = await Promise.all([
+  const [t, tBlocks, counts] = await Promise.all([
     getTranslations({ locale, namespace: "regional" }),
+    getTranslations({ locale, namespace: "blocks" }),
     Promise.all(
       sections.map(async (section) => {
         if (section._type !== "content-feed") return null;
@@ -90,6 +92,12 @@ export default async function CommunitySections({
           </section>
         );
       })}
+      {canEdit && (
+        <StaffEditPill
+          href={pageEditHref(`/admin/collections/regionalCommunities/${communityId}`, returnTo ?? `/${locale}/communities/${communitySlug}`)}
+          label={tBlocks("editPage")}
+        />
+      )}
     </>
   );
 }

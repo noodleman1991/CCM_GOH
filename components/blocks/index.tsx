@@ -1,6 +1,7 @@
 import { componentMap } from "@/components/blocks/registry";
 import { BlockReveal } from "@/components/blocks/block-reveal";
 import { SectionEditLink } from "@/components/blocks/section-edit-link";
+import { StaffEditPill } from "@/components/cms/staff-edit-pill";
 import { isRTL } from "@/i18n/i18n-helpers";
 
 /** A page block, in its raw CMS shape (`_type`/`_key` discriminant plus
@@ -23,12 +24,14 @@ interface BlocksProps {
     /** Staff only: where each section is edited in the admin (by position). */
     editHref?: (index: number) => string;
     editLabel?: string;
+    /** Staff only: the whole page in the admin, as one floating pill. */
+    pageEdit?: { href: string; label: string };
     /** The page's community, so its sections (feeds, header, members) know it. */
     context?: { communityId?: string; communitySlug?: string; communityRegion?: string | null };
 }
 
 
-export default function Blocks({ blocks, locale, userId, editHref, editLabel, context }: BlocksProps) {
+export default function Blocks({ blocks, locale, userId, editHref, editLabel, pageEdit, context }: BlocksProps) {
     const rtl = isRTL(locale);
 
     // Filter out PortableText blocks that should not be rendered here.
@@ -60,6 +63,7 @@ export default function Blocks({ blocks, locale, userId, editHref, editLabel, co
                 }
                 return (
                     <BlockReveal key={block._key}>
+                        <div className={editHref ? "group/section relative" : undefined}>
                         {editHref && <SectionEditLink href={editHref(index)} label={editLabel ?? "Edit"} />}
                         <Component
                             {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -70,9 +74,11 @@ export default function Blocks({ blocks, locale, userId, editHref, editLabel, co
                             isRTL={rtl}
                             userId={userId} // Pass userId for download tracking
                         />
+                        </div>
                     </BlockReveal>
                 );
             })}
+            {pageEdit && <StaffEditPill href={pageEdit.href} label={pageEdit.label} />}
         </>
     );
 }

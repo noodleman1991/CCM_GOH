@@ -24,3 +24,8 @@ export function sectionEditHref(base: string, row: number, from: string): string
 export function documentEditHref(collection: string, id: string, from: string): string {
   return withFrom(`/admin/collections/${collection}/${encodeURIComponent(id)}`, from);
 }
+
+/** The admin page for a whole Sections page (homepage, page, community), with the way back. */
+export function pageEditHref(base: string, from: string): string {
+  return withFrom(base, from);
+}

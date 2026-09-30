@@ -1,5 +1,6 @@
 import Hero1 from "@/components/blocks/hero/hero-1";
-import { sectionEditHref } from "@/lib/cms/edit-links";
+import { pageEditHref, sectionEditHref } from "@/lib/cms/edit-links";
+import { getTranslations } from "next-intl/server";
 import SplitRow from "@/components/blocks/split/split-row";
 import GridRow from "@/components/blocks/grid/grid-row";
 import Carousel2 from "@/components/blocks/carousel/carousel-2";
@@ -211,6 +212,7 @@ export default async function Homepage({ homepage, locale, userId, canEdit = fal
   // The Sections list (CMS project 2) is the homepage; the fixed template below
   // renders only while it is empty — the backup the move script can fall back to.
   if (homepage.sections && homepage.sections.length > 0) {
+    const pageEditLabel = canEdit ? (await getTranslations({ locale, namespace: "blocks" }))("editPage") : null;
     return (
       <div dir={rtl ? "rtl" : "ltr"}>
         <Blocks
@@ -219,6 +221,7 @@ export default async function Homepage({ homepage, locale, userId, canEdit = fal
           userId={userId}
           editHref={canEdit ? (index) => sectionEditHref("/admin/globals/homepage", index, returnTo ?? `/${locale}`) : undefined}
           editLabel={editLabel}
+          pageEdit={pageEditLabel ? { href: pageEditHref("/admin/globals/homepage", returnTo ?? `/${locale}`), label: pageEditLabel } : undefined}
         />
       </div>
     );
