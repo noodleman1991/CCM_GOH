@@ -31,7 +31,7 @@ import { documentIdField } from "@/payload/fields/document-id";
 export const ExternalSources: CollectionConfig = {
   slug: "externalSources",
   admin: {
-    group: "People & organisations",
+    group: "Hub content",
     useAsTitle: "title",
     defaultColumns: ["title", "publisher", "sourceType", "approved"],
   },

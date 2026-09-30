@@ -126,6 +126,7 @@ export default buildConfig({
     ResearchOutputs,
     Events,
     NewsPosts,
+    ExternalSources,
     Agendas,
     // Site pages
     Pages,
@@ -137,7 +138,6 @@ export default buildConfig({
     Organizations,
     RegionalCommunities,
     Projects,
-    ExternalSources,
     // Settings (vocabularies)
     Tags,
     WorkTypes,
