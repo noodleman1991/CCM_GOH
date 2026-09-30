@@ -1,9 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
-import { LayoutDashboard, LogIn, LogOut, MessageSquare, Settings } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogIn, LogOut, MessageSquare, Settings } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,12 @@ import { FEATURES } from "@/lib/features";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 
 /**
- * The user area as ONE flat menu card (user direction 2026-07-05) — no
- * dropdown-behind-a-menu. Signed in: a static identity row, then the
- * destinations incl. sign-out, all visible. Signed out: the two auth actions
- * in the same card. Identical on the desktop rail and the mobile sheet.
+ * The user area as ONE menu card (user direction 2026-07-05). Signed in: the
+ * identity row is a toggle and the destinations incl. sign-out fold under it,
+ * closed by default (user, 2026-09-30) — open, the card pushed the main menu
+ * out of view in the drawer. Unread messages still show on the folded row.
+ * Signed out: the two auth actions in the same card. Identical on the desktop
+ * rail and the mobile sheet.
  */
 export function UserMenuCard() {
   const t = useTranslations("navigation");
@@ -42,6 +44,8 @@ export function UserMenuCard() {
   const row =
     "flex min-h-[40px] w-full items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium text-sidebar-foreground/85 transition-colors hover:bg-white/10 hover:text-sidebar-foreground";
   const close = () => setOpenMobile(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountNavId = useId();
 
   // The three account destinations, shared verbatim between the expanded
   // card's inline <nav> and the collapsed rail's dropdown menu below — one
@@ -83,8 +87,15 @@ export function UserMenuCard() {
       {/* Expanded rail: flat menu card. */}
       <div className="mx-2 mb-1 rounded-xl bg-white/5 p-1.5 group-data-[collapsible=icon]:hidden">
         <SignedIn>
-          {/* Identity row — informational, not a trigger. */}
-          <div className="flex items-center gap-2.5 px-2 py-2">
+          {/* Identity row — toggles the account links below (closed by default). */}
+          <button
+            type="button"
+            aria-expanded={accountOpen}
+            aria-controls={accountNavId}
+            aria-label={t("userMenu")}
+            onClick={() => setAccountOpen((open) => !open)}
+            className="flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-start transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white/60"
+          >
             <Avatar className="size-8">
               {identity?.imageUrl && <AvatarImage src={identity.imageUrl} alt="" />}
               <AvatarFallback className="bg-white/15 text-xs font-bold text-white">
@@ -99,8 +110,22 @@ export function UserMenuCard() {
                 {identity?.primaryEmailAddress?.emailAddress ?? ""}
               </p>
             </div>
-          </div>
-          <nav aria-label={t("userMenu")} className="grid gap-0.5 border-t border-white/10 pt-1.5">
+            {!accountOpen && FEATURES.engagement && (
+              <span className="ms-auto">
+                <UnreadBadge />
+              </span>
+            )}
+            <ChevronDown
+              className={`size-4 shrink-0 text-sidebar-foreground/70 transition-transform duration-200 motion-reduce:transition-none ${accountOpen ? "rotate-180" : ""} ${!accountOpen && FEATURES.engagement ? "" : "ms-auto"}`}
+              aria-hidden
+            />
+          </button>
+          <nav
+            id={accountNavId}
+            aria-label={t("userMenu")}
+            hidden={!accountOpen}
+            className="grid gap-0.5 border-t border-white/10 pt-1.5"
+          >
             {accountLinks.map(({ href, icon: Icon, label, badge }) => (
               <Link key={href} href={href} className={row} onClick={close}>
                 <Icon className="size-4 opacity-70" aria-hidden />
