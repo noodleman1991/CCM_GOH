@@ -3,6 +3,7 @@ import { Homepage } from "@/payload/globals/homepage";
 import { SiteAnnouncement } from "@/payload/globals/site-announcement";
 import { ModerationSettings } from "@/payload/globals/moderation-settings";
 import { HubIllustrations } from "@/payload/globals/hub-illustrations";
+import { EventSuggestions } from "@/payload/globals/event-suggestions";
 import {
   ONBOARDING_GLOBALS,
   OnboardingBasicInfo,
@@ -18,6 +19,7 @@ export {
   SiteAnnouncement,
   ModerationSettings,
   HubIllustrations,
+  EventSuggestions,
   ONBOARDING_GLOBALS,
   OnboardingContent,
   OnboardingBasicInfo,
@@ -53,4 +55,5 @@ export const globals: GlobalConfig[] = [
   ...ONBOARDING_GLOBALS,
   // System
   ModerationSettings,
+  EventSuggestions,
 ];

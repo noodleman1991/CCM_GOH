@@ -1,3 +1,4 @@
+import { externalNeedsWebsite } from "@/payload/fields/event-rules";
 import { describe, expect, it } from "vitest";
 import type { CollectionConfig, Field } from "payload";
 import { isAnyone, isEditor, isEditorField, moderationApprovedOnly } from "@/payload/access";
@@ -85,8 +86,8 @@ describe("the empty-but-wired collections", () => {
       expect(named(Events, "slug")).toMatchObject({ maxLength: 96 });
     });
 
-    it("keeps Sanity's url rules on both link fields", () => {
-      expect((named(Events, "url") as WithValidate).validate).toBe(urlValidate);
+    it("keeps Sanity's url rules on both link fields (the website is also required for outside events)", () => {
+      expect((named(Events, "url") as WithValidate).validate).toBe(externalNeedsWebsite);
       expect((named(Events, "recordingUrl") as WithValidate).validate).toBe(urlValidate);
     });
 

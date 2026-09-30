@@ -2,12 +2,13 @@ import type { Block, Field } from "payload";
 import { cloneFieldList } from "@/payload/fields/block-slot";
 import { localizedText } from "@/payload/fields/localized";
 
-const CHAPTER_OPTIONS = [
+export const CHAPTER_OPTIONS = [
   { label: "Not in the menu", value: "none" },
   { label: "Overview", value: "overview" },
   { label: "Agendas", value: "agendas" },
   { label: "Case studies", value: "caseStudies" },
   { label: "News", value: "news" },
+  { label: "Events", value: "events" },
   { label: "Community voices", value: "voices" },
   { label: "Members", value: "members" },
   { label: "Partners", value: "partners" },

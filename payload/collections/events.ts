@@ -9,6 +9,7 @@ import {
   endAfterStartValidate,
   urlValidate,
 } from "@/payload/fields/validation";
+import { externalNeedsWebsite } from "@/payload/fields/event-rules";
 import { documentIdField } from "@/payload/fields/document-id";
 import { slugField } from "@/payload/fields/slug";
 
@@ -79,6 +80,23 @@ export const Events: CollectionConfig = {
     documentIdField,
     localizedText("title", { required: true }),
     slugField("title", { maxLength: SLUG_MAX_LENGTH }),
+    {
+      name: "origin",
+      type: "select",
+      label: "Who runs it",
+      defaultValue: "ccm",
+      options: [
+        { label: "CCM (a project or community)", value: "ccm" },
+        { label: "Another organisation", value: "external" },
+      ],
+    },
+    relationshipField("organiser", "organizations", { label: "Organised by (on the hub)" }),
+    {
+      name: "organiserName",
+      type: "text",
+      label: "Organised by (name)",
+      admin: { description: "Used when the organisation isn't on the hub." },
+    },
     localizedTextarea("description"),
     {
       name: "scope",
@@ -137,7 +155,13 @@ export const Events: CollectionConfig = {
         },
       ],
     },
-    { name: "url", type: "text", label: "Joining / details URL", validate: urlValidate },
+    {
+      name: "url",
+      type: "text",
+      label: "Event website",
+      admin: { description: "Where people join or sign up. Required for outside events — their cards open it." },
+      validate: externalNeedsWebsite as never,
+    },
     imageField("coverImage"),
     localizedRichText("body", { label: "Page body" }),
     {
@@ -160,6 +184,7 @@ export const Events: CollectionConfig = {
       admin: { description: "If scope = project: the Collaboration id this event belongs to." },
     },
     relationshipField("relatedCommunity", "regionalCommunities", { label: "Regional community" }),
+    relationshipField("tags", "tags", { hasMany: true }),
     {
       // Studio's approve / request-revision / reject document actions, as
       // buttons inside the document. A `ui` field has no database column, so
@@ -200,5 +225,7 @@ export const Events: CollectionConfig = {
       // Editor-only at FIELD level: internal editorial commentary.
       access: { read: isEditorField },
     },
+    // Which outcome the sender was last emailed about (the moderation hook's brake).
+    { name: "notifiedStatus", type: "text", admin: { hidden: true }, access: { read: isEditorField } },
   ],
 };

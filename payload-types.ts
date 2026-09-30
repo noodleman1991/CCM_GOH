@@ -145,6 +145,7 @@ export interface Config {
     onboardingPrivacy: OnboardingPrivacy;
     onboardingReview: OnboardingReview;
     moderationSettings: ModerationSetting;
+    eventSuggestions: EventSuggestion;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
@@ -157,6 +158,7 @@ export interface Config {
     onboardingPrivacy: OnboardingPrivacySelect<false> | OnboardingPrivacySelect<true>;
     onboardingReview: OnboardingReviewSelect<false> | OnboardingReviewSelect<true>;
     moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
+    eventSuggestions: EventSuggestionsSelect<false> | EventSuggestionsSelect<true>;
   };
   locale: 'en' | 'es' | 'fr' | 'ar';
   widgets: {
@@ -381,7 +383,18 @@ export interface Hero1Block {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -528,7 +541,18 @@ export interface SectionHeaderBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -558,7 +582,18 @@ export interface SplitRowBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -729,7 +764,18 @@ export interface GridRowBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1190,7 +1236,18 @@ export interface CommunityHeaderBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1283,7 +1340,18 @@ export interface Hero2Block {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1339,7 +1407,18 @@ export interface Carousel1Block {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1386,7 +1465,18 @@ export interface TimelineRowBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1432,7 +1522,18 @@ export interface FaqsBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1520,7 +1621,18 @@ export interface ContentFeedBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -1821,6 +1933,12 @@ export interface Event {
    * Leave empty and it is made from the title when you save.
    */
   slug: string;
+  origin?: ('ccm' | 'external') | null;
+  organiser?: (string | null) | Organization;
+  /**
+   * Used when the organisation isn't on the hub.
+   */
+  organiserName?: string | null;
   description?: string | null;
   scope?: ('community' | 'project') | null;
   startAt: string;
@@ -1849,6 +1967,9 @@ export interface Event {
      */
     countryCode?: string | null;
   };
+  /**
+   * Where people join or sign up. Required for outside events — their cards open it.
+   */
   url?: string | null;
   coverImage?: {
     asset?: (string | null) | Media;
@@ -1882,6 +2003,7 @@ export interface Event {
    */
   linkedProject?: string | null;
   relatedCommunity?: (string | null) | RegionalCommunity;
+  tags?: (string | Tag)[] | null;
   /**
    * Only 'Approved' events are public. Member/project submissions start as 'Pending Review'. Sanity's `status`.
    */
@@ -1894,6 +2016,7 @@ export interface Event {
    * Internal notes / feedback to the submitter.
    */
   reviewNotes?: string | null;
+  notifiedStatus?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2150,7 +2273,18 @@ export interface EventsCalendarBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2175,7 +2309,18 @@ export interface PeopleWidgetBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2195,7 +2340,18 @@ export interface RegionMapBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2215,7 +2371,18 @@ export interface AtlasEmbedBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2310,7 +2477,18 @@ export interface Cta1Block {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2342,7 +2520,18 @@ export interface SubmitStoryBannerBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2370,7 +2559,18 @@ export interface FormNewsletterBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2439,7 +2639,18 @@ export interface LogoCloud1Block {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2467,7 +2678,18 @@ export interface Carousel2Block {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -2569,7 +2791,18 @@ export interface CommunityMembersBlock {
      * Starts a chapter in the menu at the top of the page; the sections below join it until the next chapter.
      */
     kind?:
-      | ('none' | 'overview' | 'agendas' | 'caseStudies' | 'news' | 'voices' | 'members' | 'partners' | 'custom')
+      | (
+          | 'none'
+          | 'overview'
+          | 'agendas'
+          | 'caseStudies'
+          | 'news'
+          | 'events'
+          | 'voices'
+          | 'members'
+          | 'partners'
+          | 'custom'
+        )
       | null;
     label?: string | null;
   };
@@ -4890,6 +5123,9 @@ export interface EventsSelect<T extends boolean = true> {
   id?: T;
   title?: T;
   slug?: T;
+  origin?: T;
+  organiser?: T;
+  organiserName?: T;
   description?: T;
   scope?: T;
   startAt?: T;
@@ -4916,9 +5152,11 @@ export interface EventsSelect<T extends boolean = true> {
   relatedCollaboration?: T;
   linkedProject?: T;
   relatedCommunity?: T;
+  tags?: T;
   moderationStatus?: T;
   submittedBy?: T;
   reviewNotes?: T;
+  notifiedStatus?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6715,6 +6953,29 @@ export interface ModerationSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventSuggestions".
+ */
+export interface EventSuggestion {
+  id: number;
+  /**
+   * Off: the form says suggestions are paused and nothing new comes in.
+   */
+  open?: boolean | null;
+  /**
+   * Added from the review queue's “Stop this person suggesting events”.
+   */
+  blocked?:
+    | {
+        userId: string;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage_select".
  */
 export interface HomepageSelect<T extends boolean = true> {
@@ -7593,6 +7854,23 @@ export interface ModerationSettingsSelect<T extends boolean = true> {
     | T
     | {
         term?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventSuggestions_select".
+ */
+export interface EventSuggestionsSelect<T extends boolean = true> {
+  open?: T;
+  blocked?:
+    | T
+    | {
+        userId?: T;
+        note?: T;
         id?: T;
       };
   updatedAt?: T;
