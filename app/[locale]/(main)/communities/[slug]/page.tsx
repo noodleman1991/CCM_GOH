@@ -66,6 +66,7 @@ export default async function RegionalCommunityPage({
                     sections={community.sections as ComponentProps<typeof CommunitySections>["sections"]}
                     communityId={community.id}
                     communitySlug={community.slug}
+                    communityRegion={community.region}
                     locale={locale}
                     userId={userId ?? undefined}
                     canEdit={canEdit}

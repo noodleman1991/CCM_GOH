@@ -50,6 +50,9 @@ export interface FeedContext {
   locale: "en" | "es" | "fr" | "ar";
   /** The community whose page this feed sits on, used when no community filter is set. */
   communityId?: string | null;
+  /** That community's region code: items in its region count even when they
+   *  aren't linked to the community record (2026-09-30 count-gap fix). */
+  communityRegion?: string | null;
   now?: Date;
 }
 

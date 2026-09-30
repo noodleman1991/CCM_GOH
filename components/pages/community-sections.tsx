@@ -24,6 +24,7 @@ export default async function CommunitySections({
   sections,
   communityId,
   communitySlug,
+  communityRegion = null,
   locale,
   userId,
   canEdit = false,
@@ -33,6 +34,8 @@ export default async function CommunitySections({
   sections: Section[];
   communityId: string;
   communitySlug: string;
+  /** Items in this region count on the page even when not linked to the community. */
+  communityRegion?: string | null;
   locale: string;
   userId?: string;
   canEdit?: boolean;
@@ -47,7 +50,7 @@ export default async function CommunitySections({
       sections.map(async (section) => {
         if (section._type !== "content-feed") return null;
         try {
-          const { items } = await resolveContentFeed(section.settings, { locale: feedLocale, communityId });
+          const { items } = await resolveContentFeed(section.settings, { locale: feedLocale, communityId, communityRegion });
           return items.length;
         } catch {
           return null; // the feed renders (or hides) itself as usual
@@ -80,7 +83,7 @@ export default async function CommunitySections({
               blocks={chapter.blocks}
               locale={locale}
               userId={userId}
-              context={{ communityId, communitySlug }}
+              context={{ communityId, communitySlug, communityRegion }}
               editHref={canEdit ? (i) => sectionEditHref(`/admin/collections/regionalCommunities/${communityId}`, rows[i], returnTo ?? `/${locale}/communities/${communitySlug}`) : undefined}
               editLabel={editLabel}
             />

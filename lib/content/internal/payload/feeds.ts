@@ -24,6 +24,7 @@ import type { FeedCard, FeedContext, FeedFilters, FeedKind, FeedPick } from "@/l
 import { localized, type LocalizedRaw } from "@/lib/content/internal/localized";
 import { blurDataURL, imageUrl } from "@/lib/content/internal/payload-image-source";
 import { query } from "@/lib/content/internal/payload-source";
+import { isRegionCode } from "@/lib/maps/region-codes";
 import { MODERATION, type ModerationRule } from "@/lib/content/internal/payload/system";
 
 interface KindConfig {
@@ -175,14 +176,26 @@ function baseWhere(config: KindConfig): Where {
 function filterWhere(kind: FeedKind, filters: FeedFilters, ctx: FeedContext): Where | null {
   const config = KINDS[kind];
   const parts: Where[] = [baseWhere(config)];
+  // Where an item's region can live: its own field and its community's.
+  const regionPaths = [...new Set([config.region, `${config.community}.region`].filter((p): p is string => Boolean(p)))];
   if (filters.regions.length > 0) {
     // A region matches on the item's own region OR its community's region, so
     // kinds that only link a community (events, agendas) aren't dropped.
-    const paths = [...new Set([config.region, `${config.community}.region`].filter((p): p is string => Boolean(p)))];
-    parts.push(paths.length === 1 ? { [paths[0]]: { in: filters.regions } } : { or: paths.map((p) => ({ [p]: { in: filters.regions } })) });
+    parts.push(regionPaths.length === 1 ? { [regionPaths[0]]: { in: filters.regions } } : { or: regionPaths.map((p) => ({ [p]: { in: filters.regions } })) });
   }
-  const communities = filters.communityIds.length > 0 ? filters.communityIds : ctx.communityId ? [ctx.communityId] : [];
-  if (communities.length > 0) parts.push({ [config.community]: { in: communities } });
+  if (filters.communityIds.length > 0) {
+    parts.push({ [config.community]: { in: filters.communityIds } });
+  } else if (ctx.communityId) {
+    // On a community page: its own items — linked to the community, or in its
+    // region without a link (9 of 25 case studies had only a region, so the
+    // page counted fewer than the atlas).
+    const code = ctx.communityRegion && isRegionCode(ctx.communityRegion) ? ctx.communityRegion : null;
+    parts.push(
+      code
+        ? { or: [{ [config.community]: { in: [ctx.communityId] } }, ...regionPaths.map((p) => ({ [p]: { in: [code] } }))] }
+        : { [config.community]: { in: [ctx.communityId] } },
+    );
+  }
   if (filters.tagIds.length > 0) {
     if (!config.tags) return null;
     parts.push({ [config.tags]: { in: filters.tagIds } });

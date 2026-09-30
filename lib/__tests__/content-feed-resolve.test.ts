@@ -48,6 +48,15 @@ describe("resolveContentFeed", () => {
     expect(whereOf("newsPosts")).toContain('"relatedCommunity":{"in":["c-9"]}');
   });
 
+  it("on a community page, also counts items in that community's region that aren't linked to it", async () => {
+    query.mockResolvedValue({ docs: [] });
+    await resolveContentFeed({ kinds: ["caseStudies"] }, { locale: "en", communityId: "c-9", communityRegion: "oce" });
+    const where = whereOf("caseStudies");
+    expect(where).toContain('"relatedCommunity":{"in":["c-9"]}');
+    expect(where).toContain('"region":{"in":["oce"]}');
+    expect(where).toContain('"or":[');
+  });
+
   it("matches lived experiences on the field that actually holds their community and region", async () => {
     query.mockResolvedValue({ docs: [] });
     await resolveContentFeed({ kinds: ["livedExperiences"], filters: { regions: ["ssa"], communityIds: ["c-1"] } }, { locale: "en" });

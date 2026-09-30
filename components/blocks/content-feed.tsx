@@ -18,16 +18,18 @@ export default async function ContentFeed({
   settings,
   locale,
   communityId = null,
+  communityRegion = null,
 }: {
   _type?: "content-feed";
   _key?: string;
   settings: unknown;
   locale: string;
   communityId?: string | null;
+  communityRegion?: string | null;
 }) {
   const pageLocale = LOCALES.includes(locale as FeedContext["locale"]) ? (locale as FeedContext["locale"]) : "en";
   const [{ items }, t] = await Promise.all([
-    resolveContentFeed(settings, { locale: pageLocale, communityId }),
+    resolveContentFeed(settings, { locale: pageLocale, communityId, communityRegion }),
     getTranslations({ locale: pageLocale, namespace: "feed" }),
   ]);
   if (items.length === 0) return null;

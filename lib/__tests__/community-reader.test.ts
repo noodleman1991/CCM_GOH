@@ -56,7 +56,7 @@ describe("findCommunity", () => {
     const descriptor = q.mock.calls[0][0] as { depth: number; select: Record<string, true> };
     expect(descriptor.depth).toBe(2);
     expect(Object.keys(descriptor.select).sort()).toEqual(
-      ["layoutPerLanguage", "leadIds", "meta_description", "meta_title", "name", "noindex", "ogImage", "sections", "sectionsByLanguage", "slug"].sort(),
+      ["layoutPerLanguage", "leadIds", "meta_description", "region", "meta_title", "name", "noindex", "ogImage", "sections", "sectionsByLanguage", "slug"].sort(),
     );
   });
 });
