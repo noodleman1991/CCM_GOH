@@ -461,3 +461,23 @@ Nothing to run on production: no migration, no script. After the deploy:
 2. `/en/research-and-action/case-studies?themes=drought`: the chip's count equals the results shown.
 3. An old link, e.g. `/en/news?tags=<a tag>`, still filters.
 4. `/admin` (staff): **Needs tags** lists research outputs and agendas (untagged today); a link opens those items.
+
+## 2026-10-02 regions and partners
+
+What shipped (spec `docs/superpowers/specs/2026-09-30-regions-and-partners-design.md`):
+- **Atlas Region row.** All seven regions as equal chips, alphabetical in the reader's language, with the map's own counts; choosing one zooms the map and opens the region.
+- **Community carousel** (new section). Every regional community as an equal card — its region, tagline, members · stories · upcoming events, member photos (public profiles only) and a line that cycles the newest story, next event and newest member. Moves gently; stops on hover, keyboard focus or the arrows; never moves for visitors who ask for less motion. Taglines: each community's record → Details → Tagline.
+- **Partner logos.** Logo strip gains Funded by / Hosted by (grid layout) and a "One line — scrolls sideways" layout.
+- **Region map** gains "Show the latest from each region" (on unless turned off).
+- **Filter rows.** Long Themes/Communities rows show six chips and "+N more"; on phones each label sits above its row.
+
+Migrations (all additive, run on deploy): `community_tagline`, `community_carousel`, `logo_wall`, `region_map_stories_switch`.
+
+After the push, run these yourself (dry run first, then `--execute`; each saves a backup in `backups/` and can be undone with `--revert --execute`):
+1. `scripts/with-prod-env.sh pnpm exec tsx scripts/homepage/regions-and-partners.ts --production` — homepage: the seven-card grid becomes the Community carousel (heading kept in every language), the region map's latest-from-each-region strip goes off, the logo strip becomes the grouped wall with Wellcome (Funded by) and Climate Cares Centre (Hosted by); community pages' logo strips become one line. If it can't find either organisation it says so and leaves that spot empty — pick it in the admin.
+2. `scripts/with-prod-env.sh pnpm exec tsx scripts/organisations/trim-logos.ts --production` — most organisation logos are square white files with the logo in a thin band; this saves a trimmed copy of each as a new picture and points the organisation at it (originals kept).
+3. Clear the site cache.
+
+Checklist: `/en` — Explore by region with the Region row and no "Around the regions"; the Community carousel moves and stops on hover; "Who is involved" shows Funded by / Hosted by and evenly sized partner logos. A community page — partner logos in one line with arrows. `/ar` the same, right to left.
+
+Notes: Climate Cares Centre has no logo on its organisation record — upload one and it appears in the Hosted by tile. On dev, new uploads go to a bucket the image address doesn't serve, so trimmed logos can only be seen on production.
