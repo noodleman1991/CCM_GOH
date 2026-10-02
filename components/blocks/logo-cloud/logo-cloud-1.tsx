@@ -49,7 +49,12 @@ const TYPE_ORDER = [
 function LogoMark({ image, size, priority }: { image: LogoImage; size: "tile" | "strip" | "lead"; priority?: boolean }) {
   if (!image.asset) {
     return (
-      <span className="inline-flex h-20 items-center justify-center rounded-lg bg-ccm-mist px-4 text-center text-sm font-bold text-ccm-midnight">
+      <span
+        className={cn(
+          "inline-flex items-center justify-center rounded-lg bg-ccm-mist px-3 text-center font-bold leading-tight text-ccm-midnight",
+          size === "strip" ? "h-20 text-sm" : "h-full w-full text-xs",
+        )}
+      >
         {image.name ?? image.label ?? image.alt}
       </span>
     );
@@ -60,13 +65,13 @@ function LogoMark({ image, size, priority }: { image: LogoImage; size: "tile" | 
       alt={image.alt || image.name || image.label || ""}
       // A fixed box, not `w-auto`: with a responsive srcset, `w-auto` let the
       // browser size logos from the smallest candidate (they rendered ~11px).
-      className={cn("object-contain", size === "lead" ? "h-24 w-full" : size === "tile" ? "h-16 w-full" : "h-24 w-24")}
+      className={cn("object-contain", size === "lead" ? "h-14 w-full" : size === "tile" ? "h-16 w-full" : "h-24 w-24")}
       priority={priority}
       placeholder={image?.asset?.metadata?.lqip && image?.asset?.mimeType !== "image/svg+xml" ? "blur" : undefined}
       blurDataURL={image?.asset?.metadata?.lqip || ""}
       width={image.asset?.metadata?.dimensions?.width || 220}
       height={image?.asset?.metadata?.dimensions?.height || 90}
-      sizes={size === "lead" ? "(min-width: 640px) 320px, 70vw" : size === "tile" ? "(min-width: 1024px) 16vw, (min-width: 640px) 25vw, 40vw" : "96px"}
+      sizes={size === "lead" ? "320px" : size === "tile" ? "(min-width: 1024px) 20vw, (min-width: 640px) 30vw, 45vw" : "96px"}
     />
   );
 }
@@ -107,16 +112,19 @@ function NamedTile({ image, size = "tile", role }: { image: LogoImage; size?: "t
     <Linked image={image}>
       <figure
         className={cn(
-          "flex h-full flex-col items-center gap-3 rounded-2xl border border-ccm-midnight/10 bg-white p-4 text-center transition hover:border-ccm-sea/30 hover:shadow-sm",
-          size === "lead" && "p-6",
+          "flex h-full items-center rounded-xl border border-ccm-midnight/10 bg-white text-center transition hover:border-ccm-sea/30 hover:shadow-sm",
+          size === "lead" ? "h-20 gap-3 px-5 text-start" : "flex-col justify-start gap-2 px-4 py-3",
         )}
       >
-        {role && <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-ccm-sea">{role}</span>}
-        <div className={cn("flex w-full items-center justify-center", size === "lead" ? "h-24" : "h-16")}>
+        {role && <span className="w-16 flex-none text-[10px] font-bold uppercase leading-tight tracking-[0.12em] text-ccm-sea">{role}</span>}
+        <div className={cn("flex items-center justify-center", size === "lead" ? "h-14 min-w-0 flex-1" : "h-16 w-full")}>
           <LogoMark image={image} size={size} />
         </div>
-        {image.asset && name && (
-          <figcaption className={cn("font-medium text-ccm-midnight/80", size === "lead" ? "text-base" : "text-xs")}>{name}</figcaption>
+        {size !== "lead" && (
+          // Two lines kept for every name, so the row lines up whatever the name's length.
+          <figcaption className="flex min-h-[2lh] w-full items-start justify-center text-[11px] font-medium leading-snug text-ccm-midnight/75">
+            {image.asset ? name : null}
+          </figcaption>
         )}
       </figure>
     </Linked>
@@ -170,16 +178,16 @@ export default function LogoCloud1({
     return (
       <SectionContainer padding={padding}>
         {header}
-        <div className="mx-auto max-w-6xl space-y-10 px-4 @content-sm/page:px-6 @content-lg/page:px-8">
-          <div className="grid gap-4 @content-sm/page:grid-cols-2 @content-sm/page:mx-auto @content-sm/page:max-w-3xl">
+        <div className="mx-auto max-w-6xl space-y-6 px-4 @content-sm/page:px-6 @content-lg/page:px-8">
+          <div className="mx-auto grid max-w-3xl gap-3 @content-sm/page:grid-cols-2">
             {leads.map((lead) => (
               <NamedTile key={lead.href ?? lead.name} image={lead} size="lead" role={tLogos(lead.role)} />
             ))}
           </div>
           {imgs.length > 0 && (
             <div>
-              <h3 className="mb-4 text-center text-sm font-bold uppercase tracking-[0.14em] text-ccm-water">{tLogos("partners")}</h3>
-              <div className={cn("grid grid-cols-2 @content-sm/page:grid-cols-3 @content-xl/page:grid-cols-4", gridGap("md"))}>
+              <h3 className="mb-3 text-center text-xs font-bold uppercase tracking-[0.14em] text-ccm-water">{tLogos("partners")}</h3>
+              <div className="grid grid-cols-2 gap-3 @content-md/page:grid-cols-3 @content-lg/page:grid-cols-4">
                 {imgs.map((image, index) => (
                   <NamedTile key={`${image.href ?? image.asset?._id}-${index}`} image={image} />
                 ))}
@@ -216,7 +224,7 @@ export default function LogoCloud1({
             className="flex min-w-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-ccm-sea [&::-webkit-scrollbar]:hidden"
           >
             {imgs.map((image, index) => (
-              <div key={`${image.href ?? image.asset?._id}-${index}`} className="w-40 flex-none snap-start">
+              <div key={`${image.href ?? image.asset?._id}-${index}`} className="w-44 flex-none snap-start">
                 <NamedTile image={image} />
               </div>
             ))}
