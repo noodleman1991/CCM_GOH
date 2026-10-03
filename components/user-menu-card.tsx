@@ -124,7 +124,7 @@ export function UserMenuCard() {
             id={accountNavId}
             aria-label={t("userMenu")}
             hidden={!accountOpen}
-            className="grid gap-0.5 border-t border-white/10 pt-1.5"
+            className="relative mt-1.5 grid gap-0.5 pt-2 before:absolute before:inset-x-2 before:top-0 before:h-px before:bg-white/10"
           >
             {accountLinks.map(({ href, icon: Icon, label, badge }) => (
               <Link key={href} href={href} className={row} onClick={close}>
@@ -155,7 +155,7 @@ export function UserMenuCard() {
               </Button>
             </SignUpButton>
             <SignInButton mode="modal" appearance={clerkAppearance}>
-              <Button className="w-full rounded-lg border border-white/20 bg-transparent text-sidebar-foreground hover:bg-white/10">
+              <Button className="w-full rounded-lg border border-white/25 bg-transparent text-sidebar-foreground hover:border-transparent hover:bg-white/15">
                 {tAuth("signIn")}
               </Button>
             </SignInButton>
