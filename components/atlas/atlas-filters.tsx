@@ -60,7 +60,7 @@ export function FilterRow({
           'flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto py-1',
           FILTER_EDGE_FADE,
           FILTER_SCROLLBAR_HIDDEN,
-          'sm:flex-wrap sm:overflow-x-visible sm:[-webkit-mask-image:none] sm:[mask-image:none]'
+          'sm:flex-wrap sm:overflow-x-visible sm:[-webkit-mask-image:none] sm:[mask-image:none] sm:rtl:[-webkit-mask-image:none] sm:rtl:[mask-image:none]'
         )}
       >
         {shown}

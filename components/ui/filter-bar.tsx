@@ -13,12 +13,15 @@ import { cn } from "@/lib/utils"
  * sidebar. Chips themselves come from filter-chip.tsx.
  */
 /** Soft fade on the overflow edges so cut-off chips read as "more here".
- *  Near-zero at the start (4px) so a leading group label is never dimmed;
- *  symmetric enough to stay direction-safe in RTL. Shared by FilterBar and
- *  the per-row scrollers in atlas-filters.tsx. */
+ *  Near-zero at the start (4px) so a leading chip is never dimmed; the wide
+ *  fade sits at the end, which is the LEFT in Arabic (2026-10-03: the
+ *  right-only fade washed out the first chip of every right-to-left row).
+ *  Shared by FilterBar and the per-row scrollers in atlas-filters.tsx. */
 export const FILTER_EDGE_FADE =
   "[mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
-  "[-webkit-mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)]"
+  "[-webkit-mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
+  "rtl:[mask-image:linear-gradient(to_left,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
+  "rtl:[-webkit-mask-image:linear-gradient(to_left,transparent,#000_4px,#000_calc(100%-22px),transparent)]"
 
 /** Hide the horizontal scrollbar on chip rows (the edge fade is the scroll
  *  affordance instead). */

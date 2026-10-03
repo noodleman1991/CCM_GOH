@@ -747,6 +747,12 @@ export interface ContentEvent {
   relatedCollaboration?: string | null;
   coverImage?: { asset?: { url?: string | null } | null } | null;
   body?: unknown[] | null;
+  /** Who runs it (events spec §3.1). */
+  origin?: "ccm" | "external" | null;
+  organiserName?: string | null;
+  organiser?: { name?: string | null; slug?: string | null } | null;
+  relatedCommunity?: { slug?: string | null } | null;
+  tags?: unknown[] | null;
 }
 
 export interface EventFilter {
@@ -786,6 +792,16 @@ export async function getEvents(filter: EventFilter = {}): Promise<ContentEvent[
     return event ? [event] : [];
   }
   return query<ContentEvent[]>(APPROVED_EVENTS_QUERY, { limit: filter.limit ?? 50 });
+}
+
+/**
+ * Every approved event with what /events shows on a card and filters by: who
+ * runs it, the organiser, the community, the place, tags, recording and
+ * picture (events spec §3.5). Payload only — Sanity is not live.
+ */
+export async function getAllApprovedEvents(): Promise<ContentEvent[]> {
+  if (onPayload()) return payloadDiscovery.getAllApprovedEvents();
+  return [];
 }
 
 // ---------------------------------------------------------------------------

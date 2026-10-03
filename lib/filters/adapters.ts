@@ -150,3 +150,24 @@ export function researchOutputToFilterable(output: OutputLike, locale: string): 
     text: textOf(locale, output.title, output.excerpt),
   };
 }
+
+type EventLike = {
+  _id: string;
+  title?: unknown;
+  description?: unknown;
+  startAt?: string | null;
+  endAt?: string | null;
+  relatedCommunity?: { slug?: string | null } | null;
+  tags?: unknown;
+};
+
+/** Events: "upcoming" means not over yet, so the date is when it ends (or starts, with no end). */
+export function eventToFilterable(e: EventLike, locale: string): FilterableItem {
+  return {
+    id: e._id,
+    tags: toFilterTags(e.tags),
+    regions: regionsOf(e.relatedCommunity?.slug),
+    date: e.endAt ?? e.startAt ?? null,
+    text: textOf(locale, e.title, e.description),
+  };
+}

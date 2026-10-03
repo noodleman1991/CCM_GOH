@@ -335,6 +335,29 @@
         "revision": "Needs changes",
         "rejected": "Not accepted"
       }
+    },
+    "list": {
+      "title": "Events",
+      "subtitle": "Workshops, talks and gatherings from across the network — and beyond.",
+      "suggest": "Suggest an event",
+      "upcoming": "Coming up",
+      "past": "Past events",
+      "pastShowMore": "Show more past events",
+      "watchRecording": "Watch the recording",
+      "ccm": "CCM",
+      "external": "External",
+      "organisedBy": "Organised by {name}",
+      "online": "Online",
+      "emptyUpcoming": "No upcoming events match. Have one to share?",
+      "whereFilter": "Where",
+      "whoFilter": "Who runs it",
+      "modeOnline": "Online",
+      "modeInPerson": "In person",
+      "modeHybrid": "Hybrid",
+      "originCcm": "CCM",
+      "originExternal": "Other organisations",
+      "timesIn": "Times are in your time zone ({zone}).",
+      "newTab": "(opens in a new tab)"
     }
   },
   "plan": {

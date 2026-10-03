@@ -461,6 +461,29 @@
         "revision": "Necesita cambios",
         "rejected": "No aceptada"
       }
+    },
+    "list": {
+      "title": "Eventos",
+      "subtitle": "Talleres, charlas y encuentros de toda la red, y más allá.",
+      "suggest": "Sugerir un evento",
+      "upcoming": "Próximamente",
+      "past": "Eventos pasados",
+      "pastShowMore": "Ver más eventos pasados",
+      "watchRecording": "Ver la grabación",
+      "ccm": "CCM",
+      "external": "Externo",
+      "organisedBy": "Organizado por {name}",
+      "online": "En línea",
+      "emptyUpcoming": "No hay próximos eventos que coincidan. ¿Tienes uno para compartir?",
+      "whereFilter": "Dónde",
+      "whoFilter": "Quién lo organiza",
+      "modeOnline": "En línea",
+      "modeInPerson": "Presencial",
+      "modeHybrid": "Híbrido",
+      "originCcm": "CCM",
+      "originExternal": "Otras organizaciones",
+      "timesIn": "Los horarios están en tu zona horaria ({zone}).",
+      "newTab": "(se abre en una pestaña nueva)"
     }
   },
   "plan": {

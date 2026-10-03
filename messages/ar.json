@@ -461,6 +461,29 @@
         "revision": "تحتاج تعديلات",
         "rejected": "غير مقبولة"
       }
+    },
+    "list": {
+      "title": "الفعاليات",
+      "subtitle": "ورش عمل ومحاضرات ولقاءات من جميع أنحاء الشبكة — وما بعدها.",
+      "suggest": "اقترح فعالية",
+      "upcoming": "قريبًا",
+      "past": "فعاليات سابقة",
+      "pastShowMore": "عرض المزيد من الفعاليات السابقة",
+      "watchRecording": "شاهد التسجيل",
+      "ccm": "CCM",
+      "external": "خارجية",
+      "organisedBy": "تنظمها {name}",
+      "online": "عبر الإنترنت",
+      "emptyUpcoming": "لا توجد فعاليات قادمة مطابقة. هل لديك فعالية تشاركها؟",
+      "whereFilter": "أين",
+      "whoFilter": "من ينظمها",
+      "modeOnline": "عبر الإنترنت",
+      "modeInPerson": "حضوريًا",
+      "modeHybrid": "مدمجة",
+      "originCcm": "CCM",
+      "originExternal": "جهات أخرى",
+      "timesIn": "الأوقات بحسب منطقتك الزمنية ({zone}).",
+      "newTab": "(يفتح في علامة تبويب جديدة)"
     }
   },
   "plan": {

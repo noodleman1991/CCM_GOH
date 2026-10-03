@@ -1191,6 +1191,42 @@ export async function getEvents(filter: EventFilter = {}): Promise<ContentEvent[
     .map(eventListProjection);
 }
 
+/** An event card for /events: the list projection plus everything a card and its filters need. */
+function eventCardProjection(row: Row): ContentEvent {
+  const organiser = isRow(row.organiser) ? row.organiser : null;
+  const community = isRow(row.relatedCommunity) ? row.relatedCommunity : null;
+  return {
+    ...eventListProjection(row),
+    place: placeProjection(row.place),
+    recordingUrl: orNull(text(row.recordingUrl)),
+    coverImage: coverImageProjection(row.coverImage),
+    origin: text(row.origin) === "external" ? "external" : "ccm",
+    organiserName: orNull(text(row.organiserName)),
+    organiser: organiser ? { name: orNull(enArm(organiser.name) ?? text(organiser.name)), slug: orNull(text(organiser.slug)) } : null,
+    relatedCommunity: community ? { slug: orNull(text(community.slug)) } : null,
+    tags: tagProjection(row.tags, BLOCK_TAG_FIELDS),
+  } as unknown as ContentEvent;
+}
+
+export async function getAllApprovedEvents(): Promise<ContentEvent[]> {
+  const result = await query<Paginated<Row>>({
+    type: "find",
+    collection: "events",
+    where: APPROVED,
+    pagination: false,
+    locale: "all",
+    depth: 1,
+    sort: ["startAt", "id"],
+    // Cards only — never the page body (the data cache holds at most 2 MB).
+    select: {
+      title: true, slug: true, description: true, scope: true, startAt: true, endAt: true, mode: true, locationName: true, url: true,
+      linkedProject: true, place: true, recordingUrl: true, coverImage: true, origin: true, organiserName: true, organiser: true,
+      relatedCommunity: true, tags: true,
+    } as never,
+  });
+  return (result?.docs ?? []).map(eventCardProjection);
+}
+
 // ---------------------------------------------------------------------------
 // The editable event — a gated, drafts-visible read
 // ---------------------------------------------------------------------------

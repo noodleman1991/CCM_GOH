@@ -30,4 +30,20 @@ describe("filter bar", () => {
     fireEvent.click(screen.getByText("t:clear"));
     expect(push).toHaveBeenCalledWith("/en/research-and-action/case-studies", { scroll: false });
   });
+
+  it("adds page-specific rows (events: where, who runs it) that ride along in the URL", () => {
+    const extras = [{ param: "mode", label: "Where", options: [{ value: "online", label: "Online", count: 2 }], value: null }];
+    render(<FilterBar options={options} active={{ ...active, regions: ["oce"] }} extras={extras} whenOptions={[]} />);
+    expect(screen.queryByText("t:when")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Online/ }));
+    expect(push).toHaveBeenCalledWith("/en/research-and-action/case-studies?region=oce&mode=online", { scroll: false });
+  });
+  it("keeps an extra's choice when another filter changes, and clears it with Clear filters", () => {
+    const extras = [{ param: "mode", label: "Where", options: [{ value: "online", label: "Online", count: 2 }], value: "online" }];
+    render(<FilterBar options={options} active={active} extras={extras} />);
+    fireEvent.click(screen.getByRole("button", { name: /Youth/ }));
+    expect(push).toHaveBeenLastCalledWith("/en/research-and-action/case-studies?communities=youth&mode=online", { scroll: false });
+    fireEvent.click(screen.getByText("t:clear"));
+    expect(push).toHaveBeenLastCalledWith("/en/research-and-action/case-studies", { scroll: false });
+  });
 });

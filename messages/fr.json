@@ -461,6 +461,29 @@
         "revision": "À modifier",
         "rejected": "Non retenue"
       }
+    },
+    "list": {
+      "title": "Événements",
+      "subtitle": "Ateliers, conférences et rencontres de tout le réseau — et au-delà.",
+      "suggest": "Proposer un événement",
+      "upcoming": "À venir",
+      "past": "Événements passés",
+      "pastShowMore": "Voir plus d'événements passés",
+      "watchRecording": "Voir l'enregistrement",
+      "ccm": "CCM",
+      "external": "Externe",
+      "organisedBy": "Organisé par {name}",
+      "online": "En ligne",
+      "emptyUpcoming": "Aucun événement à venir ne correspond. Vous en avez un à partager ?",
+      "whereFilter": "Où",
+      "whoFilter": "Qui l'organise",
+      "modeOnline": "En ligne",
+      "modeInPerson": "En présentiel",
+      "modeHybrid": "Hybride",
+      "originCcm": "CCM",
+      "originExternal": "Autres organisations",
+      "timesIn": "Les horaires sont dans votre fuseau horaire ({zone}).",
+      "newTab": "(s'ouvre dans un nouvel onglet)"
     }
   },
   "plan": {

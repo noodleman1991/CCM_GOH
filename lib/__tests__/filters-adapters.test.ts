@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { caseStudyToFilterable, externalToFilterable, livedExperienceToFilterable, newsToFilterable, regionsOf, researchOutputToFilterable, toFilterTags } from "@/lib/filters/adapters";
+import { caseStudyToFilterable, externalToFilterable, livedExperienceToFilterable, newsToFilterable, regionsOf, researchOutputToFilterable, toFilterTags, eventToFilterable } from "@/lib/filters/adapters";
 
 describe("filter adapters", () => {
   it("reads tags whether the slug is a string or a slug object", () => {
@@ -61,5 +61,18 @@ describe("filter adapters", () => {
         "en",
       ),
     ).toEqual({ id: "r1", tags: [{ slug: "research", category: "topic", label: { en: "Research" } }], regions: ["enam", "oce"], date: "2024-11-01", text: { en: "Impact report Global event" } });
+  });
+});
+
+describe("events", () => {
+  it("are filtered by their community's region and their tags, and stay 'upcoming' until they end", () => {
+    const item = eventToFilterable(
+      { _id: "e1", title: "Reef day", description: "Restoring reefs", startAt: "2026-11-02T10:00:00.000Z", endAt: "2026-11-02T16:00:00.000Z", relatedCommunity: { slug: "oceania" }, tags: [{ value: "youth", category: "audience", label: { en: "Youth" } }] } as never,
+      "en",
+    );
+    expect(item.regions).toEqual(["oce"]);
+    expect(item.date).toBe("2026-11-02T16:00:00.000Z");
+    expect(item.tags[0]).toMatchObject({ slug: "youth", category: "audience" });
+    expect(item.text.en).toContain("Restoring reefs");
   });
 });
