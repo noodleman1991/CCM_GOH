@@ -1,7 +1,8 @@
 'use client'
 
 import { Children, isValidElement, useState } from 'react'
-import { FILTER_EDGE_FADE, FILTER_SCROLLBAR_HIDDEN } from '@/components/ui/filter-bar'
+import { FILTER_SCROLLBAR_HIDDEN } from '@/components/ui/filter-bar'
+import { useEdgeFade } from '@/hooks/use-edge-fade'
 import { cn } from '@/lib/utils'
 
 /**
@@ -42,6 +43,8 @@ export function FilterRow({
   collapse?: { limit: number; more: (hidden: number) => string; less: string }
 }) {
   const [open, setOpen] = useState(false)
+  // Phones scroll the row sideways; the fade marks only an edge that hides chips.
+  const { attach: attachFade, style: fadeStyle } = useEdgeFade<HTMLDivElement>()
   const items = Children.toArray(children)
   const collapsible = Boolean(collapse && items.length > collapse.limit + 1)
   const shown =
@@ -56,11 +59,12 @@ export function FilterRow({
         {label}
       </span>
       <div
+        ref={attachFade}
+        style={fadeStyle}
         className={cn(
           'flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto py-1',
-          FILTER_EDGE_FADE,
           FILTER_SCROLLBAR_HIDDEN,
-          'sm:flex-wrap sm:overflow-x-visible sm:[-webkit-mask-image:none] sm:[mask-image:none] sm:rtl:[-webkit-mask-image:none] sm:rtl:[mask-image:none]'
+          'sm:flex-wrap sm:overflow-x-visible'
         )}
       >
         {shown}

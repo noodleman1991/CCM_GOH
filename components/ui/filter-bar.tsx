@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/lib/utils"
+import { useEdgeFade } from "@/hooks/use-edge-fade"
 
 /**
  * The slim horizontal filter bar (Gate-2 §filter-bar) — ONE 34px row shared by
@@ -12,16 +15,6 @@ import { cn } from "@/lib/utils"
  * soft edge fade — it never wraps to a second line and never becomes a
  * sidebar. Chips themselves come from filter-chip.tsx.
  */
-/** Soft fade on the overflow edges so cut-off chips read as "more here".
- *  Near-zero at the start (4px) so a leading chip is never dimmed; the wide
- *  fade sits at the end, which is the LEFT in Arabic (2026-10-03: the
- *  right-only fade washed out the first chip of every right-to-left row).
- *  Shared by FilterBar and the per-row scrollers in atlas-filters.tsx. */
-export const FILTER_EDGE_FADE =
-  "[mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
-  "[-webkit-mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
-  "rtl:[mask-image:linear-gradient(to_left,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
-  "rtl:[-webkit-mask-image:linear-gradient(to_left,transparent,#000_4px,#000_calc(100%-22px),transparent)]"
 
 /** Hide the horizontal scrollbar on chip rows (the edge fade is the scroll
  *  affordance instead). */
@@ -31,18 +24,22 @@ export const FILTER_SCROLLBAR_HIDDEN =
 export function FilterBar({
   className,
   children,
+  style,
   ...props
 }: React.ComponentProps<"div">) {
+  // Fades only the edge that hides chips (hooks/use-edge-fade.ts).
+  const { attach: attachFade, style: fadeStyle } = useEdgeFade<HTMLDivElement>()
   return (
     <div
+      ref={attachFade}
       data-slot="filter-bar"
       role="group"
       className={cn(
         "flex items-center gap-1.5 overflow-x-auto py-1.5",
-        FILTER_EDGE_FADE,
         FILTER_SCROLLBAR_HIDDEN,
         className
       )}
+      style={{ ...fadeStyle, ...style }}
       {...props}
     >
       {children}
