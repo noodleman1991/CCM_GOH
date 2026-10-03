@@ -22,7 +22,7 @@ export function FilterRowGroup({
   ...props
 }: React.ComponentProps<'div'>) {
   return (
-    <div data-slot="filter-rows" role="group" className={cn('space-y-3 sm:space-y-1', className)} {...props}>
+    <div data-slot="filter-rows" role="group" className={cn('space-y-5 sm:space-y-1', className)} {...props}>
       {children}
     </div>
   )
@@ -51,7 +51,7 @@ export function FilterRow({
   const hidden = items.length - shown.length
 
   return (
-    <div className={cn('flex flex-col gap-1 sm:flex-row sm:items-start sm:gap-3', className)}>
+    <div className={cn('flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3', className)}>
       <span className="flex-none select-none break-words font-heading text-[10px] font-bold uppercase leading-tight tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)] [hyphens:auto] sm:w-24 sm:pt-2.5">
         {label}
       </span>
