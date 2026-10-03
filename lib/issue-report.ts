@@ -71,7 +71,7 @@ const AREA_BY_PATH: ReadonlyArray<readonly [RegExp, string]> = [
   [/^\/research-and-action/, "case-studies"],
   [/^\/communities/, "communities"],
   [/^\/collaborations/, "collaborations"],
-  [/^\/collaborate\/events/, "events"],
+  [/^\/events/, "events"],
   [/^\/collaborate/, "collaborations"],
   [/^\/news/, "news"],
   [/^\/reader/, "reader"],

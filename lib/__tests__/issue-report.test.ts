@@ -42,8 +42,9 @@ describe("deriveAreaFromPath", () => {
     expect(deriveAreaFromPath("/en/research-and-action/research-outputs")).toBe("research-outputs");
   });
 
-  it("maps events under collaborate, not collaborations", () => {
-    expect(deriveAreaFromPath("/en/collaborate/events")).toBe("events");
+  it("maps events to their own section, not collaborations", () => {
+    expect(deriveAreaFromPath("/en/events")).toBe("events");
+    expect(deriveAreaFromPath("/en/events/reef-day")).toBe("events");
     expect(deriveAreaFromPath("/en/collaborations/abc")).toBe("collaborations");
   });
 

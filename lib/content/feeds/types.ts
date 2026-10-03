@@ -88,7 +88,7 @@ export const KIND_HAS_FEATURED: Record<FeedKind, boolean> = {
 export const KIND_LISTING: Record<FeedKind, string> = {
   caseStudies: "/research-and-action/case-studies",
   newsPosts: "/news",
-  events: "/collaborate/events",
+  events: "/events",
   livedExperiences: "/lived-experiences",
   researchOutputs: "/research-and-action/research-outputs",
   agendas: "/research-and-action",

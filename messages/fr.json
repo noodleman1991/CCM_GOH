@@ -484,7 +484,9 @@
       "originExternal": "Autres organisations",
       "timesIn": "Les horaires sont dans votre fuseau horaire ({zone}).",
       "newTab": "(s'ouvre dans un nouvel onglet)"
-    }
+    },
+    "goToWebsite": "Aller sur le site de l'événement",
+    "organisedBy": "Organisé par {name}"
   },
   "plan": {
     "empty": "Pas encore de plan.",

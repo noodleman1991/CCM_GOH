@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { redirect } from "@/i18n/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
-import { CalendarPlus, Share2, Video } from "lucide-react";
+import { ArrowUpRight, CalendarPlus, Video } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FEATURES } from "@/lib/features";
@@ -16,6 +15,8 @@ import { CommentIsland } from "@/components/comments/comment-island";
 import { JsonLd, eventJsonLd } from "@/lib/seo/json-ld";
 import { siteUrl } from "@/lib/seo/site-url"
 import { StaffEditLink } from "@/components/cms/staff-edit-link";
+import { BackLink } from "@/components/ui/back-link";
+import { LocalWhen } from "@/components/events/local-when";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,10 @@ export async function generateMetadata({
  * Date-block hero, RSVP + add-to-calendar + share, then the same editorial
  * body blocks as every other content page. When a recording lands the hero
  * flips into recap mode.
+ *
+ * Open to everyone (events spec 2026-09-30) — only RSVP and the attendee list
+ * wait for the engagement switch. Another organisation's event sends people to
+ * its own website instead of an RSVP.
  */
 export default async function EventPage({
   params,
@@ -41,7 +46,6 @@ export default async function EventPage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const [event, { userId }, t] = await Promise.all([
     fetchEventBySlug(slug),
     auth(),
@@ -49,31 +53,29 @@ export default async function EventPage({
   ]);
   if (!event || !event.title) notFound();
 
-  const going = await goingCount(event._id);
+  const external = event.origin === "external";
+  const website = event.url && /^https?:\/\//i.test(event.url) ? event.url : null;
+  const organiser = external ? (event.organiser?.name ?? event.organiserName ?? null) : null;
+  const rsvp = FEATURES.engagement && !external;
+  const going = rsvp ? await goingCount(event._id) : 0;
   // Organiser-only attendee list (the action itself enforces submittedBy/staff).
-  const attendees = userId ? await listRsvpsForOrganiser(event._id) : { ok: false as const, error: "" };
+  const attendees = rsvp && userId ? await listRsvpsForOrganiser(event._id) : { ok: false as const, error: "" };
   const start = event.startAt ? new Date(event.startAt) : null;
   // eslint-disable-next-line react-hooks/purity -- async server component (force-dynamic): rendered once per request, so reading the clock here is stable for the render
   const isPast = start ? start.getTime() < Date.now() : false;
-  const day = start?.toLocaleDateString(locale, { day: "numeric" });
-  const month = start?.toLocaleDateString(locale, { month: "short" });
-  const timeLine = start
-    ? start.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" }) +
-      " · " +
-      start.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })
-    : null;
 
   const modeLabel =
     event.mode === "online" ? t("modeOnline") : event.mode === "in_person" ? t("modeInPerson") : event.mode === "hybrid" ? t("modeHybrid") : null;
 
   return (
     <div className="container max-w-3xl space-y-8 py-8">
-      <StaffEditLink collection="events" id={String(event._id ?? "")} from={`/${locale}/collaborate/events/${slug}`} />
+      <BackLink href="/events" label={t("suggest.back")} />
+      <StaffEditLink collection="events" id={String(event._id ?? "")} from={`/${locale}/events/${slug}`} />
       <JsonLd
         data={eventJsonLd({
           name: event.title,
           description: event.description ?? undefined,
-          url: `${siteUrl()}/${locale}/collaborate/events/${slug}`,
+          url: `${siteUrl()}/${locale}/events/${slug}`,
           startDate: event.startAt ?? null,
           endDate: event.endAt ?? null,
           locationName: event.locationName ?? null,
@@ -83,17 +85,31 @@ export default async function EventPage({
       {/* Hero — navy band with the date block */}
       <section className="rounded-2xl bg-gradient-to-br from-ccm-midnight to-ccm-sea p-6 text-white sm:p-8">
         <div className="flex items-start gap-5">
-          {start && (
-            <div className="flex-none rounded-xl bg-white px-3.5 py-2 text-center text-ccm-midnight">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-ccm-sea">{month}</div>
-              <div className="font-heading text-2xl font-bold leading-tight">{day}</div>
+          {/* Date and time in the visitor's own zone (filled in by the browser). */}
+          {event.startAt && (
+            <div className="flex min-h-14 min-w-12 flex-none flex-col rounded-xl bg-white px-3.5 py-2 text-center text-ccm-midnight">
+              <LocalWhen iso={event.startAt} locale={locale} options={{ month: "short" }} className="text-[10px] font-bold uppercase tracking-widest text-ccm-sea" />
+              <LocalWhen iso={event.startAt} locale={locale} options={{ day: "numeric" }} className="font-heading text-2xl font-bold leading-tight" />
             </div>
           )}
           <div className="min-w-0">
             <h1 className="font-heading text-2xl font-semibold text-balance text-white sm:text-3xl">
               <bdi>{event.title}</bdi>
             </h1>
-            {timeLine && <p className="mt-1.5 text-sm text-ccm-sky">{timeLine}</p>}
+            {event.startAt && (
+              <p className="mt-1.5 min-h-5 text-sm text-ccm-sky">
+                <LocalWhen
+                  iso={event.startAt}
+                  locale={locale}
+                  options={{ weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }}
+                />
+              </p>
+            )}
+            {organiser && (
+              <p className="mt-1 text-sm text-white/85">
+                {t("organisedBy", { name: organiser })}
+              </p>
+            )}
             <div className="mt-3 flex flex-wrap gap-2">
               {modeLabel && <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold">{modeLabel}</span>}
               {event.locationName && (
@@ -107,9 +123,18 @@ export default async function EventPage({
         </div>
       </section>
 
-      {/* CTA row — RSVP is the primary until the event passes */}
+      {/* CTA row — RSVP (or the organiser's website) is the primary until the event passes */}
       <div className="flex flex-wrap items-center gap-2.5">
-        {!isPast && <RsvpButton eventId={event._id} />}
+        {!isPast && rsvp && <RsvpButton eventId={event._id} />}
+        {!isPast && external && website && (
+          <Button asChild className="min-h-[44px] gap-1.5 rounded-full">
+            <a href={website} target="_blank" rel="noopener">
+              {t("goToWebsite")}
+              <ArrowUpRight className="size-4 rtl:-scale-x-100" aria-hidden />
+              <span className="sr-only"> {t("list.newTab")}</span>
+            </a>
+          </Button>
+        )}
         {!isPast && (
           <Button asChild variant="outline" className="min-h-[44px] gap-1.5 rounded-full">
             {/* Plain anchor: an API download, not a locale route. */}
@@ -128,10 +153,15 @@ export default async function EventPage({
             </a>
           </Button>
         )}
-        <span className="text-sm text-muted-foreground">{t("goingCount", { count: going })}</span>
+        {rsvp && <span className="text-sm text-muted-foreground">{t("goingCount", { count: going })}</span>}
       </div>
 
-      {event.description && <p className="text-lg leading-relaxed text-foreground/90">{event.description}</p>}
+      {/* dir="auto": a description in another language than the page keeps its own direction. */}
+      {event.description && (
+        <p dir="auto" className="text-lg leading-relaxed text-foreground/90">
+          {event.description}
+        </p>
+      )}
 
       {/* Editorial body — same blocks as every content page (X1 renderer) */}
       {Array.isArray(event.body) && event.body.length > 0 && (

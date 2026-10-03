@@ -237,7 +237,7 @@ export default function EventsCalendarClient({
                     </div>
                     {e.slug && FEATURES.engagement ? (
                       <Link
-                        href={`/collaborate/events/${e.slug}`}
+                        href={`/events/${e.slug}`}
                         className="block truncate font-heading font-semibold text-ccm-midnight underline-offset-2 hover:underline"
                       >
                         <bdi>{e.title}</bdi>

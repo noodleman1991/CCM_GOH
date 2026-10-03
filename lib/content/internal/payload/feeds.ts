@@ -111,7 +111,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
   events: {
     collection: "events",
     card: "event",
-    href: (s) => `/collaborate/events/${s}`,
+    href: (s) => `/events/${s}`,
     moderation: "approved",
     date: "startAt",
     featured: false,

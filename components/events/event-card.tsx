@@ -59,7 +59,7 @@ export function EventCard({
         </div>
         {event.slug ? (
           <Link
-            href={`/collaborate/events/${event.slug}`}
+            href={`/events/${event.slug}`}
             className="block truncate font-heading font-semibold text-ccm-midnight underline-offset-2 hover:underline"
           >
             <bdi>{event.title}</bdi>

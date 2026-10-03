@@ -244,7 +244,7 @@ const SITEMAP_SOURCES: Record<string, SitemapSource> = {
   // would only hide that a dead prefix had crept back in.
   "/research-and-action/research-outputs": { collections: ["researchOutputs"], moderation: "approved", lastModified: "sanityUpdatedAt" },
   "/communities": { collections: ["regionalCommunityPages", "regionalCommunities"], moderation: "none", lastModified: "sanityUpdatedAt" },
-  "/collaborate/events": { collections: ["events"], moderation: "approved", lastModified: "updatedAt" },
+  "/events": { collections: ["events"], moderation: "approved", lastModified: "updatedAt" },
   "/organizations": { collections: ["organizations"], moderation: "none", lastModified: "updatedAt", where: { showOnSite: { not_equals: false } } },
 };
 

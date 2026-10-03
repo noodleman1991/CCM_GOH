@@ -484,7 +484,9 @@
       "originExternal": "Otras organizaciones",
       "timesIn": "Los horarios están en tu zona horaria ({zone}).",
       "newTab": "(se abre en una pestaña nueva)"
-    }
+    },
+    "goToWebsite": "Ir al sitio web del evento",
+    "organisedBy": "Organizado por {name}"
   },
   "plan": {
     "empty": "Aún no hay plan.",

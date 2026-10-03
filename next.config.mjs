@@ -197,6 +197,24 @@ const nextConfig = {
         destination: '/:locale/research-and-action/regional-agendas',
         permanent: true,
       },
+      // Events moved out of Collaborate to their own section (events spec
+      // 2026-09-30). `new` comes before `:slug` so it isn't read as an event
+      // called "new"; query strings (?workspace=, ?edit=) pass through.
+      {
+        source: '/:locale(en|es|fr|ar)/collaborate/events',
+        destination: '/:locale/events',
+        permanent: true,
+      },
+      {
+        source: '/:locale(en|es|fr|ar)/collaborate/events/new',
+        destination: '/:locale/events/suggest',
+        permanent: true,
+      },
+      {
+        source: '/:locale(en|es|fr|ar)/collaborate/events/:slug',
+        destination: '/:locale/events/:slug',
+        permanent: true,
+      },
     ]
   },
   images: {

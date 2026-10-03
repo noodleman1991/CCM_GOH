@@ -358,7 +358,9 @@
       "originExternal": "Other organisations",
       "timesIn": "Times are in your time zone ({zone}).",
       "newTab": "(opens in a new tab)"
-    }
+    },
+    "goToWebsite": "Go to the event's website",
+    "organisedBy": "Organised by {name}"
   },
   "plan": {
     "empty": "No plan yet.",

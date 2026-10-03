@@ -114,7 +114,7 @@ describe("resolveContentFeed", () => {
   it("gives events their start date and a date tile", async () => {
     query.mockResolvedValue({ docs: [row("e1", { publishedAt: undefined, startAt: "2026-10-01T09:00:00.000Z" })] });
     const r = await resolveContentFeed({ kinds: ["events"] }, { locale: "en" });
-    expect(r.items[0]).toMatchObject({ type: "event", href: "/collaborate/events/s-e1", event: { startAt: "2026-10-01T09:00:00.000Z" } });
+    expect(r.items[0]).toMatchObject({ type: "event", href: "/events/s-e1", event: { startAt: "2026-10-01T09:00:00.000Z" } });
   });
 
   it("one failing kind doesn't take the whole feed down", async () => {

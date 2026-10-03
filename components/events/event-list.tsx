@@ -1,21 +1,12 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { EventTile } from "@/components/events/event-tile";
+import { useBrowserTimeZone } from "@/components/events/local-when";
 import { groupByMonth, type EventTileData } from "@/lib/events/listing";
 
 const PAST_PAGE = 12;
-const noop = () => () => {};
-
-/**
- * The browser's zone, known only after hydration: null on the server and the
- * first client pass, so nothing zone- or ICU-dependent (Node and browsers
- * space "5:00 PM" differently) is in the server markup.
- */
-function useTimeZone(): string | null {
-  return useSyncExternalStore(noop, () => Intl.DateTimeFormat().resolvedOptions().timeZone, () => null);
-}
 
 /** "GMT+1" for the zone the tiles use — not the server's, so server and browser agree. */
 function zoneName(timeZone: string, locale: string): string {
@@ -25,7 +16,7 @@ function zoneName(timeZone: string, locale: string): string {
 /** Upcoming events by month in the visitor's time zone, then past ones newest first (events spec §3.5). */
 export function EventList({ upcoming, past, locale }: { upcoming: EventTileData[]; past: EventTileData[]; locale: string }) {
   const t = useTranslations("events.list");
-  const timeZone = useTimeZone();
+  const timeZone = useBrowserTimeZone();
   const [pastShown, setPastShown] = useState(PAST_PAGE);
   const months = groupByMonth(upcoming, locale, timeZone ?? "UTC");
 

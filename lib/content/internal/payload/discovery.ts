@@ -1130,12 +1130,10 @@ function eventListProjection(row: Row): ContentEvent {
 /** `EVENT_BY_SLUG_QUERY` — the list projection plus `place`, `recordingUrl`,
  *  `relatedCollaboration`, `coverImage` and the rich-text `body`. */
 function eventDetailProjection(row: Row): ContentEvent {
+  // The card fields (who runs it, organiser, community, tags) plus the page's own.
   return groqObject({
-    ...(eventListProjection(row) as unknown as Row),
-    place: placeProjection(row.place),
-    recordingUrl: orNull(text(row.recordingUrl)),
+    ...(eventCardProjection(row) as unknown as Row),
     relatedCollaboration: orNull(text(row.relatedCollaboration)),
-    coverImage: coverImageProjection(row.coverImage),
     body: eventBody(row.body),
   }) as unknown as ContentEvent;
 }

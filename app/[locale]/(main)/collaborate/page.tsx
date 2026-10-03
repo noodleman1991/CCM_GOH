@@ -106,7 +106,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
       {FEATURES.engagement && (
         <div className="flex justify-end">
           <Button asChild variant="outline" className="gap-2">
-            <Link href="/collaborate/events/new">
+            <Link href="/events/suggest">
               <Plus className="size-4" />
               {tEvents('submit')}
             </Link>
