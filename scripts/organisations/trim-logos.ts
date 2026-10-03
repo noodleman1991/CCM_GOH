@@ -7,6 +7,11 @@
  *   pnpm exec tsx scripts/organisations/trim-logos.ts --execute       # dev write
  *   pnpm exec tsx scripts/organisations/trim-logos.ts --revert --execute
  *   … --production [--execute | --revert]                             # PRODUCTION (user only)
+ *   … --out=<dir>                                                      # write the trimmed files + manifest.json, change nothing
+ *
+ * `--out` is for uploading through the live site (its storage bucket isn't
+ * reachable from a laptop): manifest.json lists, per file, the organisation,
+ * its name, its current logo picture and alt text.
  *
  * The trimmed logo is saved as a NEW picture and the organisation points at
  * it; the original picture is kept. backups/trim-logos-<time>.json records
@@ -25,6 +30,7 @@ const PREFIX = "trim-logos-";
 async function main() {
   const argv = process.argv.slice(2);
   const execute = argv.includes("--execute");
+  const outDir = argv.find((a) => a.startsWith("--out="))?.slice("--out=".length) ?? null;
   const revert = argv.includes("--revert");
   const production = argv.includes("--production") || argv.includes("--allow-production");
 
@@ -93,6 +99,18 @@ async function main() {
   }
   console.log(`\n${plans.length} logo(s) to trim.`);
 
+  if (outDir) {
+    mkdirSync(outDir, { recursive: true });
+    const manifest = [];
+    for (const p of plans) {
+      const file = `${p.slug}-logo.png`;
+      writeFileSync(path.join(outDir, file), await sharp(p.bytes).extract(p.crop).png().toBuffer());
+      manifest.push({ id: p.id, name: p.name, file, asset: String(p.asset.id), alt: typeof p.alt === "string" ? p.alt : null });
+    }
+    writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+    console.log(`Wrote ${plans.length} trimmed logo(s) and manifest.json to ${outDir} — nothing in the database changed.`);
+    process.exit(0);
+  }
   if (!execute) {
     console.log("Dry run — nothing was written. Re-run with --execute to apply.");
     process.exit(0);
