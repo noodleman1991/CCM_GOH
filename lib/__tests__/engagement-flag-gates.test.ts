@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
  * With `NEXT_PUBLIC_FEATURE_ENGAGEMENT` unset (production today), the
  * engagement pages redirect home — but the buttons that lead to them still
  * rendered and the server actions behind them still ran. A member could
- * create a workspace, start a conversation, request contact or RSVP, watch a
+ * create a workspace, start a conversation or request contact, watch a
  * real row appear, and then be redirected to `/`. The actions and the event
  * submission route now refuse when the flag is off, before any database
  * work; the buttons are gated in Slice 6's components.
@@ -80,10 +80,18 @@ describe("engagement server actions with the flag off", () => {
     expect(touchedDb()).toBe(false);
   });
 
-  it("setRsvp refuses before touching the database", async () => {
+});
+
+// RSVP is no longer behind the flag (user, 2026-10-03): event pages are public
+// and members can say they're going with the engagement program still off.
+describe("with the engagement flag off, RSVP still works", () => {
+  it("saves the member's RSVP", async () => {
+    const { getApprovedEventForRsvp } = await import("@/lib/content/discovery");
+    vi.mocked(getApprovedEventForRsvp).mockResolvedValue({ _id: "evt1", title: "Reef day", startAt: null, slug: "reef-day", submittedBy: null } as never);
+    (prisma.rsvp as Record<string, ReturnType<typeof vi.fn>>).findUnique = vi.fn(async () => null);
     const res = await setRsvp("evt1", "GOING");
-    expect(res.ok).toBe(false);
-    expect(touchedDb()).toBe(false);
+    expect(res.ok).toBe(true);
+    expect(prisma.rsvp.upsert).toHaveBeenCalled();
   });
 });
 

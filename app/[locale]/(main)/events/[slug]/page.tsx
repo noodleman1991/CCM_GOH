@@ -5,7 +5,6 @@ import { getTranslations } from "next-intl/server";
 import { ArrowUpRight, CalendarPlus, Video } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { FEATURES } from "@/lib/features";
 import { fetchEventBySlug } from "@/lib/events";
 import { goingCount, listRsvpsForOrganiser } from "@/lib/actions/rsvp";
 import { RsvpButton } from "@/components/events/rsvp-button";
@@ -36,9 +35,8 @@ export async function generateMetadata({
  * body blocks as every other content page. When a recording lands the hero
  * flips into recap mode.
  *
- * Open to everyone (events spec 2026-09-30) — only RSVP and the attendee list
- * wait for the engagement switch. Another organisation's event sends people to
- * its own website instead of an RSVP.
+ * Open to everyone, RSVP included. Another organisation's event sends people
+ * to its own website instead of an RSVP.
  */
 export default async function EventPage({
   params,
@@ -56,7 +54,8 @@ export default async function EventPage({
   const external = event.origin === "external";
   const website = event.url && /^https?:\/\//i.test(event.url) ? event.url : null;
   const organiser = external ? (event.organiser?.name ?? event.organiserName ?? null) : null;
-  const rsvp = FEATURES.engagement && !external;
+  // RSVP is open to every signed-in member (user, 2026-10-03); outside events sign people up on their own site.
+  const rsvp = !external;
   const going = rsvp ? await goingCount(event._id) : 0;
   // Organiser-only attendee list (the action itself enforces submittedBy/staff).
   const attendees = rsvp && userId ? await listRsvpsForOrganiser(event._id) : { ok: false as const, error: "" };

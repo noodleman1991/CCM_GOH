@@ -7,7 +7,8 @@ import { CollaboratePageClient } from './page-client'
 import { CollabTabs } from '@/components/collaborate/collab-tabs'
 import { ProjectCard } from '@/components/collaborate/project-card'
 import { getPublicProjects } from '@/lib/collaboration/public-list'
-import { fetchApprovedEvents } from '@/lib/events'
+import { getAllApprovedEvents } from '@/lib/content/discovery'
+import { isUpcoming } from '@/lib/events/listing'
 import { EventCard } from '@/components/events/event-card'
 import { CreateCollaborationButton } from '@/components/collaboration/create-collaboration-button'
 import { PageContainer } from '@/components/ui/page-container'
@@ -76,7 +77,10 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     getTranslations({ locale, namespace: 'collabSpace' }),
     getTranslations({ locale, namespace: 'events' }),
     getPublicProjects().catch(() => []),
-    FEATURES.engagement ? fetchApprovedEvents(12).catch(() => []) : Promise.resolve([]),
+    // The next twelve events (they were the twelve oldest, past ones included).
+    getAllApprovedEvents()
+      .then((all) => all.filter((e) => e.startAt && isUpcoming({ startAt: e.startAt, endAt: e.endAt }, new Date())).slice(0, 12))
+      .catch(() => []),
   ])
 
   const eventLabels = {
@@ -103,16 +107,14 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
   const eventsPanel = (
     <div className="space-y-4">
-      {FEATURES.engagement && (
-        <div className="flex justify-end">
-          <Button asChild variant="outline" className="gap-2">
-            <Link href="/events/suggest">
-              <Plus className="size-4" />
-              {tEvents('submit')}
-            </Link>
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-end">
+        <Button asChild variant="outline" className="gap-2">
+          <Link href="/events/suggest">
+            <Plus className="size-4" />
+            {tEvents('submit')}
+          </Link>
+        </Button>
+      </div>
       {events.length === 0 ? (
         <Card className="p-10 text-center text-sm text-muted-foreground">{tEvents('empty')}</Card>
       ) : (

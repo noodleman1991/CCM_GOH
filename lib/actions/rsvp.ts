@@ -7,7 +7,6 @@ import { getApprovedEventForRsvp } from "@/lib/content/discovery";
 import { createNotification } from "@/lib/notifications/service";
 import { structuredSnippet } from "@/lib/notifications/structured";
 import type { RsvpStatus } from "@/generated/prisma";
-import { FEATURES } from "@/lib/features";
 import { captureAfterResponse } from "@/lib/analytics/server";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
@@ -27,7 +26,6 @@ export async function setRsvp(
   eventId: string,
   status: "GOING" | "INTERESTED" | "NOT_GOING" = "GOING"
 ): Promise<Result<{ status: RsvpStatus }>> {
-  if (!FEATURES.engagement) return { ok: false, error: "This feature isn't available yet." };
   const actor = await getActor();
   if (!actor) return { ok: false, error: "Sign in to RSVP." };
   if (!z.string().min(1).safeParse(eventId).success) return { ok: false, error: "Invalid event." };

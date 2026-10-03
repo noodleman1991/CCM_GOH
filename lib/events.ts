@@ -15,7 +15,8 @@ export type EventListItem = Pick<
   | "linkedProject"
   | "place"
   | "slug"
->;
+> &
+  Partial<Pick<ContentEvent, "origin">>;
 
 /**
  * Approved events, soonest-first. Only `status == "approved"` is public (the

@@ -74,7 +74,8 @@ export function EventCard({
         {event.description && (
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{event.description}</p>
         )}
-        {signedIn && (
+        {/* Outside events sign people up on their own site, so no RSVP here. */}
+        {signedIn && event.origin !== "external" && (
           <div className="mt-3">
             <RsvpButton eventId={event._id} />
           </div>
