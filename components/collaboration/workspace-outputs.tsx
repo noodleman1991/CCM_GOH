@@ -44,7 +44,7 @@ export default function WorkspaceOutputs({
   const SUBMIT_ROUTES: Record<string, string> = {
     caseStudy: "/research-and-action/case-studies/submit",
     livedExperience: "/lived-experiences/submit",
-    event: "/collaborate/events/new",
+    event: "/events/suggest",
     researchOutput: "/research-and-action/research-outputs/submit",
   };
 

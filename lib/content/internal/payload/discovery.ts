@@ -1229,6 +1229,17 @@ export async function getEditableEventDoc(id: string): Promise<RawEditableEventD
     submittedBy: orNull(text(row.submittedBy)),
     status: orNull(text(row.moderationStatus)),
     reviewNotes: orNull(text(row.reviewNotes)),
+    origin: orNull(text(row.origin)),
+    organiserName: orNull(text(row.organiserName)),
+    regionalCommunityId: orNull(isRow(row.relatedCommunity) ? text(row.relatedCommunity.id) : text(row.relatedCommunity)),
+    place: isRow(row.place)
+      ? {
+          text: orNull(text(row.place.text)),
+          point: Array.isArray(row.place.point) ? (row.place.point as [number, number]) : null,
+          precision: orNull(text(row.place.precision)),
+          countryCode: orNull(text(row.place.countryCode)),
+        }
+      : null,
   }) as unknown as RawEditableEventDoc;
 }
 

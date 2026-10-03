@@ -51,7 +51,7 @@ function LogoMark({ image, size, priority }: { image: LogoImage; size: "tile" | 
     return (
       <span
         className={cn(
-          "inline-flex items-center justify-center rounded-lg bg-ccm-mist px-3 text-center font-bold leading-tight text-ccm-midnight",
+          "inline-flex items-center justify-center rounded-lg bg-ccm-sky/15 px-3 text-center font-bold leading-tight text-ccm-midnight",
           size === "strip" ? "h-20 text-sm" : "h-full w-full text-xs",
         )}
       >

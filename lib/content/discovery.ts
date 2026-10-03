@@ -805,6 +805,10 @@ export interface RawEditableEventDoc {
   submittedBy?: string;
   status?: string | null;
   reviewNotes?: string | null;
+  origin?: string | null;
+  organiserName?: string | null;
+  regionalCommunityId?: string | null;
+  place?: { text: string | null; point: [number, number] | null; precision: string | null; countryCode: string | null } | null;
 }
 
 /**

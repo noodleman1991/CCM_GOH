@@ -22,6 +22,11 @@ export type EditableEvent = {
   mode: "online" | "in_person" | "hybrid";
   locationName: string;
   url: string;
+  origin: "ccm" | "external";
+  organiserName: string;
+  regionalCommunityId: string;
+  /** The place picker's value, rebuilt from the stored place. */
+  place: { lat: number; lng: number; text: string; precision: "exact" | "city" | "country" | "region"; countryCode3: string | null } | null;
 };
 
 export async function loadEditableEvent(
@@ -62,5 +67,18 @@ export async function loadEditableEvent(
     mode: doc.mode === "in_person" || doc.mode === "hybrid" ? doc.mode : "online",
     locationName: doc.locationName ?? "",
     url: doc.url ?? "",
+    origin: doc.origin === "external" ? "external" : "ccm",
+    organiserName: doc.organiserName ?? "",
+    regionalCommunityId: doc.regionalCommunityId ?? "",
+    place:
+      doc.place?.point && doc.place.text
+        ? {
+            lng: doc.place.point[0],
+            lat: doc.place.point[1],
+            text: doc.place.text,
+            precision: (["exact", "city", "country", "region"].includes(doc.place.precision ?? "") ? doc.place.precision : "city") as "exact" | "city" | "country" | "region",
+            countryCode3: doc.place.countryCode ?? null,
+          }
+        : null,
   };
 }

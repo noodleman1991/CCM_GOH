@@ -58,7 +58,7 @@ export default async function OrganizationPage({ params }: { params: Params }) {
           {logo ? (
             <Image src={logo} alt={org.name} width={160} height={96} className="h-24 w-auto max-w-40 object-contain" />
           ) : (
-            <span className="flex size-24 flex-none items-center justify-center rounded-2xl bg-ccm-mist font-heading text-3xl font-bold text-ccm-midnight" aria-hidden>
+            <span className="flex size-24 flex-none items-center justify-center rounded-2xl bg-ccm-sky/15 font-heading text-3xl font-bold text-ccm-midnight" aria-hidden>
               {initials(org.name)}
             </span>
           )}
