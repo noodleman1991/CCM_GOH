@@ -27,7 +27,10 @@ export function isNotifiableStatus(status: unknown): status is NotifiableStatus 
   return typeof status === "string" && (NOTIFIABLE as string[]).includes(status)
 }
 
+export type SubmissionKind = "caseStudy" | "event"
+
 interface StatusEmailInput {
+  kind?: SubmissionKind
   locale?: string
   title: string
   status: NotifiableStatus
@@ -38,8 +41,34 @@ interface StatusEmailInput {
 /** Localised subject + plain-text/HTML body per status. Kept inline (not in the
  *  next-intl message files) because this runs in a webhook with no request
  *  locale context; we still localise by the submitter's stored locale. */
-function buildStatusEmail({ locale = "en", title, status, reviewNotes, siteUrl }: StatusEmailInput) {
-  const dashboardUrl = `${siteUrl}/${locale}/dashboard/submissions`
+/** Event outcomes (events spec §3.4): the member's own list of suggestions is where they act on it. */
+function eventCopy(title: string): Record<string, Record<NotifiableStatus, { subject: string; heading: string; body: string }>> {
+  return {
+    en: {
+      approved: { subject: `Your event "${title}" is on the hub`, heading: "Your event is live", body: `Good news — "${title}" has been approved and now appears on the hub's events.` },
+      revision: { subject: `Your event "${title}" needs a few changes`, heading: "A few changes, please", body: `The team asked for some changes to "${title}" before it can go on the hub.` },
+      rejected: { subject: `Update on your event "${title}"`, heading: "Not listed this time", body: `Thank you for suggesting "${title}". After review, it won't be listed on the hub.` },
+    },
+    es: {
+      approved: { subject: `Tu evento "${title}" ya está en el hub`, heading: "Tu evento está publicado", body: `Buenas noticias: "${title}" ha sido aprobado y ya aparece en los eventos del hub.` },
+      revision: { subject: `Tu evento "${title}" necesita algunos cambios`, heading: "Algunos cambios, por favor", body: `El equipo ha pedido algunos cambios en "${title}" antes de publicarlo en el hub.` },
+      rejected: { subject: `Novedades sobre tu evento "${title}"`, heading: "Esta vez no se publicará", body: `Gracias por sugerir "${title}". Tras la revisión, no se publicará en el hub.` },
+    },
+    fr: {
+      approved: { subject: `Votre événement « ${title} » est sur le hub`, heading: "Votre événement est en ligne", body: `Bonne nouvelle : « ${title} » a été accepté et figure désormais parmi les événements du hub.` },
+      revision: { subject: `Votre événement « ${title} » demande quelques modifications`, heading: "Quelques modifications, s'il vous plaît", body: `L'équipe a demandé quelques modifications à « ${title} » avant de le publier sur le hub.` },
+      rejected: { subject: `À propos de votre événement « ${title} »`, heading: "Pas retenu cette fois", body: `Merci d'avoir proposé « ${title} ». Après examen, il ne sera pas publié sur le hub.` },
+    },
+    ar: {
+      approved: { subject: `فعاليتك "${title}" منشورة على المنصة`, heading: "فعاليتك منشورة", body: `أخبار جيدة — تمت الموافقة على "${title}" وهي تظهر الآن ضمن فعاليات المنصة.` },
+      revision: { subject: `فعاليتك "${title}" تحتاج بعض التعديلات`, heading: "بعض التعديلات من فضلك", body: `طلب الفريق بعض التعديلات على "${title}" قبل نشرها على المنصة.` },
+      rejected: { subject: `بخصوص فعاليتك "${title}"`, heading: "لن تُنشر هذه المرة", body: `شكرًا لاقتراحك "${title}". بعد المراجعة، لن تُنشر على المنصة.` },
+    },
+  }
+}
+
+function buildStatusEmail({ kind = "caseStudy", locale = "en", title, status, reviewNotes, siteUrl }: StatusEmailInput) {
+  const dashboardUrl = kind === "event" ? `${siteUrl}/${locale}/events/suggest` : `${siteUrl}/${locale}/dashboard/submissions`
 
   const copy: Record<string, Record<NotifiableStatus, { subject: string; heading: string; body: string }>> = {
     en: {
@@ -112,7 +141,8 @@ function buildStatusEmail({ locale = "en", title, status, reviewNotes, siteUrl }
     },
   }
 
-  const L = copy[locale] || copy.en
+  const all = kind === "event" ? eventCopy(title) : copy
+  const L = all[locale] || all.en
   const c = L[status]
   const dir = locale === "ar" ? "rtl" : "ltr"
   const notesBlock = reviewNotes
@@ -123,15 +153,17 @@ function buildStatusEmail({ locale = "en", title, status, reviewNotes, siteUrl }
     <h2 style="margin:0 0 12px;">${escapeHtml(c.heading)}</h2>
     <p style="margin:0 0 16px;line-height:1.5;">${escapeHtml(c.body)}</p>
     ${notesBlock}
-    <p style="margin:24px 0 0;"><a href="${dashboardUrl}" style="display:inline-block;background:#1e3a5f;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;">View your submissions</a></p>
+    <p style="margin:24px 0 0;"><a href="${dashboardUrl}" style="display:inline-block;background:#1e3a5f;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;">${kind === "event" ? "See your suggestions" : "View your submissions"}</a></p>
   </body></html>`
 
-  const text = `${c.heading}\n\n${c.body}\n${reviewNotes ? `\nNotes: ${reviewNotes}\n` : ""}\nView your submissions: ${dashboardUrl}`
+  const text = `${c.heading}\n\n${c.body}\n${reviewNotes ? `\nNotes: ${reviewNotes}\n` : ""}\n${kind === "event" ? "See your suggestions" : "View your submissions"}: ${dashboardUrl}`
 
   return { subject: c.subject, html, text }
 }
 
 interface NotifyInput {
+  /** Which kind of submission; case studies when unset (every existing caller). */
+  kind?: SubmissionKind
   caseStudyId: string
   status: string
   notifiedStatus?: string
@@ -193,9 +225,14 @@ async function defaultMarkNotified(caseStudyId: string, status: NotifiableStatus
   await updateCaseStudy(caseStudyId, { notifiedStatus: status })
 }
 
-/** Returns a short result describing what happened (for webhook logging). */
+/** The case-study notifier every existing caller uses. */
 export async function notifyCaseStudyStatusChange(input: NotifyInput, deps: NotifyDeps = {}): Promise<string> {
-  const { caseStudyId, status, notifiedStatus, submittedBy, title, reviewNotes, locale, siteUrl } = input
+  return notifySubmissionStatusChange({ ...input, kind: "caseStudy" }, deps)
+}
+
+/** Returns a short result describing what happened (for webhook logging). */
+export async function notifySubmissionStatusChange(input: NotifyInput, deps: NotifyDeps = {}): Promise<string> {
+  const { kind = "caseStudy", caseStudyId, status, notifiedStatus, submittedBy, title, reviewNotes, locale, siteUrl } = input
 
   if (!isNotifiableStatus(status)) return "skipped: status not notifiable"
   if (status === notifiedStatus) return "skipped: already notified for this status"
@@ -212,8 +249,9 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput, deps: Noti
   if (!deps.sendEmail && !process.env.RESEND_API_KEY) return "skipped: RESEND_API_KEY not configured"
 
   const { subject, html, text } = buildStatusEmail({
+    kind,
     locale,
-    title: title || "your case study",
+    title: title || (kind === "event" ? "your event" : "your case study"),
     status,
     reviewNotes,
     siteUrl,
@@ -224,7 +262,7 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput, deps: Noti
   // result is read: a rejected message returns `failed:` and does NOT mark the
   // document notified, so the next status write can try again.
   const result = await sendEmail(
-    { kind: "case-study-status", to: user.email, subject, html, text },
+    { kind: kind === "event" ? "event-status" : "case-study-status", to: user.email, subject, html, text },
     deps.sendEmail
       ? { transport: (message) => deps.sendEmail!({ from: message.from, to: message.to, subject: message.subject, html: message.html, text: message.text }) }
       : {},
@@ -235,6 +273,8 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput, deps: Noti
   // Note: the seam's updateDocument commits synchronously (no `visibility:
   // "async"` option) — a slightly slower webhook response than before, not a
   // behaviour change to anything rendered or read.
+  // Events are only ever notified from the Payload hook, which passes its own writer.
+  if (kind === "event" && !deps.markNotified) return `sent: ${status} -> ${user.email} (not marked: no writer)`
   const markNotified = deps.markNotified ?? defaultMarkNotified
   await markNotified(caseStudyId, status)
 

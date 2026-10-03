@@ -8,12 +8,14 @@ import { commentItem, mergeReviewItems, toSubmissionItem, type ReviewItem } from
 /** Everything waiting for a decision: pending submissions + held and flagged comments. */
 export async function getReviewQueue(locale: string): Promise<ReviewItem[]> {
   const payload = await getPayload({ config });
+  const settings = (await payload.findGlobal({ slug: "eventSuggestions", depth: 0, overrideAccess: true }).catch(() => null)) as { blocked?: Array<{ userId?: string }> } | null;
+  const blocked = new Set((settings?.blocked ?? []).map((b) => b.userId).filter((id): id is string => Boolean(id)));
   const submissions = await Promise.all(
     MODERATED_COLLECTIONS.map(async (collection) => {
       const res = await payload
         .find({ collection, where: { moderationStatus: { equals: "pending" } }, locale: "all", depth: 1, limit: 50, sort: "-createdAt", overrideAccess: true, draft: true })
         .catch(() => ({ docs: [] }));
-      return (res.docs as unknown as Record<string, unknown>[]).map((d) => toSubmissionItem(collection, d, locale));
+      return (res.docs as unknown as Record<string, unknown>[]).map((d) => toSubmissionItem(collection, d, locale, blocked));
     }),
   );
   const [held, flagged] = await Promise.all([getQueue("pending"), getQueue("flagged")]);

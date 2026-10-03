@@ -2914,7 +2914,13 @@
         "livedExperiences": "Lived experience",
         "researchOutputs": "Research output",
         "comment": "Comment"
-      }
+      },
+      "stopSuggesting": "Stop this person suggesting events",
+      "allowSuggesting": "Allow them to suggest events again",
+      "stopConfirm": "They won't be able to suggest events until you allow them again. Their suggestions already waiting stay in this list.",
+      "stopYes": "Stop suggestions",
+      "stopped": "They can no longer suggest events.",
+      "allowed": "They can suggest events again."
     }
   },
   "requests": {

@@ -78,10 +78,8 @@ export interface ModerationWorkflow {
   /** `versions.drafts` on the collection. Decides the `draft` argument — see
    *  the header. Asserted against the real config by the tests. */
   hasDrafts: boolean;
-  /** Only `caseStudies` notifies its submitter today. The webhook route emails
-   *  for `_type === 'caseStudy'` and for nothing else; that is preserved rather
-   *  than widened, because widening it would start sending mail to three
-   *  populations who have never received any. */
+  /** Whether the sender is emailed the outcome: case studies, and since
+   *  2026-10 event suggestions (events spec §3.4). */
   notifies: boolean;
   actions: Record<ModerationAction, ModerationActionSpec>;
   /**
@@ -148,7 +146,8 @@ export const MODERATION_WORKFLOWS: Record<ModeratedCollection, ModerationWorkflo
   events: {
     collection: "events",
     hasDrafts: false,
-    notifies: false,
+    // Members hear the outcome of an event suggestion (events spec §3.4).
+    notifies: true,
     actions: {
       approve: {
         label: "Approve & Publish",

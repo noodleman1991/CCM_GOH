@@ -110,9 +110,9 @@ describe("the moderation transition table", () => {
     }
   });
 
-  it("only caseStudies notifies — the webhook emails for caseStudy and nothing else", () => {
+  it("case studies and events email their sender the outcome; the others don't", () => {
     expect(MODERATION_WORKFLOWS.caseStudies.notifies).toBe(true);
-    expect(MODERATION_WORKFLOWS.events.notifies).toBe(false);
+    expect(MODERATION_WORKFLOWS.events.notifies).toBe(true);
     expect(MODERATION_WORKFLOWS.livedExperiences.notifies).toBe(false);
     expect(MODERATION_WORKFLOWS.researchOutputs.notifies).toBe(false);
   });
@@ -557,8 +557,8 @@ describe("runModerationSideEffects", () => {
     expect(notified[0].input.status).toBe("approved");
   });
 
-  it("never notifies for the three collections that have no email today", async () => {
-    for (const collection of ["events", "livedExperiences", "researchOutputs"] as const) {
+  it("never notifies for the two collections that have no email", async () => {
+    for (const collection of ["livedExperiences", "researchOutputs"] as const) {
       const { deps, notified, revalidated } = sideEffectDeps();
       const result = await runModerationSideEffects(
         change({
@@ -575,6 +575,15 @@ describe("runModerationSideEffects", () => {
       expect(revalidated[0].tags).toEqual([]);
       expect(revalidated[0].paths).toEqual([]);
     }
+  });
+
+  it("emails an event's sender when the team decides (events spec §3.4)", async () => {
+    const { deps, notified } = sideEffectDeps();
+    await runModerationSideEffects(
+      change({ collection: "events", doc: { id: "ev1", moderationStatus: "approved", submittedBy: "user_1", title: { en: "Reef day" } }, previousDoc: { moderationStatus: "pending" } }),
+      deps,
+    );
+    expect(notified).toHaveLength(1);
   });
 
   it("survives a revalidation that throws, and still emails", async () => {

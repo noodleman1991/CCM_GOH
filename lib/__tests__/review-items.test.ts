@@ -18,3 +18,15 @@ describe("review items", () => {
     expect(mergeReviewItems([a, c], [b]).map((i) => i.key)).toEqual(["comment:k1", "caseStudies:c1", "events:e1"]);
   });
 });
+
+describe("event suggestions in the queue", () => {
+  it("carry who sent them, and whether that person is already stopped from suggesting", () => {
+    const doc = { id: "ev1", title: { en: "Reef day" }, submittedBy: "user_9", createdAt: "2026-10-01T00:00:00Z" };
+    expect(toSubmissionItem("events", doc, "en")).toMatchObject({ submitterId: "user_9", submitterBlocked: false });
+    expect(toSubmissionItem("events", doc, "en", new Set(["user_9"]))).toMatchObject({ submitterBlocked: true });
+  });
+  it("other submissions don't offer stopping anyone", () => {
+    const doc = { id: "cs1", title: { en: "Floods" }, submittedBy: "user_9", createdAt: "2026-10-01T00:00:00Z" };
+    expect(toSubmissionItem("caseStudies", doc, "en")).toMatchObject({ submitterId: null });
+  });
+});

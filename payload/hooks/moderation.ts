@@ -352,8 +352,8 @@ export function moderationAfterChange(
     const payload = req?.payload;
     const deps: ModerationSideEffectDeps = {
       notify: async (input, notifyDeps) => {
-        const { notifyCaseStudyStatusChange } = await import("@/lib/case-study-emails");
-        return notifyCaseStudyStatusChange(input, notifyDeps);
+        const { notifySubmissionStatusChange } = await import("@/lib/case-study-emails");
+        return notifySubmissionStatusChange({ ...input, kind: collection === "events" ? "event" : "caseStudy" }, notifyDeps);
       },
       markNotified: async (id, status) => {
         if (!payload) return;

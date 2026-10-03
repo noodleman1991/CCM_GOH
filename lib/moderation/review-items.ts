@@ -16,6 +16,9 @@ export type ReviewItem =
       actions: ModerationAction[];
       notesRequired: ModerationAction[];
       adminHref: string;
+      /** Event suggestions only: who sent it, so the team can stop them suggesting. */
+      submitterId: string | null;
+      submitterBlocked: boolean;
     }
   | { kind: "comment"; key: string; comment: QueueItem; createdAt: string };
 
@@ -45,7 +48,7 @@ function senderOf(doc: Row): string | null {
   return text(by, "en") ?? text(doc.submitterName, "en");
 }
 
-export function toSubmissionItem(collection: ModeratedCollection, doc: Row, locale: string): ReviewItem {
+export function toSubmissionItem(collection: ModeratedCollection, doc: Row, locale: string, blocked: ReadonlySet<string> = new Set()): ReviewItem {
   const workflow = MODERATION_WORKFLOWS[collection];
   const actions = (Object.keys(workflow.actions) as ModerationAction[]).filter((a) => workflow.actions[a].visibleWhen.includes("pending"));
   const id = String(doc.id ?? "");
@@ -62,6 +65,10 @@ export function toSubmissionItem(collection: ModeratedCollection, doc: Row, loca
     actions,
     notesRequired: actions.filter((a) => workflow.actions[a].requiresNotes),
     adminHref: `/admin/collections/${collection}/${encodeURIComponent(id)}`,
+    ...(() => {
+      const submitterId = collection === "events" && typeof doc.submittedBy === "string" && doc.submittedBy ? doc.submittedBy : null;
+      return { submitterId, submitterBlocked: submitterId !== null && blocked.has(submitterId) };
+    })(),
   };
 }
 

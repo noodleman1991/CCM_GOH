@@ -2914,7 +2914,13 @@
         "livedExperiences": "Experiencia vivida",
         "researchOutputs": "Resultado de investigación",
         "comment": "Comentario"
-      }
+      },
+      "stopSuggesting": "Impedir que esta persona sugiera eventos",
+      "allowSuggesting": "Permitir que vuelva a sugerir eventos",
+      "stopConfirm": "No podrá sugerir eventos hasta que lo vuelvas a permitir. Sus sugerencias en espera siguen en esta lista.",
+      "stopYes": "Impedir sugerencias",
+      "stopped": "Ya no puede sugerir eventos.",
+      "allowed": "Puede volver a sugerir eventos."
     }
   },
   "requests": {

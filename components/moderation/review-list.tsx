@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RelativeTime } from "@/components/ui/relative-time";
 import { approveComment, removeComment } from "@/lib/actions/moderation";
 import { reviewSubmission } from "@/lib/actions/review";
+import { allowEventSuggestions, stopEventSuggestions } from "@/lib/actions/event-suggestions";
 import type { ReviewItem } from "@/lib/moderation/review-items";
 import type { ModerationAction } from "@/payload/moderation/workflows";
 
@@ -27,6 +28,21 @@ export function ReviewList({ items }: { items: ReviewItem[] }) {
   const [done, setDone] = useState<Set<string>>(new Set());
   const [noting, setNoting] = useState<{ key: string; action: ModerationAction } | null>(null);
   const [note, setNote] = useState("");
+  const [confirmStop, setConfirmStop] = useState<string | null>(null);
+
+  /** Stopping someone is a setting, not a decision on this item — it stays in the list. */
+  const toggleSuggesting = (submitterId: string, blocked: boolean) => {
+    startTransition(async () => {
+      const res = blocked ? await allowEventSuggestions(submitterId) : await stopEventSuggestions(submitterId);
+      if (res.ok) {
+        setConfirmStop(null);
+        toast.success(t(blocked ? "allowed" : "stopped"));
+        router.refresh();
+      } else {
+        toast.error(res.error ?? t("failed"));
+      }
+    });
+  };
 
   const act = (key: string, fn: () => Promise<{ ok: boolean; error?: string }>) => {
     startTransition(async () => {
@@ -114,6 +130,30 @@ export function ReviewList({ items }: { items: ReviewItem[] }) {
                     {t("openInAdmin")}
                   </a>
                 </div>
+                {item.submitterId && (
+                  confirmStop === item.key ? (
+                    <div role="alertdialog" aria-label={t("stopSuggesting")} className="space-y-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                      <p className="text-sm">{t("stopConfirm")}</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="destructive" disabled={pending} onClick={() => toggleSuggesting(item.submitterId!, false)}>
+                          {t("stopYes")}
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => setConfirmStop(null)}>
+                          {t("cancel")}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={pending}
+                      onClick={() => (item.submitterBlocked ? toggleSuggesting(item.submitterId!, true) : setConfirmStop(item.key))}
+                      className="min-h-11 text-sm font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                    >
+                      {t(item.submitterBlocked ? "allowSuggesting" : "stopSuggesting")}
+                    </button>
+                  )
+                )}
                 {noting?.key === item.key && (
                   <div className="space-y-2 rounded-lg border bg-muted/30 p-3">
                     <label className="text-sm font-medium" htmlFor={`note-${item.key}`}>
