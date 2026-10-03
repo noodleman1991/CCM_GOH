@@ -485,6 +485,7 @@ Notes: Climate Cares Centre has no logo on its organisation record — upload on
 ## 2026-10-03 events across the hub
 
 What shipped (spec `docs/superpowers/specs/2026-09-29-events-design.md`):
+- **RSVP** is open to every signed-in member (no longer behind the engagement switch, which is off on the live site).
 - **Visitors.** One events page, `/events`: upcoming events by month in the visitor's own time zone, then past ones with their recordings. CCM's own events and other organisations' sit side by side — an outside event carries an External badge, names its organiser and opens the organiser's website in a new tab. Filters: Region, Communities, Themes, Where it happens, Who runs it, When, search. Each event has its page at `/events/<slug>`, open to everyone (only RSVP still waits for the engagement switch); old `/collaborate/events…` links redirect permanently. Community pages can have an **Events** chapter, the homepage a **Coming up** row, and the atlas an **Events** layer — all upcoming only, all silent when there's nothing coming.
 - **Members.** "Suggest an event" (`/events/suggest`): a short form in four parts (what, when, where, who runs it), times typed in their own zone. Their suggestions are listed underneath with what happened to each — Waiting, Approved, Needs changes (with the team's note and an Edit link), Not accepted.
 - **Editors.** Suggestions arrive in Moderation like case studies; approving, asking for changes or declining emails the sender. From a suggestion, "Stop this person suggesting events" (and "Allow them again"). **Settings → Event suggestions** turns suggestions off for everyone.
@@ -493,7 +494,7 @@ Migration: `events_across_the_hub` (additive — event `origin`, organiser, orga
 
 After the push:
 1. `/admin` loads, and **Settings → Event suggestions** shows "Members can suggest events" ticked.
-2. `scripts/with-prod-env.sh pnpm exec tsx scripts/events/add-sections.ts --production` — dry run: lists the homepage ("Coming up", second, under the hero) and each community page (the Events chapter, after News). Then the same with `--execute`. A page that already shows events is left alone; `--revert --execute` takes away only what it added.
+2. **Done 2026-10-03** (run before the deploy — production had no events yet, so nothing showed): `scripts/with-prod-env.sh pnpm exec tsx scripts/events/add-sections.ts --production` — dry run: lists the homepage ("Coming up", second, under the hero) and each community page (the Events chapter, after News). Then the same with `--execute`. A page that already shows events is left alone; `--revert --execute` takes away only what it added.
 3. Clear the site cache.
 
 Checklist: `/en/events` (and `/ar/events`, right to left); an old `/en/collaborate/events` link lands on `/en/events`; `/en/events/suggest` signed in shows the form; a community page with an upcoming event shows Events in its menu (one with none doesn't); the homepage shows Coming up once an event is coming; `/en/atlas` has an Events chip.
