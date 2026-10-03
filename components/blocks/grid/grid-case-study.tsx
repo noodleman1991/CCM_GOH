@@ -234,7 +234,7 @@ export default function GridCaseStudyComponent({
             <Card className={cn(cardBase, "h-full flex-col @content-sm/page:flex-row")} onClick={onCardClick}>
                 {renderCoverImage("aspect-video w-full shrink-0 @content-sm/page:aspect-auto @content-sm/page:w-2/5")}
                 <div className="flex flex-1 flex-col gap-3 p-6">
-                    <h3 dir="auto" className="font-heading text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3">
+                    <h3 dir="auto" className="font-heading text-base @content-lg/page:text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3 min-h-[3lh]">
                         {title}
                     </h3>
                     {excerpt && <p className="text-sm text-foreground line-clamp-3">{excerpt}</p>}
@@ -247,9 +247,9 @@ export default function GridCaseStudyComponent({
         // Large image-led hero card (meant to span 2 columns).
         card = (
             <Card className={cn(cardBase, "h-full flex-col")} onClick={onCardClick}>
-                {renderCoverImage("aspect-[16/9] w-full")}
+                {renderCoverImage("aspect-[16/9] w-full @content-md/page:aspect-[21/8]")}
                 <div className="flex flex-1 flex-col gap-3 p-6 @content-md/page:p-8">
-                    <h3 dir="auto" className="font-heading text-2xl font-semibold leading-tight text-ccm-midnight transition-colors group-hover:text-primary text-balance line-clamp-3">
+                    <h3 dir="auto" className="font-heading text-xl @content-lg/page:text-2xl font-semibold leading-tight text-ccm-midnight transition-colors group-hover:text-primary text-balance line-clamp-3">
                         {title}
                     </h3>
                     {excerpt && <p className="text-base text-foreground line-clamp-3 max-w-prose">{excerpt}</p>}
@@ -274,7 +274,7 @@ export default function GridCaseStudyComponent({
                 )}
                 {renderCoverImage("mb-4 aspect-video w-full rounded-2xl")}
                 <CardHeader className="px-0 pb-3">
-                    <h3 dir="auto" className="font-heading text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3">
+                    <h3 dir="auto" className="font-heading text-base @content-lg/page:text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3 min-h-[3lh]">
                         {title}
                     </h3>
                 </CardHeader>

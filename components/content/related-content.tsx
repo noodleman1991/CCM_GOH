@@ -102,7 +102,7 @@ export function RelatedContent({
                     {enumLabel(tEvents, relation, 'relation')}
                   </span>
                 )}
-                <h3 className="font-heading text-base font-semibold leading-snug text-balance line-clamp-2 text-ccm-midnight group-hover:text-primary">
+                <h3 className="font-heading text-base font-semibold leading-snug text-balance line-clamp-3 text-ccm-midnight group-hover:text-primary">
                   {title}
                 </h3>
                 {excerpt && <p className="line-clamp-2 text-sm text-muted-foreground">{excerpt}</p>}

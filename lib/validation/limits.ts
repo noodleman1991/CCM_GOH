@@ -11,9 +11,12 @@
  * were unbounded on both ends (case-study title/excerpt/author/organisation)
  * got caps sized to their longest real values with headroom.
  */
+/** What a card shows in full on three lines (user, 2026-10-03); every title that lands on a card uses it. */
+export const CARD_TITLE_MAX = 90;
+
 export const LIMITS = {
   caseStudy: {
-    title: 160,
+    title: CARD_TITLE_MAX,
     excerpt: 500,
     authorName: 100,
     organizationName: 200,
@@ -23,17 +26,17 @@ export const LIMITS = {
     placeName: 120,
   },
   livedExperience: {
-    title: 160,
+    title: CARD_TITLE_MAX,
     description: 800,
     issue: 400,
     personContext: 400,
   },
   researchOutput: {
-    title: 200,
+    title: CARD_TITLE_MAX,
     excerpt: 600,
   },
   event: {
-    title: 160,
+    title: CARD_TITLE_MAX,
     description: 2000,
     locationName: 200,
     placeText: 200,

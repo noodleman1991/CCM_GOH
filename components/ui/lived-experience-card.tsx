@@ -76,7 +76,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
             )}
           </div>
           <div>
-            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-sm line-clamp-3 group-hover:text-primary transition-colors">
               {localizedTitle}
             </h3>
             {experience.author && (
@@ -162,7 +162,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
 
           {/* Title */}
           <div className="mb-3">
-            <h3 className="text-xl font-bold line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+            <h3 className="text-xl font-bold line-clamp-3 min-h-[3lh] mb-1 group-hover:text-primary transition-colors">
               {localizedTitle}
             </h3>
           </div>

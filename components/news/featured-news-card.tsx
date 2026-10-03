@@ -120,7 +120,7 @@ export default function FeaturedNewsCard({
         <h3
           className={cn(
             'font-heading font-bold leading-snug text-balance break-words text-ccm-midnight transition-colors group-hover:text-primary',
-            isLead ? 'text-2xl sm:text-3xl line-clamp-3' : 'text-lg sm:text-xl line-clamp-2'
+            isLead ? 'text-xl @content-sm/page:text-2xl line-clamp-4' : 'text-base line-clamp-3'
           )}
         >
           {title}

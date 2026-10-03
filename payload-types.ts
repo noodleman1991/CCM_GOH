@@ -869,6 +869,9 @@ export interface Agenda {
    * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
   sanityUpdatedAt?: string | null;
+  /**
+   * Up to 90 characters shows in full on every card; longer titles get cut short there.
+   */
   title: string;
   /**
    * Leave empty and it is made from the title when you save.
@@ -1064,7 +1067,7 @@ export interface RegionalCommunity {
   leadIds?: string[] | null;
   name: string;
   /**
-   * One line about this community, shown on its card on the homepage.
+   * One line about this community, shown in full on its homepage card (up to 110 characters).
    */
   tagline?: string | null;
   /**
@@ -1658,6 +1661,9 @@ export interface CaseStudy {
    * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
   sanityUpdatedAt?: string | null;
+  /**
+   * Up to 90 characters shows in full on every card; longer titles get cut short there.
+   */
   title: string;
   /**
    * Leave empty and it is made from the title when you save.
@@ -1852,6 +1858,9 @@ export interface NewsPost {
    * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
   sanityUpdatedAt?: string | null;
+  /**
+   * Up to 90 characters shows in full on every card; longer titles get cut short there.
+   */
   title: string;
   subtitle?: string | null;
   /**
@@ -1936,6 +1945,9 @@ export interface NewsPost {
  */
 export interface Event {
   id: string;
+  /**
+   * Up to 90 characters shows in full on every card; longer titles get cut short there.
+   */
   title: string;
   /**
    * Leave empty and it is made from the title when you save.
@@ -2042,6 +2054,9 @@ export interface LivedExperience {
    * 0/56 real documents have this set — every existing document is a video by default.
    */
   format?: ('video' | 'audio' | 'written') | null;
+  /**
+   * Up to 90 characters shows in full on every card; longer titles get cut short there.
+   */
   title: string;
   /**
    * Leave empty and it is made from the title when you save.
@@ -2154,6 +2169,9 @@ export interface ResearchOutput {
    * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
    */
   sanityUpdatedAt?: string | null;
+  /**
+   * Up to 90 characters shows in full on every card; longer titles get cut short there.
+   */
   title: string;
   /**
    * Leave empty and it is made from the title when you save.

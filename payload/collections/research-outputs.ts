@@ -73,7 +73,7 @@ export const ResearchOutputs: CollectionConfig = {
   fields: [
     documentIdField,
     sanityUpdatedAt,
-    localizedText("title", { required: true }),
+    localizedText("title", { required: true, admin: { description: "Up to 90 characters shows in full on every card; longer titles get cut short there." } }),
     slugField("title"),
     localizedTextarea("excerpt"),
     {

@@ -95,8 +95,8 @@ export const RegionalCommunities: CollectionConfig = {
         localizedText("name", { required: true }),
         localizedTextarea("tagline", {
           label: "Tagline",
-          maxLength: 140,
-          admin: { description: "One line about this community, shown on its card on the homepage." },
+          maxLength: 110,
+          admin: { description: "One line about this community, shown in full on its homepage card (up to 110 characters)." },
         }),
         {
           name: "region",

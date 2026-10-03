@@ -51,7 +51,7 @@ export function NewsCard({ post, locale, variant = "default" }: NewsCardProps) {
             </div>
           )}
           <div>
-            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-sm line-clamp-3 group-hover:text-primary transition-colors">
               {typeof post.title === "string" ? post.title : post.title?.[locale] || post.title?.en}
             </h3>
             {post.publishedAt && (

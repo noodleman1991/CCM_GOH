@@ -71,7 +71,7 @@ export function LivedExperienceVideoCard({
         type="button"
         onClick={() => embedUrl && setOpen(true)}
         className={cn(
-          'group/card w-56 sm:w-64 shrink-0 snap-start text-start',
+          'group/card w-64 sm:w-72 shrink-0 snap-start text-start',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg',
           className
         )}

@@ -85,14 +85,14 @@ export default async function ContentFeed({
           {items.map((item) => (
             <div
               key={`${item.type}:${item.id}`}
-              className="w-[82%] flex-none snap-start @content-sm/page:w-[45%] @content-lg/page:w-[31%]"
+              className="w-[86%] flex-none snap-start @content-sm/page:w-[45%] @content-xl/page:w-[31%]"
             >
               <TypedCard item={item} variant="grid" className="h-full" />
             </div>
           ))}
         </div>
       ) : (
-        <div className="grid gap-3.5 @content-sm/page:grid-cols-2 @content-lg/page:grid-cols-3">
+        <div className="grid gap-3.5 @content-md/page:grid-cols-2 @content-xl/page:grid-cols-3">
           {items.map((item) => (
             <TypedCard key={`${item.type}:${item.id}`} item={item} variant="grid" className="h-full" />
           ))}

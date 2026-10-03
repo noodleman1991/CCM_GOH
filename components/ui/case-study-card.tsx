@@ -87,7 +87,7 @@ export function CaseStudyCard({
             </div>
           )}
           <div>
-            <h3 dir="auto" className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors" title={getLocalizedValue(caseStudy.title, locale)}>
+            <h3 dir="auto" className="font-semibold text-sm line-clamp-3 group-hover:text-primary transition-colors" title={getLocalizedValue(caseStudy.title, locale)}>
               {getLocalizedValue(caseStudy.title, locale)}
             </h3>
             {caseStudy.publishedAt && (
@@ -218,7 +218,7 @@ export default function CaseStudyCardComponent({
 
                 {/* Title */}
                 <div className="mb-3">
-                    <h3 dir="auto" className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors" title={localizedTitle}>
+                    <h3 dir="auto" className="text-xl font-bold line-clamp-3 min-h-[3lh] group-hover:text-primary transition-colors" title={localizedTitle}>
                         {localizedTitle}
                     </h3>
                 </div>

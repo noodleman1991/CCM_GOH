@@ -112,7 +112,7 @@ export default async function AllPosts({
                       })}
                     </time>
                   </div>
-                  <h3 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-semibold line-clamp-3 min-h-[3lh] group-hover:text-primary transition-colors">
                     {title}
                   </h3>
                 </CardHeader>

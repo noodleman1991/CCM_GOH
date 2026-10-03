@@ -244,7 +244,7 @@ async function CaseStudiesContent({
       <p className="text-sm text-muted-foreground">
         {t('resultsCount', { count: caseStudies.length })}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 gap-6 @content-md/page:grid-cols-2">
         {(caseStudies as unknown as Array<Record<string, unknown>>).map((caseStudy, index) => {
           const variant = assignGalleryVariant(index, caseStudies.length)
           return (

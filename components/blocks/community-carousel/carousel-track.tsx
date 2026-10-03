@@ -159,7 +159,7 @@ function CommunityCard({ card, line }: { card: TrackCard; line: string | null })
         <h3 className="font-heading text-lg font-bold leading-snug text-ccm-midnight group-hover:underline group-hover:underline-offset-2">
           <bdi>{card.name}</bdi>
         </h3>
-        {card.tagline && <p className="line-clamp-2 text-sm text-ccm-midnight/75">{card.tagline}</p>}
+        {card.tagline && <p className="line-clamp-3 text-sm text-ccm-midnight/75">{card.tagline}</p>}
       </div>
       {card.counts.length > 0 && (
         <p className="text-sm font-semibold text-ccm-sea">{card.counts.join(" · ")}</p>
@@ -180,7 +180,7 @@ function CommunityCard({ card, line }: { card: TrackCard; line: string | null })
         </div>
       )}
       {line && (
-        <p aria-live="off" className="mt-auto line-clamp-2 min-h-10 border-t border-ccm-midnight/10 pt-3 text-sm text-ccm-midnight/80">
+        <p aria-live="off" className="mt-auto line-clamp-3 min-h-[calc(3lh+0.75rem+1px)] border-t border-ccm-midnight/10 pt-3 text-sm text-ccm-midnight/80">
           {line}
         </p>
       )}

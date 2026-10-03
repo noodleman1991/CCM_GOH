@@ -169,7 +169,7 @@ export default function GridExternalSourceComponent({
                 <CardHeader className="pb-3">
                     <div className="space-y-2">
                         {/* Title */}
-                        <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                        <h3 className="font-semibold text-lg leading-tight line-clamp-3 min-h-[3lh] group-hover:text-primary transition-colors">
                             {title}
                         </h3>
                     </div>

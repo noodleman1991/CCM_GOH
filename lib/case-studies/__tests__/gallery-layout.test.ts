@@ -7,10 +7,11 @@ describe("assignGalleryVariant", () => {
     expect(assignGalleryVariant(0, 1)).toBe("feature");
   });
 
-  it("adds a periodic wide split only in galleries larger than 4", () => {
-    expect(assignGalleryVariant(4, 10)).toBe("wide");
-    expect(assignGalleryVariant(8, 10)).toBe("wide");
-    expect(assignGalleryVariant(4, 4)).toBe("classic");
+  it("adds a wide split after every six standard cards, so rows of two or three stay full", () => {
+    expect(assignGalleryVariant(7, 20)).toBe("wide");
+    expect(assignGalleryVariant(14, 20)).toBe("wide");
+    expect([1, 2, 3, 4, 5, 6, 8].map((i) => assignGalleryVariant(i, 20))).toEqual(Array(7).fill("classic"));
+    expect(assignGalleryVariant(7, 7)).toBe("classic");
   });
 
   it("is deterministic and only emits known variants", () => {
@@ -21,9 +22,11 @@ describe("assignGalleryVariant", () => {
 });
 
 describe("spanForVariant", () => {
-  it("maps every variant to a grid span", () => {
-    expect(spanForVariant("feature")).toContain("lg:col-span-4");
-    expect(spanForVariant("wide")).toContain("lg:col-span-6");
-    expect(spanForVariant("classic")).toContain("lg:col-span-2");
+  // Titles get three lines; a standard card must be wide enough to show a
+  // 100-character title in them, so it takes half the row until very wide screens.
+  it("puts standard cards two to a row once the content area is wide enough, sized to the content area (not the window)", () => {
+    expect(spanForVariant("classic")).toBe("col-span-1");
+    expect(spanForVariant("feature")).toBe("@content-md/page:col-span-2");
+    expect(spanForVariant("wide")).toBe("@content-md/page:col-span-2");
   });
 });

@@ -164,7 +164,7 @@ export function TypedCard({
           ) : (
             eyebrow
           )}
-          <span className="font-heading text-[13.5px] font-semibold leading-snug line-clamp-2" title={item.title || undefined}>{title}</span>
+          <span className="font-heading text-[13.5px] font-semibold leading-snug line-clamp-3" title={item.title || undefined}>{title}</span>
           {docChips ||
             (item.meta || item.place ? (
               <span className="truncate text-[11.5px] text-muted-foreground">
@@ -215,7 +215,7 @@ export function TypedCard({
         ) : (
           eyebrow
         )}
-        <span className="font-heading text-[15px] font-semibold leading-snug line-clamp-2" title={item.title || undefined}>{title}</span>
+        <span className="font-heading text-[15px] font-semibold leading-snug line-clamp-3 min-h-[3lh]" title={item.title || undefined}>{title}</span>
         {placeLine}
         {docChips}
         {!item.place && !item.docs?.length && (item.meta || item.date) && (

@@ -361,7 +361,7 @@ export default async function NewsDetailPage({
                       )}
                     </div>
                     <div className="flex flex-1 flex-col p-4">
-                      <h3 className="font-heading font-semibold text-balance line-clamp-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-heading font-semibold text-balance line-clamp-3 group-hover:text-primary transition-colors">
                         {relatedTitle}
                       </h3>
                       {relatedExcerpt && (

@@ -125,7 +125,7 @@ export default function NewsPostCard({
                     {/* dir="auto": CMS content can fall back to English on RTL
                         pages (and vice versa) — let the text's own script set
                         direction so punctuation and alignment stay correct. */}
-                    <h3 dir="auto" className="font-heading text-lg sm:text-xl font-bold leading-snug text-balance break-words line-clamp-4 mb-1 group-hover:text-primary transition-colors" title={localizedTitle}>
+                    <h3 dir="auto" className="font-heading text-base font-semibold leading-snug text-balance break-words line-clamp-3 min-h-[3lh] mb-1 group-hover:text-primary transition-colors" title={localizedTitle}>
                         {localizedTitle}
                     </h3>
                     {localizedSubtitle && (

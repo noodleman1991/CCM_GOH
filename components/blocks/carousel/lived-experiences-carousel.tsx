@@ -137,7 +137,7 @@ function LivedExperienceCard({
 
       {/* Content */}
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-ccm-water transition-colors">
+        <h3 className="font-bold text-lg mb-2 line-clamp-3 min-h-[3lh] group-hover:text-ccm-water transition-colors">
           {title}
         </h3>
 

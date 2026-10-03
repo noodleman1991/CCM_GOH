@@ -31,7 +31,7 @@ function LoadingSkeleton() {
     <div className="space-y-12">
       <div className="space-y-6">
         <Skeleton className="h-10 w-64" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 @content-md/page:grid-cols-2 @min-[80rem]/page:grid-cols-3">
           {Array.from({ length: 6 }).map((_, j) => (
             <Skeleton key={j} className="h-96" />
           ))}
@@ -170,7 +170,7 @@ async function NewsContent({
         </div>
 
         {/* Unified results grid (site + external, date-sorted, badged) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 @content-md/page:grid-cols-2 @min-[80rem]/page:grid-cols-3">
             {resultsFeed.map((item) =>
               item.kind === 'site' ? (
                 <Link key={item.id} href={`/news/${item.data.slug}`}>
@@ -265,7 +265,7 @@ async function LatestNews({
             subtitle={countLabel(feed.length)}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 @content-md/page:grid-cols-2 @min-[80rem]/page:grid-cols-3">
             {feed.map((item) =>
               item.kind === 'site' ? (
                 <Link key={item.id} href={`/news/${item.data.slug}`}>

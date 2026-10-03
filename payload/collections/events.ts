@@ -78,7 +78,7 @@ export const Events: CollectionConfig = {
   hooks: { afterChange: [moderationAfterChange("events")] },
   fields: [
     documentIdField,
-    localizedText("title", { required: true }),
+    localizedText("title", { required: true, admin: { description: "Up to 90 characters shows in full on every card; longer titles get cut short there." } }),
     slugField("title", { maxLength: SLUG_MAX_LENGTH }),
     {
       name: "origin",

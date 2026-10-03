@@ -104,7 +104,7 @@ export const LivedExperiences: CollectionConfig = {
       ],
       admin: { description: "0/56 real documents have this set — every existing document is a video by default." },
     },
-    localizedText("title", { required: true }),
+    localizedText("title", { required: true, admin: { description: "Up to 90 characters shows in full on every card; longer titles get cut short there." } }),
     slugField("title"),
     localizedTextarea("description"),
     localizedTextarea("issue", { label: "The issue / theme" }),
