@@ -462,6 +462,7 @@ export async function setOpenToCollaborate(open: boolean, interests?: string): P
   - `buildCollaborateParams` writes `open=1`, and `decodeOpenParam(value)` reads it back as a boolean.
 
 - [ ] **Step 1: Failing tests.**
+  - `collaborate-user-card` with `people: true` and an open member: signed out → the open badge shows but no **Ask to connect**; signed in → the button shows; on your own card → no button.
   - The filter round-trips, `{ open: true }` ↔ `?open=1`.
   - `requestContact("u2", "hi")` refuses with `requests.errors.notOpen` when `prisma.user.findUnique` returns `{ openToCollaboration: false }`, and nothing is created.
   - It also refuses when `people` is off (existing case, now through access).
