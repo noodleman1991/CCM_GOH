@@ -58,4 +58,6 @@ export interface TypedCardItem {
   /** LE: quoted title + video-first cover. */
   quote?: boolean;
   isNew?: boolean;
+  /** Opens another site in a new tab (an outside organisation's event). */
+  external?: boolean;
 }

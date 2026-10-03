@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { MapPin, Play } from "lucide-react";
+import { ArrowUpRight, MapPin, Play } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { TYPE_STYLE, type TypedCardItem } from "@/lib/cards/type-style";
@@ -45,8 +45,16 @@ export function TypedCard({
   const title = (
     <span className={cn(item.quote && "before:me-0.5 before:content-['“'] after:ms-0.5 after:content-['”']")}>
       <bdi>{item.title || t("untitled")}</bdi>
+      {item.external && (
+        <>
+          <ArrowUpRight className="ms-0.5 inline size-3.5 align-text-top rtl:-scale-x-100" style={{ color: style.color }} aria-hidden />
+          <span className="sr-only"> {t("newTab")}</span>
+        </>
+      )}
     </span>
   );
+  // Another site's page (an outside event) opens in its own tab.
+  const newTab = item.external ? { target: "_blank", rel: "noopener" } : {};
 
   // Cover: real image, else the type-tinted blob placeholder.
   const cover = (h: string) => (
@@ -128,6 +136,7 @@ export function TypedCard({
     return (
       <Link
         href={item.href}
+        {...newTab}
         className={cn("flex items-center gap-3.5 rounded-xl bg-card p-3.5 shadow-sm transition-shadow hover:shadow-md", className)}
       >
         {lead}
@@ -152,6 +161,7 @@ export function TypedCard({
     return (
       <Link
         href={item.href}
+        {...newTab}
         className={cn("flex flex-col overflow-hidden rounded-xl bg-card shadow-sm transition-shadow hover:shadow-md", className)}
       >
         {item.type === "livedExperience" && cover("aspect-video flex-none")}
@@ -181,6 +191,7 @@ export function TypedCard({
     return (
       <Link
         href={item.href}
+        {...newTab}
         className={cn("flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition-shadow hover:shadow-md", className)}
       >
         {cover("aspect-[16/8] flex-none")}
@@ -198,6 +209,7 @@ export function TypedCard({
   return (
     <Link
       href={item.href}
+      {...newTab}
       className={cn("flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition-shadow hover:shadow-md", className)}
     >
       {cover(item.image || item.type === "livedExperience" ? "aspect-video flex-none" : "aspect-[16/5] flex-none")}

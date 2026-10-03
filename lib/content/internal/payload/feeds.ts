@@ -16,6 +16,9 @@
  * - research outputs and agendas link several communities (`relatedCommunities`,
  *   `regionalCommunities`);
  * - events and agendas have no region at all, so a region filter leaves them out.
+ *
+ * An upcoming-events feed reads soonest first and keeps an event until it ends;
+ * another organisation's event links to its own website (events spec 2026-09-30).
  */
 import "server-only";
 import type { CollectionSlug, Where } from "payload";
@@ -117,7 +120,7 @@ const KINDS: Record<FeedKind, KindConfig> = {
     featured: false,
     region: null,
     community: "relatedCommunity",
-    tags: null,
+    tags: "tags",
     organizations: null,
     image: "coverImage",
     excerpt: "description",
@@ -213,7 +216,11 @@ function filterWhere(kind: FeedKind, filters: FeedFilters, ctx: FeedContext): Wh
     parts.push({ featured: { equals: true } });
   }
   if (filters.upcomingOnly && kind === "events") {
-    parts.push({ startAt: { greater_than_equal: (ctx.now ?? new Date()).toISOString() } });
+    // Not over yet: its end is still ahead, or — with no end — its start.
+    const now = (ctx.now ?? new Date()).toISOString();
+    parts.push({
+      or: [{ endAt: { greater_than_equal: now } }, { and: [{ endAt: { exists: false } }, { startAt: { greater_than_equal: now } }] }],
+    });
   }
   return and(...parts);
 }
@@ -229,6 +236,14 @@ function agendaDocument(row: Row): string | null {
   return url && (/^https?:\/\//i.test(url) || (url.startsWith("/") && !url.startsWith("//"))) ? url : null;
 }
 
+const isWebAddress = (value: string | null): value is string => value !== null && /^https?:\/\//i.test(value);
+
+/** An outside organisation's event with a website: its card goes there. */
+function eventWebsite(row: Row): string | null {
+  const url = text(row.url);
+  return row.origin === "external" && isWebAddress(url) ? url : null;
+}
+
 function toCard(kind: FeedKind, row: Row, locale: FeedContext["locale"]): FeedCard | null {
   const config = KINDS[kind];
   const id = text(row.id) ?? (typeof row.id === "number" ? String(row.id) : null);
@@ -237,11 +252,13 @@ function toCard(kind: FeedKind, row: Row, locale: FeedContext["locale"]): FeedCa
   const image = config.image ? row[config.image] : undefined;
   const when = isoDate(row[config.date]);
   const isEvent = kind === "events";
+  const website = isEvent ? eventWebsite(row) : null;
   const card: TypedCardItem = {
     type: config.card,
     id,
     title: inLocale(row.title, locale) ?? "",
-    href: (kind === "agendas" ? agendaDocument(row) : null) ?? config.href(slug),
+    href: website ?? (kind === "agendas" ? agendaDocument(row) : null) ?? config.href(slug),
+    ...(website ? { external: true } : {}),
     excerpt: inLocale(row[config.excerpt], locale),
     image: image ? imageUrl(image, { width: 800 }) || null : null,
     imageLqip: image ? (blurDataURL(image) ?? null) : null,
@@ -253,7 +270,7 @@ function toCard(kind: FeedKind, row: Row, locale: FeedContext["locale"]): FeedCa
   return { key: `${kind}:${id}`, kind, featured: row.featured === true, date: isEvent ? null : when, startAt: isEvent ? when : null, card };
 }
 
-async function find(kind: FeedKind, where: Where, limit: number): Promise<Row[]> {
+async function find(kind: FeedKind, where: Where, limit: number, soonestFirst = false): Promise<Row[]> {
   const config = KINDS[kind];
   try {
     const result = await query<{ docs?: Row[] }>({
@@ -263,7 +280,7 @@ async function find(kind: FeedKind, where: Where, limit: number): Promise<Row[]>
       depth: 1,
       pagination: false,
       where,
-      sort: [`-${config.date}`, "id"],
+      sort: soonestFirst ? [config.date, "id"] : [`-${config.date}`, "id"],
       limit,
     });
     return result?.docs ?? [];
@@ -280,7 +297,8 @@ export async function fetchFeedCards(kinds: FeedKind[], filters: FeedFilters, ct
     kinds.map(async (kind) => {
       const where = filterWhere(kind, filters, ctx);
       if (!where) return [];
-      const rows = await find(kind, where, limit);
+      // Upcoming events: the next ones, not the furthest away.
+      const rows = await find(kind, where, limit, kind === "events" && filters.upcomingOnly);
       return rows.map((row) => toCard(kind, row, ctx.locale)).filter((card): card is FeedCard => card !== null);
     }),
   );

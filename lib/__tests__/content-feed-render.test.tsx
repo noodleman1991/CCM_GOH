@@ -31,6 +31,16 @@ async function show(settings: Record<string, unknown>, extra: Record<string, unk
 }
 
 describe("ContentFeed", () => {
+  it("an events-only feed links to all events and invites a suggestion; other feeds don't", async () => {
+    resolve.mockResolvedValue({ items: [card("1")], skipped: [] });
+    await show({ kinds: ["events"] });
+    expect(screen.getByRole("link", { name: /t:suggestEvent/ }).getAttribute("href")).toBe("/events/suggest");
+    expect(screen.getByRole("link", { name: /t:viewAll.events/ }).getAttribute("href")).toBe("/events");
+    cleanup();
+    await show({ kinds: ["events", "newsPosts"] });
+    expect(screen.queryByRole("link", { name: /t:suggestEvent/ })).toBeNull();
+  });
+
   it("renders nothing when nothing matches", async () => {
     resolve.mockResolvedValue({ items: [], skipped: [] });
     const { container } = await show({ kinds: ["newsPosts"] });

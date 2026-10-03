@@ -5,7 +5,7 @@
  * A section with a chapter starts that chapter; the sections below it join it
  * until the next one. Sections before the first chapter form an unnamed group.
  */
-export const CHAPTER_KINDS = ["overview", "agendas", "caseStudies", "news", "voices", "members", "partners", "custom"] as const;
+export const CHAPTER_KINDS = ["overview", "agendas", "caseStudies", "news", "events", "voices", "members", "partners", "custom"] as const;
 export type ChapterKind = (typeof CHAPTER_KINDS)[number];
 type Standard = Exclude<ChapterKind, "custom">;
 
@@ -15,6 +15,7 @@ export const CHAPTER_MESSAGE: Record<Standard, string> = {
   agendas: "agendas",
   caseStudies: "caseStudies",
   news: "newsUpdates",
+  events: "events",
   voices: "communityVoices",
   members: "members",
   partners: "partners",
@@ -26,6 +27,7 @@ const ANCHOR: Record<Standard, string> = {
   agendas: "agendas",
   caseStudies: "case-studies",
   news: "news",
+  events: "events",
   voices: "voices",
   members: "members",
   partners: "partners",

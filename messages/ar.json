@@ -2027,6 +2027,7 @@
       "agendas": "جداول الأعمال",
       "caseStudies": "دراسات الحالة",
       "newsUpdates": "الأخبار والتحديثات",
+      "events": "الفعاليات",
       "communityVoices": "أصوات المجتمع",
       "communityVoicesSubtitle": "استمع مباشرة إلى أفراد المجتمع حول تجاربهم",
       "overview": "نظرة عامة",
@@ -2808,7 +2809,8 @@
     "untitled": "بدون عنوان",
     "new": "جديد",
     "freshHeading": "الجديد على المنصة",
-    "exploreAtlas": "استكشف في الأطلس"
+    "exploreAtlas": "استكشف في الأطلس",
+    "newTab": "(يفتح في علامة تبويب جديدة)"
   },
   "blog": {
     "pageTitle": "المدونة",
@@ -2963,7 +2965,8 @@
       "livedExperiences": "كل التجارب المعيشة",
       "researchOutputs": "كل النواتج البحثية",
       "agendas": "كل الأجندات"
-    }
+    },
+    "suggestEvent": "اقترح فعالية"
   },
   "organization": {
     "onTheHub": "على المنصة",

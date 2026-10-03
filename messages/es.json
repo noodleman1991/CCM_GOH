@@ -2027,6 +2027,7 @@
       "agendas": "Agendas",
       "caseStudies": "Estudios de Caso",
       "newsUpdates": "Noticias y Actualizaciones",
+      "events": "Eventos",
       "communityVoices": "Voces de la Comunidad",
       "communityVoicesSubtitle": "Escucha directamente a los miembros de la comunidad sobre sus experiencias",
       "overview": "Resumen",
@@ -2808,7 +2809,8 @@
     "untitled": "Sin título",
     "new": "Nuevo",
     "freshHeading": "Novedades en el hub",
-    "exploreAtlas": "Explorar en el Atlas"
+    "exploreAtlas": "Explorar en el Atlas",
+    "newTab": "(se abre en una pestaña nueva)"
   },
   "blog": {
     "pageTitle": "Blog",
@@ -2963,7 +2965,8 @@
       "livedExperiences": "Todas las experiencias vividas",
       "researchOutputs": "Todos los productos de investigación",
       "agendas": "Todas las agendas"
-    }
+    },
+    "suggestEvent": "Sugerir un evento"
   },
   "organization": {
     "onTheHub": "En el hub",

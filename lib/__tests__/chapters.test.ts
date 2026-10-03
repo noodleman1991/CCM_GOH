@@ -26,6 +26,11 @@ describe("groupIntoChapters", () => {
     expect(out[0]).toMatchObject({ id: "our-partners-friends", label: "Our Partners & Friends" });
   });
 
+  it("names the Events chapter and anchors it at #events", () => {
+    const [c] = groupIntoChapters([b("a", { kind: "events" })], label);
+    expect(c).toMatchObject({ id: "events", kind: "events", label: "L:events" });
+  });
+
   it("gives repeated chapters distinct anchors", () => {
     const out = groupIntoChapters([b("a", { kind: "news" }), b("b", { kind: "news" })], label);
     expect(out.map((c) => c.id)).toEqual(["news", "news-2"]);

@@ -96,13 +96,15 @@ describe("resolveContentFeed", () => {
     expect(news).toContain('"relatedCommunity.region":{"in":["ssa"]}');
   });
 
-  it("filters by the Communities (audience) tags, leaving out kinds with no tags", async () => {
+  it("filters by the Communities (audience) tags — events too, now that they carry tags", async () => {
     query.mockResolvedValue({ docs: [] });
     await resolveContentFeed({ kinds: ["caseStudies", "events"], filters: { audienceTagIds: ["aud-1"], tagIds: ["t-1"] } }, { locale: "en" });
-    expect(calls().map((d) => d.collection)).toEqual(["caseStudies"]);
-    const where = whereOf("caseStudies");
-    expect(where).toContain('"tags":{"in":["aud-1"]}');
-    expect(where).toContain('"tags":{"in":["t-1"]}');
+    expect(calls().map((d) => d.collection)).toEqual(["caseStudies", "events"]);
+    for (const collection of ["caseStudies", "events"]) {
+      const where = whereOf(collection);
+      expect(where).toContain('"tags":{"in":["aud-1"]}');
+      expect(where).toContain('"tags":{"in":["t-1"]}');
+    }
   });
 
   it("limits events to upcoming ones when asked", async () => {

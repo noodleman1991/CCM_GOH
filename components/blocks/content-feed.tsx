@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarPlus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { TypedCard } from "@/components/cards/typed-card";
 import { resolveContentFeed } from "@/lib/content/feeds/resolve";
@@ -36,13 +36,15 @@ export default async function ContentFeed({
 
   const s = normalizeFeedSettings(settings);
   const more = viewAllLink(s);
+  // An events-only feed also invites people to add theirs (events spec §3.6).
+  const suggest = s.kinds.length === 1 && s.kinds[0] === "events";
   const moreLabel = more ? (more.labelKey ? t(more.labelKey) : more.label) : null;
   const linkClass =
     "inline-flex min-h-11 flex-none items-center gap-1 text-sm font-bold text-ccm-sea underline-offset-2 hover:underline";
 
   return (
     <section className={`mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
-      {(s.heading || s.intro || more) && (
+      {(s.heading || s.intro || more || suggest) && (
         <div className="mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
           <div className="min-w-0 space-y-1">
             {s.heading && (
@@ -52,6 +54,13 @@ export default async function ContentFeed({
             )}
             {s.intro && <p className="max-w-prose text-ccm-midnight/75">{s.intro}</p>}
           </div>
+          <div className="flex flex-wrap items-center gap-x-5">
+          {suggest && (
+            <Link href="/events/suggest" className={linkClass}>
+              <CalendarPlus className="size-4" aria-hidden />
+              {t("suggestEvent")}
+            </Link>
+          )}
           {more &&
             (more.siteLink ? (
               <Link href={more.href} className={linkClass}>
@@ -64,6 +73,7 @@ export default async function ContentFeed({
                 <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
               </a>
             ))}
+          </div>
         </div>
       )}
 
