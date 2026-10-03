@@ -23,6 +23,7 @@ const FACET_TO_LAYER_KEY: Partial<Record<FacetId, keyof typeof COLOR.layer>> = {
   livedExpCount: 'lived',
   newsCount: 'projects',
   researchOutputCount: 'projects',
+  eventCount: 'events',
   memberCount: 'people',
 }
 

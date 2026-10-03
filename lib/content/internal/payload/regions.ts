@@ -351,7 +351,9 @@ interface TypeShape {
   pinPlace: "caseStudy" | "place" | "none";
   /** The date fields `coalesce(publishedAt, publishDate, _createdAt)` can find
    *  on this type, in that order. `createdAt` is always the last resort. */
-  dates: ("publishedAt" | "publishDate")[];
+  dates: ("publishedAt" | "publishDate" | "startAt")[];
+  /** Events: only those not yet over (the atlas shows what's coming). */
+  upcomingOnly?: boolean;
   /** The fields `defined(coalesce(studyLocation, place.point,
    *  locationCountryCode, place.countryCode))` can find on this type. */
   geo: ("studyLocation" | "place.point" | "locationCountryCode" | "place.countryCode")[];
@@ -424,6 +426,22 @@ const SHAPES: Record<string, TypeShape> = {
     pinPlace: "none",
     dates: ["publishDate"],
     geo: [],
+  },
+  event: {
+    collection: "events",
+    moderation: "approved",
+    region: null,
+    relatedCommunity: true,
+    relatedCommunities: false,
+    countryField: "place.countryCode",
+    image: "coverImage",
+    cardPlace: "place",
+    pinPlace: "place",
+    dates: ["startAt"],
+    // Online events have no place: no pin, but they still count and list
+    // in their community's region.
+    geo: ["place.point", "place.countryCode"],
+    upcomingOnly: true,
   },
   // `report` is a `FacetContentType` with zero documents and no Payload
   // collection. Unreachable at runtime (`FACET_TO_CONTENT_TYPE` never produces
@@ -523,6 +541,12 @@ function regionWhere(
   return branches.length === 1 ? branches[0] : { or: branches };
 }
 
+/** Not over yet: its end is still ahead, or — with no end — its start (as /events and the feeds decide). */
+function notOverYet(now: Date): Where {
+  const at = now.toISOString();
+  return { or: [{ endAt: { greater_than_equal: at } }, { and: [{ endAt: { exists: false } }, { startAt: { greater_than_equal: at } }] }] };
+}
+
 async function whereFor(
   shape: TypeShape,
   params: {
@@ -532,6 +556,7 @@ async function whereFor(
 ): Promise<Where | undefined> {
   const parts = [moderationWhere(shape), await tagFilterWhere(shape.collection, params.theme)].filter((w): w is Where => w !== null);
   if (params.region) parts.push(regionWhere(shape, params.region));
+  if (shape.upcomingOnly) parts.push(notOverYet(new Date()));
   if (parts.length === 0) return undefined;
   return parts.length === 1 ? parts[0] : { and: parts };
 }

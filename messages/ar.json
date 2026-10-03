@@ -2099,7 +2099,8 @@
     "facetLivedExperiences": "التجارب المعاشة",
     "facetAgendas": "الأجندات",
     "facetReports": "التقارير",
-    "facetResearchOutputs": "النواتج البحثية"
+    "facetResearchOutputs": "النواتج البحثية",
+    "facetEvents": "الفعاليات"
   },
   "announcement": {
     "dismiss": "إغلاق الإعلان",

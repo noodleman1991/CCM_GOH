@@ -1,15 +1,17 @@
-export type FacetContentType = "caseStudy" | "livedExperience" | "newsPost" | "researchOutput" | "agenda" | "report";
+export type FacetContentType = "caseStudy" | "livedExperience" | "newsPost" | "researchOutput" | "event" | "agenda" | "report";
 
 /**
  * Map a pin's content type to its `COLOR.layer` key (`lib/ccm-colors.ts`), so a
  * cluster's colour always matches the type label shown alongside it in the
  * popover (a11y — colour is never the only signal). caseStudy and
- * livedExperience get their own layer colours; every other content type
- * (newsPost, agenda, report) falls back to "projects".
+ * livedExperience get their own layer colours, and so do events (the event
+ * cards' teal); every other content type (newsPost, agenda, report) falls back
+ * to "projects".
  */
-export function layerColorKeyFor(type: FacetContentType): "cases" | "lived" | "projects" {
+export function layerColorKeyFor(type: FacetContentType): "cases" | "lived" | "events" | "projects" {
   if (type === "caseStudy") return "cases";
   if (type === "livedExperience") return "lived";
+  if (type === "event") return "events";
   return "projects";
 }
 

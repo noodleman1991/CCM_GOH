@@ -25,6 +25,7 @@ const FACET_TYPE: Record<string, string> = {
   livedExpCount: "livedExperience",
   newsCount: "newsPost",
   researchOutputCount: "researchOutput",
+  eventCount: "event",
   // Legacy facet ids (pre-merge bookmarks/clients).
   agendaCount: "researchOutput",
   reportCount: "researchOutput",
@@ -32,7 +33,7 @@ const FACET_TYPE: Record<string, string> = {
 
 // All pin-capable content types (used by the `region=all` recent mode, which
 // has no single facet to key off — mirrors the pin layer's content set).
-const ALL_TYPES = ["caseStudy", "livedExperience", "newsPost", "researchOutput"];
+const ALL_TYPES = ["caseStudy", "livedExperience", "newsPost", "researchOutput", "event"];
 
 /** Map a comma-separated `facet` param to distinct content types; no/unknown
  *  param → ALL_TYPES (the recent/highlights strips show everything until the

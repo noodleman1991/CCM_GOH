@@ -2099,7 +2099,8 @@
     "facetLivedExperiences": "Expériences vécues",
     "facetAgendas": "Programmes",
     "facetReports": "Rapports",
-    "facetResearchOutputs": "Productions de recherche"
+    "facetResearchOutputs": "Productions de recherche",
+    "facetEvents": "Événements"
   },
   "announcement": {
     "dismiss": "Fermer l’annonce",

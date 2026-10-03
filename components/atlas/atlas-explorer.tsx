@@ -31,7 +31,7 @@ import { jsonFetcher } from "@/lib/swr";
 
 
 const CARD_FACETS: ReadonlySet<FacetId> = new Set([
-  'caseStudyCount', 'livedExpCount', 'newsCount', 'researchOutputCount',
+  'caseStudyCount', 'livedExpCount', 'newsCount', 'researchOutputCount', 'eventCount',
 ])
 
 // "When" date facet buckets, in chip order (labels via `atlas.when_<bucket>`).

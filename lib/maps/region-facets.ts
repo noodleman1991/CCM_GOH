@@ -1,4 +1,4 @@
-import { REGION_CODES, REGION_I18N_KEY, type RegionCode } from "./region-codes";
+import { REGION_CODES, REGION_I18N_KEY, slugToShortCode, type RegionCode } from "./region-codes";
 import { layerColorKeyFor, type FacetContentType } from "./cluster-pins";
 import type { COLOR } from "@/lib/ccm-colors";
 
@@ -7,7 +7,8 @@ export type FacetId =
   | "memberCount"
   | "newsCount"
   | "livedExpCount"
-  | "researchOutputCount";
+  | "researchOutputCount"
+  | "eventCount";
 
 export interface FacetDef {
   id: FacetId;
@@ -21,6 +22,7 @@ export const FACETS: FacetDef[] = [
   { id: "memberCount", labelKey: "facetMembers" },
   { id: "newsCount", labelKey: "facetNews" },
   { id: "researchOutputCount", labelKey: "facetResearchOutputs" },
+  { id: "eventCount", labelKey: "facetEvents" },
 ];
 
 export interface RegionDatum {
@@ -64,7 +66,7 @@ export function aggregateRegionData(
  * read as "the atlas only has case studies" (or only whichever single chip
  * was tapped next). Members stay off by default: they have no pins.
  */
-export const DEFAULT_LAYERS: FacetId[] = ["caseStudyCount", "livedExpCount", "newsCount", "researchOutputCount"];
+export const DEFAULT_LAYERS: FacetId[] = ["caseStudyCount", "livedExpCount", "newsCount", "researchOutputCount", "eventCount"];
 
 /** Max number of simultaneously selected layers (URL + API guard). */
 export const MAX_LAYERS = 6;
@@ -137,6 +139,8 @@ export const FACET_TO_CONTENT_TYPE: Partial<Record<FacetId, FacetContentType>> =
   // One Research-outputs facet (merged from the former Agendas/Reports chips,
   // which both counted this same type and always showed identical numbers).
   researchOutputCount: "researchOutput",
+  // Upcoming events only (events spec 2026-09-30).
+  eventCount: "event",
 };
 
 /** Reverse of `FACET_TO_CONTENT_TYPE`: a pin's content type → the `FacetDef`
@@ -161,6 +165,7 @@ const FACET_LAYER_COLOR_KEY: Record<FacetId, keyof typeof COLOR.layer> = {
   livedExpCount: layerColorKeyFor("livedExperience"),
   newsCount: layerColorKeyFor("newsPost"),
   researchOutputCount: layerColorKeyFor("researchOutput"),
+  eventCount: layerColorKeyFor("event"),
   memberCount: "people",
 };
 
@@ -179,6 +184,8 @@ export function atlasDestination(facet: FacetId, slug: string): string {
     // No public researchOutput list page yet — the agendas archive is the
     // closest home for the merged outputs facet until one exists.
     researchOutputCount: `/research-and-action/community-agendas`,
+    // The events page filters by region code, not community slug.
+    eventCount: slugToShortCode(slug) ? `/events?region=${slugToShortCode(slug)}` : "/events",
   };
   return map[facet];
 }

@@ -37,6 +37,7 @@ function hrefFor(type: string, slug: string): string {
     case "livedExperience": return `/lived-experiences/${slug}`;
     case "newsPost": return `/news/${slug}`;
     case "researchOutput": return `/research-and-action/research-outputs/${slug}`;
+    case "event": return `/events/${slug}`;
     default: return "#";
   }
 }
@@ -51,6 +52,7 @@ const TYPE_TO_FACET: Record<string, FacetId> = {
   livedExperience: "livedExpCount",
   newsPost: "newsCount",
   researchOutput: "researchOutputCount",
+  event: "eventCount",
 };
 
 function labelKeyForType(type: string): string {
@@ -65,6 +67,7 @@ function layerColorKeyForType(type: string): keyof typeof COLOR.layer {
   switch (type) {
     case "caseStudy": return "cases";
     case "livedExperience": return "lived";
+    case "event": return "events";
     default: return "projects";
   }
 }

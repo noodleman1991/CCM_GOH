@@ -6,8 +6,8 @@ import { DEFAULT_LAYERS, FACETS, parseLayers } from "@/lib/maps/region-facets";
  * the member layer stays off because members have no pins.
  */
 describe("atlas default layers", () => {
-  it("opens on all four content types", () => {
-    expect(parseLayers(null)).toEqual(["caseStudyCount", "livedExpCount", "newsCount", "researchOutputCount"]);
+  it("opens on all five content types, events included", () => {
+    expect(parseLayers(null)).toEqual(["caseStudyCount", "livedExpCount", "newsCount", "researchOutputCount", "eventCount"]);
     expect(DEFAULT_LAYERS).not.toContain("memberCount");
   });
 

@@ -32,6 +32,7 @@ describe("aggregateRegionData", () => {
     expect(ids).toEqual(
       ([
         "caseStudyCount",
+        "eventCount",
         "livedExpCount",
         "memberCount",
         "newsCount",
@@ -46,6 +47,12 @@ describe("aggregateRegionData", () => {
 });
 
 describe("themes + destinations", () => {
+  it("has an Events layer, on by default, linking to the events page for that region", () => {
+    expect(FACETS.map((f) => f.id)).toContain("eventCount");
+    expect(DEFAULT_LAYERS).toContain("eventCount");
+    expect(atlasDestination("eventCount", "oceania")).toBe("/events?region=oce");
+  });
+
   it("routes each facet to its listing", () => {
     expect(atlasDestination("caseStudyCount", "sub-saharan-africa"))
       .toBe("/research-and-action/case-studies?communities=sub-saharan-africa");

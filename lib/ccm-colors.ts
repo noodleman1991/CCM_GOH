@@ -114,6 +114,8 @@ export const COLOR = {
     lived: "#4186C3",
     projects: "#0B3160",
     people: "#9BC6DA",
+    // The event cards' accent (lib/cards/type-style.ts), so a pin matches its card.
+    events: "#3D8FA8",
   },
 } as const;
 

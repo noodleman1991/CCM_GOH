@@ -2099,7 +2099,8 @@
     "facetLivedExperiences": "Experiencias vividas",
     "facetAgendas": "Agendas",
     "facetReports": "Informes",
-    "facetResearchOutputs": "Productos de investigación"
+    "facetResearchOutputs": "Productos de investigación",
+    "facetEvents": "Eventos"
   },
   "announcement": {
     "dismiss": "Descartar anuncio",

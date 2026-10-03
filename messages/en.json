@@ -2099,7 +2099,8 @@
     "facetLivedExperiences": "Lived experiences",
     "facetAgendas": "Agendas",
     "facetReports": "Reports",
-    "facetResearchOutputs": "Research outputs"
+    "facetResearchOutputs": "Research outputs",
+    "facetEvents": "Events"
   },
   "announcement": {
     "dismiss": "Dismiss announcement",
