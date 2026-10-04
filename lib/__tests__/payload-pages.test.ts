@@ -332,6 +332,7 @@ describe("gridCaseStudy block", () => {
 describe("payload globals", () => {
   it("registers the five singletons the spec names — onboardingContent as its six step globals", () => {
     expect(globals.map((g) => g.slug).sort()).toEqual([
+      "collaborationSettings",
       "eventSuggestions",
       "homepage",
       "hubIllustrations",

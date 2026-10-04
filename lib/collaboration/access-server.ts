@@ -1,5 +1,5 @@
 import "server-only";
-import { query } from "@/lib/content/internal/payload-source";
+import { readCollaborationSettingsRow } from "@/lib/content/collaboration-settings";
 import type { Actor } from "@/lib/authz";
 import { ALL_OFF, ALL_ON, collaborationAccess, devOverride, toSettings, type CollaborationAccess, type CollaborationSettings } from "@/lib/collaboration/access";
 
@@ -7,7 +7,7 @@ import { ALL_OFF, ALL_ON, collaborationAccess, devOverride, toSettings, type Col
 export async function getCollaborationSettings(): Promise<CollaborationSettings> {
   if (devOverride()) return ALL_ON;
   try {
-    return toSettings(await query<unknown>({ type: "global", slug: "collaborationSettings", depth: 0 }));
+    return toSettings(await readCollaborationSettingsRow());
   } catch (error) {
     console.error("[collaboration] settings read failed — the collaboration tools stay hidden", error);
     return ALL_OFF;
