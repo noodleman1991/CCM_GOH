@@ -500,3 +500,15 @@ After the push:
 Checklist: `/en/events` (and `/ar/events`, right to left); an old `/en/collaborate/events` link lands on `/en/events`; `/en/events/suggest` signed in shows the form; a community page with an upcoming event shows Events in its menu (one with none doesn't); the homepage shows Coming up once an event is coming; `/en/atlas` has an Events chip.
 
 Email caveat: the Resend domain is still unverified, so outcome emails only reach the one verified address — the "Your suggestions" list on `/events/suggest` is the reliable record until the domain is verified.
+
+## 2026-10-04 my contributions
+
+What shipped (spec `docs/superpowers/specs/2026-10-03-my-contributions-design.md`):
+- **Dashboard → My contributions** (`/dashboard/submissions`, same address) lists everything a member has sent — case studies, lived experiences, research outputs, events, and unsent case-study drafts — in sections by what needs doing (Needs your changes, Drafts, Waiting for review, Published, Not accepted), with the team's note and one next step each. Editors also see **Open in admin** on every row.
+- The dashboard's **Your contributions** card (counts + anything sent back) replaces "Recent submissions".
+- The **sign-in alert** about changes now covers every kind and links straight to each item's edit form.
+- `/events/suggest` → Your suggestions uses the same rows.
+
+No migration of its own (the setting that can hide it ships with "Opening collaboration", below). To hide the page and the card: Admin → Settings → Collaboration → untick **My contributions page**.
+
+Checklist: sign in as a member who has sent something → `/en/dashboard` shows the card; `/en/dashboard/submissions` lists it with the right section and button; `/ar/…` right to left.
