@@ -22,8 +22,9 @@ export function ContributionRow({ item, showAdmin = false }: { item: Contributio
   const showNote = (item.status === "revision" || item.status === "rejected") && item.reviewNotes;
 
   return (
-    <li className="space-y-2 p-4">
-      <div className="flex flex-col gap-3 @content-md/page:flex-row @content-md/page:items-start @content-md/page:justify-between">
+    // Sized by its own width (the page list, or the dashboard's narrow column).
+    <li className="@container space-y-2 p-4">
+      <div className="flex flex-col gap-3 @md:flex-row @md:items-start @md:justify-between">
         <div className="min-w-0 space-y-1">
           <p className="flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-[0.12em]" style={{ color }}>
             <span className="size-2 rounded-full" style={{ background: color }} aria-hidden />

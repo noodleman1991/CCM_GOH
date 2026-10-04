@@ -14,14 +14,19 @@ import {
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { AlertCircle, Edit, Clock } from 'lucide-react'
+import { AlertCircle, ArrowRight, Edit, Clock } from 'lucide-react'
+import { Link } from '@/i18n/navigation'
+import type { ContributionKind } from '@/lib/contributions/model'
 
-interface RevisionSubmission {
+export interface RevisionSubmission {
   _id: string
+  /** Any kind a member can send (my-contributions spec M5). */
+  kind: ContributionKind
   title: Record<string, string>
-  status: 'revision'
   reviewNotes?: string
-  submittedAt: string
+  submittedAt?: string
+  /** That item's own edit form. */
+  editHref: string
 }
 
 interface RevisionAlertDialogProps {
@@ -41,6 +46,7 @@ export default function RevisionAlertDialog({
   const router = useRouter()
   const t = useTranslations('revisionAlert')
   const tCommon = useTranslations('common')
+  const tMine = useTranslations('dashboard.contributions')
 
   const getTitle = (submission: RevisionSubmission) => {
     return submission.title[locale] || submission.title.en || tCommon('untitled')
@@ -75,12 +81,17 @@ export default function RevisionAlertDialog({
             <div key={submission._id} className="border rounded-lg p-4 space-y-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-sm leading-tight line-clamp-2">
-                    {getTitle(submission)}
-                  </h4>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {t('submittedOn', { date: new Date(submission.submittedAt).toLocaleDateString(locale) })}
+                  <p className="text-[10.5px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+                    {tMine(`kind.${submission.kind}`)}
                   </p>
+                  <h4 className="font-medium text-sm leading-tight line-clamp-2">
+                    <bdi>{getTitle(submission)}</bdi>
+                  </h4>
+                  {submission.submittedAt && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {t('submittedOn', { date: new Date(submission.submittedAt).toLocaleDateString(locale) })}
+                    </p>
+                  )}
                 </div>
                 <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
                   <AlertCircle className="w-3 h-3 me-1" />
@@ -91,10 +102,18 @@ export default function RevisionAlertDialog({
               {submission.reviewNotes && (
                 <Alert className="bg-orange-50 border-orange-200">
                   <AlertDescription className="text-xs text-orange-800">
-                    <strong>{t('editorFeedback')}</strong> {submission.reviewNotes}
+                    <strong>{t('editorFeedback')}</strong> <bdi>{submission.reviewNotes}</bdi>
                   </AlertDescription>
                 </Alert>
               )}
+              <Link
+                href={submission.editHref}
+                onClick={handleDismiss}
+                className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-ccm-sea hover:underline"
+              >
+                {tMine('alert.open')}
+                <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
+              </Link>
             </div>
           ))}
         </div>

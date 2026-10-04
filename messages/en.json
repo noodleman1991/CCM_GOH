@@ -1339,6 +1339,19 @@
         "livedExperience": "Share your story",
         "researchOutput": "Share research",
         "event": "Suggest an event"
+      },
+      "card": {
+        "title": "Your contributions",
+        "needsChanges": "Needs changes",
+        "waiting": "Waiting",
+        "published": "Published",
+        "drafts": "Drafts",
+        "seeAll": "See all",
+        "nothingYet": "Share your work — a case study, your story, research or an event.",
+        "shareLink": "Start sharing"
+      },
+      "alert": {
+        "open": "Make changes"
       }
     }
   },
@@ -1470,12 +1483,12 @@
     "videoCount": "{count, plural, one {# video} other {# videos}}"
   },
   "revisionAlert": {
-    "title": "Action Required: Revision Needed",
-    "description": "{count, plural, one {You have # case study that needs revision based on editor feedback.} other {You have # case studies that need revision based on editor feedback.}}",
+    "title": "A few changes, please",
+    "description": "{count, plural, one {The team has looked at something you shared and asked for a few changes.} other {The team has looked at # things you shared and asked for a few changes.}}",
     "editorFeedback": "Editor feedback:",
     "actions": {
       "remindLater": "Remind Me Later",
-      "viewSubmissions": "View & Edit Submissions"
+      "viewSubmissions": "See all my contributions"
     },
     "submittedOn": "Submitted {date}",
     "revisionBadge": "Revision"

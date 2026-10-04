@@ -9,7 +9,11 @@ import { executePredefinedQuery } from '@/lib/dynamic-queries'
 import type { SupportedLocale } from '@/types/prisma'
 import { calculateProfileCompleteness } from '@/lib/profile-completeness'
 import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
-import { getUserContributions, getRegionMembers } from '@/lib/community/region-data'
+import { getRegionMembers } from '@/lib/community/region-data'
+import { listMyContributions } from '@/lib/content/contributions'
+import { countByStatus } from '@/lib/contributions/model'
+import { getActor } from '@/lib/authz'
+import { getCollaborationAccessFor } from '@/lib/collaboration/access-server'
 import { myTasks } from '@/lib/actions/plans'
 import { getForYou, forYouHref } from '@/lib/follows/for-you'
 import { safeQuery } from '@/lib/prisma'
@@ -169,9 +173,10 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     }
   }
 
-  // The user's own contributions (case studies, content, recent work) — the
-  // unified feed that also powers the public profile's Contributions block.
-  const contributions = (await getUserContributions(user.id, locale)).slice(0, 5)
+  // My contributions (my-contributions spec M4): the counts that matter and
+  // anything sent back for changes — unless the team has hidden the page.
+  const showContributions = (await getCollaborationAccessFor(await getActor())).contributions
+  const mine = showContributions ? await listMyContributions(userId, locale) : []
 
   // X4 "What needs me": my open tasks across workspaces + unread lifecycle
   // notifications, one list — the dashboard's pull side of the spine.
@@ -231,13 +236,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
         slug: regionSlug || regionalCommunity.name,
         memberCount: regionMemberCount
       } : null}
-      contributions={contributions.map(c => ({
-        id: c.id,
-        kind: c.kind,
-        title: c.title,
-        href: c.href,
-        date: c.date
-      }))}
+      contributionsCard={showContributions ? { counts: countByStatus(mine), needsChanges: mine.filter((c) => c.status === 'revision').slice(0, 2) } : null}
       recentWork={user.recentWork.map(w => ({
         id: w.id,
         title: w.title,

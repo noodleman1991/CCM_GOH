@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
-import { getCaseStudyRevisions } from "@/lib/content/case-studies"
+import { listMyContributions } from "@/lib/content/contributions"
 
 /**
- * Returns the authenticated user's case-study submissions that need revision.
+ * Returns the signed-in member's contributions that need changes — any kind
+ * (case studies, lived experiences, research outputs, events), for the
+ * sign-in alert (my-contributions spec M5). The path keeps its old name so
+ * the alert keeps working.
  *
- * Why this is a server route and not a client-side Sanity query: the dataset is
- * publicly readable, so a `submittedBy == $userId` filter from the browser is
- * not a security boundary — any visitor could query every user's reviewNotes.
- * Here the userId comes from the trusted Clerk session, and the read uses the
- * tokened server client.
+ * Why this is a server route and not a browser query: a `submittedBy ==
+ * $userId` filter from the browser is not a security boundary — anyone could
+ * read every member's review notes. Here the user id comes from the trusted
+ * Clerk session.
  */
 export async function GET() {
   try {
@@ -18,7 +20,15 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const submissions = await getCaseStudyRevisions(userId)
+    const submissions = (await listMyContributions(userId, "en"))
+      .filter((c) => c.status === "revision" && c.editHref)
+      .map((c) => ({
+        _id: c.id,
+        kind: c.kind,
+        title: { en: c.title ?? "" },
+        reviewNotes: c.reviewNotes ?? undefined,
+        editHref: c.editHref,
+      }))
 
     return NextResponse.json({ submissions })
   } catch (error) {

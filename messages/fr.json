@@ -373,6 +373,19 @@
         "livedExperience": "Partager votre récit",
         "researchOutput": "Partager une recherche",
         "event": "Proposer un événement"
+      },
+      "card": {
+        "title": "Vos contributions",
+        "needsChanges": "À modifier",
+        "waiting": "En attente",
+        "published": "Publié",
+        "drafts": "Brouillons",
+        "seeAll": "Tout voir",
+        "nothingYet": "Partagez votre travail : une étude de cas, votre récit, une recherche ou un événement.",
+        "shareLink": "Commencer à partager"
+      },
+      "alert": {
+        "open": "Apporter les modifications"
       }
     }
   },
@@ -1988,12 +2001,12 @@
     "originallyWrittenIn": "Écrit à l'origine en {language}"
   },
   "revisionAlert": {
-    "title": "Action Requise: Révision Nécessaire",
-    "description": "{count, plural, one {Vous avez # étude de cas à réviser d'après les commentaires de l'équipe éditoriale.} other {Vous avez # études de cas à réviser d'après les commentaires de l'équipe éditoriale.}}",
+    "title": "Quelques modifications, s'il vous plaît",
+    "description": "{count, plural, one {L'équipe a relu une de vos contributions et demande quelques modifications.} other {L'équipe a relu # de vos contributions et demande quelques modifications.}}",
     "editorFeedback": "Commentaires de l'éditeur:",
     "actions": {
       "remindLater": "Me Rappeler Plus Tard",
-      "viewSubmissions": "Voir et Modifier les Soumissions"
+      "viewSubmissions": "Voir toutes mes contributions"
     },
     "submittedOn": "Soumis le {date}",
     "revisionBadge": "Révision"

@@ -17,11 +17,12 @@ import {
   Calendar,
   ArrowRight,
   Edit,
-  FileText,
   FolderKanban,
   MessageSquare
 } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
+import { ContributionsCard } from '@/components/contributions/contributions-card'
+import type { Contribution, ContributionStatus } from '@/lib/contributions/model'
 import type { SupportedLocale } from '@/types/prisma'
 import { imageUrl } from '@/lib/content/images'
 
@@ -41,14 +42,6 @@ interface RegionalCommunity {
   name: string
   slug: string
   memberCount?: number
-}
-
-interface Contribution {
-  id: string
-  kind: 'caseStudy' | 'content' | 'recentWork'
-  title: string
-  href: string | null
-  date: string | null
 }
 
 interface RecentWork {
@@ -94,7 +87,8 @@ interface DashboardClientProps {
   regionalCommunity: RegionalCommunity | null
   recentWork: RecentWork[]
   recentNews: NewsItem[]
-  contributions?: Contribution[]
+  /** My contributions summary; null when the team has hidden the page. */
+  contributionsCard?: { counts: Record<ContributionStatus, number>; needsChanges: Contribution[] } | null
   locale: SupportedLocale
 }
 
@@ -105,7 +99,7 @@ export function DashboardClient({
   regionalCommunity,
   recentWork,
   recentNews,
-  contributions = [],
+  contributionsCard = null,
   locale
 }: DashboardClientProps) {
   const t = useTranslations('dashboard')
@@ -448,42 +442,8 @@ export function DashboardClient({
 
           {/* Right Column - News & contributions */}
           <div className="space-y-8">
-            {/* Recent submissions — the user's own contributions */}
-            {contributions.length > 0 && (
-              <div>
-                <div className="mb-4">
-                  <SectionHeader title={t('recentSubmissions')} />
-                </div>
-                <Card>
-                  <CardContent className="p-0 divide-y">
-                    {contributions.map((c) => {
-                      const inner = (
-                        <div className="flex items-start gap-3 p-4">
-                          <div className="p-2 rounded-md bg-[var(--color-ccm-sky)]/25 shrink-0">
-                            <FileText className="w-4 h-4 text-[var(--color-ccm-sea)]" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium line-clamp-2">{c.title}</p>
-                            {c.date && (
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                {new Date(c.date).toLocaleDateString(locale)}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )
-                      return c.href ? (
-                        <Link key={c.id} href={c.href} className="block hover:bg-muted/50 transition-colors">
-                          {inner}
-                        </Link>
-                      ) : (
-                        <div key={c.id}>{inner}</div>
-                      )
-                    })}
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+            {/* Your contributions (my-contributions spec M4) */}
+            {contributionsCard && <ContributionsCard {...contributionsCard} />}
 
             {/* Recent Community News */}
             {recentNews && recentNews.length > 0 && (

@@ -3,15 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useParams } from 'next/navigation'
-import RevisionAlertDialog from './revision-alert-dialog'
-
-interface RevisionSubmission {
-  _id: string
-  title: Record<string, string>
-  status: 'revision'
-  reviewNotes?: string
-  submittedAt: string
-}
+import RevisionAlertDialog, { type RevisionSubmission } from './revision-alert-dialog'
 
 export default function RevisionAlertProvider({
   children
