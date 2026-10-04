@@ -27,7 +27,8 @@ import { fileURLToPath } from "node:url";
  */
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
-const DASHBOARD_DIR = join(ROOT, "components", "dashboard");
+// The dashboard's member-content components moved here with My contributions (2026-10-04).
+const DASHBOARD_DIR = join(ROOT, "components", "contributions");
 const LOCALE_ROOT = join(ROOT, "app", "[locale]");
 const API_ROOT = join(ROOT, "app", "api");
 

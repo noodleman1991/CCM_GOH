@@ -187,7 +187,6 @@ import type {
   EventFilter,
   EventInput,
   EventRsvpMeta,
-  MySuggestion,
   ForYouCandidateRow,
   ModerationSettings,
   NewsPostBlockItem,
@@ -1406,32 +1405,6 @@ export async function countPendingEventSuggestions(userId: string): Promise<numb
     type: "count",
     collection: "events",
     where: and({ submittedBy: { equals: userId } }, { moderationStatus: { equals: "pending" } }),
-  });
-}
-
-const SUGGESTION_STATUSES = new Set(["pending", "approved", "revision", "rejected"]);
-
-/** `queryLive`: a member checking the outcome should see it at once. */
-export async function listMyEventSuggestions(userId: string): Promise<MySuggestion[]> {
-  const result = await queryLive<Paginated<Row>>({
-    type: "find",
-    collection: "events",
-    where: { submittedBy: { equals: userId } },
-    sort: "-createdAt",
-    pagination: false,
-    locale: "all",
-    depth: 0,
-  });
-  return result.docs.map((row) => {
-    const status = text(row.moderationStatus) ?? "pending";
-    return {
-      id: docId(row),
-      title: enArm(row.title) ?? text(row.title) ?? "",
-      startAt: isoDate(row.startAt) ?? null,
-      status: (SUGGESTION_STATUSES.has(status) ? status : "pending") as MySuggestion["status"],
-      reviewNotes: text(row.reviewNotes) ?? null,
-      slug: text(row.slug) ?? null,
-    };
   });
 }
 

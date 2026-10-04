@@ -883,16 +883,6 @@ export interface EventPlaceInput {
   countryCode: string | null;
 }
 
-/** One of a member's own event suggestions, for "Your suggestions". */
-export interface MySuggestion {
-  id: string;
-  title: string;
-  startAt: string | null;
-  status: "pending" | "approved" | "revision" | "rejected";
-  reviewNotes: string | null;
-  slug: string | null;
-}
-
 /** The editors' switch and block list (the `eventSuggestions` global). Live — it gates a write. */
 export async function getEventSuggestionSettings(): Promise<{ open: boolean; blocked: string[] }> {
   if (onPayload()) return payloadDiscovery.getEventSuggestionSettings();
@@ -905,11 +895,6 @@ export async function countPendingEventSuggestions(userId: string): Promise<numb
   return 0;
 }
 
-/** A member's own suggestions, newest first, with the outcome and the team's note. */
-export async function listMyEventSuggestions(userId: string): Promise<MySuggestion[]> {
-  if (onPayload()) return payloadDiscovery.listMyEventSuggestions(userId);
-  return [];
-}
 
 /** The minimal existence+ownership gate the submit route checks before
  *  allowing an edit-mode resubmission — a read that feeds the `updateEvent`

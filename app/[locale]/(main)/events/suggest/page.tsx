@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { SuggestForm } from "@/components/events/suggest-form";
 import { YourSuggestions } from "@/components/events/your-suggestions";
 import { loadEditableEvent } from "@/lib/events/edit";
-import { countPendingEventSuggestions, getEventSuggestionSettings, listMyEventSuggestions } from "@/lib/content/discovery";
+import { countPendingEventSuggestions, getEventSuggestionSettings } from "@/lib/content/discovery";
+import { listMyContributions } from "@/lib/content/contributions";
 import { getRegionalCommunities } from "@/lib/content/news";
 import { MAX_PENDING_SUGGESTIONS, suggestionRefusal } from "@/lib/events/suggestion-guard";
 
@@ -70,7 +71,7 @@ export default async function SuggestEventPage({
   const [settings, pending, mine, communities, editDoc] = await Promise.all([
     getEventSuggestionSettings(),
     countPendingEventSuggestions(userId),
-    listMyEventSuggestions(userId),
+    listMyContributions(userId, locale).then((all) => all.filter((c) => c.kind === "event")),
     getRegionalCommunities().catch(() => []),
     edit ? loadEditableEvent(edit, userId) : Promise.resolve(null),
   ]);
@@ -91,7 +92,7 @@ export default async function SuggestEventPage({
       ) : (
         <SuggestForm communities={communityOptions} editDoc={editDoc} workspaceId={workspace ?? null} />
       )}
-      <YourSuggestions items={mine} locale={locale} />
+      <YourSuggestions items={mine} />
     </div>
   );
 }
