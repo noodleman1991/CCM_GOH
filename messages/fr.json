@@ -317,6 +317,63 @@
       "MEMBER_JOINED": "Un nouveau membre a rejoint",
       "FOLLOWED_PUBLISH": "Nouveauté de quelqu'un que vous suivez",
       "EVENT_REMINDER": "Rappel d'événement"
+    },
+    "contributions": {
+      "title": "Mes contributions",
+      "intro": "Tout ce que vous avez partagé avec le hub : ce qu'il en est advenu, et la suite.",
+      "sections": {
+        "revision": "À modifier",
+        "draft": "Brouillons",
+        "pending": "En attente de relecture",
+        "approved": "Publié",
+        "rejected": "Non retenu"
+      },
+      "kinds": {
+        "all": "Tout",
+        "caseStudy": "Études de cas",
+        "livedExperience": "Expériences vécues",
+        "researchOutput": "Productions de recherche",
+        "event": "Événements"
+      },
+      "kind": {
+        "caseStudy": "Étude de cas",
+        "livedExperience": "Expérience vécue",
+        "researchOutput": "Production de recherche",
+        "event": "Événement"
+      },
+      "untitled": {
+        "caseStudy": "Étude de cas sans titre",
+        "livedExperience": "Récit sans titre",
+        "researchOutput": "Recherche sans titre",
+        "event": "Événement sans titre"
+      },
+      "status": {
+        "draft": "Brouillon",
+        "pending": "En attente",
+        "revision": "À modifier",
+        "approved": "Publié",
+        "rejected": "Non retenu"
+      },
+      "sent": "Envoyé",
+      "saved": "Enregistré",
+      "teamNote": "De l'équipe",
+      "actions": {
+        "continue": "Continuer",
+        "makeChanges": "Apporter les modifications",
+        "edit": "Modifier",
+        "view": "Voir",
+        "openInAdmin": "Ouvrir dans l'admin"
+      },
+      "empty": {
+        "title": "Rien de partagé pour l'instant",
+        "body": "Quand vous partagerez une étude de cas, un récit, une recherche ou un événement, vous le suivrez ici."
+      },
+      "share": {
+        "caseStudy": "Partager une étude de cas",
+        "livedExperience": "Partager votre récit",
+        "researchOutput": "Partager une recherche",
+        "event": "Proposer un événement"
+      }
     }
   },
   "settings": {

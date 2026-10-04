@@ -317,6 +317,63 @@
       "MEMBER_JOINED": "Nuevo miembro se ha unido",
       "FOLLOWED_PUBLISH": "Novedad de alguien que sigues",
       "EVENT_REMINDER": "Recordatorio de evento"
+    },
+    "contributions": {
+      "title": "Mis contribuciones",
+      "intro": "Todo lo que has compartido con el hub: qué pasó con ello y qué sigue.",
+      "sections": {
+        "revision": "Necesita tus cambios",
+        "draft": "Borradores",
+        "pending": "En espera de revisión",
+        "approved": "Publicado",
+        "rejected": "No aceptado"
+      },
+      "kinds": {
+        "all": "Todo",
+        "caseStudy": "Casos de estudio",
+        "livedExperience": "Experiencias vividas",
+        "researchOutput": "Productos de investigación",
+        "event": "Eventos"
+      },
+      "kind": {
+        "caseStudy": "Caso de estudio",
+        "livedExperience": "Experiencia vivida",
+        "researchOutput": "Producto de investigación",
+        "event": "Evento"
+      },
+      "untitled": {
+        "caseStudy": "Caso de estudio sin título",
+        "livedExperience": "Historia sin título",
+        "researchOutput": "Investigación sin título",
+        "event": "Evento sin título"
+      },
+      "status": {
+        "draft": "Borrador",
+        "pending": "En espera",
+        "revision": "Necesita cambios",
+        "approved": "Publicado",
+        "rejected": "No aceptado"
+      },
+      "sent": "Enviado",
+      "saved": "Guardado",
+      "teamNote": "Del equipo",
+      "actions": {
+        "continue": "Continuar",
+        "makeChanges": "Hacer cambios",
+        "edit": "Editar",
+        "view": "Ver",
+        "openInAdmin": "Abrir en el panel"
+      },
+      "empty": {
+        "title": "Aún no has compartido nada",
+        "body": "Cuando compartas un caso de estudio, una historia, una investigación o un evento, podrás seguirlo aquí."
+      },
+      "share": {
+        "caseStudy": "Compartir un caso de estudio",
+        "livedExperience": "Compartir tu historia",
+        "researchOutput": "Compartir investigación",
+        "event": "Sugerir un evento"
+      }
     }
   },
   "settings": {

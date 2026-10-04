@@ -1283,6 +1283,63 @@
       "MEMBER_JOINED": "New member joined",
       "FOLLOWED_PUBLISH": "New from someone you follow",
       "EVENT_REMINDER": "Event reminder"
+    },
+    "contributions": {
+      "title": "My contributions",
+      "intro": "Everything you've shared with the hub — what happened to it, and what's next.",
+      "sections": {
+        "revision": "Needs your changes",
+        "draft": "Drafts",
+        "pending": "Waiting for review",
+        "approved": "Published",
+        "rejected": "Not accepted"
+      },
+      "kinds": {
+        "all": "All",
+        "caseStudy": "Case studies",
+        "livedExperience": "Lived experiences",
+        "researchOutput": "Research outputs",
+        "event": "Events"
+      },
+      "kind": {
+        "caseStudy": "Case study",
+        "livedExperience": "Lived experience",
+        "researchOutput": "Research output",
+        "event": "Event"
+      },
+      "untitled": {
+        "caseStudy": "Untitled case study",
+        "livedExperience": "Untitled story",
+        "researchOutput": "Untitled research output",
+        "event": "Untitled event"
+      },
+      "status": {
+        "draft": "Draft",
+        "pending": "Waiting",
+        "revision": "Needs changes",
+        "approved": "Published",
+        "rejected": "Not accepted"
+      },
+      "sent": "Sent",
+      "saved": "Saved",
+      "teamNote": "From the team",
+      "actions": {
+        "continue": "Continue",
+        "makeChanges": "Make changes",
+        "edit": "Edit",
+        "view": "View",
+        "openInAdmin": "Open in admin"
+      },
+      "empty": {
+        "title": "Nothing shared yet",
+        "body": "When you share a case study, a story, research or an event, you'll follow it here."
+      },
+      "share": {
+        "caseStudy": "Share a case study",
+        "livedExperience": "Share your story",
+        "researchOutput": "Share research",
+        "event": "Suggest an event"
+      }
     }
   },
   "caseStudies": {

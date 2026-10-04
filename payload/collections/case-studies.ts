@@ -53,7 +53,7 @@ import { slugField } from "@/payload/fields/slug";
  * case-study page — `reviewNotes`/`reviewedBy`/`reviewedAt` appear only in
  * the editor review form and the submitter's own dashboard
  * (`components/forms/review-context.tsx`,
- * `components/dashboard/user-submissions-dashboard.tsx`), and `authors[].email`
+ * `components/contributions/contribution-row.tsx`), and `authors[].email`
  * only in `case-study-review.tsx`/`case-study-form.tsx` — but
  * `CASE_STUDY_DETAIL_PROJECTION_FRAGMENT` does select them, so without a
  * field gate `/payload-api/caseStudies` would hand every one of them to an

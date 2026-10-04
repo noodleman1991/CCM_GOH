@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 const queryLive = vi.fn();
-vi.mock("@/lib/content/internal/payload-source", () => ({ queryLive: (d: unknown) => queryLive(d) }));
+// queryRaw, not queryLive: a member must see their own unpublished submissions (drafts-enabled collections).
+vi.mock("@/lib/content/internal/payload-source", () => ({ queryRaw: (d: unknown) => queryLive(d) }));
 import { readMyContributions } from "@/lib/content/internal/payload/contributions";
 
 beforeEach(() => queryLive.mockReset());

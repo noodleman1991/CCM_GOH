@@ -4,13 +4,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { MySuggestion } from "@/lib/content/discovery";
 import { cn } from "@/lib/utils";
+import { STATUS_TONE } from "@/components/contributions/status-tone";
 
-const TONE: Record<MySuggestion["status"], string> = {
-  pending: "bg-ccm-amber/15 text-ccm-midnight",
-  approved: "bg-emerald-100 text-emerald-900",
-  revision: "bg-ccm-sea/10 text-ccm-sea",
-  rejected: "bg-muted text-muted-foreground",
-};
 
 /** A member's own event suggestions: each one's outcome, the team's note, and Edit while it can still change (events spec §3.2). */
 export function YourSuggestions({ items, locale }: { items: MySuggestion[]; locale: string }) {
@@ -42,7 +37,7 @@ export function YourSuggestions({ items, locale }: { items: MySuggestion[]; loca
                   <p className="text-sm text-muted-foreground">{item.startAt ? when.format(new Date(item.startAt)) : t("noDate")}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-bold", TONE[item.status])}>{t(`status.${item.status}`)}</span>
+                  <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-bold", STATUS_TONE[item.status])}>{t(`status.${item.status}`)}</span>
                   {editable && (
                     <Link href={`/events/suggest?edit=${encodeURIComponent(item.id)}`} className="inline-flex min-h-11 items-center text-sm font-bold text-ccm-sea hover:underline">
                       {t("edit")}

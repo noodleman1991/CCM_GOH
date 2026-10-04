@@ -1,5 +1,5 @@
 import "server-only";
-import { queryLive } from "@/lib/content/internal/payload-source";
+import { queryRaw } from "@/lib/content/internal/payload-source";
 import { draftToContribution, toContribution, type Contribution, type ContributionKind } from "@/lib/contributions/model";
 
 type Row = Record<string, unknown>;
@@ -11,10 +11,17 @@ const SOURCES: Array<{ kind: ContributionKind; collection: "caseStudies" | "live
 ];
 const SELECT = { title: true, slug: true, moderationStatus: true, reviewNotes: true, createdAt: true } as const;
 
-/** One kind's rows; a failure is logged and leaves that kind out. */
+/**
+ * One kind's rows; a failure is logged and leaves that kind out.
+ *
+ * `queryRaw` (fresh, every version), not `queryLive` (published only): case
+ * studies and lived experiences keep drafts, so a member's own submission
+ * waiting for review is often unpublished. Safe because `where` is always the
+ * session's own user id, never an id from the browser.
+ */
 async function rows(collection: string, where: Row, select: Record<string, true>): Promise<Row[]> {
   try {
-    const result = await queryLive<{ docs?: Row[] }>({ type: "find", collection: collection as never, where: where as never, pagination: false, locale: "all", depth: 0, select: select as never });
+    const result = await queryRaw<{ docs?: Row[] }>({ type: "find", collection: collection as never, where: where as never, pagination: false, locale: "all", depth: 0, select: select as never });
     return result?.docs ?? [];
   } catch (error) {
     console.error(`[my-contributions] ${collection} read failed`, error);

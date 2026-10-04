@@ -317,6 +317,63 @@
       "MEMBER_JOINED": "انضم عضو جديد",
       "FOLLOWED_PUBLISH": "جديد من شخص تتابعه",
       "EVENT_REMINDER": "تذكير بفعالية"
+    },
+    "contributions": {
+      "title": "مساهماتي",
+      "intro": "كل ما شاركته مع المنصة: ما الذي حدث له، وما الخطوة التالية.",
+      "sections": {
+        "revision": "تحتاج إلى تعديلاتك",
+        "draft": "مسودات",
+        "pending": "بانتظار المراجعة",
+        "approved": "منشورة",
+        "rejected": "لم تُقبل"
+      },
+      "kinds": {
+        "all": "الكل",
+        "caseStudy": "دراسات الحالة",
+        "livedExperience": "التجارب المعاشة",
+        "researchOutput": "النواتج البحثية",
+        "event": "الفعاليات"
+      },
+      "kind": {
+        "caseStudy": "دراسة حالة",
+        "livedExperience": "تجربة معاشة",
+        "researchOutput": "ناتج بحثي",
+        "event": "فعالية"
+      },
+      "untitled": {
+        "caseStudy": "دراسة حالة بلا عنوان",
+        "livedExperience": "قصة بلا عنوان",
+        "researchOutput": "بحث بلا عنوان",
+        "event": "فعالية بلا عنوان"
+      },
+      "status": {
+        "draft": "مسودة",
+        "pending": "بالانتظار",
+        "revision": "تحتاج إلى تعديلات",
+        "approved": "منشورة",
+        "rejected": "لم تُقبل"
+      },
+      "sent": "أُرسلت",
+      "saved": "حُفظت",
+      "teamNote": "من الفريق",
+      "actions": {
+        "continue": "متابعة",
+        "makeChanges": "إجراء التعديلات",
+        "edit": "تعديل",
+        "view": "عرض",
+        "openInAdmin": "فتح في لوحة الإدارة"
+      },
+      "empty": {
+        "title": "لم تشارك شيئًا بعد",
+        "body": "عندما تشارك دراسة حالة أو قصة أو بحثًا أو فعالية، ستتابعها هنا."
+      },
+      "share": {
+        "caseStudy": "شارك دراسة حالة",
+        "livedExperience": "شارك قصتك",
+        "researchOutput": "شارك بحثًا",
+        "event": "اقترح فعالية"
+      }
     }
   },
   "settings": {
