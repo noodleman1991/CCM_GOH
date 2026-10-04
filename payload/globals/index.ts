@@ -4,6 +4,7 @@ import { SiteAnnouncement } from "@/payload/globals/site-announcement";
 import { ModerationSettings } from "@/payload/globals/moderation-settings";
 import { HubIllustrations } from "@/payload/globals/hub-illustrations";
 import { EventSuggestions } from "@/payload/globals/event-suggestions";
+import { CollaborationSettings } from "@/payload/globals/collaboration-settings";
 import {
   ONBOARDING_GLOBALS,
   OnboardingBasicInfo,
@@ -20,6 +21,7 @@ export {
   ModerationSettings,
   HubIllustrations,
   EventSuggestions,
+  CollaborationSettings,
   ONBOARDING_GLOBALS,
   OnboardingContent,
   OnboardingBasicInfo,
@@ -56,4 +58,5 @@ export const globals: GlobalConfig[] = [
   // System
   ModerationSettings,
   EventSuggestions,
+  CollaborationSettings,
 ];

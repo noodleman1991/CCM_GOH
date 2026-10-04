@@ -146,6 +146,7 @@ export interface Config {
     onboardingReview: OnboardingReview;
     moderationSettings: ModerationSetting;
     eventSuggestions: EventSuggestion;
+    collaborationSettings: CollaborationSetting;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
@@ -159,6 +160,7 @@ export interface Config {
     onboardingReview: OnboardingReviewSelect<false> | OnboardingReviewSelect<true>;
     moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
     eventSuggestions: EventSuggestionsSelect<false> | EventSuggestionsSelect<true>;
+    collaborationSettings: CollaborationSettingsSelect<false> | CollaborationSettingsSelect<true>;
   };
   locale: 'en' | 'es' | 'fr' | 'ar';
   widgets: {
@@ -7116,6 +7118,37 @@ export interface EventSuggestion {
   createdAt?: string | null;
 }
 /**
+ * Open the hub's collaboration tools step by step, or hide them again. Changes show within a minute.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collaborationSettings".
+ */
+export interface CollaborationSetting {
+  id: number;
+  /**
+   * The dot on the account menu and the Notifications page: replies, mentions, what happened to what someone sent, event reminders, connections.
+   */
+  notifications?: boolean | null;
+  /**
+   * Asks members if they're open to collaborating, adds the filter in Find people, and lets members ask to connect.
+   */
+  people?: boolean | null;
+  /**
+   * Who can see and start workspaces. People already in a workspace can always open it.
+   */
+  workspaces?: ('off' | 'team' | 'leads' | 'members') | null;
+  /**
+   * Members message each other, within each person's own privacy setting. Turn this on last.
+   */
+  messages?: boolean | null;
+  /**
+   * Dashboard → My contributions: everything a member has sent, what happened to it and what's next. Untick to hide it.
+   */
+  contributions?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage_select".
  */
@@ -8018,6 +8051,20 @@ export interface EventSuggestionsSelect<T extends boolean = true> {
         note?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collaborationSettings_select".
+ */
+export interface CollaborationSettingsSelect<T extends boolean = true> {
+  notifications?: T;
+  people?: T;
+  workspaces?: T;
+  messages?: T;
+  contributions?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
