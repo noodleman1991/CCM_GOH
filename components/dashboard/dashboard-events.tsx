@@ -36,7 +36,11 @@ export function DashboardEvents({ going, community, hasCommunity, locale }: { go
           <li key={e.id} className="flex flex-col gap-2 [&>article]:flex-1">
             <EventTile event={e} locale={locale} timeZone={timeZone} />
             {/* Outside events sign people up on their own site. */}
-            {!e.external && <RsvpButton eventId={e.id} />}
+            {!e.external && (
+              <div className="self-start">
+                <RsvpButton eventId={e.id} />
+              </div>
+            )}
           </li>
         ))}
       </ul>

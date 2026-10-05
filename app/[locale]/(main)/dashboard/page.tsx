@@ -19,6 +19,7 @@ import { buildYourWeek } from '@/lib/dashboard/your-week'
 import { nextProfileStep } from '@/lib/profile/next-step'
 import { myTasks } from '@/lib/actions/plans'
 import { getForYou, forYouHref } from '@/lib/follows/for-you'
+import { forYouCards } from '@/lib/dashboard/for-you-cards'
 import { ensureUserRow } from "@/lib/user-bootstrap";
 
 /**
@@ -192,7 +193,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const profileStep = nextProfileStep({ ...user, communityCount: regionalCount })
   return (
     <DashboardClient
-      forYou={forYou}
+      forYouCards={forYouCards(forYou, (recentNews ?? []) as never)}
       yourWeek={yourWeek}
       dashboardEvents={{ ...dashboardEvents, hasCommunity: Boolean(regionSlug) }}
       profileStep={profileStep}
@@ -214,15 +215,6 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
         memberCount: regionMemberCount
       } : null}
       contributionsCard={showContributions ? { counts: countByStatus(mine) } : null}
-      recentWork={user.recentWork.map(w => ({
-        id: w.id,
-        title: w.title,
-        description: w.description,
-        startDate: w.startDate.toISOString(),
-        endDate: w.endDate?.toISOString() || null,
-        isOngoing: w.isOngoing
-      }))}
-      recentNews={recentNews || []}
       locale={locale}
     />
   )

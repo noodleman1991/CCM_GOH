@@ -58,8 +58,8 @@ describe("dead surfaces stay gone", () => {
   });
 
   it("nothing links to the removed add-work pages; the edit form's tab is the destination", () => {
+    // The dashboard no longer shows recent work (it lives on the profile — dashboard spec D2).
     const files = [
-      "app/[locale]/(main)/dashboard/page-client.tsx",
       "app/[locale]/(main)/profiles/[username]/page.tsx",
       "components/blocks/profile/recent-work-block.tsx",
     ];
