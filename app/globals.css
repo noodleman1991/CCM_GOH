@@ -300,11 +300,14 @@
     --color-ccm-slate: #8595AC;
 }
 
-/* RTL: Override font aliases to Arabic fonts loaded via next/font */
+/* RTL: Override font aliases to Arabic fonts loaded via next/font (each carries
+   its own Latin letters, drawn to sit with its Arabic). Lalezar has a single
+   weight, so the browser is never allowed to fake a bold of it (user, 2026-10-05). */
 [dir="rtl"] {
     --font-heading: var(--font-lalezar), ui-sans-serif, system-ui, sans-serif;
     --font-body: var(--font-tajawal), ui-sans-serif, system-ui, sans-serif;
     --font-sans: var(--font-tajawal), ui-sans-serif, system-ui, sans-serif;
+    font-synthesis-weight: none;
 }
 
 @utility container {
@@ -431,13 +434,20 @@
         font-weight: 700;
     }
 
-    [dir="rtl"] button,
-    [dir="rtl"] [role="button"],
-    [dir="rtl"] .btn,
-    [dir="rtl"] input[type="button"],
-    [dir="rtl"] input[type="submit"],
-    [dir="rtl"] input[type="reset"] {
-        font-weight: 400 !important;
+    /* Arabic UI text — buttons and links styled as buttons, tabs, badges,
+       chips, the sidebar and every small label — in Tajawal, which has real
+       bold weights. Lalezar is a display face: it stays on headings, where it
+       is set large (user, 2026-10-05). Family only: each element's own weight
+       class still decides how bold it is. */
+    [dir="rtl"] :is(button, [role="button"], [role="tab"], .btn, input[type="button"], input[type="submit"], input[type="reset"],
+        [data-slot="button"], [data-slot="badge"], [data-slot="tabs-trigger"], .badge, .tabs-trigger, [data-sidebar]),
+    [dir="rtl"] :is(.font-heading, h1, h2, h3, h4, h5, h6):is(.text-xs, .text-sm, .text-\[10px\], .text-\[10\.5px\], .text-\[11px\], .text-\[12px\], .text-\[13px\]) {
+        font-family: var(--font-body) !important;
+    }
+    /* A small heading in Tajawal takes the weight its classes ask for, not
+       Lalezar's single 400 (more specific than the h1–h6 rule above). */
+    [dir="rtl"] :is(h1, h2, h3, h4, h5, h6):is(.text-xs, .text-sm, .text-\[10px\], .text-\[11px\], .text-\[12px\], .text-\[13px\]):is(.font-bold, .font-semibold) {
+        font-weight: 700 !important;
     }
 
     input:not([type="button"]):not([type="submit"]):not([type="reset"]),
