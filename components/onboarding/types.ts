@@ -113,6 +113,8 @@ export interface OnboardingUserData {
   linkedinProfile?: string | null
   otherSocialLinks?: Array<{ platform: string; url: string }> | null
   personalWebsite?: string | null
+  openToCollaboration?: boolean | null
+  collaborationInterests?: string | null
   recentWork?: OnboardingFormValues["recentWork"] | null
   isSearchable?: boolean | null
   profileVisibility?: "PUBLIC" | "MEMBERS" | "PRIVATE" | null

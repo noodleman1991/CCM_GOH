@@ -1553,7 +1553,20 @@
       "search": "Búsqueda: {query}",
       "clear": "Restablecer Todos los Filtros"
     },
-    "startCollaboration": "Crear un espacio"
+    "startCollaboration": "Crear un espacio",
+    "openCard": {
+      "title": "¿Abierto/a a colaborar?",
+      "body": "Di que sí y las personas que trabajan en lo mismo podrán encontrarte y pedirte conectar. Tú eliges con quién conectas.",
+      "interestsLabel": "¿En qué te gustaría trabajar? (opcional)",
+      "interestsPlaceholder": "p. ej., investigación sobre salud mental juvenil en África Oriental",
+      "yes": "Sí, estoy abierto/a",
+      "notNow": "Ahora no",
+      "done": "Estás abierto/a a colaborar.",
+      "edit": "Cambiar en qué te gustaría trabajar",
+      "save": "Guardar",
+      "turnOff": "Dejar de mostrarme como disponible",
+      "saveError": "No se guardó; inténtalo de nuevo."
+    }
   },
   "onboarding": {
     "steps": {

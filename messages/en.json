@@ -1649,7 +1649,20 @@
       "search": "Search: {query}",
       "clear": "Reset All Filters"
     },
-    "startCollaboration": "Start a workspace"
+    "startCollaboration": "Start a workspace",
+    "openCard": {
+      "title": "Open to collaborating?",
+      "body": "Say yes and people working on the same things can find you and ask to connect. You choose who you connect with.",
+      "interestsLabel": "What would you like to work on? (optional)",
+      "interestsPlaceholder": "e.g. youth mental health research in East Africa",
+      "yes": "Yes, I'm open",
+      "notNow": "Not now",
+      "done": "You're open to collaborating.",
+      "edit": "Change what you'd like to work on",
+      "save": "Save",
+      "turnOff": "Stop showing me as open",
+      "saveError": "That didn't save — please try again."
+    }
   },
   "onboarding": {
     "steps": {

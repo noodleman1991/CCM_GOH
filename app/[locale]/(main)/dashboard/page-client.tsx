@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
 import { useCollaboration } from '@/hooks/use-collaboration'
+import { OpenToCollaborateCard } from '@/components/collaborate/open-to-collaborate-card'
 import { ContributionsCard } from '@/components/contributions/contributions-card'
 import type { Contribution, ContributionStatus } from '@/lib/contributions/model'
 import type { SupportedLocale } from '@/types/prisma'
@@ -36,6 +37,7 @@ interface DashboardUser {
   image: string | null
   bio: string | null
   profileCompleteness: number
+  openToCollaboration: boolean
 }
 
 interface RegionalCommunity {
@@ -201,6 +203,8 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Actions */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Open to collaborate? (opening-collaboration spec C4) — hides itself when off, answered or dismissed */}
+            <OpenToCollaborateCard initiallyOpen={user.openToCollaboration} />
             {/* X4 "What needs me" — tasks + unread project activity, one glance */}
             {attention.length > 0 && (
               <div>

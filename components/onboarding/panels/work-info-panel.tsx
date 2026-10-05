@@ -11,6 +11,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingContent, OnboardingForm } from "../types"
+import { useCollaboration } from "@/hooks/use-collaboration"
 
 interface WorkInfoPanelProps {
   form: OnboardingForm
@@ -25,6 +26,8 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
   const t = useTranslations("onboarding.steps.workInfo")
   const tCommon = useTranslations("onboarding")
   const tNav = useTranslations("navigation")
+  const tOpen = useTranslations("collaborate.openCard")
+  const access = useCollaboration()
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
@@ -403,6 +406,42 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             )}
           </div>
         </div>
+
+        {/* Open to collaborate (opening-collaboration spec C4) — only while the team has it on */}
+        {access.people && (
+          <div className="space-y-3 rounded-xl border border-ccm-midnight/10 p-4">
+            <FormField
+              control={form.control}
+              name="workInfo.openToCollaboration"
+              render={({ field }) => (
+                <FormItem className="flex items-start gap-3 space-y-0">
+                  <FormControl>
+                    <Checkbox checked={field.value === true} onCheckedChange={(v) => field.onChange(v === true)} />
+                  </FormControl>
+                  <div className="space-y-1">
+                    <FormLabel className="font-semibold">{tOpen("title")}</FormLabel>
+                    <FormDescription>{tOpen("body")}</FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+            {form.watch("workInfo.openToCollaboration") && (
+              <FormField
+                control={form.control}
+                name="workInfo.collaborationInterests"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tOpen("interestsLabel")}</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} value={field.value ?? ""} maxLength={500} rows={2} placeholder={tOpen("interestsPlaceholder")} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

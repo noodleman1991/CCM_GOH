@@ -161,6 +161,8 @@ export function ModernOnboardingContainer({
         linkedinProfile: user?.linkedinProfile || defaultOnboardingValues.workInfo.linkedinProfile,
         otherSocialLinks: user?.otherSocialLinks || defaultOnboardingValues.workInfo.otherSocialLinks,
         personalWebsite: user?.personalWebsite || defaultOnboardingValues.workInfo.personalWebsite,
+        openToCollaboration: user?.openToCollaboration ?? false,
+        collaborationInterests: user?.collaborationInterests || "",
       },
       recentWork: user?.recentWork || defaultOnboardingValues.recentWork,
       privacy: {
@@ -362,6 +364,8 @@ export function ModernOnboardingContainer({
         linkedinProfile: data.workInfo.linkedinProfile,
         otherSocialLinks: data.workInfo.otherSocialLinks || [],
         personalWebsite: data.workInfo.personalWebsite,
+        openToCollaboration: data.workInfo.openToCollaboration,
+        collaborationInterests: data.workInfo.collaborationInterests,
 
         // Recent work
         recentWork: data.recentWork || [],

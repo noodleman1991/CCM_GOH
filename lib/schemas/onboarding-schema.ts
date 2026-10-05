@@ -79,6 +79,9 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
       workBio: z.string().max(LIMITS.profile.workBio, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
       linkedinProfile: z.string().url(messages.workInfo?.linkedinUrl || defaultMessages.workInfo.linkedinUrl).optional().or(z.literal("")),
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
+      // Open to collaborate (opening-collaboration spec C4) — asked only when the team has it on.
+      openToCollaboration: z.boolean().optional(),
+      collaborationInterests: z.string().max(500).optional(),
       otherSocialLinks: z.array(z.object({
         platform: z.string().min(1, messages.workInfo?.socialLinkPlatform || defaultMessages.workInfo.socialLinkPlatform),
         url: z.string().url(messages.workInfo?.socialLinkUrl || defaultMessages.workInfo.socialLinkUrl)
@@ -150,7 +153,9 @@ export const defaultOnboardingValues: OnboardingFormData = {
     linkedinProfile: "",
     personalWebsite: "",
     otherSocialLinks: [],
-    communityIds: []
+    communityIds: [],
+    openToCollaboration: false,
+    collaborationInterests: ""
   },
   recentWork: [],
   privacy: {

@@ -228,7 +228,8 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
         email: user.email || '',
         image: user.image,
         bio: user.bio,
-        profileCompleteness
+        profileCompleteness,
+        openToCollaboration: user.openToCollaboration
       }}
       regionalCommunity={regionalCommunity ? {
         id: regionalCommunity.id,

@@ -78,6 +78,9 @@ const OnboardingSchema = z.object({
   position: z.string().max(LIMITS.profile.position).optional(),
   workBio: z.string().max(LIMITS.profile.workBio).optional(),
   personalWebsite: z.string().url().optional().or(z.literal("")),
+  // Sent only when the team has "Open to collaborate" on (onboarding work step).
+  openToCollaboration: z.boolean().optional(),
+  collaborationInterests: z.string().max(500).optional(),
   linkedinProfile: z.string().max(LIMITS.profile.linkedinProfile).optional(),
   otherSocialLinks: z.array(z.object({
     platform: z.string().min(1),
@@ -128,6 +131,9 @@ function buildUpsertData(validatedData: z.infer<typeof OnboardingSchema>) {
     personalWebsite: validatedData.personalWebsite,
     linkedinProfile: validatedData.linkedinProfile,
     otherSocialLinks: validatedData.otherSocialLinks,
+    ...(validatedData.openToCollaboration === undefined
+      ? {}
+      : { openToCollaboration: validatedData.openToCollaboration, collaborationInterests: validatedData.collaborationInterests?.trim() || null }),
     isSearchable: validatedData.isSearchable,
     profileVisibility: validatedData.profileVisibility,
     showEmail: validatedData.showEmail,
