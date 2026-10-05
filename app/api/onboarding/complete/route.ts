@@ -80,7 +80,7 @@ const OnboardingSchema = z.object({
   personalWebsite: z.string().url().optional().or(z.literal("")),
   // Sent only when the team has "Open to collaborate" on (onboarding work step).
   openToCollaboration: z.boolean().optional(),
-  collaborationInterests: z.string().max(500).optional(),
+  collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests).optional(),
   linkedinProfile: z.string().max(LIMITS.profile.linkedinProfile).optional(),
   otherSocialLinks: z.array(z.object({
     platform: z.string().min(1),

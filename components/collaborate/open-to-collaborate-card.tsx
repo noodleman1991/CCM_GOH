@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { useCollaboration } from "@/hooks/use-collaboration";
 import { setOpenToCollaborate } from "@/lib/actions/open-to-collaborate";
+import { LIMITS } from "@/lib/validation/limits";
 
 const DISMISSED = "ccm:open-card-dismissed";
 const noop = () => () => {};
@@ -92,7 +93,7 @@ export function OpenToCollaborateCard({ initiallyOpen }: { initiallyOpen: boolea
         <textarea
           id={fieldId}
           value={interests}
-          maxLength={500}
+          maxLength={LIMITS.profile.collaborationInterests}
           rows={2}
           onChange={(e) => setInterests(e.target.value)}
           placeholder={t("interestsPlaceholder")}

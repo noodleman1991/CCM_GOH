@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingContent, OnboardingForm } from "../types"
 import { useCollaboration } from "@/hooks/use-collaboration"
+import { LIMITS } from "@/lib/validation/limits"
 
 interface WorkInfoPanelProps {
   form: OnboardingForm
@@ -433,7 +434,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   <FormItem>
                     <FormLabel>{tOpen("interestsLabel")}</FormLabel>
                     <FormControl>
-                      <Textarea {...field} value={field.value ?? ""} maxLength={500} rows={2} placeholder={tOpen("interestsPlaceholder")} />
+                      <Textarea {...field} value={field.value ?? ""} maxLength={LIMITS.profile.collaborationInterests} rows={2} placeholder={tOpen("interestsPlaceholder")} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

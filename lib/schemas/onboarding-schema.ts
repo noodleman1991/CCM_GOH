@@ -81,7 +81,7 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
       // Open to collaborate (opening-collaboration spec C4) — asked only when the team has it on.
       openToCollaboration: z.boolean().optional(),
-      collaborationInterests: z.string().max(500).optional(),
+      collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests).optional(),
       otherSocialLinks: z.array(z.object({
         platform: z.string().min(1, messages.workInfo?.socialLinkPlatform || defaultMessages.workInfo.socialLinkPlatform),
         url: z.string().url(messages.workInfo?.socialLinkUrl || defaultMessages.workInfo.socialLinkUrl)
