@@ -512,3 +512,24 @@ What shipped (spec `docs/superpowers/specs/2026-10-03-my-contributions-design.md
 No migration of its own (the setting that can hide it ships with "Opening collaboration", below). To hide the page and the card: Admin → Settings → Collaboration → untick **My contributions page**.
 
 Checklist: sign in as a member who has sent something → `/en/dashboard` shows the card; `/en/dashboard/submissions` lists it with the right section and button; `/ar/…` right to left.
+
+## 2026-10-05 opening collaboration — stage 0 and stage 1
+
+What shipped (spec `docs/superpowers/specs/2026-10-03-opening-collaboration-design.md`):
+- **Settings → Collaboration** (new, admin): the team switches the collaboration tools on and off without a deploy — *Notifications in the hub*, *Open to collaborate and Ask to connect*, *Workspaces* (off / the team / + community leads / every member), *Direct messages*, and *My contributions page* (on). Every collaboration tool starts **off** — the live site looks the same until someone ticks a box. The old `NEXT_PUBLIC_FEATURE_ENGAGEMENT` switch is no longer read on the live site (it only forces everything on in local dev).
+- **Stage 1, once switched on:** the dashboard (and onboarding) asks members if they're open to collaborating; Find people gets an *Open to collaborate* filter with open members first; **Ask to connect** with a short note; accepting a connection lets each see the other's email (connections accepted before 2026-10-05 stay private); notifications for outcomes of anything a member sent and for new events in regions they follow (one a day per region).
+- **Privacy (live immediately, whatever the settings):** members' emails and phone numbers no longer reach any page or API. Find people and `/api/users/collaborate` used to send every listed member's email and phone in the page data — fixed. A member's email is shown only after **Show email** → a Cloudflare Turnstile check verified on the server, rate-limited, and only if they chose to show it (on a profile the viewer may see) or the two are connected. Needs the Turnstile keys already set on Vercel.
+- **RSVP** works for every signed-in member (no longer behind the switch).
+
+Migration (additive, runs on deploy): `collaboration_settings` — one table.
+
+After the push:
+1. `/admin` loads; **Settings → Collaboration** shows every collaboration tool unticked and *My contributions page* ticked.
+2. Spot-check the privacy fix: signed in, view source of `/en/collaborate?tab=people` — no email addresses.
+3. To open Stage 1: tick **Notifications in the hub** and **Open to collaborate and Ask to connect**, save. Changes show within a minute.
+
+What to watch (weekly): `scripts/with-prod-env.sh pnpm exec tsx scripts/collaboration/uptake.ts --production` — members open to collaborate, connection requests by status, notifications created/read, region follows. Consider Stage 2 (workspaces for the team, then leads) at about 30 open members and 10 accepted connections.
+
+Notes:
+- Email still only reaches the one verified Resend address until the domain is verified; the in-hub notifications don't depend on it.
+- **User roles**: shown read-only in Admin → Users (admins only). Team editor/admin are set with `pnpm user:role -- --email=… --role=team_editor --execute --env=.env` (after the person signs in once); community leads are set on each regional community's *Community leads* field.
