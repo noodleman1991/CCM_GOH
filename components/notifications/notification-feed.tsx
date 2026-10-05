@@ -85,17 +85,6 @@ export function NotificationFeed({
         : new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(d);
     }
     try {
-      // A connection's email is a link (opening-collaboration spec C5).
-      if (parsed.k === "contactAcceptedWithEmail" && params.email) {
-        return t.rich("snippets.contactAcceptedWithEmail", {
-          email: params.email,
-          link: (chunks) => (
-            <a href={`mailto:${params.email}`} className="font-semibold text-ccm-sea underline underline-offset-2" dir="ltr">
-              {chunks}
-            </a>
-          ),
-        });
-      }
       return t(`snippets.${parsed.k}`, params);
     } catch {
       return snippet;

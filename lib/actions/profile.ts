@@ -13,7 +13,8 @@ export interface ProfileData {
     lastName?: string | null
     username?: string | null
     image?: string | null
-    email?: string | null
+    /** The member shows their email to this viewer — never the address itself (it's revealed behind a human check). */
+    hasPublicEmail: boolean
     bio?: string | null
     ageGroup?: 'UNDER_18' | 'ABOVE_18' | null
     country?: string | null
@@ -107,6 +108,8 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             communityMemberships?: { community: ProfileData["communities"][number] }[]
             displayName?: string | null
             initials?: string | null
+            /** Read only to say whether there is one; never returned. */
+            email?: string | null
         }
         const user = result.data as unknown as UserWithRelations
 
@@ -132,7 +135,9 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             lastName: user.lastName,
             username: user.username,
             image: user.image,
-            email: user.email, // Already redacted by getUserForProfile if showEmail=false
+            // Never the address: pages only learn that there is one (user, 2026-10-05).
+            // user.email is already redacted by getUserForProfile when showEmail=false.
+            hasPublicEmail: !!user.email,
             bio: user.bio,
             ageGroup: user.ageGroup,
             country: user.country, // Already redacted if showLocation=false

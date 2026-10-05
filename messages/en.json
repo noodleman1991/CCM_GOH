@@ -431,7 +431,7 @@
       "contactDeclined": "declined your contact request",
       "removedFromWorkspace": "removed you from “{title}”",
       "rsvpGoing": "You're going to “{title}” — {when}",
-      "contactAcceptedWithEmail": "accepted your request to connect — reach them at <link>{email}</link>"
+      "contactAcceptedConnected": "accepted your request to connect — you'll find their email on their profile"
     },
     "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}"
   },
@@ -980,7 +980,17 @@
       "communities": "Communities",
       "skills": "Skills"
     },
-    "workspaces": "Workspaces"
+    "workspaces": "Workspaces",
+    "revealEmail": {
+      "show": "Show email",
+      "checking": "A quick check that you're a person — this keeps emails away from bots.",
+      "errors": {
+        "notHuman": "The check didn't go through. Please try again.",
+        "unavailable": "Emails can't be shown right now.",
+        "notShared": "This member doesn't share their email.",
+        "tooMany": "You've asked for a lot of emails — please try again later."
+      }
+    }
   },
   "profilePicture": {
     "title": "Profile Picture",

@@ -8,13 +8,9 @@ import { prisma } from "@/lib/prisma";
  */
 export const EMAIL_SHARING_SINCE = new Date("2026-10-05T00:00:00.000Z");
 
-/**
- * The profile owner's email for someone they're connected with — an ACCEPTED
- * request in either direction (opening-collaboration spec C5). Accepting is
- * the consent; nothing is shared before it.
- */
-export async function connectedEmail(viewerId: string, profileUserId: string): Promise<string | null> {
-  if (!viewerId || viewerId === profileUserId) return null;
+/** An accepted connection between the two, in either direction, since EMAIL_SHARING_SINCE. */
+async function acceptedLink(viewerId: string, profileUserId: string): Promise<boolean> {
+  if (!viewerId || viewerId === profileUserId) return false;
   const link = await prisma.contactRequest.findFirst({
     where: {
       status: "ACCEPTED",
@@ -26,7 +22,21 @@ export async function connectedEmail(viewerId: string, profileUserId: string): P
     },
     select: { id: true },
   });
-  if (!link) return null;
+  return !!link;
+}
+
+/** Whether the viewer may reach this member through their connection (the profile line; no email read). */
+export async function areConnected(viewerId: string, profileUserId: string): Promise<boolean> {
+  return acceptedLink(viewerId, profileUserId);
+}
+
+/**
+ * The profile owner's email for someone they're connected with (opening-
+ * collaboration spec C5). Accepting is the consent; nothing is shared before
+ * it. Read only by revealContactEmail, behind a human check — never put in a page.
+ */
+export async function connectedEmail(viewerId: string, profileUserId: string): Promise<string | null> {
+  if (!(await acceptedLink(viewerId, profileUserId))) return null;
   const user = await prisma.user.findUnique({ where: { id: profileUserId }, select: { email: true } });
   return user?.email ?? null;
 }

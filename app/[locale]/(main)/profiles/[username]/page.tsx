@@ -28,7 +28,8 @@ import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 import { Suspense } from "react"
 import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 import { siteUrl } from '@/lib/seo/site-url'
-import { connectedEmail } from "@/lib/collaborate/connection"
+import { areConnected } from "@/lib/collaborate/connection"
+import { RevealEmail } from "@/components/profile/reveal-email"
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -104,7 +105,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     const isOwnProfile = await checkProfileOwnership(user.id)
     const publicWorkspaces = await listPublicWorkspacesForUser(user.id)
     // How to reach them — only once the two of you are connected (spec C5).
-    const sharedEmail = currentUserId && !isOwnProfile ? await connectedEmail(currentUserId, user.id).catch(() => null) : null
+    const connected = currentUserId && !isOwnProfile ? await areConnected(currentUserId, user.id).catch(() => false) : false
     const tConnect = await getTranslations('collaborate.connect')
 
     // Calculate profile completeness
@@ -195,13 +196,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                             </BlurFade>
                         )}
 
-                        {sharedEmail && (
+                        {connected && (
                             <BlurFade delay={BLUR_FADE_DELAY * 4.85} className="mb-3">
-                                <p className="inline-flex flex-wrap items-center gap-x-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">
-                                    <span>{tConnect('connected')}</span>
-                                    <span aria-hidden="true">·</span>
-                                    <a href={`mailto:${sharedEmail}`} dir="ltr" className="underline underline-offset-2">{sharedEmail}</a>
-                                </p>
+                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">{tConnect('connected')}</span>
+                                    {/* The address stays out of the page: a click and a human check reveal it. */}
+                                    <RevealEmail profileUserId={user.id} />
+                                </div>
                             </BlurFade>
                         )}
 
@@ -256,11 +257,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                     </Button>
                                 </BlurFade>
                             )}
-                            {user.email && (
+                            {/* Members who show their email: revealed after a human check, never in the page. */}
+                            {user.hasPublicEmail && !connected && !isOwnProfile && (
                                 <BlurFade delay={BLUR_FADE_DELAY * 9}>
-                                    <Button variant="outline" asChild>
-                                        <a href={`mailto:${user.email}`}>{t('contact')}</a>
-                                    </Button>
+                                    <RevealEmail profileUserId={user.id} />
                                 </BlurFade>
                             )}
                         </div>

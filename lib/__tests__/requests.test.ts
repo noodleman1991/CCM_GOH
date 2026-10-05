@@ -234,13 +234,13 @@ describe("contact requests", () => {
     );
   });
 
-  it("accepting tells the requester how to reach the accepter (mutual consent)", async () => {
+  it("accepting tells the requester where to find the accepter's email — never the email itself", async () => {
     db.contactRequest.findUnique.mockResolvedValueOnce({ id: "cr1", status: "PENDING", requesterId: "u2", recipientId: "u1" });
-    db.user.findUnique.mockResolvedValueOnce({ email: "me@example.org" });
     await respondToContactRequest("cr1", true);
     const sent = createNotificationMock.mock.calls.map(([n]) => n as { recipientId: string; snippet: string });
     const toRequester = sent.find((n) => n.recipientId === "u2");
-    expect(JSON.parse(toRequester!.snippet)).toEqual({ k: "contactAcceptedWithEmail", p: { email: "me@example.org" } });
+    expect(JSON.parse(toRequester!.snippet)).toEqual({ k: "contactAcceptedConnected" });
+    expect(sent.every((n) => !n.snippet.includes("@"))).toBe(true);
   });
 
   it("declining shares nothing", async () => {

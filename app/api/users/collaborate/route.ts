@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { UserService } from '@/lib/services/user.service'
 import type { SupportedLocale } from '@/types/prisma'
+import { withoutContact } from '@/lib/people/without-contact'
 
 /**
  * GET /api/users/collaborate
@@ -74,7 +75,8 @@ export async function GET(request: NextRequest) {
     // Return successful response
     return NextResponse.json({
       success: true,
-      data: result.data.data,
+      // Contact details never leave the server (user, 2026-10-05).
+      data: result.data.data.map((u) => withoutContact(u)),
       pagination: {
         total: result.data.total,
         page: result.data.page,

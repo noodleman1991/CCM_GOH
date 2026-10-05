@@ -60,14 +60,7 @@ export default function ProfileHeaderBlock({
                             <p className="text-muted-foreground mb-2">@{username}</p>
                         )}
 
-                        {email && !isOwnProfile && (
-                            <Button size="sm" variant="outline" asChild>
-                                <a href={`mailto:${email}`}>
-                                    <Mail className="h-4 w-4 me-2" />
-                                    {t('contact')}
-                                </a>
-                            </Button>
-                        )}
+                        {/* No email here: profiles reveal it behind a human check (components/profile/reveal-email.tsx). */}
                     </div>
                 </div>
             </CardContent>

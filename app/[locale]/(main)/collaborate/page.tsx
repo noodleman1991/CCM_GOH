@@ -19,6 +19,7 @@ import { Plus } from 'lucide-react'
 import { getCollaborationAccessFor } from '@/lib/collaboration/access-server'
 import { getActor } from '@/lib/authz'
 import { decodeOpenParam, openFirst } from '@/lib/collaborate-filters'
+import { withoutContact } from '@/lib/people/without-contact'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
@@ -223,7 +224,8 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
         if (usersInCommunity.length > 0) {
           communityUsersMap[communityName] = {
-            users: usersInCommunity.slice(0, 20), // Limit to 20 per carousel
+            // Limit to 20 per carousel; contact details never reach the page.
+            users: usersInCommunity.slice(0, 20).map((u) => withoutContact(u) as LocalizedUser),
             total: usersInCommunity.length,
           }
         }
@@ -256,7 +258,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
     if (noCommunityResult?.success && noCommunityResult.data.data.length > 0) {
       communityUsersMap['No Regional Community'] = {
-        users: access.people ? openFirst(noCommunityResult.data.data as Array<LocalizedUser & { openToCollaboration?: boolean | null }>, openOnly) : noCommunityResult.data.data,
+        users: (access.people ? openFirst(noCommunityResult.data.data as Array<LocalizedUser & { openToCollaboration?: boolean | null }>, openOnly) : noCommunityResult.data.data).map((u) => withoutContact(u) as LocalizedUser),
         total: noCommunityResult.data.total ?? noCommunityResult.data.data.length,
       }
     }

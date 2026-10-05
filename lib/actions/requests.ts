@@ -497,20 +497,15 @@ export async function respondToContactRequest(
   });
 
   // Accepting is the consent to share contact details (opening-collaboration
-  // spec C5): the requester learns how to reach the accepter; the accepter sees
-  // the requester's email on their profile. A decline shares nothing.
-  const accepterEmail = accept
-    ? (await prisma.user.findUnique({ where: { id: actor.id }, select: { email: true } }))?.email ?? null
-    : null;
+  // spec C5). The email itself never goes into a notification: each finds the
+  // other's on their profile, behind a human check. A decline shares nothing.
   await createNotification({
     recipientId: req.requesterId,
     type: "REQUEST",
     actorId: actor.id,
     entityType: "contactRequestResolved",
     entityId: actor.id,
-    snippet: accepterEmail
-      ? structuredSnippet("contactAcceptedWithEmail", { email: accepterEmail })
-      : structuredSnippet(accept ? "contactAccepted" : "contactDeclined"),
+    snippet: structuredSnippet(accept ? "contactAcceptedConnected" : "contactDeclined"),
   });
 
   return { ok: true, status };

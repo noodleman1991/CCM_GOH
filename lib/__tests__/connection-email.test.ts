@@ -5,7 +5,7 @@ const db = vi.hoisted(() => ({
   user: { findUnique: vi.fn(async () => ({ email: "miruna@example.org" })) },
 }));
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
-import { connectedEmail, EMAIL_SHARING_SINCE } from "@/lib/collaborate/connection";
+import { areConnected, connectedEmail, EMAIL_SHARING_SINCE } from "@/lib/collaborate/connection";
 
 beforeEach(() => { db.contactRequest.findFirst.mockReset(); db.user.findUnique.mockClear(); });
 
@@ -28,5 +28,16 @@ describe("contact details between connected people", () => {
     expect(await connectedEmail("me", "me")).toBeNull();
     expect(await connectedEmail("", "miruna")).toBeNull();
     expect(db.contactRequest.findFirst).not.toHaveBeenCalled();
+  });
+});
+
+describe("whether two people are connected (for the profile line — no email involved)", () => {
+  it("is yes only for an accepted connection, and never reads an email", async () => {
+    db.contactRequest.findFirst.mockResolvedValue({ id: "c1" });
+    expect(await areConnected("me", "miruna")).toBe(true);
+    db.contactRequest.findFirst.mockResolvedValue(null);
+    expect(await areConnected("me", "miruna")).toBe(false);
+    expect(await areConnected("me", "me")).toBe(false);
+    expect(db.user.findUnique).not.toHaveBeenCalled();
   });
 });

@@ -627,7 +627,7 @@
       "contactDeclined": "رفض طلب التواصل الخاص بك",
       "removedFromWorkspace": "أزالك من «{title}»",
       "rsvpGoing": "ستحضر «{title}» — {when}",
-      "contactAcceptedWithEmail": "قبل طلب التواصل — راسله على <link>{email}</link>"
+      "contactAcceptedConnected": "قبل طلب التواصل — ستجد بريده الإلكتروني في ملفه الشخصي"
     },
     "unreadCount": "{count, plural, zero {لا إشعارات غير مقروءة} one {إشعار واحد غير مقروء} two {إشعاران غير مقروءين} few {# إشعارات غير مقروءة} many {# إشعارًا غير مقروء} other {# إشعار غير مقروء}}"
   },
@@ -1176,7 +1176,17 @@
       "communities": "المجتمعات",
       "skills": "المهارات"
     },
-    "workspaces": "مساحات العمل"
+    "workspaces": "مساحات العمل",
+    "revealEmail": {
+      "show": "إظهار البريد الإلكتروني",
+      "checking": "تحقق سريع من أنك إنسان — هذا يحمي عناوين البريد من البرامج الآلية.",
+      "errors": {
+        "notHuman": "لم يكتمل التحقق. حاول مرة أخرى.",
+        "unavailable": "لا يمكن إظهار البريد الإلكتروني حاليًا.",
+        "notShared": "هذا العضو لا يشارك بريده الإلكتروني.",
+        "tooMany": "طلبت عناوين كثيرة — حاول لاحقًا."
+      }
+    }
   },
   "profilePicture": {
     "title": "صورة الملف الشخصي",

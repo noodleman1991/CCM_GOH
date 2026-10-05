@@ -627,7 +627,7 @@
       "contactDeclined": "rechazó tu solicitud de contacto",
       "removedFromWorkspace": "te eliminó de «{title}»",
       "rsvpGoing": "Asistirás a «{title}» — {when}",
-      "contactAcceptedWithEmail": "aceptó tu solicitud de conexión: escríbele a <link>{email}</link>"
+      "contactAcceptedConnected": "aceptó tu solicitud de conexión: encontrarás su correo en su perfil"
     },
     "unreadCount": "{count, plural, one {# notificación sin leer} other {# notificaciones sin leer}}"
   },
@@ -1176,7 +1176,17 @@
       "communities": "Comunidades",
       "skills": "Habilidades"
     },
-    "workspaces": "Espacios"
+    "workspaces": "Espacios",
+    "revealEmail": {
+      "show": "Mostrar correo",
+      "checking": "Una comprobación rápida de que eres una persona: así protegemos los correos de los bots.",
+      "errors": {
+        "notHuman": "La comprobación no se completó. Inténtalo de nuevo.",
+        "unavailable": "Ahora mismo no se pueden mostrar correos.",
+        "notShared": "Esta persona no comparte su correo.",
+        "tooMany": "Has pedido muchos correos; inténtalo más tarde."
+      }
+    }
   },
   "profilePicture": {
     "title": "Foto de Perfil",
