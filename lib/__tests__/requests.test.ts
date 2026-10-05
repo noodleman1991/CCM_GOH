@@ -233,6 +233,23 @@ describe("contact requests", () => {
       expect.objectContaining({ recipientId: "u2", type: "REQUEST" })
     );
   });
+
+  it("accepting tells the requester how to reach the accepter (mutual consent)", async () => {
+    db.contactRequest.findUnique.mockResolvedValueOnce({ id: "cr1", status: "PENDING", requesterId: "u2", recipientId: "u1" });
+    db.user.findUnique.mockResolvedValueOnce({ email: "me@example.org" });
+    await respondToContactRequest("cr1", true);
+    const sent = createNotificationMock.mock.calls.map(([n]) => n as { recipientId: string; snippet: string });
+    const toRequester = sent.find((n) => n.recipientId === "u2");
+    expect(JSON.parse(toRequester!.snippet)).toEqual({ k: "contactAcceptedWithEmail", p: { email: "me@example.org" } });
+  });
+
+  it("declining shares nothing", async () => {
+    db.contactRequest.findUnique.mockResolvedValueOnce({ id: "cr1", status: "PENDING", requesterId: "u2", recipientId: "u1" });
+    await respondToContactRequest("cr1", false);
+    const sent = createNotificationMock.mock.calls.map(([n]) => n as { snippet: string });
+    expect(sent.every((n) => !n.snippet.includes("@"))).toBe(true);
+    expect(JSON.parse(sent[0].snippet)).toEqual({ k: "contactDeclined" });
+  });
 });
 
 describe("workspace invites", () => {

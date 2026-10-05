@@ -626,7 +626,8 @@
       "contactAccepted": "a accepté votre demande de contact",
       "contactDeclined": "a refusé votre demande de contact",
       "removedFromWorkspace": "vous a retiré·e de « {title} »",
-      "rsvpGoing": "Vous participez à « {title} » — {when}"
+      "rsvpGoing": "Vous participez à « {title} » — {when}",
+      "contactAcceptedWithEmail": "a accepté votre demande — écrivez-lui à <link>{email}</link>"
     },
     "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}"
   },
@@ -1574,7 +1575,8 @@
       "notePlaceholder": "Dites sur quoi vous aimeriez travailler ensemble",
       "send": "Envoyer",
       "cancel": "Annuler",
-      "help": "Si la personne accepte, chacun verra l'adresse e-mail de l'autre."
+      "help": "Si la personne accepte, chacun verra l'adresse e-mail de l'autre.",
+      "connected": "Vous êtes en relation"
     }
   },
   "onboarding": {

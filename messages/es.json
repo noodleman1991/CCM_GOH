@@ -626,7 +626,8 @@
       "contactAccepted": "aceptó tu solicitud de contacto",
       "contactDeclined": "rechazó tu solicitud de contacto",
       "removedFromWorkspace": "te eliminó de «{title}»",
-      "rsvpGoing": "Asistirás a «{title}» — {when}"
+      "rsvpGoing": "Asistirás a «{title}» — {when}",
+      "contactAcceptedWithEmail": "aceptó tu solicitud de conexión: escríbele a <link>{email}</link>"
     },
     "unreadCount": "{count, plural, one {# notificación sin leer} other {# notificaciones sin leer}}"
   },
@@ -1574,7 +1575,8 @@
       "notePlaceholder": "Cuéntale en qué te gustaría trabajar juntos",
       "send": "Enviar",
       "cancel": "Cancelar",
-      "help": "Si acepta, cada uno verá el correo del otro."
+      "help": "Si acepta, cada uno verá el correo del otro.",
+      "connected": "Están conectados"
     }
   },
   "onboarding": {

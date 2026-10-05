@@ -430,7 +430,8 @@
       "contactAccepted": "accepted your contact request",
       "contactDeclined": "declined your contact request",
       "removedFromWorkspace": "removed you from “{title}”",
-      "rsvpGoing": "You're going to “{title}” — {when}"
+      "rsvpGoing": "You're going to “{title}” — {when}",
+      "contactAcceptedWithEmail": "accepted your request to connect — reach them at <link>{email}</link>"
     },
     "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}"
   },
@@ -1670,7 +1671,8 @@
       "notePlaceholder": "Say what you'd like to work on together",
       "send": "Send",
       "cancel": "Cancel",
-      "help": "If they accept, you'll each see the other's email."
+      "help": "If they accept, you'll each see the other's email.",
+      "connected": "You're connected"
     }
   },
   "onboarding": {

@@ -626,7 +626,8 @@
       "contactAccepted": "قبِل طلب التواصل الخاص بك",
       "contactDeclined": "رفض طلب التواصل الخاص بك",
       "removedFromWorkspace": "أزالك من «{title}»",
-      "rsvpGoing": "ستحضر «{title}» — {when}"
+      "rsvpGoing": "ستحضر «{title}» — {when}",
+      "contactAcceptedWithEmail": "قبل طلب التواصل — راسله على <link>{email}</link>"
     },
     "unreadCount": "{count, plural, zero {لا إشعارات غير مقروءة} one {إشعار واحد غير مقروء} two {إشعاران غير مقروءين} few {# إشعارات غير مقروءة} many {# إشعارًا غير مقروء} other {# إشعار غير مقروء}}"
   },
@@ -1574,7 +1575,8 @@
       "notePlaceholder": "قل ما تود العمل عليه معًا",
       "send": "إرسال",
       "cancel": "إلغاء",
-      "help": "إذا وافق، سيرى كل منكما البريد الإلكتروني للآخر."
+      "help": "إذا وافق، سيرى كل منكما البريد الإلكتروني للآخر.",
+      "connected": "أنتما متواصلان"
     }
   },
   "onboarding": {
