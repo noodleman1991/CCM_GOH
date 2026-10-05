@@ -1224,6 +1224,29 @@ export async function getAllApprovedEvents(): Promise<ContentEvent[]> {
   return (result?.docs ?? []).map(eventCardProjection);
 }
 
+/**
+ * The approved events a member suggested — "events they organise" on their
+ * profile (profile spec D3). Cards only, soonest first, past ones included so
+ * a profile keeps its history.
+ */
+export async function listEventsOrganisedBy(userId: string, limit = 12): Promise<ContentEvent[]> {
+  const result = await query<Paginated<Row>>({
+    type: "find",
+    collection: "events",
+    where: and(APPROVED, { submittedBy: { equals: userId } }),
+    limit,
+    locale: "all",
+    depth: 1,
+    sort: ["-startAt", "id"],
+    select: {
+      title: true, slug: true, description: true, scope: true, startAt: true, endAt: true, mode: true, locationName: true, url: true,
+      linkedProject: true, place: true, recordingUrl: true, coverImage: true, origin: true, organiserName: true, organiser: true,
+      relatedCommunity: true, tags: true,
+    } as never,
+  });
+  return (result?.docs ?? []).map(eventCardProjection);
+}
+
 // ---------------------------------------------------------------------------
 // The editable event — a gated, drafts-visible read
 // ---------------------------------------------------------------------------

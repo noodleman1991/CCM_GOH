@@ -44,7 +44,9 @@ export function redactUser<T extends Partial<User>>(
   if (!user.showSocialLinks) {
     redacted.linkedinProfile = null;
     redacted.personalWebsite = null;
-    redacted.otherSocialLinks = []
+    redacted.otherSocialLinks = [];
+    // ORCID is a link to the person too (profile spec D3: links as the member allows).
+    redacted.orcidId = null
   }
 
   // Lived-experience redaction — sensitive; opt-in only. Hidden unless the

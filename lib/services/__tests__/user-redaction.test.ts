@@ -18,6 +18,7 @@ function makeUser(overrides: Record<string, unknown> = {}) {
     workTypes: ['RESEARCH'],
     expertiseAreas: ['HEALTH'],
     linkedinProfile: 'https://linkedin.com/in/someone',
+    orcidId: '0000-0002-1825-0097',
     personalWebsite: 'https://example.com',
     otherSocialLinks: ['https://social.example.com'],
     livedExperienceStatement: 'My lived experience with climate anxiety.',
@@ -64,6 +65,7 @@ describe('redactUser', () => {
       expect(redacted.linkedinProfile).toBeNull()
       expect(redacted.personalWebsite).toBeNull()
       expect(redacted.otherSocialLinks).toEqual([])
+      expect(redacted.orcidId).toBeNull()
     })
 
     it('redacts the lived-experience statement unless opted in (sensitive)', () => {

@@ -993,6 +993,32 @@
         "notShared": "This member doesn't share their email.",
         "tooMany": "You've asked for a lot of emails — please try again later."
       }
+    },
+    "sections": {
+      "about": "About",
+      "work": "Work",
+      "onTheHub": "On the hub",
+      "communities": "Communities",
+      "openTo": "Open to collaborate on",
+      "organisedEvents": "Events they organise",
+      "links": "Links",
+      "website": "Website"
+    },
+    "add": {
+      "about": "Add a few words about you — what brought you here and what you're looking for.",
+      "work": "Add your work — what you do, your skills, a recent project.",
+      "onTheHub": "Share something with the hub — a case study, an article or a resource.",
+      "communities": "Join a regional community to meet people near you."
+    },
+    "view": {
+      "asOthers": "See it as others do",
+      "seeingAsOthers": "This is how others see your profile.",
+      "back": "Back to your view"
+    },
+    "facts": {
+      "roleAt": "{position} at {organization}",
+      "memberSince": "Member since {date}",
+      "speaks": "Speaks {languages}"
     }
   },
   "profilePicture": {

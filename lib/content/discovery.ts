@@ -804,6 +804,12 @@ export async function getAllApprovedEvents(): Promise<ContentEvent[]> {
   return [];
 }
 
+/** The approved events a member suggested, newest first — their profile's "Events they organise". */
+export async function listEventsOrganisedBy(userId: string, limit = 12): Promise<ContentEvent[]> {
+  if (onPayload()) return payloadDiscovery.listEventsOrganisedBy(userId, limit);
+  return [];
+}
+
 // ---------------------------------------------------------------------------
 // Editable event (lib/events/edit.ts) — X7 tail, a gated drafts-visible read.
 // ---------------------------------------------------------------------------

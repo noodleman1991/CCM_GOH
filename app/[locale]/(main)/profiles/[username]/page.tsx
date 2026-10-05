@@ -6,42 +6,43 @@ import { BlurFade } from "@/components/magicui/blur-fade"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import Markdown from "react-markdown"
 import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { cn } from "@/lib/utils"
-import { RecentWorkOwnerControls } from "@/components/profile/recent-work-owner-controls"
 import { heading } from "@/lib/design-tokens"
 import { ProfileVisibilityNotice } from "@/components/profile/visibility-notice"
-import { MessageCircle } from "lucide-react"
+import { Briefcase, CalendarDays, Eye, Languages, MapPin, MessageCircle } from "lucide-react"
 import { MessageUserButton } from "@/components/messaging/message-user-button"
 import { FollowButton } from "@/components/follow/follow-button"
 import { listPublicWorkspacesForUser } from "@/lib/collaboration/service"
 import { regionLabel, specialCommunityLabel } from "@/lib/labels"
-import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
-import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
-import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
 import { RegionSectionSpine } from "@/components/regions/region-section-spine"
-import { PromptsBlock } from "@/components/blocks/profile/prompts-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
-import { Suspense } from "react"
 import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 import { siteUrl } from '@/lib/seo/site-url'
 import { areConnected } from "@/lib/collaborate/connection"
 import { RevealEmail } from "@/components/profile/reveal-email"
+import { getAnsweredPrompts } from "@/lib/community/profile-prompts"
+import { getUserContributions } from "@/lib/community/region-data"
+import { listEventsOrganisedBy } from "@/lib/content/discovery"
+import { toEventTile, type EventTileData } from "@/lib/events/listing"
+import { profileLinks, profileSections, type SectionId } from "@/lib/profile/sections"
+import { AboutSection } from "@/components/profile/about-section"
+import { WorkSection } from "@/components/profile/work-section"
+import { OnTheHubSection } from "@/components/profile/on-the-hub-section"
+import { OwnerAddLink, ProfileSection } from "@/components/profile/owner-add-link"
 
 const BLUR_FADE_DELAY = 0.04
 
-// Owner-curation flags present on the runtime recentWork rows (the RecentWork
-// table has them) but not yet declared on ProfileData's recentWork item type.
-type WorkCurationFlags = { pinned?: boolean; hidden?: boolean }
+// The section menu's anchors (the page's ids) for each section.
+const ANCHOR: Record<SectionId, string> = { about: 'about', work: 'work', onTheHub: 'on-the-hub', communities: 'communities' }
 
 interface ProfilePageProps {
     params: Promise<{
         username: string
         locale: string
     }>
+    searchParams: Promise<{ as?: string }>
 }
 
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
@@ -60,40 +61,31 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
     }
 }
 
-// Map the stored enum values to the camelCase translation keys.
-const WORK_TYPE_KEY: Record<string, string> = {
-    RESEARCH: 'research',
-    POLICY: 'policy',
-    LIVED_EXPERIENCE_EXPERT: 'livedExperience',
-    NGO: 'ngo',
-    COMMUNITY_ORGANIZATION: 'communityOrg',
-    EDUCATION_TEACHING: 'education',
-}
-const EXPERTISE_KEY: Record<string, string> = {
-    CLIMATE_CHANGE: 'climate',
-    MENTAL_HEALTH: 'mentalHealth',
-    HEALTH: 'health',
-    EDUCATION: 'education',
-    SOCIAL_JUSTICE: 'socialJustice',
+/** A language as its name in the reader's language ("es" → "Spanish"); free text stays as written. */
+function languageName(value: string, locale: string): string {
+    try {
+        return /^[a-z]{2,3}(-[A-Za-z]{2,4})?$/.test(value)
+            ? new Intl.DisplayNames([locale], { type: 'language' }).of(value) ?? value
+            : value
+    } catch {
+        return value
+    }
 }
 
-export default async function ProfilePage({ params }: ProfilePageProps) {
+/**
+ * A person's profile (profile spec D3): who they are first — a header with one
+ * line of facts — then About in their own words, Work, what they've done On
+ * the hub, and Communities, each once. The owner sees every section with an
+ * "Add…" where one is empty, and can see the page as others do (`?as=visitor`).
+ */
+export default async function ProfilePage({ params, searchParams }: ProfilePageProps) {
     const { username, locale } = await params
+    const { as } = await searchParams
     const t = await getTranslations('profile')
     const tNav = await getTranslations('navigation')
     const tRegions = await getTranslations('navigation.regions')
     const tSpecial = await getTranslations('navigation.specialCommunities')
-    const tTypesRaw = await getTranslations('profile.work.types')
-    const tExpertiseRaw = await getTranslations('profile.work.expertise')
-    // Translate an enum value, falling back to a humanized form if unmapped.
-    const tWorkTypes = (v: string) => {
-        const k = WORK_TYPE_KEY[v]
-        return k ? tTypesRaw(k) : v.replace(/_/g, ' ')
-    }
-    const tExpertise = (v: string) => {
-        const k = EXPERTISE_KEY[v]
-        return k ? tExpertiseRaw(k) : v.replace(/_/g, ' ')
-    }
+    const tConnect = await getTranslations('collaborate.connect')
 
     const { userId: currentUserId } = await auth()
 
@@ -103,23 +95,66 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         notFound()
     }
     const isOwnProfile = await checkProfileOwnership(user.id)
-    const publicWorkspaces = await listPublicWorkspacesForUser(user.id)
-    // How to reach them — only once the two of you are connected (spec C5).
-    const connected = currentUserId && !isOwnProfile ? await areConnected(currentUserId, user.id).catch(() => false) : false
-    const tConnect = await getTranslations('collaborate.connect')
+    // The owner can look at their page the way everyone else does.
+    const asVisitor = isOwnProfile && as === 'visitor'
+    const ownerView = isOwnProfile && !asVisitor
 
-    // Calculate profile completeness
-    const profileSections = {
-        about: !!user.bio,
-        work: !!(user.work || user.workBio),
-        skills: user.workTypes.length > 0 || user.expertiseAreas.length > 0,
-        projects: user.recentWork.length > 0,
-        communities: user.communities.length > 0,
-        contact: !!(user.personalWebsite || user.linkedinProfile || user.otherSocialLinks.length > 0)
-    }
+    const [prompts, contributions, organised, publicWorkspaces, connected] = await Promise.all([
+        getAnsweredPrompts(user.id, locale),
+        // Recent work has its own home in Work — only what they shared with the hub here.
+        getUserContributions(user.id, locale).then((all) => all.filter((c) => c.kind !== 'recentWork')),
+        listEventsOrganisedBy(user.id).catch(() => []),
+        listPublicWorkspacesForUser(user.id),
+        // How to reach them — only once the two of you are connected (spec C5).
+        currentUserId && !isOwnProfile ? areConnected(currentUserId, user.id).catch(() => false) : Promise.resolve(false),
+    ])
+    const events = organised.map(toEventTile).filter((e): e is EventTileData => e !== null)
+    const recentWork = (user.recentWork as (typeof user.recentWork[number] & { hidden?: boolean; pinned?: boolean })[])
+        .filter((w) => ownerView || !w.hidden)
+    const links = profileLinks(user)
+    const regional = user.communities.filter((c) => c.type === 'REGIONAL')
+    const special = user.communities.filter((c) => c.type === 'SPECIAL')
+
+    const sections = profileSections(
+        {
+            bio: user.bio,
+            motivation: user.motivation,
+            lookingFor: user.lookingFor,
+            focusTopics: user.focusTopics,
+            collaborationInterests: user.collaborationInterests,
+            promptCount: prompts.length,
+            livedExperienceStatement: user.livedExperienceStatement,
+            workBio: user.workBio,
+            skillsCount: user.workTypes.length + user.expertiseAreas.length,
+            recentWorkCount: recentWork.length,
+            linkCount: links.length,
+            contributionCount: contributions.length,
+            organisedEventCount: events.length,
+            workspaceCount: publicWorkspaces.length,
+            communityCount: user.communities.length,
+        },
+        { isOwner: ownerView },
+    )
+    const addHref = (id: SectionId) => sections.find((s) => s.id === id)?.addHref ?? null
+
+    // One line of facts: role · place · member since · languages — each only when they show it.
+    const role = user.position && user.organization
+        ? t('facts.roleAt', { position: user.position, organization: user.organization })
+        : user.position || user.organization
+    const facts = [
+        { icon: Briefcase, text: role },
+        { icon: MapPin, text: user.location },
+        { icon: CalendarDays, text: t('facts.memberSince', { date: new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(user.createdAt)) }) },
+        {
+            icon: Languages,
+            text: user.languages.length > 0
+                ? t('facts.speaks', { languages: new Intl.ListFormat(locale, { type: 'conjunction' }).format(user.languages.map((l) => languageName(l, locale))) })
+                : null,
+        },
+    ].filter((f): f is { icon: typeof Briefcase; text: string } => Boolean(f.text))
 
     return (
-        <div className="container max-w-6xl py-8">
+        <div className="container max-w-4xl py-8">
             <JsonLd
                 data={personJsonLd({
                     name: user.displayName,
@@ -137,24 +172,35 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 ]}
             />
 
-            {/* Profile Header */}
-            <div className="mb-8">
-                <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-6">
-                    {/* Avatar beside the identity, like a standard profile.
-                        When the person is open to talk, the avatar wears a CCM
+            {asVisitor && (
+                <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-ccm-sky/20 px-4 py-3 text-sm text-ccm-midnight">
+                    <span className="inline-flex items-center gap-2 font-semibold">
+                        <Eye className="size-4 text-ccm-sea" aria-hidden />
+                        {t('view.seeingAsOthers')}
+                    </span>
+                    <Link href={`/profiles/${user.username}`} className="inline-flex min-h-11 items-center font-bold text-ccm-sea hover:underline">
+                        {t('view.back')}
+                    </Link>
+                </div>
+            )}
+
+            {/* Header — who they are, at a glance */}
+            <header className="mb-8">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                    {/* When the person is open to talk, the avatar wears a CCM
                         ring + a chat-bubble badge as a quiet signal. */}
                     <BlurFade delay={BLUR_FADE_DELAY * 3}>
-                        <div className="relative shrink-0 w-24 sm:w-28">
+                        <div className="relative w-24 shrink-0 sm:w-28">
                             <Avatar className={cn(
                                 "h-24 w-24 sm:h-28 sm:w-28",
-                                user.openToCollaboration && "ring-2 ring-[var(--color-ccm-sea)] ring-offset-2 ring-offset-background"
+                                user.openToCollaboration && "ring-2 ring-ccm-sea ring-offset-2 ring-offset-background"
                             )}>
                                 <AvatarImage alt={user.displayName} src={user.image || undefined} />
                                 <AvatarFallback className="text-2xl">{user.initials}</AvatarFallback>
                             </Avatar>
                             {user.openToCollaboration && (
                                 <span
-                                    className="absolute -bottom-1 -end-1 flex size-7 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] text-white ring-2 ring-background"
+                                    className="absolute -bottom-1 -end-1 flex size-7 items-center justify-center rounded-full bg-ccm-sea text-white ring-2 ring-background"
                                     title={t('openToCollaboration')}
                                 >
                                     <MessageCircle className="size-3.5" aria-hidden="true" />
@@ -164,472 +210,150 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         </div>
                     </BlurFade>
 
-                    <div className="flex-1 min-w-0">
-                        <BlurFade delay={BLUR_FADE_DELAY * 3} className="mb-1">
+                    <div className="min-w-0 flex-1 space-y-3">
+                        <BlurFade delay={BLUR_FADE_DELAY * 3}>
                             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                                 <h1 className={cn("font-bold tracking-tight text-balance text-ccm-midnight", heading('xl'))}>
                                     <bdi>{user.displayName}</bdi>
                                 </h1>
                                 {user.pronouns && (
-                                    <span className="text-sm text-muted-foreground">({user.pronouns})</span>
+                                    <span className="text-sm text-muted-foreground">(<bdi>{user.pronouns}</bdi>)</span>
                                 )}
                             </div>
+                            {user.username && <p className="text-muted-foreground">@{user.username}</p>}
                         </BlurFade>
-                        {user.username && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-2">
-                                <p className="text-lg text-muted-foreground">@{user.username}</p>
-                            </BlurFade>
-                        )}
+
                         {user.headline && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4.5} className="mb-3">
-                                <p className="text-base md:text-lg font-medium text-ccm-sea text-balance">
-                                    {user.headline}
-                                </p>
-                            </BlurFade>
-                        )}
-                        {user.openToCollaboration && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4.8} className="mb-3">
-                                <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ccm-sky)]/25 px-3 py-1 text-xs font-semibold text-[var(--color-ccm-sea)]">
-                                    <span className="size-1.5 rounded-full bg-[var(--color-ccm-sea)]" aria-hidden="true" />
-                                    {t('openToCollaboration')}
-                                </span>
+                            <BlurFade delay={BLUR_FADE_DELAY * 4}>
+                                <p className="text-base font-medium text-balance text-ccm-sea md:text-lg"><bdi>{user.headline}</bdi></p>
                             </BlurFade>
                         )}
 
-                        {connected && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4.85} className="mb-3">
-                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">{tConnect('connected')}</span>
-                                    {/* The address stays out of the page: a click and a human check reveal it. */}
-                                    <RevealEmail profileUserId={user.id} />
-                                </div>
-                            </BlurFade>
-                        )}
+                        <BlurFade delay={BLUR_FADE_DELAY * 4.5}>
+                            <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                                {facts.map(({ icon: Icon, text }) => (
+                                    <li key={text} className="inline-flex items-center gap-1.5">
+                                        <Icon className="size-4 shrink-0 text-ccm-sea/70" aria-hidden />
+                                        <bdi>{text}</bdi>
+                                    </li>
+                                ))}
+                            </ul>
+                        </BlurFade>
 
-                        {!isOwnProfile && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4.9} className="mb-3">
+                        {(user.openToCollaboration || connected) && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 5}>
                                 <div className="flex flex-wrap items-center gap-2">
-                                    <MessageUserButton targetUserId={user.id} />
-                                    {/* Person-follow: powers the "For you" rail and the
-                                        FOLLOWERS messaging tier. Signed-in only. */}
-                                    {currentUserId && (
-                                        <FollowButton targetType="USER" targetId={user.id} />
+                                    {user.openToCollaboration && (
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-ccm-sky/25 px-3 py-1 text-xs font-semibold text-ccm-sea">
+                                            <span className="size-1.5 rounded-full bg-ccm-sea" aria-hidden="true" />
+                                            {t('openToCollaboration')}
+                                        </span>
+                                    )}
+                                    {connected && (
+                                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">{tConnect('connected')}</span>
                                     )}
                                 </div>
                             </BlurFade>
                         )}
 
-                        {/* Role / location — the at-a-glance "who you'd collaborate with" line */}
-                        <BlurFade delay={BLUR_FADE_DELAY * 5}>
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                                {user.work && <span>{user.work}</span>}
-                                {user.location && <span>{user.location}</span>}
-                                {user.ageGroup && (
-                                    <span>{user.ageGroup === 'UNDER_18' ? t('under18') : t('above18')}</span>
+                        <BlurFade delay={BLUR_FADE_DELAY * 6}>
+                            <div className="flex flex-wrap items-center gap-2">
+                                {!isOwnProfile && <MessageUserButton targetUserId={user.id} />}
+                                {/* Person-follow: powers the "For you" rail and the
+                                    FOLLOWERS messaging tier. Signed-in only. */}
+                                {!isOwnProfile && currentUserId && <FollowButton targetType="USER" targetId={user.id} />}
+                                {/* The address stays out of the page: a click and a human check reveal it —
+                                    for a connection, or when the member shows their email. */}
+                                {!isOwnProfile && (connected || user.hasPublicEmail) && <RevealEmail profileUserId={user.id} />}
+                                {ownerView && (
+                                    <>
+                                        <Button asChild>
+                                            <Link href="/dashboard/profile/edit">{t('editProfile')}</Link>
+                                        </Button>
+                                        <Button variant="outline" asChild>
+                                            <Link href={`/profiles/${user.username}?as=visitor`}>
+                                                <Eye className="size-4" aria-hidden />
+                                                {t('view.asOthers')}
+                                            </Link>
+                                        </Button>
+                                    </>
                                 )}
                             </div>
                         </BlurFade>
-
-                        {/* Expertise tags up top — the collaboration-relevant signal */}
-                        {(user.workTypes.length > 0 || user.expertiseAreas.length > 0) && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 6}>
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                    {user.workTypes.map((type) => (
-                                        <Badge key={type} variant="secondary">
-                                            {tWorkTypes(type)}
-                                        </Badge>
-                                    ))}
-                                    {user.expertiseAreas.map((area) => (
-                                        <Badge key={area} variant="outline">
-                                            {tExpertise(area)}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </BlurFade>
-                        )}
-
-                        {/* Action Buttons */}
-                        <div className="mt-4 flex flex-wrap items-center gap-3">
-                            {isOwnProfile && (
-                                <BlurFade delay={BLUR_FADE_DELAY * 8}>
-                                    <Button asChild>
-                                        <Link href="/dashboard/profile/edit">{t('editProfile')}</Link>
-                                    </Button>
-                                </BlurFade>
-                            )}
-                            {/* Members who show their email: revealed after a human check, never in the page. */}
-                            {user.hasPublicEmail && !connected && !isOwnProfile && (
-                                <BlurFade delay={BLUR_FADE_DELAY * 9}>
-                                    <RevealEmail profileUserId={user.id} />
-                                </BlurFade>
-                            )}
-                        </div>
                     </div>
                 </div>
 
-                {/* Who can see this profile - visible only to the profile owner */}
-                {isOwnProfile && (
-                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-3">
-                        <ProfileVisibilityNotice
-                            visibility={user.profileVisibility}
-                            searchable={user.isSearchable}
-                            className="max-w-2xl"
-                        />
-                    </BlurFade>
+                {/* Who can see this profile — only the owner */}
+                {ownerView && (
+                    <ProfileVisibilityNotice
+                        visibility={user.profileVisibility}
+                        searchable={user.isSearchable}
+                        className="mt-6 max-w-2xl"
+                    />
                 )}
+            </header>
 
-                {/* Profile Completeness - visible only to the profile owner */}
-                {isOwnProfile && (
-                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-2">
-                        <ProfileCompletenessIndicator
-                            percentage={user.profileCompleteness}
-                            size="md"
-                            className="max-w-sm"
-                        />
-                    </BlurFade>
-                )}
-            </div>
+            {/* The chapters — same scroll-spy menu as the regional pages. */}
+            {sections.length > 1 && (
+                <RegionSectionSpine
+                    className="mb-8"
+                    sections={sections.map((s) => ({ id: ANCHOR[s.id], label: t(`sections.${s.id}`) }))}
+                />
+            )}
 
-            {/* Profile Statistics */}
-            <ProfileStatistics user={user} />
-
-            {/* Anchor spine (Gate-2 §profile): same scroll-spy pattern as the
-                regional pages — anchors over one scrollable page. */}
-            <RegionSectionSpine
-                className="mt-8"
-                sections={[
-                    ...(profileSections.about ? [{ id: 'about', label: t('about') }] : []),
-                    ...(profileSections.projects
-                        ? [{ id: 'recent-work', label: t('recentWork.title'), count: user.recentWork.length }]
-                        : []),
-                    { id: 'contributions', label: t('contributions.title') },
-                    ...(user.communities.filter(c => c.type === 'REGIONAL').length > 0
-                        ? [{ id: 'communities', label: t('regionalCommunities') }]
-                        : []),
-                ]}
-            />
-
-            <div className="grid gap-8 lg:grid-cols-3 mt-8">
-                {/* Main Content */}
-                <div className="lg:col-span-2 space-y-8">
-                    {/* About Section */}
-                    {profileSections.about && (
-                        <div id="about" className="scroll-mt-14">
-                        <BlurFade delay={BLUR_FADE_DELAY * 11}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <h2 className={cn("font-semibold mb-4 text-ccm-midnight", heading('sm'))}>{t('about')}</h2>
-                                    <div className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
-                                        <Markdown>
-                                            {user.bio}
-                                        </Markdown>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                        </div>
-                    )}
-
-                    {/* Answered prompts — the most human part of the profile */}
-                    <Suspense fallback={null}>
-                        <PromptsBlock userId={user.id} locale={locale} />
-                    </Suspense>
-
-                    {/* Motivation — "what brought me here" */}
-                    {user.motivation && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 11.5}>
-                            <Card className="border-[var(--color-ccm-sky)] bg-[var(--color-ccm-sky)]/10">
-                                <CardContent className="pt-6">
-                                    <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('motivation')}</h2>
-                                    <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.motivation}</p>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {/* Collaboration */}
-                    {(user.openToCollaboration || user.collaborationInterests || user.focusTopics.length > 0 || user.lookingFor.length > 0) && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 12}>
-                            <Card>
-                                <CardContent className="pt-6 space-y-4">
-                                    <h2 className={cn("font-semibold text-ccm-midnight", heading('sm'))}>{t('collaboration')}</h2>
-                                    {user.collaborationInterests && (
-                                        <p className="text-pretty text-sm text-muted-foreground whitespace-pre-line">{user.collaborationInterests}</p>
+            <div className="space-y-12">
+                {sections.map((s) => {
+                    switch (s.id) {
+                        case 'about':
+                            return <AboutSection key={s.id} user={user} prompts={prompts} addHref={s.addHref} />
+                        case 'work':
+                            return (
+                                <WorkSection
+                                    key={s.id}
+                                    workBio={user.workBio}
+                                    workTypes={user.workTypes}
+                                    expertiseAreas={user.expertiseAreas}
+                                    recentWork={recentWork}
+                                    links={links}
+                                    isOwner={ownerView}
+                                    addHref={s.addHref}
+                                />
+                            )
+                        case 'onTheHub':
+                            return (
+                                <OnTheHubSection
+                                    key={s.id}
+                                    contributions={contributions}
+                                    events={events}
+                                    workspaces={publicWorkspaces}
+                                    locale={locale}
+                                    addHref={s.addHref}
+                                />
+                            )
+                        case 'communities':
+                            return (
+                                <ProfileSection key={s.id} id="communities" title={t('sections.communities')}>
+                                    {addHref('communities') && (
+                                        <OwnerAddLink href={addHref('communities')!}>{t('add.communities')}</OwnerAddLink>
                                     )}
-                                    {user.focusTopics.length > 0 && (
-                                        <div>
-                                            <h3 className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-2">{t('focusTopics')}</h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                {user.focusTopics.map((topic) => (
-                                                    <Badge key={topic} variant="secondary" className="bg-[var(--color-ccm-sky)]/25 text-[var(--color-ccm-sea)]">{topic}</Badge>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                    {user.lookingFor.length > 0 && (
-                                        <div>
-                                            <h3 className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-2">{t('lookingFor')}</h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                {user.lookingFor.map((item) => (
-                                                    <Badge key={item} variant="outline">{item}</Badge>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {/* Lived experience — already redacted server-side unless opted in */}
-                    {user.livedExperienceStatement && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 12.5}>
-                            <Card className="border-s-4 border-s-[var(--color-ccm-water)]">
-                                <CardContent className="pt-6">
-                                    <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('livedExperience')}</h2>
-                                    <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.livedExperienceStatement}</p>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {/* Work Section */}
-                    {profileSections.work && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 12}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="mb-4">
-                                        <h2 className="text-xl font-semibold">
-                                            {user.organization || t('work.title')}
-                                        </h2>
-                                        <p className="text-muted-foreground">
-                                            {user.position}
-                                        </p>
-                                    </div>
-                                    {user.workBio && (
-                                        <div className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
-                                            <Markdown>
-                                                {user.workBio}
-                                            </Markdown>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {/* Skills Section */}
-                    {profileSections.skills && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 13}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <h2 className="text-xl font-semibold mb-4">{t('skills')}</h2>
-                                    <div className="space-y-4">
+                                    {(regional.length > 0 || special.length > 0) && (
                                         <div className="flex flex-wrap gap-2">
-                                            {user.workTypes.map((type, id) => (
-                                                <BlurFade key={type} delay={BLUR_FADE_DELAY * 11 + id * 0.05}>
-                                                    <Badge variant="secondary">
-                                                        {tWorkTypes(type)}
-                                                    </Badge>
-                                                </BlurFade>
+                                            {regional.map((c) => (
+                                                <Badge key={c.id} variant="secondary" className="max-w-full whitespace-normal break-words text-start">
+                                                    <bdi>{regionLabel(tRegions, c.regionalName) || c.name}</bdi>
+                                                </Badge>
                                             ))}
-                                            {user.expertiseAreas.map((area, id) => (
-                                                <BlurFade key={area} delay={BLUR_FADE_DELAY * 11 + (user.workTypes.length + id) * 0.05}>
-                                                    <Badge variant="outline">
-                                                        {tExpertise(area)}
-                                                    </Badge>
-                                                </BlurFade>
+                                            {special.map((c) => (
+                                                <Badge key={c.id} variant="outline" className="max-w-full whitespace-normal break-words text-start">
+                                                    <bdi>{specialCommunityLabel(tSpecial, c.specialName) || c.name}</bdi>
+                                                </Badge>
                                             ))}
                                         </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {/* Recent Work Section */}
-                    {profileSections.projects && (
-                        <div id="recent-work" className="scroll-mt-14">
-                        <BlurFade delay={BLUR_FADE_DELAY * 14}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-semibold">{t('recentWork.title')}</h2>
-                                        {isOwnProfile && (
-                                            <Button variant="outline" size="sm" asChild>
-                                                <Link href="/dashboard/profile/edit?tab=recentWork">{t('recentWork.addWork')}</Link>
-                                            </Button>
-                                        )}
-                                    </div>
-                                    <div className="space-y-4">
-                                        {user.recentWork.map((work, id) => (
-                                            <BlurFade key={work.id} delay={BLUR_FADE_DELAY * 15 + id * 0.05}>
-                                                <div className={cn(
-                                                    "border-s-2 ps-4",
-                                                    (work as WorkCurationFlags).pinned ? "border-ccm-sea" : "border-muted",
-                                                    // Hidden items only show to the owner — dim them so it's clear.
-                                                    isOwnProfile && (work as WorkCurationFlags).hidden && "opacity-50"
-                                                )}>
-                                                    <div className="flex items-start justify-between gap-2">
-                                                        <div className="min-w-0">
-                                                            <h3 className="break-words font-medium">{work.title}</h3>
-                                                            <div className="prose max-w-full text-pretty font-sans text-xs text-muted-foreground dark:prose-invert">
-                                                                <Markdown>
-                                                                    {work.description}
-                                                                </Markdown>
-                                                            </div>
-                                                            {work.link && (
-                                                                <a
-                                                                    href={work.link}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-sm text-primary hover:underline"
-                                                                >
-                                                                    View Project
-                                                                </a>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex shrink-0 items-center gap-2">
-                                                            {isOwnProfile && (
-                                                                <RecentWorkOwnerControls
-                                                                    id={work.id}
-                                                                    hidden={Boolean((work as WorkCurationFlags).hidden)}
-                                                                    pinned={Boolean((work as WorkCurationFlags).pinned)}
-                                                                />
-                                                            )}
-                                                            <div className="text-xs text-muted-foreground">
-                                                                {work.isOngoing ? 'Ongoing' : new Date(work.endDate || work.startDate).getFullYear()}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </BlurFade>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                        </div>
-                    )}
-
-                    {/* Contributions (community-graph: their case studies / content / work) */}
-                    <div id="contributions" className="scroll-mt-14">
-                    <BlurFade delay={BLUR_FADE_DELAY * 14.5}>
-                        <Suspense fallback={<div className="min-h-[200px]" aria-hidden />}>
-                            <ContributionsBlock userId={user.id} locale={locale} />
-                        </Suspense>
-                    </BlurFade>
-                    </div>
-                </div>
-
-                {/* Sidebar */}
-                <div className="space-y-6">
-                    {/* Communities */}
-                    {user.communities.filter(c => c.type === 'REGIONAL').length > 0 && (
-                        <div id="communities" className="scroll-mt-14">
-                        <BlurFade delay={BLUR_FADE_DELAY * 16}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <h3 className="font-semibold mb-3">{t('regionalCommunities')}</h3>
-                                    <div className="space-y-2">
-                                        {user.communities
-                                            .filter(c => c.type === 'REGIONAL')
-                                            .map((community) => (
-                                                <div key={community.id} className="flex items-center gap-2">
-                                                    <Badge variant="secondary" className="max-w-full whitespace-normal break-words text-start">
-                                                        <bdi>{regionLabel(tRegions, community.regionalName) || community.name}</bdi>
-                                                    </Badge>
-                                                </div>
-                                            ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                        </div>
-                    )}
-
-                    {publicWorkspaces.length > 0 && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 16.5}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <h3 className="font-semibold mb-3">{t('workspaces')}</h3>
-                                    <div className="space-y-2">
-                                        {publicWorkspaces.map((w) => (
-                                            <Link key={w.id} href={`/collaborations/${w.id}`} className="block text-sm text-ccm-sea hover:underline">
-                                                <bdi>{w.title}</bdi>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {user.communities.filter(c => c.type === 'SPECIAL').length > 0 && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 17}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <h3 className="font-semibold mb-3">{t('specialCommunities')}</h3>
-                                    <div className="space-y-2">
-                                        {user.communities
-                                            .filter(c => c.type === 'SPECIAL')
-                                            .map((community) => (
-                                                <div key={community.id} className="flex items-center gap-2">
-                                                    <Badge variant="outline" className="max-w-full whitespace-normal break-words text-start">
-                                                        <bdi>{specialCommunityLabel(tSpecial, community.specialName) || community.name}</bdi>
-                                                    </Badge>
-                                                </div>
-                                            ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-
-                    {/* Contact Links */}
-                    {profileSections.contact && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 18}>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <h3 className="font-semibold mb-3">{t('contact')}</h3>
-                                    <div className="space-y-2">
-                                        {user.personalWebsite && (
-                                            <div className="flex items-center gap-2">
-                                                <a href={user.personalWebsite} target="_blank" rel="noopener noreferrer">
-                                                    <Badge variant="outline">Website</Badge>
-                                                </a>
-                                            </div>
-                                        )}
-                                        {user.linkedinProfile && (
-                                            <div className="flex items-center gap-2">
-                                                <a
-                                                    href={user.linkedinProfile.startsWith('http')
-                                                        ? user.linkedinProfile
-                                                        : `https://linkedin.com/in/${user.linkedinProfile}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    <Badge variant="outline">LinkedIn</Badge>
-                                                </a>
-                                            </div>
-                                        )}
-                                        {user.otherSocialLinks.map((link, index) => (
-                                            <div key={index} className="flex items-center gap-2">
-                                                <a
-                                                    href={link.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    <Badge variant="outline">{link.platform}</Badge>
-                                                </a>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    )}
-                </div>
+                                    )}
+                                </ProfileSection>
+                            )
+                    }
+                })}
             </div>
         </div>
     )

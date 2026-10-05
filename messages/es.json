@@ -1225,6 +1225,32 @@
         "notShared": "Esta persona no comparte su correo.",
         "tooMany": "Has pedido muchos correos; inténtalo más tarde."
       }
+    },
+    "sections": {
+      "about": "Sobre mí",
+      "work": "Trabajo",
+      "onTheHub": "En el hub",
+      "communities": "Comunidades",
+      "openTo": "Abierto a colaborar en",
+      "organisedEvents": "Eventos que organiza",
+      "links": "Enlaces",
+      "website": "Sitio web"
+    },
+    "add": {
+      "about": "Añade unas palabras sobre ti: qué te trajo aquí y qué buscas.",
+      "work": "Añade tu trabajo: a qué te dedicas, tus habilidades, un proyecto reciente.",
+      "onTheHub": "Comparte algo con el hub: un estudio de caso, un artículo o un recurso.",
+      "communities": "Únete a una comunidad regional para conocer a gente cerca de ti."
+    },
+    "view": {
+      "asOthers": "Verlo como lo ven los demás",
+      "seeingAsOthers": "Así ven los demás tu perfil.",
+      "back": "Volver a tu vista"
+    },
+    "facts": {
+      "roleAt": "{position} en {organization}",
+      "memberSince": "Miembro desde {date}",
+      "speaks": "Habla {languages}"
     }
   },
   "profilePicture": {

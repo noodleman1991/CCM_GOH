@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Briefcase, Newspaper } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { getUserContributions } from "@/lib/community/region-data";
-import type { ContributionKind } from "@/lib/community/contributions";
+import type { Contribution, ContributionKind } from "@/lib/community/contributions";
 
 const KIND_META: Record<ContributionKind, { icon: typeof FileText; labelKey: string }> = {
   caseStudy: { icon: FileText, labelKey: "caseStudy" },
@@ -13,18 +12,18 @@ const KIND_META: Record<ContributionKind, { icon: typeof FileText; labelKey: str
 };
 
 /**
- * Surfaces a user's contributions (approved case studies, content, recent work)
- * on their public profile — the "what they've contributed" layer of the
- * community graph. Server component; renders nothing if there's nothing to show.
+ * Surfaces a user's contributions (approved case studies, content) on their
+ * public profile — the "what they've contributed" layer of the community
+ * graph. The page reads them (`getUserContributions`) so it can count them for
+ * the section menu. Server component; renders nothing if there's nothing to show.
  */
 export async function ContributionsBlock({
-  userId,
+  contributions,
   locale,
 }: {
-  userId: string;
+  contributions: Contribution[];
   locale: string;
 }) {
-  const contributions = await getUserContributions(userId, locale);
   if (contributions.length === 0) return null;
 
   const t = await getTranslations("profile.contributions");
