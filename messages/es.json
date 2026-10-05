@@ -627,9 +627,12 @@
       "contactDeclined": "rechazó tu solicitud de contacto",
       "removedFromWorkspace": "te eliminó de «{title}»",
       "rsvpGoing": "Asistirás a «{title}» — {when}",
-      "contactAcceptedConnected": "aceptó tu solicitud de conexión: encontrarás su correo en su perfil"
+      "contactAcceptedConnected": "aceptó tu solicitud de conexión: encontrarás su correo en su perfil",
+      "outcome": "{status, select, approved {“{title}” ya está publicado} revision {“{title}” necesita algunos cambios} rejected {“{title}” no fue aceptado} other {“{title}” se actualizó}}",
+      "newEventInRegion": "Nuevo evento en {region}: “{title}”"
     },
-    "unreadCount": "{count, plural, one {# notificación sin leer} other {# notificaciones sin leer}}"
+    "unreadCount": "{count, plural, one {# notificación sin leer} other {# notificaciones sin leer}}",
+    "view": "Ver"
   },
   "dates": {
     "today": "Hoy",

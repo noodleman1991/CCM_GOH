@@ -446,6 +446,27 @@ function change(partial: Partial<ModerationChange> & { doc: Doc }): ModerationCh
 }
 
 describe("runModerationSideEffects", () => {
+  it("tells the sender in the hub on a real change, for every moderated kind — even ones without email", async () => {
+    const inHub = vi.fn(async () => {});
+    const { deps } = sideEffectDeps({ inHub });
+    await runModerationSideEffects(
+      change({ collection: "livedExperiences", doc: { id: "le1", slug: "tide", moderationStatus: "revision", submittedBy: "u1" }, previousDoc: { moderationStatus: "pending" } }),
+      deps,
+    );
+    expect(inHub).toHaveBeenCalledTimes(1);
+    expect((inHub.mock.calls[0] as unknown as [ModerationChange])[0].collection).toBe("livedExperiences");
+  });
+
+  it("stays quiet in the hub when the status didn't change", async () => {
+    const inHub = vi.fn(async () => {});
+    const { deps } = sideEffectDeps({ inHub });
+    await runModerationSideEffects(
+      change({ doc: { id: CASE_STUDY_ID, slug: "a-study", moderationStatus: "approved" }, previousDoc: { moderationStatus: "approved" } }),
+      deps,
+    );
+    expect(inHub).not.toHaveBeenCalled();
+  });
+
   it("revalidates the case-study paths the webhook revalidated — and no tags, which the generic hook owns", async () => {
     const { deps, revalidated } = sideEffectDeps();
     const result = await runModerationSideEffects(

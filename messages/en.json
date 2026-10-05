@@ -431,9 +431,12 @@
       "contactDeclined": "declined your contact request",
       "removedFromWorkspace": "removed you from “{title}”",
       "rsvpGoing": "You're going to “{title}” — {when}",
-      "contactAcceptedConnected": "accepted your request to connect — you'll find their email on their profile"
+      "contactAcceptedConnected": "accepted your request to connect — you'll find their email on their profile",
+      "outcome": "{status, select, approved {“{title}” is published} revision {“{title}” needs a few changes} rejected {“{title}” wasn't accepted} other {“{title}” was updated}}",
+      "newEventInRegion": "New event in {region}: “{title}”"
     },
-    "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}"
+    "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}",
+    "view": "View"
   },
   "dates": {
     "today": "Today",

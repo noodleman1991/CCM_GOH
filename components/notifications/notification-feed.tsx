@@ -12,6 +12,9 @@ import { cn } from "@/lib/utils";
 import { parseStructuredSnippet } from "@/lib/notifications/structured";
 import { RelativeTime } from "@/components/ui/relative-time";
 import { jsonFetcher } from "@/lib/swr";
+import { Link } from "@/i18n/navigation";
+import { Bell } from "lucide-react";
+import { REGION_I18N_KEY, slugToShortCode } from "@/lib/maps/region-codes";
 
 export type Notif = {
   id: string;
@@ -70,6 +73,7 @@ export function NotificationFeed({
   className?: string;
 }) {
   const t = useTranslations("notifications");
+  const tRegions = useTranslations("navigation.regions");
   const locale = useLocale();
   const verb = useNotificationVerb();
   // Structured snippets ({"k":...,"p":{...}} JSON from prose emitters) render
@@ -83,6 +87,11 @@ export function NotificationFeed({
       params.when = isNaN(d.getTime())
         ? params.when
         : new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(d);
+    }
+    // A followed region's name in the reader's language (the snippet stores its slug).
+    if (parsed.k === "newEventInRegion" && params.region) {
+      const code = slugToShortCode(params.region);
+      if (code) params.region = tRegions(REGION_I18N_KEY[code]);
     }
     try {
       return t(`snippets.${parsed.k}`, params);
@@ -146,20 +155,43 @@ export function NotificationFeed({
 
   const row = (n: Notif) => {
     const actionable = isActionableRequest(n);
+    // From the hub, not a person (an outcome, a new event): the sentence leads, no "?" avatar.
+    const fromHub = !n.actorName && (n.entityType === "contribution" || n.entityType === "event");
     const decided = resolved[n.id];
     return (
       <li key={n.id} className={n.readAt ? "" : "bg-ccm-sky/10"}>
         <div className="flex items-start gap-3 p-4">
-          <Avatar className="size-9 shrink-0">
-            {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
-            <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
-          </Avatar>
+          {fromHub ? (
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-ccm-sky/25 text-ccm-sea" aria-hidden>
+              <Bell className="size-4" />
+            </span>
+          ) : (
+            <Avatar className="size-9 shrink-0">
+              {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
+              <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
+            </Avatar>
+          )}
           <div className="min-w-0 flex-1">
-            <p className="text-sm">
-              {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
-              {verb(n.type)}
-            </p>
-            {n.snippet && <p className="truncate text-xs text-muted-foreground"><bdi>{renderSnippet(n.snippet)}</bdi></p>}
+            {fromHub ? (
+              n.snippet && <p className="text-sm"><bdi>{renderSnippet(n.snippet)}</bdi></p>
+            ) : (
+              <>
+                <p className="text-sm">
+                  {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
+                  {verb(n.type)}
+                </p>
+                {n.snippet && <p className="truncate text-xs text-muted-foreground"><bdi>{renderSnippet(n.snippet)}</bdi></p>}
+              </>
+            )}
+            {/* Where an outcome or a new event lives (opening-collaboration spec C6). */}
+            {(n.entityType === "contribution" || (n.entityType === "event" && n.entityId)) && (
+              <Link
+                href={n.entityType === "contribution" ? "/dashboard/submissions" : `/events/${n.entityId}`}
+                className="mt-0.5 inline-flex min-h-11 items-center text-xs font-bold text-ccm-sea hover:underline"
+              >
+                {t("view")}
+              </Link>
+            )}
             <p className="mt-0.5 text-xs text-muted-foreground">
               <RelativeTime date={n.createdAt} />
             </p>

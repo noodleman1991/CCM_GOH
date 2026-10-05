@@ -134,6 +134,8 @@ export interface ModerationSideEffectDeps {
    *  harness run the hook without analytics. Failures are reported through
    *  `onError` and never reach the write. */
   analytics?: (event: ModerationAnalyticsEvent) => Promise<void>;
+  /** In-hub notifications on a real status change. Optional: scripts run without it. */
+  inHub?: (change: ModerationChange) => Promise<void>;
   siteUrl?: string;
   onError?: (message: string, error: unknown) => void;
   /**
@@ -248,6 +250,17 @@ export async function runModerationSideEffects(
       });
     } catch (error) {
       deps.onError?.("moderation analytics failed", error);
+    }
+  }
+
+  // In-hub notifications (opening-collaboration spec C6): the sender hears the
+  // outcome — every moderated kind, email or not — and a newly approved event
+  // reaches its region's followers. Failures never reach the write.
+  if (result.transitioned && deps.inHub) {
+    try {
+      await deps.inHub(change);
+    } catch (error) {
+      deps.onError?.("moderation in-hub notification failed", error);
     }
   }
 
@@ -394,6 +407,24 @@ export function moderationAfterChange(
           3_000,
           "the analytics capture",
         );
+      },
+      inHub: async ({ collection: kindCollection, doc: changed }) => {
+        const { notifyOutcomeInHub, notifyRegionFollowers } = await import("@/lib/notifications/outcomes");
+        const KIND = { caseStudies: "caseStudy", livedExperiences: "livedExperience", researchOutputs: "researchOutput", events: "event" } as const;
+        const raw = changed as Record<string, unknown>;
+        const titleArm = raw.title && typeof raw.title === "object" ? (raw.title as Record<string, unknown>).en : raw.title;
+        const title = typeof titleArm === "string" ? titleArm : "";
+        const status = asString(raw.moderationStatus) ?? "";
+        await notifyOutcomeInHub({ kind: KIND[kindCollection], submittedBy: asString(raw.submittedBy) ?? null, title, status });
+        if (kindCollection === "events" && status === "approved" && payload) {
+          // relatedCommunity is an id at depth 0; its slug is what region follows store.
+          const related = raw.relatedCommunity;
+          const relatedId = related && typeof related === "object" ? asString((related as Record<string, unknown>).id) : asString(related);
+          const community = relatedId
+            ? ((await payload.findByID({ collection: "regionalCommunities", id: relatedId, depth: 0, overrideAccess: true }).catch(() => null)) as { slug?: unknown } | null)
+            : null;
+          await notifyRegionFollowers({ communitySlug: asString(community?.slug) ?? null, eventSlug: asString(raw.slug) ?? "", eventTitle: title });
+        }
       },
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL || undefined,
       onError: (message, error) => {

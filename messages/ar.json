@@ -627,9 +627,12 @@
       "contactDeclined": "رفض طلب التواصل الخاص بك",
       "removedFromWorkspace": "أزالك من «{title}»",
       "rsvpGoing": "ستحضر «{title}» — {when}",
-      "contactAcceptedConnected": "قبل طلب التواصل — ستجد بريده الإلكتروني في ملفه الشخصي"
+      "contactAcceptedConnected": "قبل طلب التواصل — ستجد بريده الإلكتروني في ملفه الشخصي",
+      "outcome": "{status, select, approved {نُشرت «{title}»} revision {تحتاج «{title}» إلى بعض التعديلات} rejected {لم تُقبل «{title}»} other {حُدّثت «{title}»}}",
+      "newEventInRegion": "فعالية جديدة في {region}: «{title}»"
     },
-    "unreadCount": "{count, plural, zero {لا إشعارات غير مقروءة} one {إشعار واحد غير مقروء} two {إشعاران غير مقروءين} few {# إشعارات غير مقروءة} many {# إشعارًا غير مقروء} other {# إشعار غير مقروء}}"
+    "unreadCount": "{count, plural, zero {لا إشعارات غير مقروءة} one {إشعار واحد غير مقروء} two {إشعاران غير مقروءين} few {# إشعارات غير مقروءة} many {# إشعارًا غير مقروء} other {# إشعار غير مقروء}}",
+    "view": "عرض"
   },
   "dates": {
     "today": "اليوم",
