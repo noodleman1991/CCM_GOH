@@ -1204,7 +1204,15 @@
     "joinCommunityTitle": "Join a Regional Community",
     "joinCommunityDescription": "Connect with climate minds in your region and stay updated on local initiatives",
     "exploreCommunities": "Explore Communities",
-    "greeting": "Hello, {name}",
+    "greeting": {
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}",
+      "welcome": "Welcome, {name}",
+      "viewProfile": "View my profile",
+      "strength": "Profile {percent}% complete",
+      "done": "Your profile is looking great."
+    },
     "summary": "Here's your summary",
     "recentActivity": "Recent Activity",
     "noActivity": "No recent activity",
@@ -1368,6 +1376,34 @@
       "alert": {
         "open": "Make changes"
       }
+    },
+    "nextStep": {
+      "photo": "Add a photo — people connect with faces.",
+      "headline": "Add a headline — it's the first thing people read.",
+      "bio": "Write a few lines about yourself.",
+      "aboutYou": "Say what brought you here and what you're looking for.",
+      "work": "Add where you work and your role.",
+      "community": "Join your regional community."
+    },
+    "week": {
+      "title": "Your week",
+      "changes": "Needs your changes",
+      "going": "Going",
+      "task": "Your task",
+      "community": "From your community",
+      "emptyTitle": "Nothing on your plate yet",
+      "emptyBody": "Here are three good ways in:",
+      "findEvent": "Find an event",
+      "shareWork": "Share your work",
+      "findPeople": "Find people",
+      "newTab": "(opens in a new tab)"
+    },
+    "events": {
+      "going": "Going",
+      "noneGoing": "You're not going to anything yet.",
+      "community": "In your community",
+      "hub": "Coming up across the hub",
+      "allEvents": "All events"
     }
   },
   "caseStudies": {

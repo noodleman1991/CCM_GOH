@@ -7,7 +7,6 @@ import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ProfileCompletenessIndicator } from '@/components/ui/profile-completeness-indicator'
 import {
   User,
   Settings,
@@ -16,15 +15,20 @@ import {
   MapPin,
   Calendar,
   ArrowRight,
-  Edit,
   FolderKanban,
   MessageSquare
 } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
 import { useCollaboration } from '@/hooks/use-collaboration'
 import { OpenToCollaborateCard } from '@/components/collaborate/open-to-collaborate-card'
+import { DashboardGreeting } from '@/components/dashboard/greeting'
+import { YourWeek } from '@/components/dashboard/your-week'
+import { DashboardEvents } from '@/components/dashboard/dashboard-events'
+import type { WeekItem } from '@/lib/dashboard/your-week'
+import type { EventTileData } from '@/lib/events/listing'
+import type { ProfileStep } from '@/lib/profile/next-step'
 import { ContributionsCard } from '@/components/contributions/contributions-card'
-import type { Contribution, ContributionStatus } from '@/lib/contributions/model'
+import type { ContributionStatus } from '@/lib/contributions/model'
 import type { SupportedLocale } from '@/types/prisma'
 import { imageUrl } from '@/lib/content/images'
 
@@ -73,36 +77,32 @@ interface NewsItem {
   }
 }
 
-type DashboardAttention = {
-  kind: "task" | "notification"
-  id: string
-  title: string
-  detail: string | null
-  href: string
-}
-
 type ForYouRow = { id: string; type: string; title: string; href: string; match: "region" | "theme" }
 
 interface DashboardClientProps {
-  attention?: DashboardAttention[]
   forYou?: ForYouRow[]
   user: DashboardUser
   regionalCommunity: RegionalCommunity | null
   recentWork: RecentWork[]
   recentNews: NewsItem[]
+  yourWeek?: WeekItem[]
+  dashboardEvents?: { going: EventTileData[]; community: EventTileData[]; hasCommunity: boolean }
+  profileStep?: ProfileStep
   /** My contributions summary; null when the team has hidden the page. */
-  contributionsCard?: { counts: Record<ContributionStatus, number>; needsChanges: Contribution[] } | null
+  contributionsCard?: { counts: Record<ContributionStatus, number> } | null
   locale: SupportedLocale
 }
 
 export function DashboardClient({
-  attention = [],
   forYou = [],
   user,
   regionalCommunity,
   recentWork,
   recentNews,
   contributionsCard = null,
+  yourWeek = [],
+  dashboardEvents = { going: [], community: [], hasCommunity: false },
+  profileStep = null,
   locale
 }: DashboardClientProps) {
   const t = useTranslations('dashboard')
@@ -117,52 +117,15 @@ export function DashboardClient({
 
   return (
     <main className="min-h-screen" dir={rtl ? 'rtl' : 'ltr'}>
-      {/* Hero Section */}
-      <section className="border-b bg-muted/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              {user.image ? (
-                <div className="relative w-20 h-20 rounded-full overflow-hidden ring-4 ring-background shadow-lg">
-                  <Image
-                    src={user.image}
-                    alt={displayName}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center ring-4 ring-background shadow-lg">
-                  <User className="w-10 h-10 text-primary" />
-                </div>
-              )}
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold">
-                  {t('welcome', { name: displayName })}
-                </h1>
-              </div>
-            </div>
-            <Button asChild size="lg">
-              <Link href={`/dashboard/profile/edit`}>
-                <Edit className={"w-4 h-4 me-2"} />
-                {t('editProfile')}
-              </Link>
-            </Button>
-          </div>
-
-          {/* Profile Completeness */}
-          <div className="mt-8 w-full max-w-3xl">
-            <ProfileCompletenessIndicator
-              percentage={user.profileCompleteness}
-              size="lg"
-            />
-            {user.profileCompleteness < 100 && (
-              <p className="text-sm text-muted-foreground mt-2">
-                {t('completeProfileMessage')}
-              </p>
-            )}
-          </div>
-        </div>
+      {/* Greeting + the one next step for your profile (dashboard spec D2) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <DashboardGreeting
+          name={user.firstName || displayName}
+          image={user.image}
+          percent={user.profileCompleteness}
+          step={profileStep}
+          profileHref={user.username ? `/profiles/${user.username}` : null}
+        />
       </section>
 
       {/* Your Community — full-width band directly under the header (most
@@ -203,46 +166,17 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Actions */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Your week (dashboard spec D2) — what needs you and what's coming, one timeline */}
+            <YourWeek items={yourWeek} locale={locale} />
+            <DashboardEvents
+              going={dashboardEvents.going}
+              community={dashboardEvents.community}
+              hasCommunity={dashboardEvents.hasCommunity}
+              locale={locale}
+            />
+
             {/* Open to collaborate? (opening-collaboration spec C4) — hides itself when off, answered or dismissed */}
             <OpenToCollaborateCard initiallyOpen={user.openToCollaboration} />
-            {/* X4 "What needs me" — tasks + unread project activity, one glance */}
-            {attention.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">{t('attentionTitle')}</h2>
-                <div className="space-y-2">
-                  {attention.map((a) => {
-                    // Notification details arrive as raw enum values (e.g.
-                    // TASK_ASSIGNED) — show them in user words via i18n keys.
-                    const detail =
-                      a.kind === "notification" && a.detail
-                        ? t.has(`notificationTypes.${a.detail}`)
-                          ? t(`notificationTypes.${a.detail}`)
-                          : null
-                        : a.detail
-                    return (
-                    <Link
-                      key={`${a.kind}-${a.id}`}
-                      href={a.href}
-                      className="flex items-start gap-2.5 rounded-xl border border-border bg-card p-3 text-sm transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:shadow-sm"
-                    >
-                      <span
-                        aria-hidden
-                        className={cn(
-                          "mt-1.5 size-2 flex-none rounded-full",
-                          a.kind === "task" ? "bg-[var(--color-ccm-water)]" : "bg-[var(--color-ccm-sea)]"
-                        )}
-                      />
-                      <span className="min-w-0 flex-1 text-foreground">
-                        <bdi>{a.title}</bdi>
-                        {detail && <span className="ms-2 text-xs text-muted-foreground"><bdi>{detail}</bdi></span>}
-                      </span>
-                      <span className="flex-none text-xs font-bold text-[var(--color-ccm-sea)]">{t('attentionOpen')}</span>
-                    </Link>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* X5 "For you" — content matching the regions/themes you follow */}
             {forYou.length > 0 && (

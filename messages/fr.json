@@ -224,7 +224,15 @@
     "joinCommunityTitle": "Rejoindre une Communauté Régionale",
     "joinCommunityDescription": "Connectez-vous avec des esprits climatiques de votre région et restez informé des initiatives locales",
     "exploreCommunities": "Explorer les Communautés",
-    "greeting": "Bonjour, {name}",
+    "greeting": {
+      "morning": "Bonjour, {name}",
+      "afternoon": "Bon après-midi, {name}",
+      "evening": "Bonsoir, {name}",
+      "welcome": "Bienvenue, {name}",
+      "viewProfile": "Voir mon profil",
+      "strength": "Profil complété à {percent} %",
+      "done": "Votre profil est très complet."
+    },
     "summary": "Voici votre résumé",
     "recentActivity": "Activité Récente",
     "noActivity": "Aucune activité récente",
@@ -388,6 +396,34 @@
       "alert": {
         "open": "Apporter les modifications"
       }
+    },
+    "nextStep": {
+      "photo": "Ajoutez une photo — on se rapproche autour d'un visage.",
+      "headline": "Ajoutez un titre — c'est la première chose qu'on lit.",
+      "bio": "Écrivez quelques lignes sur vous.",
+      "aboutYou": "Dites ce qui vous amène et ce que vous cherchez.",
+      "work": "Ajoutez où vous travaillez et votre rôle.",
+      "community": "Rejoignez votre communauté régionale."
+    },
+    "week": {
+      "title": "Votre semaine",
+      "changes": "À modifier",
+      "going": "Vous y allez",
+      "task": "Votre tâche",
+      "community": "De votre communauté",
+      "emptyTitle": "Rien de prévu pour l'instant",
+      "emptyBody": "Trois bonnes façons de commencer :",
+      "findEvent": "Trouver un événement",
+      "shareWork": "Partager votre travail",
+      "findPeople": "Trouver des personnes",
+      "newTab": "(s'ouvre dans un nouvel onglet)"
+    },
+    "events": {
+      "going": "Vous y allez",
+      "noneGoing": "Vous n'êtes inscrit·e à rien pour l'instant.",
+      "community": "Dans votre communauté",
+      "hub": "À venir sur le hub",
+      "allEvents": "Tous les événements"
     }
   },
   "settings": {

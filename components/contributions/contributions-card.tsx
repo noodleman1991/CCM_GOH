@@ -3,8 +3,7 @@
 import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { ContributionRow } from "@/components/contributions/contribution-row";
-import type { Contribution, ContributionStatus } from "@/lib/contributions/model";
+import type { ContributionStatus } from "@/lib/contributions/model";
 import { cn } from "@/lib/utils";
 
 const COUNTS: Array<{ status: ContributionStatus; key: string }> = [
@@ -15,7 +14,7 @@ const COUNTS: Array<{ status: ContributionStatus; key: string }> = [
 ];
 
 /** The dashboard's view of My contributions: the counts that matter, and anything waiting on the member. */
-export function ContributionsCard({ counts, needsChanges }: { counts: Record<ContributionStatus, number>; needsChanges: Contribution[] }) {
+export function ContributionsCard({ counts }: { counts: Record<ContributionStatus, number> }) {
   const t = useTranslations("dashboard.contributions");
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
@@ -49,13 +48,7 @@ export function ContributionsCard({ counts, needsChanges }: { counts: Record<Con
               </div>
             ))}
           </dl>
-          {needsChanges.length > 0 && (
-            <ul className="divide-y divide-ccm-midnight/10 border-t border-ccm-midnight/10">
-              {needsChanges.slice(0, 2).map((c) => (
-                <ContributionRow key={`${c.kind}:${c.id}`} item={c} />
-              ))}
-            </ul>
-          )}
+          {/* Items sent back live in Your week on the dashboard — counts only here (no repeats). */}
         </div>
       )}
     </section>

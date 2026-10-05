@@ -224,7 +224,15 @@
     "joinCommunityTitle": "Únete a una Comunidad Regional",
     "joinCommunityDescription": "Conecta con mentes climáticas en tu región y mantente actualizado sobre iniciativas locales",
     "exploreCommunities": "Explorar Comunidades",
-    "greeting": "Hola, {name}",
+    "greeting": {
+      "morning": "Buenos días, {name}",
+      "afternoon": "Buenas tardes, {name}",
+      "evening": "Buenas noches, {name}",
+      "welcome": "Te damos la bienvenida, {name}",
+      "viewProfile": "Ver mi perfil",
+      "strength": "Perfil completo al {percent}%",
+      "done": "Tu perfil se ve muy bien."
+    },
     "summary": "Aquí está tu resumen",
     "recentActivity": "Actividad Reciente",
     "noActivity": "Sin actividad reciente",
@@ -388,6 +396,34 @@
       "alert": {
         "open": "Hacer cambios"
       }
+    },
+    "nextStep": {
+      "photo": "Añade una foto: la gente conecta con caras.",
+      "headline": "Añade un titular: es lo primero que se lee.",
+      "bio": "Escribe unas líneas sobre ti.",
+      "aboutYou": "Cuenta qué te trajo aquí y qué buscas.",
+      "work": "Añade dónde trabajas y tu función.",
+      "community": "Únete a tu comunidad regional."
+    },
+    "week": {
+      "title": "Tu semana",
+      "changes": "Necesita tus cambios",
+      "going": "Asistirás",
+      "task": "Tu tarea",
+      "community": "De tu comunidad",
+      "emptyTitle": "Aún no tienes nada pendiente",
+      "emptyBody": "Tres buenas maneras de empezar:",
+      "findEvent": "Buscar un evento",
+      "shareWork": "Compartir tu trabajo",
+      "findPeople": "Buscar personas",
+      "newTab": "(se abre en una pestaña nueva)"
+    },
+    "events": {
+      "going": "Asistirás",
+      "noneGoing": "Todavía no te has apuntado a nada.",
+      "community": "En tu comunidad",
+      "hub": "Próximamente en el hub",
+      "allEvents": "Todos los eventos"
     }
   },
   "settings": {

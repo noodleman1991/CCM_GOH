@@ -14,9 +14,11 @@ import { listMyContributions } from '@/lib/content/contributions'
 import { countByStatus } from '@/lib/contributions/model'
 import { getActor } from '@/lib/authz'
 import { getCollaborationAccessFor } from '@/lib/collaboration/access-server'
+import { getDashboardEvents } from '@/lib/dashboard/data'
+import { buildYourWeek } from '@/lib/dashboard/your-week'
+import { nextProfileStep } from '@/lib/profile/next-step'
 import { myTasks } from '@/lib/actions/plans'
 import { getForYou, forYouHref } from '@/lib/follows/for-you'
-import { safeQuery } from '@/lib/prisma'
 import { ensureUserRow } from "@/lib/user-bootstrap";
 
 /**
@@ -178,48 +180,22 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const showContributions = (await getCollaborationAccessFor(await getActor())).contributions
   const mine = showContributions ? await listMyContributions(userId, locale) : []
 
-  // X4 "What needs me": my open tasks across workspaces + unread lifecycle
-  // notifications, one list — the dashboard's pull side of the spine.
-  const [tasks, unreadR, forYouItems] = await Promise.all([
-    myTasks(),
-    safeQuery(() =>
-      prisma.notification.findMany({
-        where: {
-          recipientId: userId,
-          readAt: null,
-          type: { in: ["TASK_ASSIGNED", "TASK_DUE", "OUTPUT_STATUS", "THREAD_REPLY", "MEMBER_JOINED", "FOLLOWED_PUBLISH", "EVENT_REMINDER"] },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-        select: { id: true, type: true, snippet: true },
-      })
-    ),
-    getForYou(userId),
-  ])
+  // Open tasks feed Your week; unread notifications live behind the bell, not here (no repeats).
+  const [tasks, forYouItems] = await Promise.all([myTasks(), getForYou(userId)])
   const forYou = forYouItems.map((item) => ({ ...item, href: forYouHref(item) }))
-  const dashboardAttention = [
-    ...tasks.slice(0, 5).map((task) => ({
-      kind: "task" as const,
-      id: task.id,
-      title: task.title,
-      detail: task.collaborationTitle,
-      href: `/collaborations/${task.collaborationId}?tab=plan`,
-    })),
-    ...(unreadR.success
-      ? unreadR.data.map((n) => ({
-          kind: "notification" as const,
-          id: n.id,
-          title: n.snippet ?? "",
-          detail: n.type,
-          href: "/messages?tab=notifications",
-        }))
-      : []),
-  ].slice(0, 8)
 
+  // Your week + events (dashboard spec D2): RSVPs, your community's next
+  // events, what was sent back to you and your open tasks — one timeline.
+  const dashboardEvents = await getDashboardEvents(userId, regionSlug)
+  const yourWeek = buildYourWeek({ going: dashboardEvents.going, community: dashboardEvents.community, tasks, changes: mine, now: new Date() })
+  const regionalCount = user.communityMemberships.filter((m) => m.community.type === 'REGIONAL').length
+  const profileStep = nextProfileStep({ ...user, communityCount: regionalCount })
   return (
     <DashboardClient
-      attention={dashboardAttention}
       forYou={forYou}
+      yourWeek={yourWeek}
+      dashboardEvents={{ ...dashboardEvents, hasCommunity: Boolean(regionSlug) }}
+      profileStep={profileStep}
       user={{
         id: user.id,
         firstName: user.firstName,
@@ -237,7 +213,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
         slug: regionSlug || regionalCommunity.name,
         memberCount: regionMemberCount
       } : null}
-      contributionsCard={showContributions ? { counts: countByStatus(mine), needsChanges: mine.filter((c) => c.status === 'revision').slice(0, 2) } : null}
+      contributionsCard={showContributions ? { counts: countByStatus(mine) } : null}
       recentWork={user.recentWork.map(w => ({
         id: w.id,
         title: w.title,

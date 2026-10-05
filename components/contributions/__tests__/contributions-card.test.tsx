@@ -13,13 +13,14 @@ const wrap = (ui: React.ReactNode) => render(<NextIntlClientProvider locale="en"
 
 describe("the dashboard card", () => {
   it("invites a member who has shared nothing", () => {
-    wrap(<ContributionsCard counts={zero} needsChanges={[]} />);
+    wrap(<ContributionsCard counts={zero} />);
     expect(screen.getByText(/Share your work/)).toBeTruthy();
     expect(screen.queryByText("Needs changes")).toBeNull();
   });
-  it("leads with what needs changes, and links to the full list", () => {
-    wrap(<ContributionsCard counts={{ ...zero, revision: 1, approved: 3 }} needsChanges={[{ id: "l1", kind: "livedExperience", title: "Rising tide", status: "revision", reviewNotes: "Add a place.", date: null, href: null, editHref: "/lived-experiences/submit?edit=l1", adminHref: "" }]} />);
-    expect(screen.getByText("Rising tide")).toBeTruthy();
+  it("shows the counts and links to the full list — items themselves live in Your week", () => {
+    wrap(<ContributionsCard counts={{ ...zero, revision: 1, approved: 3 }} />);
+    expect(screen.getByText("Needs changes")).toBeTruthy();
+    expect(screen.getByText("3")).toBeTruthy();
     expect(screen.getByRole("link", { name: /See all/ }).getAttribute("href")).toBe("/dashboard/submissions");
   });
 });
