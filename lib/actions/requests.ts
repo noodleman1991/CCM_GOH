@@ -17,7 +17,7 @@ import { getCollaborationAccessFor } from "@/lib/collaboration/access-server";
  * translate with a root `useTranslations()`, not an English sentence — these
  * failures are expected user-facing outcomes, not developer-facing faults.
  */
-type RequestErrorCode = "RATE_LIMIT" | "COOLDOWN" | "FEATURE_DISABLED";
+type RequestErrorCode = "RATE_LIMIT" | "COOLDOWN" | "FEATURE_DISABLED" | "NOT_OPEN";
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string; code?: RequestErrorCode };
 
 const messageSchema = z.string().max(500).optional();
@@ -382,7 +382,7 @@ export async function requestContact(
     throw e;
   }
 
-  const recipient = await prisma.user.findUnique({ where: { id: recipientId }, select: { id: true } });
+  const recipient = await prisma.user.findUnique({ where: { id: recipientId }, select: { id: true, openToCollaboration: true } });
   if (!recipient) return { ok: false, error: "Member not found." };
 
   const pair = { requesterId_recipientId: { requesterId: actor.id, recipientId } };
@@ -391,6 +391,11 @@ export async function requestContact(
     select: { status: true, createdAt: true, resolvedAt: true },
   });
   const transition = nextContactRequestState(existing, new Date());
+  // Only people open to collaborating take new requests; an existing
+  // connection or pending request still reads back as it stands.
+  if ((transition.kind === "create" || transition.kind === "reopen") && recipient.openToCollaboration !== true) {
+    return { ok: false, error: "requests.errors.notOpen", code: "NOT_OPEN" };
+  }
 
   switch (transition.kind) {
     case "noop":

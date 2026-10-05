@@ -1515,7 +1515,8 @@
       "selectedCount": "{selected} sur {total} sélectionnés",
       "applyFilters": "Appliquer les filtres",
       "showCommunities": "Afficher les communautés",
-      "hideCommunities": "Masquer les communautés"
+      "hideCommunities": "Masquer les communautés",
+      "openOnly": "Ouverts à collaborer"
     },
     "carousel": {
       "expand": "Développer",
@@ -1566,6 +1567,14 @@
       "save": "Enregistrer",
       "turnOff": "Ne plus m'afficher comme ouvert·e",
       "saveError": "L'enregistrement a échoué — réessayez."
+    },
+    "connect": {
+      "title": "Proposer à {name} d'échanger",
+      "noteLabel": "Ajouter un mot (facultatif)",
+      "notePlaceholder": "Dites sur quoi vous aimeriez travailler ensemble",
+      "send": "Envoyer",
+      "cancel": "Annuler",
+      "help": "Si la personne accepte, chacun verra l'adresse e-mail de l'autre."
     }
   },
   "onboarding": {
@@ -3039,7 +3048,8 @@
     "errors": {
       "cooldown": "Ce membre a récemment refusé votre demande. Merci de patienter avant de réessayer.",
       "rateLimit": "Vous avez envoyé beaucoup de demandes en peu de temps. Réessayez dans quelques instants.",
-      "unavailable": "Cette fonctionnalité n'est pas encore disponible."
+      "unavailable": "Cette fonctionnalité n'est pas encore disponible.",
+      "notOpen": "Cette personne n'accepte pas de nouvelles mises en relation pour le moment."
     }
   },
   "feed": {

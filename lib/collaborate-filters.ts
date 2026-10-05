@@ -16,6 +16,8 @@ export interface CollaborateFilterState {
   workTypes: string[]
   expertiseAreas: string[]
   communities: string[]
+  /** Only people open to collaborating (`?open=1`, opening-collaboration spec C4). */
+  open?: boolean
 }
 
 /** selected subset -> comma-joined | empty -> undefined (omit param = no filter) */
@@ -42,5 +44,17 @@ export function buildCollaborateParams(
   if (ea) params.set('expertiseAreas', ea)
   const cm = encodeFilterParam(filters.communities)
   if (cm) params.set('communities', cm)
+  if (filters.open) params.set('open', '1')
   return params
+}
+
+/** `?open=1` → true; anything else → false. */
+export function decodeOpenParam(value: string | undefined): boolean {
+  return value === '1'
+}
+
+/** People open to collaborating first (stable), or only them when `onlyOpen`. */
+export function openFirst<T extends { openToCollaboration?: boolean | null }>(people: T[], onlyOpen: boolean): T[] {
+  const open = people.filter((p) => p.openToCollaboration === true)
+  return onlyOpen ? open : [...open, ...people.filter((p) => p.openToCollaboration !== true)]
 }

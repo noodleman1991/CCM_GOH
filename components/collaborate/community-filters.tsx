@@ -16,6 +16,8 @@ export interface CommunityFiltersState {
   communities: string[]
   workTypes: string[]
   expertiseAreas: string[]
+  /** Only people open to collaborating. */
+  open?: boolean
 }
 
 interface CommunityFiltersProps {
@@ -28,6 +30,8 @@ interface CommunityFiltersProps {
   }>
   className?: string
   isRTL?: boolean
+  /** Shown as an "Open to collaborate (N)" chip when set (Settings → Collaboration has it on). */
+  openCount?: number
 }
 
 // Map regional name enum values to translation keys
@@ -58,14 +62,14 @@ const EXPERTISE_AREAS = [
   { value: 'SOCIAL_JUSTICE', labelKey: 'socialJustice' }
 ]
 
-export function CommunityFilters({ filters, onChangeAction, communities, className, isRTL = false }: CommunityFiltersProps) {
+export function CommunityFilters({ filters, onChangeAction, communities, className, isRTL = false, openCount }: CommunityFiltersProps) {
   const t = useTranslations('collaborate.filters')
   const tNav = useTranslations('navigation')
   const tWorkTypes = useTranslations('profile.edit.workTypes')
   const tExpertise = useTranslations('profile.edit.expertise')
 
   // Inclusion model: toggling a value adds/removes it from the active selection.
-  const toggleValue = (key: keyof CommunityFiltersState, value: string) => {
+  const toggleValue = (key: "communities" | "workTypes" | "expertiseAreas", value: string) => {
     const current = filters[key]
     const next = current.includes(value)
       ? current.filter(v => v !== value)
@@ -74,10 +78,10 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   }
 
   const clearAll = () =>
-    onChangeAction({ communities: [], workTypes: [], expertiseAreas: [] })
+    onChangeAction({ communities: [], workTypes: [], expertiseAreas: [], open: false })
 
   const activeCount =
-    filters.communities.length + filters.workTypes.length + filters.expertiseAreas.length
+    filters.communities.length + filters.workTypes.length + filters.expertiseAreas.length + (filters.open ? 1 : 0)
 
   const communityOptions = communities.map(c => {
     const key = c.regionalName ? REGIONAL_NAME_TO_TRANSLATION_KEY[c.regionalName] : null
@@ -88,7 +92,7 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
 
   const groups: Array<{
     id: string
-    key: keyof CommunityFiltersState
+    key: "communities" | "workTypes" | "expertiseAreas"
     label: string
     options: Array<{ value: string; label: string }>
   }> = [
@@ -99,6 +103,15 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
 
   return (
     <div className={cn('w-full space-y-4', className)} dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Open to collaborate first: the reason to be here (opening-collaboration spec C4). */}
+      {openCount !== undefined && (
+        <FilterChip
+          label={t('openOnly')}
+          count={openCount}
+          active={filters.open === true}
+          onClick={() => onChangeAction({ ...filters, open: !filters.open })}
+        />
+      )}
       {/* All groups shown inline (no collapse) — each is a labelled row of
           multi-select pills. */}
       {groups.map(group => (

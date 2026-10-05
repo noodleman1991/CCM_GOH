@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest'
 import {
   encodeFilterParam,
   decodeFilterParam,
-  buildCollaborateParams
+  buildCollaborateParams,
+  decodeOpenParam,
+  openFirst
 } from '@/lib/collaborate-filters'
 
 // Inclusion model: state holds only what the user actively selected.
@@ -75,5 +77,20 @@ describe('buildCollaborateParams', () => {
     expect(params.get('workTypes')).toBe('W1')
     expect(params.get('expertiseAreas')).toBeNull()
     expect(params.get('communities')).toBe('C1,C2')
+  })
+})
+
+describe('open to collaborate', () => {
+  it('round-trips through the URL as open=1', () => {
+    expect(buildCollaborateParams('', { workTypes: [], expertiseAreas: [], communities: [], open: true }).get('open')).toBe('1')
+    expect(buildCollaborateParams('', { workTypes: [], expertiseAreas: [], communities: [], open: false }).has('open')).toBe(false)
+    expect(decodeOpenParam('1')).toBe(true)
+    expect(decodeOpenParam(undefined)).toBe(false)
+    expect(decodeOpenParam('yes')).toBe(false)
+  })
+  it('puts open members first, keeping everyone else in order — or only them when asked', () => {
+    const people = [{ id: 'a', openToCollaboration: false }, { id: 'b', openToCollaboration: true }, { id: 'c', openToCollaboration: null }, { id: 'd', openToCollaboration: true }]
+    expect(openFirst(people, false).map((p) => p.id)).toEqual(['b', 'd', 'a', 'c'])
+    expect(openFirst(people, true).map((p) => p.id)).toEqual(['b', 'd'])
   })
 })

@@ -1515,7 +1515,8 @@
       "selectedCount": "{selected} de {total} seleccionados",
       "applyFilters": "Aplicar filtros",
       "showCommunities": "Mostrar comunidades",
-      "hideCommunities": "Ocultar comunidades"
+      "hideCommunities": "Ocultar comunidades",
+      "openOnly": "Abiertos a colaborar"
     },
     "carousel": {
       "expand": "Expandir",
@@ -1566,6 +1567,14 @@
       "save": "Guardar",
       "turnOff": "Dejar de mostrarme como disponible",
       "saveError": "No se guardó; inténtalo de nuevo."
+    },
+    "connect": {
+      "title": "Pedir a {name} conectar",
+      "noteLabel": "Añade una nota (opcional)",
+      "notePlaceholder": "Cuéntale en qué te gustaría trabajar juntos",
+      "send": "Enviar",
+      "cancel": "Cancelar",
+      "help": "Si acepta, cada uno verá el correo del otro."
     }
   },
   "onboarding": {
@@ -3039,7 +3048,8 @@
     "errors": {
       "cooldown": "Este miembro rechazó tu solicitud hace poco. Espera un tiempo antes de volver a intentarlo.",
       "rateLimit": "Has enviado muchas solicitudes en poco tiempo. Inténtalo de nuevo dentro de un rato.",
-      "unavailable": "Esta función aún no está disponible."
+      "unavailable": "Esta función aún no está disponible.",
+      "notOpen": "Esta persona no acepta nuevas conexiones por ahora."
     }
   },
   "feed": {

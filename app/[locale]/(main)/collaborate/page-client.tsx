@@ -72,10 +72,20 @@ interface CollaboratePageClientProps {
     workTypes: string[] | null
     expertiseAreas: string[] | null
     communities: string[] | null
+    /** Only people open to collaborating (`?open=1`). */
+    open?: boolean
   }
+  /** How many listed people are open to collaborating (the chip's count). */
+  openCount?: number
   /** Rendered inside the Collaborate tabs shell — the parent owns the page
    *  container and header, so skip both here. */
   embedded?: boolean
+}
+
+/** The filters live on the People tab, so every filter change stays on it (it fell back to Projects). */
+function collaborateHref(params: URLSearchParams): string {
+  params.set('tab', 'people')
+  return `/collaborate?${params.toString()}`
 }
 
 export function CollaboratePageClient({
@@ -86,6 +96,7 @@ export function CollaboratePageClient({
   locale,
   initialSearch,
   initialFilters,
+  openCount = 0,
   embedded
 }: CollaboratePageClientProps) {
   const t = useTranslations('collaborate')
@@ -105,7 +116,8 @@ export function CollaboratePageClient({
   const filtersFromProps = useMemo<CommunityFiltersState>(() => ({
     communities: initialFilters?.communities ?? [],
     workTypes: initialFilters?.workTypes ?? [],
-    expertiseAreas: initialFilters?.expertiseAreas ?? []
+    expertiseAreas: initialFilters?.expertiseAreas ?? [],
+    open: initialFilters?.open ?? false
   }), [initialFilters])
 
   const [filters, setFilters] = useState<CommunityFiltersState>(filtersFromProps)
@@ -135,7 +147,7 @@ export function CollaboratePageClient({
   const handleSearch = (query: string) => {
     const params = buildCollaborateParams(query, filters)
     // Navigate with new params - will trigger server component re-render
-    router.push(`?${params.toString()}`)
+    router.push(collaborateHref(params))
   }
 
   // Handle filter changes - updates URL to trigger server re-render
@@ -144,7 +156,7 @@ export function CollaboratePageClient({
 
     const params = buildCollaborateParams(searchQuery, newFilters)
     // Navigate with new params - will trigger server component re-render
-    router.push(`?${params.toString()}`)
+    router.push(collaborateHref(params))
   }
 
   // Render exactly the carousels the server returned.
@@ -178,9 +190,9 @@ export function CollaboratePageClient({
 
   const handleClearFilters = () => {
     setSearchInput('')
-    setFilters({ communities: [], workTypes: [], expertiseAreas: [] })
+    setFilters({ communities: [], workTypes: [], expertiseAreas: [], open: false })
     // Navigate to clean URL (no params) — server re-renders with everyone.
-    router.push('/collaborate')
+    router.push(collaborateHref(new URLSearchParams()))
   }
 
   const Wrapper = embedded ? "div" : PageContainer
@@ -230,6 +242,7 @@ export function CollaboratePageClient({
           onChangeAction={handleFilterChange}
           communities={communities}
           isRTL={isRTL}
+          openCount={access.people ? openCount : undefined}
         />
       </div>
 

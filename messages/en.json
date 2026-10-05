@@ -1611,7 +1611,8 @@
       "selectedCount": "{selected} of {total} selected",
       "applyFilters": "Apply filters",
       "showCommunities": "Show communities",
-      "hideCommunities": "Hide communities"
+      "hideCommunities": "Hide communities",
+      "openOnly": "Open to collaborate"
     },
     "carousel": {
       "expand": "Expand",
@@ -1662,6 +1663,14 @@
       "save": "Save",
       "turnOff": "Stop showing me as open",
       "saveError": "That didn't save — please try again."
+    },
+    "connect": {
+      "title": "Ask {name} to connect",
+      "noteLabel": "Add a note (optional)",
+      "notePlaceholder": "Say what you'd like to work on together",
+      "send": "Send",
+      "cancel": "Cancel",
+      "help": "If they accept, you'll each see the other's email."
     }
   },
   "onboarding": {
@@ -3039,7 +3048,8 @@
     "errors": {
       "cooldown": "This member recently declined your request. Please wait a while before asking again.",
       "rateLimit": "You've sent a lot of requests in a short time. Please try again in a little while.",
-      "unavailable": "This feature isn't available yet."
+      "unavailable": "This feature isn't available yet.",
+      "notOpen": "This person isn't taking new connections right now."
     }
   },
   "feed": {

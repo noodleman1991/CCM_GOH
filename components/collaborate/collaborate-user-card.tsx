@@ -16,6 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { MapPin, Briefcase, Clock, FileText, MessageCircle, UserPlus } from 'lucide-react'
 import { startConversation } from '@/lib/actions/messaging'
@@ -70,8 +72,11 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
   const locale = useLocale()
   const isRTL = locale === 'ar'
   const router = useRouter()
-  const { isSignedIn } = useUser()
+  const { isSignedIn, user: viewer } = useUser()
   const access = useCollaboration()
+  const tConnect = useTranslations('collaborate.connect')
+  const [asking, setAsking] = useState(false)
+  const [note, setNote] = useState('')
   const [pending, startAction] = useTransition()
   // Seeded from the server-read status. A DECLINED request deliberately shows
   // a fresh button: the action enforces the cooldown and answers with a
@@ -98,16 +103,28 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
       else toast.error(res.error)
     })
   }
+  // Ask to connect opens a short note first (opening-collaboration spec C5).
   const handleConnect = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    setAsking(true)
+  }
+  const sendRequest = () => {
     startAction(async () => {
-      const res = await requestContact(user.id)
-      if (res.ok) setContactState(res.status)
+      const res = await requestContact(user.id, note.trim() || undefined)
+      if (res.ok) {
+        setContactState(res.status)
+        setAsking(false)
+      }
       // `code` marks `error` as a catalogue key; legacy failures are sentences.
       else toast.error(res.code ? tRoot(res.error) : res.error)
     })
   }
+  const self = viewer?.id === user.id
+  // Connect: only people open to collaborating take new requests; an existing
+  // request or connection keeps showing its state.
+  const canConnect = access.people && !self && (user.openToCollaboration === true || contactState !== null)
+  const canMessage = access.messages && !self
 
   // Map work type enum values to translation keys
   const getWorkTypeKey = (workType: string): string => {
@@ -155,6 +172,7 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
   }
 
   return (
+    <>
     <Link href={`/profiles/${user.username}`} className="group block h-full">
       <Card className={cn(
         'h-full cursor-pointer overflow-hidden rounded-2xl border bg-card transition-all duration-200',
@@ -279,9 +297,9 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
             )}
 
             {/* Actions: Message + Connect (§4.6) — signed-in only, each as Settings → Collaboration allows */}
-            {mounted && isSignedIn && (access.messages || access.people) && (
+            {mounted && isSignedIn && (canMessage || canConnect) && (
               <div className="flex gap-2 border-t pt-3">
-                {access.messages && (
+                {canMessage && (
                 <Button
                   size="sm"
                   variant="outline"
@@ -293,7 +311,7 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
                   {tCollab('message')}
                 </Button>
                 )}
-                {access.people && (
+                {canConnect && (
                 <Button
                   size="sm"
                   variant="ghost"
@@ -314,5 +332,29 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
         </CardContent>
       </Card>
     </Link>
+    {/* Outside the card's link, so typing and clicking here never open the profile. */}
+    <Dialog open={asking} onOpenChange={setAsking}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {tConnect('title', { name: user.displayName || user.username || '' })}
+          </DialogTitle>
+          <DialogDescription>{tConnect('help')}</DialogDescription>
+        </DialogHeader>
+        <label className="space-y-1.5 text-sm font-semibold text-ccm-midnight">
+          <span>{tConnect('noteLabel')}</span>
+          <Textarea value={note} maxLength={300} rows={3} onChange={(e) => setNote(e.target.value)} placeholder={tConnect('notePlaceholder')} />
+        </label>
+        <DialogFooter className="gap-2">
+          <Button type="button" variant="ghost" className="min-h-11" onClick={() => setAsking(false)} disabled={pending}>
+            {tConnect('cancel')}
+          </Button>
+          <Button type="button" className="min-h-11" onClick={sendRequest} disabled={pending}>
+            {tConnect('send')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   )
 }

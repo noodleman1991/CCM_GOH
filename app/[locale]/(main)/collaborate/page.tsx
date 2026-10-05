@@ -18,6 +18,7 @@ import { Link } from '@/i18n/navigation'
 import { Plus } from 'lucide-react'
 import { getCollaborationAccessFor } from '@/lib/collaboration/access-server'
 import { getActor } from '@/lib/authz'
+import { decodeOpenParam, openFirst } from '@/lib/collaborate-filters'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
@@ -39,6 +40,7 @@ interface CollaboratePageProps {
     workTypes?: string
     expertiseAreas?: string
     communities?: string
+    open?: string
     tab?: string
   }>
 }
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: CollaboratePageProps): Promis
 
 export default async function CollaboratePage({ params, searchParams }: CollaboratePageProps) {
   const { locale } = await params
-  const { search, workTypes, expertiseAreas, communities: communitiesParam } = await searchParams
+  const { search, workTypes, expertiseAreas, communities: communitiesParam, open: openParam } = await searchParams
 
   // Require authentication — redirect to sign-in if not logged in
   let userId: string | null = null
@@ -146,6 +148,9 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     const workTypesFilter = decodeFilterParam(workTypes)
     const expertiseFilter = decodeFilterParam(expertiseAreas)
     const communitiesFilter = decodeFilterParam(communitiesParam)
+    // Open to collaborate (spec C4): only while the team has it on.
+    const openOnly = access.people && decodeOpenParam(openParam)
+    let openCount = 0
 
     // Fetch user to get their communities for prioritization
     const currentUser = await prisma.user.findUnique({
@@ -201,7 +206,9 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
     // Group users by their communities (users can appear in multiple carousels)
     if (result.success && result.data.data.length > 0) {
-      const allUsers = result.data.data
+      // People open to collaborating come first (or alone, with ?open=1).
+      openCount = result.data.data.filter((u) => (u as { openToCollaboration?: boolean | null }).openToCollaboration === true).length
+      const allUsers = access.people ? openFirst(result.data.data as Array<LocalizedUser & { openToCollaboration?: boolean | null }>, openOnly) : result.data.data
 
       // Group users by their regional communities
       for (const community of sortedCommunities) {
@@ -249,7 +256,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
     if (noCommunityResult?.success && noCommunityResult.data.data.length > 0) {
       communityUsersMap['No Regional Community'] = {
-        users: noCommunityResult.data.data,
+        users: access.people ? openFirst(noCommunityResult.data.data as Array<LocalizedUser & { openToCollaboration?: boolean | null }>, openOnly) : noCommunityResult.data.data,
         total: noCommunityResult.data.total ?? noCommunityResult.data.data.length,
       }
     }
@@ -278,8 +285,10 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
           initialFilters={{
             workTypes: workTypesFilter,
             expertiseAreas: expertiseFilter,
-            communities: communitiesFilter
+            communities: communitiesFilter,
+            open: openOnly
           }}
+          openCount={openCount}
           embedded
         />
       </Suspense>

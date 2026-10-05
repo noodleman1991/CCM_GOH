@@ -9,6 +9,10 @@ vi.mock("@/lib/authz", () => ({
   isStaff: (...a: unknown[]) => isStaffMock(...a),
 }));
 
+// Settings → Collaboration with "Open to collaborate" on (not left to the dev env override).
+vi.mock("@/lib/collaboration/access-server", () => ({
+  getCollaborationAccessFor: vi.fn(async () => ({ notifications: true, people: true, workspaces: { see: true, create: true }, messages: true, contributions: true })),
+}));
 const createNotificationMock = vi.fn<(...a: unknown[]) => Promise<void>>(async () => {});
 vi.mock("@/lib/notifications/service", () => ({
   createNotification: (...a: unknown[]) => createNotificationMock(...a),
@@ -57,7 +61,8 @@ const db = vi.hoisted(() => {
       findUnique: vi.fn(async () => null),
       update: vi.fn(async () => ({})),
     },
-    user: { findUnique: vi.fn(async () => ({ id: "u2" })) },
+    // Open to collaborating, so contact requests reach them (the not-open case is its own test).
+    user: { findUnique: vi.fn(async () => ({ id: "u2", openToCollaboration: true })) },
     notification: { updateMany: vi.fn(async () => ({ count: 1 })) },
     $transaction: vi.fn(async (fn: (tx: unknown) => unknown) => fn(d)),
   };
@@ -187,8 +192,16 @@ describe("contact requests", () => {
     expect(res.ok).toBe(false);
   });
 
+  it("requestContact refuses someone who isn't open to collaborating, before writing anything", async () => {
+    db.user.findUnique.mockResolvedValueOnce({ id: "u2", openToCollaboration: false });
+    const res = await requestContact("u2", "hello");
+    expect(res).toMatchObject({ ok: false, error: "requests.errors.notOpen" });
+    expect(db.contactRequest.create).not.toHaveBeenCalled();
+    expect(createNotificationMock).not.toHaveBeenCalled();
+  });
+
   it("requestContact creates a PENDING row and notifies the recipient when none exists", async () => {
-    db.user.findUnique.mockResolvedValueOnce({ id: "u2" });
+    db.user.findUnique.mockResolvedValueOnce({ id: "u2", openToCollaboration: true });
     db.contactRequest.findUnique.mockResolvedValueOnce(null);
     const res = await requestContact("u2", "hello");
     expect(res.ok).toBe(true);
@@ -371,7 +384,7 @@ describe("nextContactRequestState (pure)", () => {
 
 describe("requestContact state machine (mocked Prisma)", () => {
   beforeEach(() => {
-    db.user.findUnique.mockResolvedValue({ id: "u2" });
+    db.user.findUnique.mockResolvedValue({ id: "u2", openToCollaboration: true });
   });
 
   it("is rate limited per requesting user (20 / hour), keyed on the Clerk user id", async () => {
