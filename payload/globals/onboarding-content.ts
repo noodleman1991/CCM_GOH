@@ -469,7 +469,7 @@ export const OnboardingContent = onboardingGlobal(
 export const OnboardingBasicInfo = onboardingGlobal(
   "onboardingBasicInfo",
   "Step 1: Basic info",
-  "Step 1: name, username, headline, bio and location — labels, hints and validation messages.",
+  "Step 1: name, username, pronouns, languages, bio and location — labels, hints and validation messages.",
   basicInfoFields(),
 );
 
@@ -482,22 +482,22 @@ export const OnboardingWorkInfo = onboardingGlobal(
 
 export const OnboardingRecentWork = onboardingGlobal(
   "onboardingRecentWork",
-  "Step 3: Recent work",
-  "Step 3: the recent-work list and the form that adds to it.",
+  "Step 4: Recent work",
+  "Step 4: the recent-work list and the form that adds to it.",
   recentWorkFields(),
 );
 
 export const OnboardingPrivacy = onboardingGlobal(
   "onboardingPrivacy",
-  "Step 4: Privacy & visibility",
-  "Step 4: searchability, profile visibility and the per-field privacy toggles.",
+  "Step 5: Privacy & visibility",
+  "Step 5: searchability, profile visibility and the per-field privacy toggles.",
   privacyFields(),
 );
 
 export const OnboardingReview = onboardingGlobal(
   "onboardingReview",
-  "Step 5: Review & submit",
-  "Step 5: the review summary labels and the submit button.",
+  "Step 6: Review & submit",
+  "Step 6: the review summary labels and the submit button.",
   reviewFields(),
 );
 

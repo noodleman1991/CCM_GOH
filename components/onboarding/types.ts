@@ -100,6 +100,10 @@ export interface OnboardingUserData {
   headline?: string | null
   bio?: string | null
   motivation?: string | null
+  pronouns?: string | null
+  languages?: string[] | null
+  lookingFor?: string[] | null
+  focusTopics?: string[] | null
   ageGroup?: "UNDER_18" | "ABOVE_18" | null
   country?: string | null
   city?: string | null

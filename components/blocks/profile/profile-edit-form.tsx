@@ -27,6 +27,20 @@ import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-up
 import { CommunitySelector, type Community as SelectorCommunity } from "@/components/profile/community-selector"
 import { LIMITS } from "@/lib/validation/limits";
 import { CharCounter } from "@/components/ui/char-counter"
+import { ChoiceChips } from "@/components/profile/choice-chips"
+import { profileUpdateFromForm } from "@/lib/profile/edit-payload"
+import type { AboutYouOption } from "@/lib/onboarding/about-you-options"
+
+/** The hub's four languages, each in its own words; members can add any other. */
+const SPOKEN_LANGUAGES = [
+    { value: "en", label: "English" },
+    { value: "es", label: "Español" },
+    { value: "fr", label: "Français" },
+    { value: "ar", label: "العربية" },
+]
+
+/** Where the dashboard's "next step" links land: the anchor → the tab it sits in. */
+const ANCHOR_TAB: Record<string, string> = { photo: "basic", headline: "basic", bio: "basic", "about-you": "collaboration", work: "work" }
 
 // Localized validation messages (resolved from t() inside the component so the
 // Zod errors show in the user's language — the proven newsletter pattern).
@@ -57,7 +71,7 @@ interface SchemaMessages {
     workDescriptionMax: string
 }
 
-const makeProfileSchema = (m: SchemaMessages) => z.object({
+export const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Clerk-managed fields (update Clerk directly)
     firstName: z.string().min(1, m.firstNameRequired).max(LIMITS.profile.firstName, m.firstNameMax),
     lastName: z.string().min(1, m.lastNameRequired).max(LIMITS.profile.lastName, m.lastNameMax),
@@ -69,7 +83,8 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
 
     // App-managed profile fields
     bio: z.string().max(LIMITS.profile.bio, m.bioMax).optional(),
-    ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
+    // Null when a member skipped it at onboarding — that must not block a save.
+    ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).nullable().optional(),
     country: z.string().optional(),
     city: z.string().optional(),
     workTypes: z.array(z.enum([
@@ -114,6 +129,7 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Domain-rich fields (K4)
     headline: z.string().max(LIMITS.profile.headline, m.headlineMax).optional().or(z.literal("")),
     pronouns: z.string().max(LIMITS.profile.pronouns, m.pronounsMax).optional().or(z.literal("")),
+    languages: z.array(z.string().max(LIMITS.profile.language)).optional().default([]),
     motivation: z.string().max(LIMITS.profile.motivation, m.keepUnder600).optional().or(z.literal("")),
     focusTopics: z.array(z.string()).optional().default([]),
     openToCollaboration: z.boolean().optional().default(false),
@@ -147,6 +163,8 @@ const TAB_VALUES = ["basic", "collaboration", "work", "communities", "recentWork
 interface ProfileEditFormProps {
     /** Which tab opens first; unknown values fall back to "basic". */
     initialTab?: string
+    /** The team's "Looking for" and "Focus areas" choices (Settings → Onboarding → About you). */
+    aboutYouOptions?: { lookingFor: AboutYouOption[]; focusTopics: AboutYouOption[] }
     initialData?: Partial<ProfileFormValues> & {
         // Read-only Clerk data for display
         email?: string | null
@@ -190,6 +208,12 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const tCommunities = useTranslations('profile.communities')
     const tRecentWork = useTranslations('profile.recentWork')
     const tPrompts = useTranslations('profile.prompts')
+    // The same words as onboarding's About you step, so the two read alike.
+    const tAbout = useTranslations('onboarding.steps.basicInfo')
+    const tSteps = useTranslations('onboarding.steps')
+    const [activeTab, setActiveTab] = useState<string>(
+        (TAB_VALUES as readonly string[]).includes(props.initialTab ?? "") ? props.initialTab! : "basic"
+    )
     const locale = useLocale() as SupportedLocale
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -206,6 +230,16 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
     // Use the new TypeScript hook with i18n support
     const { user, communities: availableCommunities, recentWork: existingRecentWork, loading, error, updating, updateProfile, refreshProfile, isRTL } = useUserProfile()
+    // A link like /dashboard/profile/edit#headline (the dashboard's next step)
+    // opens the tab that holds it and scrolls there once the form has loaded.
+    useEffect(() => {
+        if (loading) return
+        const anchor = window.location.hash.slice(1)
+        const tab = ANCHOR_TAB[anchor]
+        if (!tab) return
+        setActiveTab(tab)
+        requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView({ block: "start" }))
+    }, [loading])
 
     // Schema built inside the component so validation messages localize
     // (newsletter/case-study Zod-closure pattern).
@@ -261,6 +295,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             // Domain-rich fields (K4)
             headline: user?.headline || "",
             pronouns: user?.pronouns || "",
+            languages: user?.languages || [],
             motivation: user?.motivation || "",
             focusTopics: user?.focusTopics || [],
             openToCollaboration: user?.openToCollaboration ?? false,
@@ -330,6 +365,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 // Domain-rich fields (K4)
                 headline: userWithRelations.headline || "",
                 pronouns: userWithRelations.pronouns || "",
+                languages: userWithRelations.languages || [],
                 motivation: userWithRelations.motivation || "",
                 focusTopics: userWithRelations.focusTopics || [],
                 openToCollaboration: userWithRelations.openToCollaboration ?? false,
@@ -533,7 +569,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     // still has a validation error (best-practice stepped-form affordance).
     const FIELD_TAB: Record<string, string> = {
         firstName: 'basic', lastName: 'basic', username: 'basic', bio: 'basic',
-        headline: 'basic', pronouns: 'basic', ageGroup: 'basic', country: 'basic', city: 'basic',
+        headline: 'basic', pronouns: 'basic', languages: 'basic', ageGroup: 'basic', country: 'basic', city: 'basic',
         motivation: 'collaboration', collaborationInterests: 'collaboration',
         livedExperienceStatement: 'collaboration', focusTopics: 'collaboration', lookingFor: 'collaboration',
         workTypes: 'work', expertiseAreas: 'work', organization: 'work', position: 'work', workBio: 'work', orcidId: 'work',
@@ -558,32 +594,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 await onSubmitAction(values)
             } else {
                 // Convert form values to our TypeScript type, handling empty strings properly
-                const updateData: UserProfileUpdateData = {
-                    firstName: values.firstName,
-                    lastName: values.lastName,
-                    username: values.username,
-                    bio: values.bio?.trim() || null,
-                    ageGroup: values.ageGroup || null,
-                    country: values.country?.trim() || null,
-                    city: values.city?.trim() || null,
-                    workTypes: values.workTypes || [],
-                    expertiseAreas: values.expertiseAreas || [],
-                    organization: values.organization?.trim() || null,
-                    position: values.position?.trim() || null,
-                    workBio: values.workBio?.trim() || null,
-                    personalWebsite: values.personalWebsite?.trim() || null,
-                    linkedinProfile: values.linkedinProfile?.trim() || null,
-                    otherSocialLinks: values.otherSocialLinks || [],
-                    isSearchable: values.isSearchable,
-                    profileVisibility: values.profileVisibility,
-                    showEmail: values.showEmail,
-                    showPhoneNumber: values.showPhoneNumber,
-                    showWorkDetails: values.showWorkDetails,
-                    showSocialLinks: values.showSocialLinks,
-                    showLocation: values.showLocation,
-                    communityIds: values.communityIds || [],
-                    recentWork: values.recentWork || [],
-                }
+                // Every field, so a save never erases what the form didn't touch (lib/profile/edit-payload.ts).
+                const updateData: UserProfileUpdateData = profileUpdateFromForm(values as Parameters<typeof profileUpdateFromForm>[0])
 
                 const success = await updateProfile(updateData)
                 if (!success) {
@@ -627,14 +639,17 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
                 {/* Profile Picture — shared identity header above the tabs */}
+                <div id="photo" className="scroll-mt-20">
                 <ProfilePictureUpload
                     firstName={form.watch("firstName")}
                     lastName={form.watch("lastName")}
                     onImageChangeAction={onImageChangeAction}
                 />
+                </div>
 
                 <Tabs
-                    defaultValue={(TAB_VALUES as readonly string[]).includes(props.initialTab ?? "") ? props.initialTab : "basic"}
+                    value={activeTab}
+                    onValueChange={setActiveTab}
                     className="w-full"
                 >
                     <TabsList className="flex w-full flex-wrap h-auto justify-start gap-1">
@@ -748,7 +763,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             )}
                         />
 
-                        <div className="grid grid-cols-1 @content-sm/page:grid-cols-[1fr_auto] gap-4">
+                        <div id="headline" className="grid scroll-mt-20 grid-cols-1 @content-sm/page:grid-cols-[1fr_auto] gap-4">
                             <FormField
                                 control={form.control}
                                 name="headline"
@@ -794,9 +809,29 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
                         <FormField
                             control={form.control}
-                            name="bio"
+                            name="languages"
                             render={({ field }) => (
                                 <FormItem>
+                                    <FormLabel>{tAbout('languages')}</FormLabel>
+                                    <FormDescription>{tAbout('languagesHint')}</FormDescription>
+                                    <ChoiceChips
+                                        label={tAbout('languages')}
+                                        options={SPOKEN_LANGUAGES}
+                                        value={field.value ?? []}
+                                        onChange={field.onChange}
+                                        max={10}
+                                        other={{ placeholder: tAbout('languagesOther'), addLabel: tAbout('languagesAdd'), maxLength: LIMITS.profile.language }}
+                                    />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="bio"
+                            render={({ field }) => (
+                                <FormItem id="bio" className="scroll-mt-20">
                                     <FormLabel>{t('bio')}</FormLabel>
                                     <FormControl>
                                         <Textarea {...field} rows={4} maxLength={LIMITS.profile.bio} />
@@ -865,7 +900,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     {/* ── Collaboration ── */}
                     <TabsContent value="collaboration" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Motivation & collaboration (K4) */}
-                <Card>
+                <Card id="about-you" className="scroll-mt-20">
                     <CardHeader>
                         <CardTitle>{t('collab.title')}</CardTitle>
                         <CardDescription>{t('collab.description')}</CardDescription>
@@ -885,6 +920,35 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 </FormItem>
                             )}
                         />
+
+                        {props.aboutYouOptions && (
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="lookingFor"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{tSteps('aboutYou.lookingFor')}</FormLabel>
+                                            <FormDescription>{tSteps('aboutYou.lookingForHint', { max: 5 })}</FormDescription>
+                                            <ChoiceChips label={tSteps('aboutYou.lookingFor')} options={props.aboutYouOptions!.lookingFor} value={field.value ?? []} onChange={field.onChange} max={5} />
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="focusTopics"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{tSteps('aboutYou.focusTopics')}</FormLabel>
+                                            <FormDescription>{tSteps('aboutYou.focusTopicsHint', { max: 5 })}</FormDescription>
+                                            <ChoiceChips label={tSteps('aboutYou.focusTopics')} options={props.aboutYouOptions!.focusTopics} value={field.value ?? []} onChange={field.onChange} max={5} />
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </>
+                        )}
 
                         <FormField
                             control={form.control}
@@ -970,7 +1034,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     {/* ── Work ── */}
                     <TabsContent value="work" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Work Information */}
-                <Card>
+                <Card id="work" className="scroll-mt-20">
                     <CardHeader>
                         <CardTitle>{t('workInfo.title')}</CardTitle>
                         <CardDescription>{t('workInfo.description')}</CardDescription>

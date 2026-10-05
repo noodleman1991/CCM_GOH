@@ -60,6 +60,8 @@ export const LIMITS = {
     focusTopic: 60,
     lookingFor: 40,
     collaborationInterests: 600,
+    /** One answer to a profile prompt ("A place that shaped me…"). */
+    promptAnswer: 600,
     livedExperienceStatement: 1000,
     orcidId: 40,
     socialPlatform: 40,

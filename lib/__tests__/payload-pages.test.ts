@@ -337,6 +337,7 @@ describe("payload globals", () => {
       "homepage",
       "hubIllustrations",
       "moderationSettings",
+      "onboardingAboutYou",
       "onboardingBasicInfo",
       "onboardingContent",
       "onboardingPrivacy",

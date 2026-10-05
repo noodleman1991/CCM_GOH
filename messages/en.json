@@ -1839,7 +1839,14 @@
         "headlineHint": "One line that sums you up — people see this first.",
         "motivation": "What brought you here?",
         "motivationPlaceholder": "What draws you to climate change and mental health…",
-        "motivationHint": "Optional. Your story helps others connect with you."
+        "motivationHint": "Optional. Your story helps others connect with you.",
+        "pronouns": "Pronouns",
+        "pronounsPlaceholder": "e.g. she/her, they/them",
+        "pronounsHint": "Optional — shown next to your name.",
+        "languages": "Languages you speak",
+        "languagesHint": "Pick any that apply, or add another.",
+        "languagesOther": "Another language",
+        "languagesAdd": "Add"
       },
       "workInfo": {
         "title": "Work Information",
@@ -1895,6 +1902,20 @@
         "linkedinPlaceholder": "https://linkedin.com/in/username",
         "workTypeFallback": "Work type {key}",
         "expertiseFallback": "Expertise {key}"
+      },
+      "aboutYou": {
+        "title": "About you",
+        "tagline": "Your own words",
+        "description": "A few words in your own voice — this is what people read first on your profile. Everything here is optional.",
+        "lookingFor": "What are you looking for?",
+        "lookingForHint": "Pick up to {max}.",
+        "focusTopics": "Your focus areas",
+        "focusTopicsHint": "The themes you care most about — up to {max}.",
+        "promptIntro": "Pick a question and answer it in your own words.",
+        "promptQuestion": "Question",
+        "promptPlaceholder": "Choose a question",
+        "promptAnswer": "Your answer",
+        "skipHint": "You can skip this step and add any of it later from Edit profile."
       },
       "recentWork": {
         "title": "Recent Work",
@@ -1954,8 +1975,8 @@
         "profileInfo": {
           "title": "Information Visibility",
           "description": "Choose what information to display on your profile",
-          "showEmail": "Show email address",
-          "emailHint": "Display your email address on your profile",
+          "showEmail": "Let members ask to see my email",
+          "emailHint": "Your email is never shown on the site.",
           "showPhone": "Show phone number",
           "phoneHint": "Display your phone number on your profile",
           "showWork": "Show work information",
@@ -1963,7 +1984,8 @@
           "showSocial": "Show social links",
           "socialHint": "Display your website and social media links",
           "showLocation": "Show location",
-          "locationHint": "Display your country and city information"
+          "locationHint": "Display your country and city information",
+          "emailProtected": "If you switch this on, someone has to pass a human check before your email is shown to them — never to bots, never in the page."
         },
         "continue": "Continue",
         "tagline": "Control your visibility"

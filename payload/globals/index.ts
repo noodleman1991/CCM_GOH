@@ -5,6 +5,7 @@ import { ModerationSettings } from "@/payload/globals/moderation-settings";
 import { HubIllustrations } from "@/payload/globals/hub-illustrations";
 import { EventSuggestions } from "@/payload/globals/event-suggestions";
 import { CollaborationSettings } from "@/payload/globals/collaboration-settings";
+import { OnboardingAboutYou } from "@/payload/globals/onboarding-about-you";
 import {
   ONBOARDING_GLOBALS,
   OnboardingBasicInfo,
@@ -22,6 +23,7 @@ export {
   HubIllustrations,
   EventSuggestions,
   CollaborationSettings,
+  OnboardingAboutYou,
   ONBOARDING_GLOBALS,
   OnboardingContent,
   OnboardingBasicInfo,
@@ -55,6 +57,7 @@ export const globals: GlobalConfig[] = [
   HubIllustrations,
   // Onboarding (its own nav group; globals-only groups list after collection groups)
   ...ONBOARDING_GLOBALS,
+  OnboardingAboutYou,
   // System
   ModerationSettings,
   EventSuggestions,

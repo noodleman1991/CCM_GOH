@@ -58,9 +58,9 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
         .min(3, messages.basicInfo?.username || defaultMessages.basicInfo.username)
         .max(LIMITS.profile.username, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
         .regex(/^[a-zA-Z0-9_]+$/, messages.basicInfo?.usernamePattern || defaultMessages.basicInfo.usernamePattern),
-      headline: z.string().max(LIMITS.profile.headline, messages.basicInfo?.headline || defaultMessages.basicInfo.headline).optional(),
       bio: z.string().max(LIMITS.profile.bio, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
-      motivation: z.string().max(LIMITS.profile.motivation, messages.basicInfo?.motivation || defaultMessages.basicInfo.motivation).optional(),
+      pronouns: z.string().max(LIMITS.profile.pronouns).optional(),
+      languages: z.array(z.string().trim().min(1).max(LIMITS.profile.language)).max(10).optional().default([]),
       ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),
@@ -79,16 +79,26 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
       workBio: z.string().max(LIMITS.profile.workBio, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
       linkedinProfile: z.string().url(messages.workInfo?.linkedinUrl || defaultMessages.workInfo.linkedinUrl).optional().or(z.literal("")),
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
-      // Open to collaborate (opening-collaboration spec C4) — asked only when the team has it on.
-      openToCollaboration: z.boolean().optional(),
-      collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests).optional(),
       otherSocialLinks: z.array(z.object({
         platform: z.string().min(1, messages.workInfo?.socialLinkPlatform || defaultMessages.workInfo.socialLinkPlatform),
         url: z.string().url(messages.workInfo?.socialLinkUrl || defaultMessages.workInfo.socialLinkUrl)
       })).optional().default([])
     }),
 
-    // Recent Work Step (Step 3) - Optional step with optional array
+    // About You Step (Step 3) — every field optional (dashboard/profile spec D4)
+    aboutYou: z.object({
+      headline: z.string().max(LIMITS.profile.headline, messages.basicInfo?.headline || defaultMessages.basicInfo.headline).optional(),
+      motivation: z.string().max(LIMITS.profile.motivation, messages.basicInfo?.motivation || defaultMessages.basicInfo.motivation).optional(),
+      lookingFor: z.array(z.string().max(LIMITS.profile.lookingFor)).max(10).optional().default([]),
+      focusTopics: z.array(z.string().max(LIMITS.profile.focusTopic)).max(10).optional().default([]),
+      promptId: z.string().optional(),
+      promptAnswer: z.string().max(LIMITS.profile.promptAnswer).optional(),
+      // Open to collaborate (opening-collaboration spec C4) — asked only when the team has it on.
+      openToCollaboration: z.boolean().optional(),
+      collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests).optional(),
+    }).optional().default({}),
+
+    // Recent Work Step (Step 4) - Optional step with optional array
     recentWork: z.array(z.object({
       title: z.string()
         .min(1, messages.recentWork?.title || defaultMessages.recentWork.title)
@@ -102,7 +112,7 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
       endDate: z.string().optional()
     })).optional().default([]),
 
-    // Privacy Step (Step 4)
+    // Privacy Step (Step 5)
     privacy: z.object({
       isSearchable: z.boolean().default(true),
       profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("MEMBERS"),
@@ -125,9 +135,10 @@ export const stepSchemas = {
   0: z.object({}), // Welcome step - no validation needed
   1: onboardingSchema.pick({ basicInfo: true }),
   2: onboardingSchema.pick({ workInfo: true }),
-  3: onboardingSchema.pick({ recentWork: true }),
-  4: onboardingSchema.pick({ privacy: true }),
-  5: onboardingSchema // Review step - validate everything
+  3: onboardingSchema.pick({ aboutYou: true }),
+  4: onboardingSchema.pick({ recentWork: true }),
+  5: onboardingSchema.pick({ privacy: true }),
+  6: onboardingSchema // Review step - validate everything
 } as const
 
 // Default values for the form
@@ -136,9 +147,9 @@ export const defaultOnboardingValues: OnboardingFormData = {
     firstName: "",
     lastName: "",
     username: "",
-    headline: "",
     bio: "",
-    motivation: "",
+    pronouns: "",
+    languages: [],
     ageGroup: undefined,
     country: "",
     city: "",
@@ -153,7 +164,15 @@ export const defaultOnboardingValues: OnboardingFormData = {
     linkedinProfile: "",
     personalWebsite: "",
     otherSocialLinks: [],
-    communityIds: [],
+    communityIds: []
+  },
+  aboutYou: {
+    headline: "",
+    motivation: "",
+    lookingFor: [],
+    focusTopics: [],
+    promptId: "",
+    promptAnswer: "",
     openToCollaboration: false,
     collaborationInterests: ""
   },
@@ -175,9 +194,10 @@ export const getStepFieldNames = (step: number): (keyof OnboardingFormData)[] =>
     case 0: return [] // Welcome
     case 1: return ["basicInfo"]
     case 2: return ["workInfo"]
-    case 3: return [] // Recent work is optional - no validation needed
-    case 4: return ["privacy"]
-    case 5: return ["basicInfo", "workInfo", "privacy"] // Review - validate required steps only
+    case 3: return ["aboutYou"] // All optional — only the length limits
+    case 4: return [] // Recent work is optional - no validation needed
+    case 5: return ["privacy"]
+    case 6: return ["basicInfo", "workInfo", "aboutYou", "privacy"] // Review - validate every step
     default: return []
   }
 }

@@ -23,6 +23,7 @@ import { siteUrl } from '@/lib/seo/site-url'
 import { areConnected } from "@/lib/collaborate/connection"
 import { RevealEmail } from "@/components/profile/reveal-email"
 import { getAnsweredPrompts } from "@/lib/community/profile-prompts"
+import { getAboutYouContent } from "@/lib/content/onboarding-about-you"
 import { getUserContributions } from "@/lib/community/region-data"
 import { listEventsOrganisedBy } from "@/lib/content/discovery"
 import { toEventTile, type EventTileData } from "@/lib/events/listing"
@@ -99,7 +100,7 @@ export default async function ProfilePage({ params, searchParams }: ProfilePageP
     const asVisitor = isOwnProfile && as === 'visitor'
     const ownerView = isOwnProfile && !asVisitor
 
-    const [prompts, contributions, organised, publicWorkspaces, connected] = await Promise.all([
+    const [prompts, contributions, organised, publicWorkspaces, connected, aboutYou] = await Promise.all([
         getAnsweredPrompts(user.id, locale),
         // Recent work has its own home in Work — only what they shared with the hub here.
         getUserContributions(user.id, locale).then((all) => all.filter((c) => c.kind !== 'recentWork')),
@@ -107,6 +108,7 @@ export default async function ProfilePage({ params, searchParams }: ProfilePageP
         listPublicWorkspacesForUser(user.id),
         // How to reach them — only once the two of you are connected (spec C5).
         currentUserId && !isOwnProfile ? areConnected(currentUserId, user.id).catch(() => false) : Promise.resolve(false),
+        getAboutYouContent(locale),
     ])
     const events = organised.map(toEventTile).filter((e): e is EventTileData => e !== null)
     const recentWork = (user.recentWork as (typeof user.recentWork[number] & { hidden?: boolean; pinned?: boolean })[])
@@ -305,7 +307,7 @@ export default async function ProfilePage({ params, searchParams }: ProfilePageP
                 {sections.map((s) => {
                     switch (s.id) {
                         case 'about':
-                            return <AboutSection key={s.id} user={user} prompts={prompts} addHref={s.addHref} />
+                            return <AboutSection key={s.id} user={user} prompts={prompts} options={aboutYou} addHref={s.addHref} />
                         case 'work':
                             return (
                                 <WorkSection

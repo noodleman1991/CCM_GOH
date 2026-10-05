@@ -17,6 +17,7 @@ import { ModernContentArea } from "./modern-content-area"
 import { WelcomePanel } from "./panels/welcome-panel"
 import { BasicInfoPanel } from "./panels/basic-info-panel"
 import { WorkInfoPanel } from "./panels/work-info-panel"
+import { AboutYouPanel } from "./panels/about-you-panel"
 import { RecentWorkPanel } from "./panels/recent-work-panel"
 import { PrivacyPanel } from "./panels/privacy-panel"
 import { ReviewPanel } from "./panels/review-panel"
@@ -34,11 +35,13 @@ import type {
   OnboardingUserManagementOptions
 } from "./types"
 import { track } from "@/lib/analytics/events"
+import type { AboutYouContent } from "@/lib/content/onboarding-about-you"
 
-const ONBOARDING_STEP_NAMES: Record<string, "welcome" | "basic_info" | "work_info" | "recent_work" | "privacy" | "review"> = {
+const ONBOARDING_STEP_NAMES: Record<string, "welcome" | "basic_info" | "work_info" | "about_you" | "recent_work" | "privacy" | "review"> = {
   welcome: "welcome",
   basicInfo: "basic_info",
   workInfo: "work_info",
+  aboutYou: "about_you",
   recentWork: "recent_work",
   privacy: "privacy",
   review: "review",
@@ -48,16 +51,41 @@ interface ModernOnboardingContainerProps {
   initialData?: OnboardingUserData | null
   userManagementOptions: OnboardingUserManagementOptions | null | undefined
   sanityContent: OnboardingContent | null | undefined
+  /** Step 3's words and choices (Settings → Onboarding → About you). */
+  aboutYou?: AboutYouContent | null
+  /** The prompts a member can pick from, in their language. */
+  prompts?: { id: string; prompt: string }[]
 }
 
 // sessionStorage key for in-progress onboarding state (step + form values).
 // Session-scoped on purpose: survives refreshes, not cross-device/staleness.
 const PROGRESS_STORAGE_KEY = "onboarding-progress"
 
+/**
+ * A draft saved before the About you step existed kept the headline and
+ * motivation in basic info and "open to collaborate" in work: carry them over
+ * so a member mid-onboarding loses nothing.
+ */
+function withAboutYouStep(values: Record<string, unknown>): OnboardingFormValues {
+  if (values.aboutYou && typeof values.aboutYou === "object") return values as OnboardingFormValues
+  const basic = (values.basicInfo ?? {}) as Record<string, unknown>
+  const work = (values.workInfo ?? {}) as Record<string, unknown>
+  const { headline, motivation, ...basicInfo } = basic
+  const { openToCollaboration, collaborationInterests, ...workInfo } = work
+  return {
+    ...values,
+    basicInfo,
+    workInfo,
+    aboutYou: { ...defaultOnboardingValues.aboutYou, headline, motivation, openToCollaboration, collaborationInterests },
+  } as OnboardingFormValues
+}
+
 export function ModernOnboardingContainer({
   initialData,
   userManagementOptions,
-  sanityContent
+  sanityContent,
+  aboutYou,
+  prompts
 }: ModernOnboardingContainerProps) {
   const router = useRouter()
   const t = useTranslations("onboarding")
@@ -138,9 +166,9 @@ export function ModernOnboardingContainer({
         firstName: user?.firstName || defaultOnboardingValues.basicInfo.firstName,
         lastName: user?.lastName || defaultOnboardingValues.basicInfo.lastName,
         username: user?.username || defaultOnboardingValues.basicInfo.username,
-        headline: user?.headline || defaultOnboardingValues.basicInfo.headline || "",
         bio: user?.bio || defaultOnboardingValues.basicInfo.bio,
-        motivation: user?.motivation || defaultOnboardingValues.basicInfo.motivation || "",
+        pronouns: user?.pronouns || "",
+        languages: user?.languages || [],
         ageGroup: user?.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
         country: user?.country || defaultOnboardingValues.basicInfo.country,
         city: user?.city || defaultOnboardingValues.basicInfo.city,
@@ -161,6 +189,13 @@ export function ModernOnboardingContainer({
         linkedinProfile: user?.linkedinProfile || defaultOnboardingValues.workInfo.linkedinProfile,
         otherSocialLinks: user?.otherSocialLinks || defaultOnboardingValues.workInfo.otherSocialLinks,
         personalWebsite: user?.personalWebsite || defaultOnboardingValues.workInfo.personalWebsite,
+      },
+      aboutYou: {
+        ...defaultOnboardingValues.aboutYou,
+        headline: user?.headline || "",
+        motivation: user?.motivation || "",
+        lookingFor: user?.lookingFor || [],
+        focusTopics: user?.focusTopics || [],
         openToCollaboration: user?.openToCollaboration ?? false,
         collaborationInterests: user?.collaborationInterests || "",
       },
@@ -198,6 +233,12 @@ export function ModernOnboardingContainer({
       title: sanityContent?.workInfoTitle || t("steps.workInfo.title"),
       panel: WorkInfoPanel,
       isOptional: false
+    },
+    {
+      id: "aboutYou",
+      title: aboutYou?.title || t("steps.aboutYou.title"),
+      panel: AboutYouPanel,
+      isOptional: true
     },
     {
       id: "recentWork",
@@ -245,7 +286,7 @@ export function ModernOnboardingContainer({
       if (!saved || typeof saved !== "object") return
       if (saved.values && typeof saved.values === "object" && typeof saved.values.basicInfo === "object") {
         // keepDefaultValues so the server-provided data stays the baseline
-        form.reset(saved.values, { keepDefaultValues: true })
+        form.reset(withAboutYouStep(saved.values), { keepDefaultValues: true })
       }
       if (
         typeof saved.step === "number" &&
@@ -333,7 +374,7 @@ export function ModernOnboardingContainer({
 
     try {
       // Final validation of all required steps
-      const isValid = await form.trigger(["basicInfo", "workInfo", "privacy"])
+      const isValid = await form.trigger(["basicInfo", "workInfo", "aboutYou", "privacy"])
 
       if (!isValid) {
         setValidationError(validationT("requiredFields"))
@@ -346,9 +387,9 @@ export function ModernOnboardingContainer({
         firstName: data.basicInfo.firstName,
         lastName: data.basicInfo.lastName,
         username: data.basicInfo.username,
-        headline: data.basicInfo.headline,
         bio: data.basicInfo.bio,
-        motivation: data.basicInfo.motivation,
+        pronouns: data.basicInfo.pronouns,
+        languages: data.basicInfo.languages || [],
         ageGroup: data.basicInfo.ageGroup,
         country: data.basicInfo.country,
         city: data.basicInfo.city,
@@ -364,8 +405,16 @@ export function ModernOnboardingContainer({
         linkedinProfile: data.workInfo.linkedinProfile,
         otherSocialLinks: data.workInfo.otherSocialLinks || [],
         personalWebsite: data.workInfo.personalWebsite,
-        openToCollaboration: data.workInfo.openToCollaboration,
-        collaborationInterests: data.workInfo.collaborationInterests,
+
+        // About you — all optional; the API keeps only what was filled in
+        headline: data.aboutYou?.headline,
+        motivation: data.aboutYou?.motivation,
+        lookingFor: data.aboutYou?.lookingFor || [],
+        focusTopics: data.aboutYou?.focusTopics || [],
+        promptId: data.aboutYou?.promptId,
+        promptAnswer: data.aboutYou?.promptAnswer,
+        openToCollaboration: data.aboutYou?.openToCollaboration,
+        collaborationInterests: data.aboutYou?.collaborationInterests,
 
         // Recent work
         recentWork: data.recentWork || [],
@@ -511,6 +560,8 @@ export function ModernOnboardingContainer({
               workTypes={userManagementOptions?.workTypes || []}
               expertiseAreas={userManagementOptions?.expertiseAreas || []}
               communities={userManagementOptions?.communities || []}
+              aboutYou={aboutYou}
+              prompts={prompts}
               {...(userManagementOptions && { userManagementOptions })}
             />
           </ModernContentArea>

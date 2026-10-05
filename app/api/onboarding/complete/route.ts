@@ -6,6 +6,7 @@ import type { ExpertiseArea, WorkType } from "@/generated/prisma"
 import { syncUserSearchRecord } from "@/lib/algolia-user-sync"
 import { captureServer } from "@/lib/analytics/server"
 import { LIMITS } from "@/lib/validation/limits";
+import { aboutYouWrites } from "@/lib/onboarding/about-you"
 
 // Force Node.js runtime for Prisma and Clerk compatibility with Fluid Compute
 export const runtime = 'nodejs'
@@ -59,6 +60,14 @@ const OnboardingSchema = z.object({
   headline: z.string().max(LIMITS.profile.headline).optional(),
   bio: z.string().max(LIMITS.profile.bio).optional(),
   motivation: z.string().max(LIMITS.profile.motivation).optional(),
+  // About you (profile spec D4) — every one optional; only what was filled in is saved.
+  pronouns: z.string().max(LIMITS.profile.pronouns).optional(),
+  languages: z.array(z.string().max(LIMITS.profile.language)).max(10).default([]),
+  lookingFor: z.array(z.string().max(LIMITS.profile.lookingFor)).max(10).default([]),
+  focusTopics: z.array(z.string().max(LIMITS.profile.focusTopic)).max(10).default([]),
+  // A CMS prompt id — checked for shape here; an id with no prompt behind it is never shown.
+  promptId: z.string().regex(/^[\w-]{1,64}$/).optional().or(z.literal("")),
+  promptAnswer: z.string().max(LIMITS.profile.promptAnswer).optional(),
   ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
   country: z.string().max(LIMITS.profile.country).optional(),
   city: z.string().max(LIMITS.profile.city).optional(),
@@ -113,6 +122,7 @@ const OnboardingSchema = z.object({
 /** Build the shared upsert data from validated onboarding input */
 function buildUpsertData(validatedData: z.infer<typeof OnboardingSchema>) {
   return {
+    ...aboutYouWrites(validatedData).profile,
     firstName: validatedData.firstName,
     lastName: validatedData.lastName,
     username: validatedData.username,
@@ -366,6 +376,16 @@ export async function POST(request: NextRequest) {
           throw new EmailConflictError(userId, oldUser?.id ?? null, email)
         }
         throw upsertError
+      }
+
+      // The one prompt the About you step asks, when it has a question and an answer.
+      const { promptAnswer } = aboutYouWrites(validatedData)
+      if (promptAnswer) {
+        await tx.profilePromptAnswer.upsert({
+          where: { userId_promptId: { userId, promptId: promptAnswer.promptId } },
+          update: { answer: promptAnswer.answer },
+          create: { userId, promptId: promptAnswer.promptId, answer: promptAnswer.answer, order: 0 },
+        })
       }
 
       // Create recent work entries

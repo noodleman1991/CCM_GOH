@@ -14,6 +14,16 @@ import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingContent, OnboardingForm } from "../types"
 import { LIMITS } from "@/lib/validation/limits"
 import { CharCounter } from "@/components/ui/char-counter"
+import { ChoiceChips } from "@/components/profile/choice-chips"
+import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
+
+/** The hub's four languages, each in its own words; members can add any other. */
+const SPOKEN_LANGUAGES = [
+  { value: "en", label: "English" },
+  { value: "es", label: "Español" },
+  { value: "fr", label: "Français" },
+  { value: "ar", label: "العربية" },
+]
 
 interface BasicInfoPanelProps {
   form: OnboardingForm
@@ -121,6 +131,9 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
       </div>
 
       <div className="space-y-4">
+        {/* Photo — optional; saved straight to the account (Clerk), like Edit profile */}
+        <ProfilePictureUpload firstName={form.watch("basicInfo.firstName")} lastName={form.watch("basicInfo.lastName")} />
+
         {/* Name Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <FormField
@@ -190,20 +203,38 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           )}
         />
 
-        {/* Headline — a one-line self-description */}
+        {/* Pronouns — optional, in the member's own words */}
         <FormField
           control={form.control}
-          name="basicInfo.headline"
+          name="basicInfo.pronouns"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{content?.fieldLabels?.basicInfo?.headline || t("headline")}</FormLabel>
+              <FormLabel>{t("pronouns")}</FormLabel>
               <FormControl>
-                <Input {...field} value={field.value || ""} placeholder={content?.fieldLabels?.basicInfo?.headlinePlaceholder || t("headlinePlaceholder")} maxLength={LIMITS.profile.headline} />
+                <Input {...field} value={field.value || ""} placeholder={t("pronounsPlaceholder")} maxLength={LIMITS.profile.pronouns} className="max-w-xs" />
               </FormControl>
-                <CharCounter value={field.value} max={LIMITS.profile.headline} />
-              <FormDescription>
-                {content?.basicInfoFieldHints?.headlineHint || t("headlineHint")}
-              </FormDescription>
+              <FormDescription>{t("pronounsHint")}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Languages they speak — the hub's four, or any other */}
+        <FormField
+          control={form.control}
+          name="basicInfo.languages"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("languages")}</FormLabel>
+              <FormDescription>{t("languagesHint")}</FormDescription>
+              <ChoiceChips
+                label={t("languages")}
+                options={SPOKEN_LANGUAGES}
+                value={field.value ?? []}
+                onChange={field.onChange}
+                max={10}
+                other={{ placeholder: t("languagesOther"), addLabel: t("languagesAdd"), maxLength: LIMITS.profile.language }}
+              />
               <FormMessage />
             </FormItem>
           )}
@@ -222,25 +253,6 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                 <CharCounter value={field.value} max={LIMITS.profile.bio} />
               <FormDescription>
                 {content?.basicInfoFieldHints?.bioHint || t("bioHint")}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Motivation — "what brought you here" */}
-        <FormField
-          control={form.control}
-          name="basicInfo.motivation"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{content?.fieldLabels?.basicInfo?.motivation || t("motivation")}</FormLabel>
-              <FormControl>
-                <Textarea {...field} value={field.value || ""} rows={3} placeholder={content?.fieldLabels?.basicInfo?.motivationPlaceholder || t("motivationPlaceholder")} maxLength={LIMITS.profile.motivation} />
-              </FormControl>
-                <CharCounter value={field.value} max={LIMITS.profile.motivation} />
-              <FormDescription>
-                {content?.basicInfoFieldHints?.motivationHint || t("motivationHint")}
               </FormDescription>
               <FormMessage />
             </FormItem>

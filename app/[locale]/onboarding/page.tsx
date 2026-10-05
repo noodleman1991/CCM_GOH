@@ -1,6 +1,8 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { redirect } from "@/i18n/navigation"
-import { getOnboardingCommunities, getOnboardingContent } from "@/lib/content/onboarding"
+import { getActiveProfilePrompts, getOnboardingCommunities, getOnboardingContent } from "@/lib/content/onboarding"
+import { getAboutYouContent } from "@/lib/content/onboarding-about-you"
+import { getLocalizedField } from "@/lib/localization-utils"
 import type { Locale } from "@/lib/content/types"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 import { prisma } from "@/lib/prisma"
@@ -110,6 +112,12 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             username: true,
             email: true,
             bio: true,
+            headline: true,
+            motivation: true,
+            pronouns: true,
+            languages: true,
+            lookingFor: true,
+            focusTopics: true,
             ageGroup: true,
             country: true,
             city: true,
@@ -161,6 +169,12 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             username: clerkUser.username,
             email: clerkUser.primaryEmailAddress?.emailAddress || null,
             bio: null,
+            headline: null,
+            motivation: null,
+            pronouns: null,
+            languages: [],
+            lookingFor: [],
+            focusTopics: [],
             ageGroup: null,
             country: null,
             city: null,
@@ -199,10 +213,17 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
     })
 
     // Load Sanity content and user management options
-    const [content, userManagement] = await Promise.all([
+    const [content, userManagement, aboutYou, activePrompts] = await Promise.all([
         getOnboardingContent(locale as Locale),
-        fetchUserManagementOptionsWithLocale(locale)
+        fetchUserManagementOptionsWithLocale(locale),
+        getAboutYouContent(locale),
+        getActiveProfilePrompts().catch(() => []),
     ])
+    // The prompts a member can pick from in the About you step, in their language.
+    const promptLocale = (['en', 'es', 'fr', 'ar'].includes(locale) ? locale : 'en') as 'en' | 'es' | 'fr' | 'ar'
+    const prompts = activePrompts
+        .map((p) => ({ id: p.id, prompt: getLocalizedField(p.prompt as Record<string, string>, promptLocale, '') || '' }))
+        .filter((p) => p.prompt)
 
     // Fetch communities directly from Prisma/Sanity (avoids HTTP self-call issues)
     let communities: OnboardingCommunity[] = []
@@ -291,8 +312,11 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
     }
 
     // Serialize data for client component
+    // Never the address: the form doesn't need it, so it stays out of the page (user, 2026-10-05).
+    const { email, ...userWithoutEmail } = currentUser
+    void email
     const initialData = {
-        ...currentUser,
+        ...userWithoutEmail,
         communityIds: currentUser.communityMemberships.map(m => m.communityId),
         recentWork: currentUser.recentWork.map(work => ({
             ...work,
@@ -306,6 +330,8 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             initialData={initialData}
             userManagementOptions={{ ...userManagement, communities }}
             sanityContent={content}
+            aboutYou={aboutYou}
+            prompts={prompts}
         />
     )
 }

@@ -150,6 +150,8 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
                   <div className="space-y-0.5 flex-1">
                     <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showEmail || t("profileInfo.showEmail")}</FormLabel>
                     <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.emailHint || t("profileInfo.emailHint")}</FormDescription>
+                    {/* Always true, whatever the CMS says: the address is never in a page (user, 2026-10-05). */}
+                    <p className="text-xs leading-normal text-ccm-sea">{t("profileInfo.emailProtected")}</p>
                   </div>
                   <FormControl>
                     <Switch

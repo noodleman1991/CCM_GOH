@@ -12,18 +12,24 @@ interface OnboardingClientProps {
     initialData: unknown
     userManagementOptions: unknown
     sanityContent: unknown
+    aboutYou: ContainerProps["aboutYou"]
+    prompts: ContainerProps["prompts"]
 }
 
 export function OnboardingClient({
     initialData,
     userManagementOptions,
-    sanityContent
+    sanityContent,
+    aboutYou,
+    prompts
 }: OnboardingClientProps) {
     return (
         <ModernOnboardingContainer
             initialData={initialData as ContainerProps["initialData"]}
             userManagementOptions={userManagementOptions as ContainerProps["userManagementOptions"]}
             sanityContent={sanityContent as ContainerProps["sanityContent"]}
+            aboutYou={aboutYou}
+            prompts={prompts}
         />
     )
 }

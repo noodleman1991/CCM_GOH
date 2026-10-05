@@ -28,6 +28,7 @@ const del = vi.fn();
 const txUpsert = vi.fn();
 const txUserFindUnique = vi.fn();
 const txUserDelete = vi.fn();
+const txPromptUpsert = vi.fn();
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
@@ -45,6 +46,7 @@ vi.mock("@/lib/prisma", () => ({
           delete: (...a: unknown[]) => txUserDelete(...a),
         },
         recentWork: { deleteMany: vi.fn(), createMany: vi.fn() },
+        profilePromptAnswer: { upsert: (...a: unknown[]) => txPromptUpsert(...a) },
         userCommunity: { deleteMany: vi.fn(), createMany: vi.fn() },
         community: { findMany: vi.fn(async () => []) },
       }),
@@ -251,5 +253,36 @@ describe("POST /api/onboarding/complete — happy path", () => {
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining("Clerk"), expect.any(Error));
     // The index write is independent of the Clerk failure.
     expect(syncUserSearchRecord).toHaveBeenCalledWith("user_new", "update");
+  });
+});
+
+describe("POST /api/onboarding/complete — the About you step (profile spec D4)", () => {
+  it("saves the member's own words, and a prompt answer with its question", async () => {
+    const response = await POST(post({
+      ...VALID_BODY,
+      headline: "Listening to rivers",
+      pronouns: "she/her",
+      languages: ["en", "ar"],
+      lookingFor: ["research-partners"],
+      focusTopics: ["eco-anxiety"],
+      promptId: "p1",
+      promptAnswer: "A flood in my town",
+    }));
+    expect(response.status).toBe(200);
+    const data = txUpsert.mock.calls[0][0].update;
+    expect(data).toMatchObject({ headline: "Listening to rivers", pronouns: "she/her", languages: ["en", "ar"], lookingFor: ["research-partners"], focusTopics: ["eco-anxiety"] });
+    expect(txPromptUpsert).toHaveBeenCalledWith(expect.objectContaining({
+      where: { userId_promptId: { userId: "user_new", promptId: "p1" } },
+      create: expect.objectContaining({ userId: "user_new", promptId: "p1", answer: "A flood in my town", order: 0 }),
+    }));
+  });
+
+  it("leaves what the member skipped untouched — no empty overwrites, no half a prompt", async () => {
+    await POST(post({ ...VALID_BODY, pronouns: "", languages: [], lookingFor: [], promptId: "p1", promptAnswer: "  " }));
+    const data = txUpsert.mock.calls[0][0].update;
+    expect(data).not.toHaveProperty("pronouns");
+    expect(data).not.toHaveProperty("languages");
+    expect(data).not.toHaveProperty("lookingFor");
+    expect(txPromptUpsert).not.toHaveBeenCalled();
   });
 });

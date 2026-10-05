@@ -8,6 +8,7 @@ import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getAboutYouContent } from '@/lib/content/onboarding-about-you'
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('profile.edit')
@@ -39,7 +40,10 @@ export default async function ProfileEditPage({
     }
 
     // Fetch user management options from Sanity (with fallback)
-    const userManagementOptions = await fetchUserManagementOptionsWithLocale(locale)
+    const [userManagementOptions, aboutYou] = await Promise.all([
+        fetchUserManagementOptionsWithLocale(locale),
+        getAboutYouContent(locale),
+    ])
 
     // Fetch communities directly from Prisma (avoid localhost fetch issues in SSR)
     let communities: Array<{
@@ -75,6 +79,7 @@ export default async function ProfileEditPage({
             {/* Pass Sanity data to form with fallback support */}
             <ProfileEditForm
                 initialTab={tab}
+                aboutYouOptions={{ lookingFor: aboutYou.lookingFor, focusTopics: aboutYou.focusTopics }}
                 userManagementOptions={userManagementOptions}
                 // Pre-existing shape gap: the form declares a Sanity-shaped
                 // communities prop while this page has always passed the Prisma

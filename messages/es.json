@@ -1743,7 +1743,14 @@
         "headlineHint": "Una línea que te resuma: la gente la ve primero.",
         "motivation": "¿Qué te trajo aquí?",
         "motivationPlaceholder": "Qué te atrae del cambio climático y la salud mental…",
-        "motivationHint": "Opcional. Tu historia ayuda a otros a conectar contigo."
+        "motivationHint": "Opcional. Tu historia ayuda a otros a conectar contigo.",
+        "pronouns": "Pronombres",
+        "pronounsPlaceholder": "p. ej., ella, elle, él",
+        "pronounsHint": "Opcional: se muestra junto a tu nombre.",
+        "languages": "Idiomas que hablas",
+        "languagesHint": "Elige los que correspondan o añade otro.",
+        "languagesOther": "Otro idioma",
+        "languagesAdd": "Añadir"
       },
       "workInfo": {
         "title": "Información Laboral",
@@ -1799,6 +1806,20 @@
         "linkedinPlaceholder": "https://linkedin.com/in/username",
         "workTypeFallback": "Tipo de trabajo {key}",
         "expertiseFallback": "Especialización {key}"
+      },
+      "aboutYou": {
+        "title": "Sobre ti",
+        "tagline": "Con tus palabras",
+        "description": "Unas palabras con tu propia voz: es lo primero que la gente lee en tu perfil. Todo aquí es opcional.",
+        "lookingFor": "¿Qué buscas?",
+        "lookingForHint": "Elige hasta {max}.",
+        "focusTopics": "Tus áreas de interés",
+        "focusTopicsHint": "Los temas que más te importan, hasta {max}.",
+        "promptIntro": "Elige una pregunta y respóndela con tus palabras.",
+        "promptQuestion": "Pregunta",
+        "promptPlaceholder": "Elige una pregunta",
+        "promptAnswer": "Tu respuesta",
+        "skipHint": "Puedes saltarte este paso y añadir cualquier cosa más tarde desde Editar perfil."
       },
       "recentWork": {
         "title": "Trabajo Reciente",
@@ -1858,8 +1879,8 @@
         "profileInfo": {
           "title": "Visibilidad de Información",
           "description": "Elige qué información mostrar en tu perfil",
-          "showEmail": "Mostrar dirección de correo electrónico",
-          "emailHint": "Mostrar tu dirección de correo electrónico en tu perfil",
+          "showEmail": "Permitir que otros miembros pidan ver mi correo",
+          "emailHint": "Tu correo nunca se muestra en el sitio.",
           "showPhone": "Mostrar número de teléfono",
           "phoneHint": "Mostrar tu número de teléfono en tu perfil",
           "showWork": "Mostrar información laboral",
@@ -1867,7 +1888,8 @@
           "showSocial": "Mostrar enlaces sociales",
           "socialHint": "Mostrar tu sitio web y enlaces de redes sociales",
           "showLocation": "Mostrar ubicación",
-          "locationHint": "Mostrar información de tu país y ciudad"
+          "locationHint": "Mostrar información de tu país y ciudad",
+          "emailProtected": "Si lo activas, la persona debe superar una verificación humana antes de ver tu correo: nunca a bots, nunca en la página."
         },
         "continue": "Continuar",
         "tagline": "Controla tu visibilidad"

@@ -144,6 +144,7 @@ export interface Config {
     onboardingRecentWork: OnboardingRecentWork;
     onboardingPrivacy: OnboardingPrivacy;
     onboardingReview: OnboardingReview;
+    onboardingAboutYou: OnboardingAboutYou;
     moderationSettings: ModerationSetting;
     eventSuggestions: EventSuggestion;
     collaborationSettings: CollaborationSetting;
@@ -158,6 +159,7 @@ export interface Config {
     onboardingRecentWork: OnboardingRecentWorkSelect<false> | OnboardingRecentWorkSelect<true>;
     onboardingPrivacy: OnboardingPrivacySelect<false> | OnboardingPrivacySelect<true>;
     onboardingReview: OnboardingReviewSelect<false> | OnboardingReviewSelect<true>;
+    onboardingAboutYou: OnboardingAboutYouSelect<false> | OnboardingAboutYouSelect<true>;
     moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
     eventSuggestions: EventSuggestionsSelect<false> | EventSuggestionsSelect<true>;
     collaborationSettings: CollaborationSettingsSelect<false> | CollaborationSettingsSelect<true>;
@@ -6784,7 +6786,7 @@ export interface OnboardingContent {
   createdAt?: string | null;
 }
 /**
- * Step 1: name, username, headline, bio and location — labels, hints and validation messages.
+ * Step 1: name, username, pronouns, languages, bio and location — labels, hints and validation messages.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "onboardingBasicInfo".
@@ -6903,7 +6905,7 @@ export interface OnboardingWorkInfo {
   createdAt?: string | null;
 }
 /**
- * Step 3: the recent-work list and the form that adds to it.
+ * Step 4: the recent-work list and the form that adds to it.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "onboardingRecentWork".
@@ -6953,7 +6955,7 @@ export interface OnboardingRecentWork {
   createdAt?: string | null;
 }
 /**
- * Step 4: searchability, profile visibility and the per-field privacy toggles.
+ * Step 5: searchability, profile visibility and the per-field privacy toggles.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "onboardingPrivacy".
@@ -7007,7 +7009,7 @@ export interface OnboardingPrivacy {
   createdAt?: string | null;
 }
 /**
- * Step 5: the review summary labels and the submit button.
+ * Step 6: the review summary labels and the submit button.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "onboardingReview".
@@ -7060,6 +7062,61 @@ export interface OnboardingReview {
       submissionError?: string | null;
     };
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Step 3: headline, what brought them here, what they're looking for, focus areas and one prompt. Edit the choices members pick from here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingAboutYou".
+ */
+export interface OnboardingAboutYou {
+  id: number;
+  /**
+   * The step's heading. Empty: "About you".
+   */
+  title?: string | null;
+  /**
+   * One or two lines under the heading. Empty: the standard wording.
+   */
+  description?: string | null;
+  /**
+   * What members can say they're looking for, e.g. research partners, a mentor, funding.
+   */
+  lookingForOptions?:
+    | {
+        /**
+         * A short fixed id, like research-partners. Don't change it once members have chosen it — it's what their profile stores.
+         */
+        value: string;
+        /**
+         * What members see, in each language.
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The climate and mental-health themes members can pick, e.g. eco-anxiety, young people.
+   */
+  focusTopicOptions?:
+    | {
+        /**
+         * A short fixed id, like research-partners. Don't change it once members have chosen it — it's what their profile stores.
+         */
+        value: string;
+        /**
+         * What members see, in each language.
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The line above the prompt picker. Empty: "Pick a question and answer it in your own words."
+   */
+  promptIntro?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -8012,6 +8069,32 @@ export interface OnboardingReviewSelect<T extends boolean = true> {
               submissionError?: T;
             };
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingAboutYou_select".
+ */
+export interface OnboardingAboutYouSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  lookingForOptions?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  focusTopicOptions?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  promptIntro?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

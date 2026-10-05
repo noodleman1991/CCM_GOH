@@ -3,6 +3,7 @@ import Markdown from "react-markdown";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { AnsweredPrompt } from "@/lib/community/profile-prompts";
+import { optionLabel, type AboutYouOption } from "@/lib/onboarding/about-you-options";
 import { OwnerAddLink, ProfileSection, SubHeading } from "./owner-add-link";
 
 type AboutUser = {
@@ -20,7 +21,18 @@ type AboutUser = {
  * lived-experience statement only when they chose to show it (redacted
  * upstream otherwise).
  */
-export async function AboutSection({ user, prompts, addHref }: { user: AboutUser; prompts: AnsweredPrompt[]; addHref: string | null }) {
+export async function AboutSection({
+  user,
+  prompts,
+  options,
+  addHref,
+}: {
+  user: AboutUser;
+  prompts: AnsweredPrompt[];
+  /** The team's choices, to show a stored value ("research-partners") in the reader's words. */
+  options: { lookingFor: AboutYouOption[]; focusTopics: AboutYouOption[] };
+  addHref: string | null;
+}) {
   const t = await getTranslations("profile");
   const chips = (items: string[], tone: "sky" | "outline") => (
     <div className="flex flex-wrap gap-2">
@@ -59,13 +71,13 @@ export async function AboutSection({ user, prompts, addHref }: { user: AboutUser
             {user.lookingFor.length > 0 && (
               <div>
                 <SubHeading>{t("lookingFor")}</SubHeading>
-                {chips(user.lookingFor, "outline")}
+                {chips(user.lookingFor.map((v) => optionLabel(options.lookingFor, v)), "outline")}
               </div>
             )}
             {user.focusTopics.length > 0 && (
               <div>
                 <SubHeading>{t("focusTopics")}</SubHeading>
-                {chips(user.focusTopics, "sky")}
+                {chips(user.focusTopics.map((v) => optionLabel(options.focusTopics, v)), "sky")}
               </div>
             )}
           </div>

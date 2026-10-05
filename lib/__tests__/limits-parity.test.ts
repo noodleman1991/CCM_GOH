@@ -66,9 +66,13 @@ describe("server schemas follow LIMITS", () => {
     const schema = createOnboardingSchema();
     const basic = { firstName: "A", lastName: "B", username: "abc", country: "X", city: "Y", preferredLanguage: "EN" };
     const ok = (o: Record<string, unknown>) => schema.shape.basicInfo.safeParse({ ...basic, ...o }).success;
-    acceptsExactly((t) => ok({ headline: t }), LIMITS.profile.headline, "headline");
     acceptsExactly((t) => ok({ bio: t }), LIMITS.profile.bio, "bio");
-    acceptsExactly((t) => ok({ motivation: t }), LIMITS.profile.motivation, "motivation");
+    acceptsExactly((t) => ok({ pronouns: t }), LIMITS.profile.pronouns, "pronouns");
+    // Headline and motivation are asked in the About you step (dashboard/profile spec D4).
+    const about = (o: Record<string, unknown>) => schema.shape.aboutYou.safeParse(o).success;
+    acceptsExactly((t) => about({ headline: t }), LIMITS.profile.headline, "headline");
+    acceptsExactly((t) => about({ motivation: t }), LIMITS.profile.motivation, "motivation");
+    acceptsExactly((t) => about({ collaborationInterests: t }), LIMITS.profile.collaborationInterests, "collaboration interests");
     const work = (o: Record<string, unknown>) => schema.shape.recentWork.safeParse([{ title: "t", description: "d", isOngoing: true, startDate: "2025-01", ...o }]).success;
     acceptsExactly((t) => work({ title: t }), LIMITS.recentWork.title, "work title");
     acceptsExactly((t) => work({ description: t }), LIMITS.recentWork.description, "work description");
@@ -109,7 +113,8 @@ describe("inputs carry the same cap as the schema", () => {
     ["components/forms/lived-experience-form.tsx", ["LIMITS.livedExperience.title", "LIMITS.livedExperience.description", "LIMITS.livedExperience.issue", "LIMITS.livedExperience.personContext"]],
     ["components/forms/research-output-form.tsx", ["LIMITS.researchOutput.title", "LIMITS.researchOutput.excerpt"]],
     ["components/blocks/profile/profile-edit-form.tsx", ["LIMITS.profile.headline", "LIMITS.profile.bio", "LIMITS.profile.workBio"]],
-    ["components/onboarding/panels/basic-info-panel.tsx", ["LIMITS.profile.headline", "LIMITS.profile.bio", "LIMITS.profile.motivation"]],
+    ["components/onboarding/panels/basic-info-panel.tsx", ["LIMITS.profile.bio", "LIMITS.profile.pronouns"]],
+    ["components/onboarding/panels/about-you-panel.tsx", ["LIMITS.profile.headline", "LIMITS.profile.motivation", "LIMITS.profile.promptAnswer", "LIMITS.profile.collaborationInterests"]],
     ["components/onboarding/panels/recent-work-panel.tsx", ["LIMITS.recentWork.title", "LIMITS.recentWork.description"]],
   ] as const)("%s", (f, refs) => {
     const src = read(f);

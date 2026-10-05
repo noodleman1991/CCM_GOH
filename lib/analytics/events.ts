@@ -61,7 +61,7 @@ export type AnalyticsEvents = {
   sign_up_completed: Record<string, never>; // server (Clerk webhook)
   onboarding_step_viewed: {
     step_index: number;
-    step_name: "welcome" | "basic_info" | "work_info" | "recent_work" | "privacy" | "review";
+    step_name: "welcome" | "basic_info" | "work_info" | "about_you" | "recent_work" | "privacy" | "review";
   };
   onboarding_completed: { waived: boolean }; // server
   newsletter_subscribed: { source: "footer" | "inline" }; // server, anonymous
