@@ -16,7 +16,8 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { Plus } from 'lucide-react'
-import { FEATURES } from '@/lib/features'
+import { getCollaborationAccessFor } from '@/lib/collaboration/access-server'
+import { getActor } from '@/lib/authz'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
@@ -73,7 +74,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
   // §4.6 collab space: Projects and Events panels (People keeps its own
   // data path below). Both degrade to empty lists on fetch failure.
-  const [tCollab, tEvents, projects, events] = await Promise.all([
+  const [tCollab, tEvents, projects, events, access] = await Promise.all([
     getTranslations({ locale, namespace: 'collabSpace' }),
     getTranslations({ locale, namespace: 'events' }),
     getPublicProjects().catch(() => []),
@@ -81,6 +82,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     getAllApprovedEvents()
       .then((all) => all.filter((e) => e.startAt && isUpcoming({ startAt: e.startAt, endAt: e.endAt }, new Date())).slice(0, 12))
       .catch(() => []),
+    getActor().then((actor) => getCollaborationAccessFor(actor)),
   ])
 
   const eventLabels = {
@@ -131,7 +133,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
             {tCollab('header')}
           </h1>
         </div>
-        {FEATURES.engagement && <CreateCollaborationButton />}
+        {access.workspaces.create && <CreateCollaborationButton />}
       </div>
       <CollabTabs projects={projectsPanel} people={peoplePanel} events={eventsPanel} />
     </PageContainer>

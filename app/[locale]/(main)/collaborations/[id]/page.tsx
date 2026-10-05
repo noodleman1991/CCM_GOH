@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { redirect } from "@/i18n/navigation";
-import { FEATURES } from "@/lib/features";
+import { getCollaborationAccessFor } from "@/lib/collaboration/access-server";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getCollaboration, getMembershipRole, getPlan, getDocs, getOutputs, refreshOutputStatuses, getActivity } from "@/lib/collaboration/service";
@@ -37,7 +37,6 @@ export default async function CollaborationDetailPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const locale = await getLocale();
-  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const { id } = await params;
   const sp = await searchParams;
   const forcePublic = sp?.view === "public";
@@ -54,6 +53,9 @@ export default async function CollaborationDetailPage({
   const { userId } = await auth();
   const actor = await getActor();
   const myRole = userId ? await getMembershipRole(id, userId) : null;
+  // Workspaces closed to this viewer (Settings → Collaboration) — but anyone
+  // already in this workspace can always open it (spec C7).
+  if (!myRole && !(await getCollaborationAccessFor(actor)).workspaces.see) redirect({ href: "/", locale });
 
   // Non-members (and non-staff) get the PUBLIC project page, not the workspace shell.
   // Members/staff can also preview the public page via ?view=public.

@@ -20,13 +20,14 @@ type Msg = { id: string; senderId: string; body: string; createdAt: string; dele
 const listFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ conversations: ConversationSummary[] }>);
 const msgFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ messages: Msg[] }>);
 
-export function Inbox({ currentUserId }: { currentUserId: string }) {
+/** `show`: which tabs Settings → Collaboration has opened for this member. */
+export function Inbox({ currentUserId, show = { messages: true, notifications: true } }: { currentUserId: string; show?: { messages: boolean; notifications: boolean } }) {
   const t = useTranslations("messages");
   const tn = useTranslations("notifications");
   const searchParams = useSearchParams();
   const [active, setActive] = useState<string | null>(searchParams.get("c"));
 
-  const { data: listData, mutate: mutateList } = useSWR("/api/messages", listFetcher, {
+  const { data: listData, mutate: mutateList } = useSWR(show.messages ? "/api/messages" : null, listFetcher, {
     refreshInterval: 30_000,
     refreshWhenHidden: false,
   });
@@ -34,11 +35,13 @@ export function Inbox({ currentUserId }: { currentUserId: string }) {
   const activeConvo = conversations.find((c) => c.id === active) ?? null;
 
   return (
-    <Tabs defaultValue="messages" className="gap-4">
-      <TabsList>
-        <TabsTrigger value="messages">{t("title")}</TabsTrigger>
-        <TabsTrigger value="notifications">{tn("title")}</TabsTrigger>
-      </TabsList>
+    <Tabs defaultValue={!show.messages || searchParams.get("tab") === "notifications" ? "notifications" : "messages"} className="gap-4">
+      {show.messages && show.notifications && (
+        <TabsList>
+          <TabsTrigger value="messages">{t("title")}</TabsTrigger>
+          <TabsTrigger value="notifications">{tn("title")}</TabsTrigger>
+        </TabsList>
+      )}
 
       <TabsContent value="messages">
         <div className="grid h-[75dvh] gap-4 lg:grid-cols-[300px_1fr]">

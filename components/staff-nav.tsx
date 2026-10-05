@@ -11,13 +11,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FEATURES } from "@/lib/features";
+import { useCollaboration } from "@/hooks/use-collaboration";
 import { jsonFetcher } from "@/lib/swr";
 
 
 /** Staff-only sidebar group (Moderation + Broadcast). Hidden for non-staff. */
 export function StaffNav() {
   const t = useTranslations("navigation");
+  const access = useCollaboration();
   const { data } = useSWR<{ isStaff: boolean; reviewCount?: number }>("/api/me/role", jsonFetcher, { revalidateOnFocus: false });
   if (!data?.isStaff) return null;
 
@@ -41,7 +42,7 @@ export function StaffNav() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        {FEATURES.engagement && (
+        {access.notifications && (
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip={t("broadcast")}>
               <Link href="/moderation/broadcast">

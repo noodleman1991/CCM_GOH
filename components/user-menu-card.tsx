@@ -17,7 +17,7 @@ import {
 import { UnreadBadge } from "@/components/unread-badge";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { FEATURES } from "@/lib/features";
+import { useCollaboration } from "@/hooks/use-collaboration";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 
 /**
@@ -39,6 +39,9 @@ export function UserMenuCard() {
   // it only after hydration so the server render and the first client render
   // agree; otherwise the name/email/initials swap under React and mismatch.
   const hydrated = useHydrated();
+  const access = useCollaboration();
+  // The Messages page also holds Notifications; it opens when either is on.
+  const inbox = access.messages || access.notifications;
   const identity = hydrated ? user : undefined;
 
   const row =
@@ -57,8 +60,8 @@ export function UserMenuCard() {
     badge?: ReactNode
   }[] = [
     { href: "/dashboard", icon: LayoutDashboard, label: t("userDashboard") },
-    ...(FEATURES.engagement
-      ? [{ href: "/messages", icon: MessageSquare, label: t("userMessages"), badge: <UnreadBadge /> }]
+    ...(inbox
+      ? [{ href: "/messages", icon: MessageSquare, label: t(access.messages ? "userMessages" : "userNotifications"), badge: <UnreadBadge /> }]
       : []),
     { href: "/dashboard/settings", icon: Settings, label: t("userSettings") },
   ];
@@ -110,13 +113,13 @@ export function UserMenuCard() {
                 {identity?.primaryEmailAddress?.emailAddress ?? ""}
               </p>
             </div>
-            {!accountOpen && FEATURES.engagement && (
+            {!accountOpen && inbox && (
               <span className="ms-auto">
                 <UnreadBadge />
               </span>
             )}
             <ChevronDown
-              className={`size-4 shrink-0 text-sidebar-foreground/70 transition-transform duration-200 motion-reduce:transition-none ${accountOpen ? "rotate-180" : ""} ${!accountOpen && FEATURES.engagement ? "" : "ms-auto"}`}
+              className={`size-4 shrink-0 text-sidebar-foreground/70 transition-transform duration-200 motion-reduce:transition-none ${accountOpen ? "rotate-180" : ""} ${!accountOpen && inbox ? "" : "ms-auto"}`}
               aria-hidden
             />
           </button>

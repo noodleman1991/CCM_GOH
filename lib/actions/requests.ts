@@ -9,7 +9,7 @@ import { structuredSnippet } from "@/lib/notifications/structured";
 import { emitLifecycle } from "@/lib/notifications/emit";
 import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
 import { nextContactRequestState } from "@/lib/requests/contact-state";
-import { FEATURES } from "@/lib/features";
+import { getCollaborationAccessFor } from "@/lib/collaboration/access-server";
 
 /**
  * Machine-readable failure kinds. When `code` is set, `error` carries a
@@ -366,8 +366,8 @@ export async function requestContact(
   recipientId: string,
   message?: string
 ): Promise<Result<{ status: "PENDING" | "ACCEPTED" }>> {
-  if (!FEATURES.engagement) return { ok: false, error: "requests.errors.unavailable", code: "FEATURE_DISABLED" };
   const actor = await getActor();
+  if (!(await getCollaborationAccessFor(actor)).people) return { ok: false, error: "requests.errors.unavailable", code: "FEATURE_DISABLED" };
   if (!actor) return { ok: false, error: "Sign in to send a request." };
   if (recipientId === actor.id) return { ok: false, error: "That's you." };
   const msg = messageSchema.safeParse(message);

@@ -18,7 +18,7 @@ import { heading } from '@/lib/design-tokens'
 import { PageContainer } from '@/components/ui/page-container'
 import { SearchInput } from '@/components/ui/search-input'
 import { FolderKanban } from 'lucide-react'
-import { FEATURES } from '@/lib/features'
+import { useCollaboration } from '@/hooks/use-collaboration'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
 import type { RequestStatus } from '@/generated/prisma'
 
@@ -91,6 +91,7 @@ export function CollaboratePageClient({
   const t = useTranslations('collaborate')
   const tNav = useTranslations('navigation')
   const tCommon = useTranslations('common')
+  const access = useCollaboration()
   const router = useRouter()
   const isRTL = locale === 'ar'
 
@@ -191,8 +192,8 @@ export function CollaboratePageClient({
           <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
         </div>
-        {/* Workspaces UI hidden in the intermediate release; infra stays. */}
-        {FEATURES.engagement && (
+        {/* Workspaces: only for the audience opened in Settings → Collaboration. */}
+        {access.workspaces.see && (
           <Button asChild variant="outline" className="flex-shrink-0">
             <Link href="/collaborations" className="flex items-center gap-2">
               <FolderKanban className="size-4" />

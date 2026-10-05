@@ -18,6 +18,10 @@ const on = (v: string | undefined) => v === "true" || v === "1";
 
 export const FEATURES = {
   /**
+   * NO LONGER READ (2026-10-04): what members can use is set in the admin,
+   * Settings → Collaboration (lib/collaboration/access.ts). The env variable
+   * still works as a local dev override there (`devOverride()`).
+   *
    * Direct messages, notifications, and collaboration workspaces UI.
    * Hides: sidebar "Workspaces", avatar Messages/Notifications, the header
    * notification bell, and the collaborate-page "Start a workspace" CTA.

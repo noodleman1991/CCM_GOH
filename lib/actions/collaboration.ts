@@ -10,7 +10,7 @@ import { authorizeCollab, getMembershipRole } from "@/lib/collaboration/service"
 import { seedWorkspace } from "@/lib/collaboration/seed";
 import type { CollaborationRole } from "@/generated/prisma";
 import { r2Configured, copyObject, deleteObject, rekeyForVisibility } from "@/lib/r2";
-import { FEATURES } from "@/lib/features";
+import { getCollaborationAccessFor } from "@/lib/collaboration/access-server";
 import { LIMITS } from "@/lib/validation/limits";
 import { lengthProblem } from "@/lib/collaboration/errors";
 
@@ -24,10 +24,10 @@ const createSchema = z.object({
 
 /** Create a workspace — the creator becomes OWNER. */
 export async function createCollaboration(input: z.infer<typeof createSchema>): Promise<Result<{ id: string }>> {
-  // Flag OFF means no rows: the pages redirect home, so a workspace created
-  // here would be unreachable — it was being created anyway (Slice 6).
-  if (!FEATURES.engagement) return { ok: false, error: "This feature isn't available yet." };
   const actor = await getActor();
+  // Workspaces closed to this member (Settings → Collaboration) means no rows:
+  // the pages redirect home, so a workspace created here would be unreachable.
+  if (!(await getCollaborationAccessFor(actor)).workspaces.create) return { ok: false, error: "This feature isn't available yet." };
   if (!actor) return { ok: false, error: "Sign in to create a workspace." };
   const parsed = createSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };

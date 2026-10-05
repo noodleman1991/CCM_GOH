@@ -21,6 +21,7 @@ import {
   MessageSquare
 } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
+import { useCollaboration } from '@/hooks/use-collaboration'
 import { ContributionsCard } from '@/components/contributions/contributions-card'
 import type { Contribution, ContributionStatus } from '@/lib/contributions/model'
 import type { SupportedLocale } from '@/types/prisma'
@@ -103,6 +104,7 @@ export function DashboardClient({
   locale
 }: DashboardClientProps) {
   const t = useTranslations('dashboard')
+  const access = useCollaboration()
   const rtl = isRTL(locale)
 
   const displayName = user.firstName && user.lastName
@@ -371,6 +373,8 @@ export function DashboardClient({
                   </CardContent>
                 </Card>
 
+                {/* The Messages page opens with messages or notifications (Settings → Collaboration). */}
+                {(access.messages || access.notifications) && (
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
                     <div className={cn("flex items-center gap-3")}>
@@ -392,6 +396,7 @@ export function DashboardClient({
                     </Button>
                   </CardContent>
                 </Card>
+                )}
               </div>
             </div>
 

@@ -22,7 +22,7 @@ import { startConversation } from '@/lib/actions/messaging'
 import { requestContact } from '@/lib/actions/requests'
 import type { LocalizedUser } from '@/types/prisma'
 import type { RequestStatus } from '@/generated/prisma'
-import { FEATURES } from '@/lib/features'
+import { useCollaboration } from '@/hooks/use-collaboration'
 
 interface CollaborateUserCardProps {
   /**
@@ -71,6 +71,7 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
   const isRTL = locale === 'ar'
   const router = useRouter()
   const { isSignedIn } = useUser()
+  const access = useCollaboration()
   const [pending, startAction] = useTransition()
   // Seeded from the server-read status. A DECLINED request deliberately shows
   // a fresh button: the action enforces the cooldown and answers with a
@@ -277,9 +278,10 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
               </div>
             )}
 
-            {/* Actions: Message + Connect (§4.6) — signed-in only */}
-            {mounted && isSignedIn && FEATURES.engagement && (
+            {/* Actions: Message + Connect (§4.6) — signed-in only, each as Settings → Collaboration allows */}
+            {mounted && isSignedIn && (access.messages || access.people) && (
               <div className="flex gap-2 border-t pt-3">
+                {access.messages && (
                 <Button
                   size="sm"
                   variant="outline"
@@ -290,6 +292,8 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
                   <MessageCircle className="size-3.5" aria-hidden />
                   {tCollab('message')}
                 </Button>
+                )}
+                {access.people && (
                 <Button
                   size="sm"
                   variant="ghost"
@@ -304,6 +308,7 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
                       ? tCollab('requested')
                       : tCollab('connect')}
                 </Button>
+                )}
               </div>
             )}
         </CardContent>

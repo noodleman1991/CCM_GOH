@@ -27,7 +27,6 @@ import { useLocale, useTranslations } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
-import { FEATURES } from "@/lib/features"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { StaffNav } from "@/components/staff-nav"

@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { FEATURES } from "@/lib/features";
+import { useCollaboration } from "@/hooks/use-collaboration";
 import { useTranslations } from "next-intl";
 
 const countFetcher = (url: string) =>
@@ -19,8 +19,9 @@ export function NotificationDot({ children }: { children: React.ReactNode }) {
   const t = useTranslations('notifications');
   const { isSignedIn } = useAuth();
   const hydrated = useHydrated();
+  const access = useCollaboration();
   const { data } = useSWR(
-    FEATURES.engagement && hydrated && isSignedIn ? "/api/notifications" : null,
+    (access.notifications || access.messages) && hydrated && isSignedIn ? "/api/notifications" : null,
     countFetcher,
     { refreshInterval: 60_000, refreshWhenHidden: false, revalidateOnFocus: true }
   );

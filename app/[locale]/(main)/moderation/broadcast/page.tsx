@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "@/i18n/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getActor, isStaff } from "@/lib/authz";
-import { FEATURES } from "@/lib/features";
+import { getCollaborationAccessFor } from "@/lib/collaboration/access-server";
 import { prisma } from "@/lib/prisma";
 import { BroadcastForm } from "@/components/notifications/broadcast-form";
 
@@ -21,8 +21,9 @@ export async function generateMetadata({
 export default async function BroadcastPage() {
   const locale = await getLocale();
   const tMod = await getTranslations("moderation");
-  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const actor = await getActor();
+  // A broadcast lands in members' notifications, so it needs them switched on.
+  if (!(await getCollaborationAccessFor(actor)).notifications) redirect({ href: "/", locale });
   if (!isStaff(actor)) redirect({ href: "/", locale });
 
   const communities = await prisma.community.findMany({

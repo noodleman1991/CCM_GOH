@@ -5,7 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { FolderPlus, Search, UsersRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSearchStore } from "@/stores/search-store";
-import { FEATURES } from "@/lib/features";
+import { useCollaboration } from "@/hooks/use-collaboration";
 import { useSidebar } from "@/components/ui/sidebar";
 
 /**
@@ -18,6 +18,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 export function SidebarQuickActions() {
   const t = useTranslations("navigation");
   const { setOpenMobile } = useSidebar();
+  const access = useCollaboration();
   // useAuth(), NOT useUser(): <ClerkProvider dynamic> populates the session on
   // the server, so this resolves during SSR and the hrefs come out correct in
   // the HTML. useUser() loads the User resource client-side only, so branching
@@ -47,9 +48,9 @@ export function SidebarQuickActions() {
         <UsersRound className="size-4" aria-hidden />
         {t("quickFindPeople")}
       </Link>
-      {/* Projects live behind the engagement programme flag; with it off the
-          page bounces to the homepage, so the button is not offered at all. */}
-      {FEATURES.engagement && (
+      {/* Offered only to the workspace audience in Settings → Collaboration;
+          for anyone else the page bounces to the homepage. */}
+      {access.workspaces.create && (
         <Link href={gate("/collaborations")} className={item} onClick={close}>
           <FolderPlus className="size-4" aria-hidden />
           {t("quickStartProject")}

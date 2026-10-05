@@ -59,7 +59,7 @@ export async function loadPostHog(opts: LoadOptions): Promise<PostHog | null> {
     cross_subdomain_cookie: false,
     secure_cookie: true,
     disable_surveys: true,
-    // Release flags stay in lib/features.ts (design §7), so the /flags request
+    // Release flags live in Settings → Collaboration (lib/collaboration/access.ts), not PostHog (design §7), so the /flags request
     // is skipped: one call less per load, and no late response writing
     // `$feature_flag…` back into storage after a decline has wiped it
     // (observed in Chrome, 2026-09-17).
