@@ -28,6 +28,11 @@ describe("the first page a member opens", () => {
     expect(applyStaffRoleInvite).toHaveBeenCalledWith("u1", "Lead@Example.org");
   });
 
+  it("starts the profile members-only, like every other way in", async () => {
+    await ensureUserRow("u1");
+    expect(create.mock.calls[0][0].data.profileVisibility).toBe("MEMBERS");
+  });
+
   it("leaves an existing row alone", async () => {
     findUnique.mockResolvedValue({ id: "u1" });
     await ensureUserRow("u1");

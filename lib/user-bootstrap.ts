@@ -38,7 +38,7 @@ export async function ensureUserRow(userId: string): Promise<boolean> {
         workTypes: [],
         expertiseAreas: [],
         isSearchable: true,
-        profileVisibility: "PUBLIC",
+        profileVisibility: "MEMBERS", // members-only by default, like the webhook and onboarding (user, 2026-09-22)
         showEmail: false,
         showPhoneNumber: false,
         showWorkDetails: true,
