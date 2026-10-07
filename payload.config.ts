@@ -57,6 +57,11 @@ export default buildConfig({
       beforeLogin: ["@/payload/components/clerk-sign-in#ClerkSignIn"],
       // The hub logo at the top of the side panel and the phone menu drawer.
       beforeNavLinks: ["@/payload/components/brand-logo#BrandNavLogo"],
+      // Settings → Members & roles, admins only (payload/components/members-roles-view.tsx).
+      afterNavLinks: ["@/payload/components/members-roles-view#MembersNavLink"],
+      views: {
+        members: { Component: "@/payload/components/members-roles-view#MembersRolesView", path: "/members" },
+      },
       // The review queue above the collection list (payload/components/editor-dashboard.tsx).
       beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],
       // The hub's "Report a problem" bubble, on every signed-in admin page.
