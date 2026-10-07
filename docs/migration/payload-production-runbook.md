@@ -533,3 +533,26 @@ What to watch (weekly): `scripts/with-prod-env.sh pnpm exec tsx scripts/collabor
 Notes:
 - Email still only reaches the one verified Resend address until the domain is verified; the in-hub notifications don't depend on it.
 - **User roles**: shown read-only in Admin → Users (admins only). Team editor/admin are set with `pnpm user:role -- --email=… --role=team_editor --execute --env=.env` (after the person signs in once); community leads are set on each regional community's *Community leads* field.
+
+## 2026-10-07 dashboard, profiles and onboarding
+
+What shipped (spec `docs/superpowers/specs/2026-10-05-dashboard-profile-onboarding-design.md`):
+- **Dashboard** — one of everything: a greeting with one next step for the profile (the ring), **Your week** (events you're going to, tasks, anything sent back, soonest first), events coming up in your community with RSVP, your community band (or how to join one), **For you** as cards, and the contributions card. Quick Actions, Recent Work, the news box, the Join card and the "17% complete" band are gone; each of their destinations is in the sidebar or the account menu.
+- **Profiles** — one page in four chapters: **About** (the member's own words, prompts, what they're looking for), **Work** (skills once, recent work, links), **On the hub** (what they've shared, events they organise, public workspaces) and **Communities**. The header has one line of facts. The statistics card and the repeated skills, work and community blocks are gone. Owners see an *Add…* link in each empty chapter and **See it as others do**. ORCID now follows the member's *show my links* setting.
+- **Onboarding** — a new optional **About you** step (headline, what brought you here, looking for, focus areas, one prompt, open to collaborate); basic info adds a photo, pronouns and languages. The privacy step says plainly that emails are never shown on the site. Edit profile offers the same choices, and the dashboard's next step opens the right tab.
+- **Fixed:** saving Edit profile erased the member's headline, pronouns, what brought them here, looking for, focus areas, open to collaborate, lived experience and ORCID (the form never sent them); members without an age group couldn't save Edit profile at all.
+- **Arabic type:** Lalezar for headings only; buttons, tabs, chips, the sidebar and small labels in Tajawal; no faked bold.
+- **Settings → Members & roles** (`/admin/members`, admins only): find a member by name or username and change their role (member / team editor / admin) with a confirm step. An admin can't change their own role and the last admin can't be demoted; every change is logged. Replaces `pnpm user:role` for people who have signed in; the script is still how to reserve a role for someone who hasn't.
+
+Migration (additive, runs on deploy): `20261005_081920_onboarding_about_you` — new tables for the **Onboarding → Step 3: About you** global only.
+
+After the push:
+1. `/admin` loads; **Settings → Step 3: About you** opens; **Members & roles** shows in the side panel for admins.
+2. Fill **Step 3: About you**: the *Looking for* and *Focus areas* choices, each with its words in all four languages (the value is a short fixed id — don't change it once members have picked it). Until then the step offers a starter list in English.
+3. Checklist, en and ar, phone and desktop:
+   - dashboard as a brand-new member (empty Your week shows the three ways in) and as an active one (an RSVP, a task, something sent back);
+   - a full profile and an empty one, as the owner and with *See it as others do*; view source shows no email address;
+   - onboarding once filling About you and once skipping it; the profile then shows About (or nothing);
+   - Edit profile: change the headline, save, reload — it stays.
+
+Local development: since 2026-10-07 the dev databases run in local Postgres (`pnpm db:local:setup`; `docker-compose.dev.yml`), not on Neon. `pnpm db:local:pull` copies the Neon dev data down once Neon answers again.
