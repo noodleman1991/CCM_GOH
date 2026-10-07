@@ -2,6 +2,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { reportError } from "@/lib/errors/report";
+import { applyStaffRoleInvite } from "@/lib/staff-role-invite";
 
 /**
  * Make sure a signed-in Clerk user has a Prisma row.
@@ -45,6 +46,9 @@ export async function ensureUserRow(userId: string): Promise<boolean> {
         showLocation: true,
       },
     });
+    // A staff role reserved for this email (pnpm user:role --invite) — the
+    // webhook and the lazy sync apply it too; whichever creates the row must.
+    await applyStaffRoleInvite(userId, clerkUser.primaryEmailAddress?.emailAddress);
     return true;
   } catch (error) {
     if ((error as { code?: string })?.code === "P2002") return true;
