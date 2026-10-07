@@ -65,7 +65,8 @@ export default buildConfig({
       // The review queue above the collection list (payload/components/editor-dashboard.tsx).
       beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],
       // The hub's "Report a problem" bubble, on every signed-in admin page.
-      header: ["@/payload/components/report-issue#ReportIssue"],
+      // Plus, on anything but the live site, a strip saying edits here go nowhere.
+      header: ["@/payload/components/environment-banner#EnvironmentBanner", "@/payload/components/report-issue#ReportIssue"],
       // Keeps the hub (Clerk) session renewed while editors work — without it
       // the admin logged editors out about a minute in (payload/components/clerk-session.tsx).
       providers: ["@/payload/components/clerk-session#ClerkSession"],

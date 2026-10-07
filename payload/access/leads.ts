@@ -14,8 +14,18 @@ const isStaffUser = (user: unknown) => role(user) === "admin" || role(user) === 
 
 export const isLead = (user: unknown): boolean => role(user) === "community_editor";
 
-/** Who may sign into /admin at all: staff and community leads. */
-export const mayUseAdmin = (user: unknown): boolean => isStaffUser(user) || isLead(user);
+/**
+ * Who may sign into /admin at all: staff and community leads — on the live
+ * site. Anywhere else (a preview deployment, a laptop) its database is not
+ * production's, so only admins may open it: editors always edit the live hub
+ * (user, 2026-10-08). `VERCEL_ENV` is "production" only on the live
+ * deployment (as lib/algolia-indices.ts relies on).
+ */
+export const mayUseAdmin = (user: unknown): boolean => {
+  if ((user as U)?.role === "admin") return true;
+  if (process.env.VERCEL_ENV !== "production") return false;
+  return isStaffUser(user) || isLead(user);
+};
 
 /** The lead's user id (Clerk id = Prisma id), or null when not a lead. */
 export function leadOf(user: unknown): string | null {

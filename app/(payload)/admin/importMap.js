@@ -28,6 +28,7 @@ import { FeedPreview as FeedPreview_b30692c4dc1487013c633e1aa29d8f29 } from '@/p
 import { SectionFocus as SectionFocus_c928c5604af8f6bcfb1f70f4325f8de9 } from '@/payload/components/section-focus'
 import { LeadPicker as LeadPicker_72ace8e6e197fc51142c6f19a5458a61 } from '@/payload/components/lead-picker'
 import { ModerationActions as ModerationActions_57f9ce9aedc9389a0e52a58f32510b64 } from '@/payload/components/moderation-actions'
+import { EnvironmentBanner as EnvironmentBanner_d11ece56180bfd6ba58eb0bed4d7de47 } from '@/payload/components/environment-banner'
 import { ReportIssue as ReportIssue_7563ac9ec89234b97cf5859415a7095d } from '@/payload/components/report-issue'
 import { BrandIcon as BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
 import { BrandLogo as BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31 } from '@/payload/components/brand-logo'
@@ -72,6 +73,7 @@ export const importMap = {
   "@/payload/components/section-focus#SectionFocus": SectionFocus_c928c5604af8f6bcfb1f70f4325f8de9,
   "@/payload/components/lead-picker#LeadPicker": LeadPicker_72ace8e6e197fc51142c6f19a5458a61,
   "@/payload/components/moderation-actions#ModerationActions": ModerationActions_57f9ce9aedc9389a0e52a58f32510b64,
+  "@/payload/components/environment-banner#EnvironmentBanner": EnvironmentBanner_d11ece56180bfd6ba58eb0bed4d7de47,
   "@/payload/components/report-issue#ReportIssue": ReportIssue_7563ac9ec89234b97cf5859415a7095d,
   "@/payload/components/brand-logo#BrandIcon": BrandIcon_0d1c7490a60dec7c72f23bb596b4fc31,
   "@/payload/components/brand-logo#BrandLogo": BrandLogo_0d1c7490a60dec7c72f23bb596b4fc31,

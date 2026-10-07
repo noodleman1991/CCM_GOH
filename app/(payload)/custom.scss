@@ -310,6 +310,16 @@
   button { border: 0; background: none; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer; padding: 0; }
 }
 
+/* ------------------------------------------------- not the live site banner */
+.ccm-env-banner {
+  padding: 0.6rem 1rem;
+  background: var(--ccm-amber, #e0a53f);
+  color: #1b1b1b;
+  font: 600 0.9rem/1.4 var(--ccm-font-body);
+  text-align: center;
+  a { color: inherit; text-decoration: underline; }
+}
+
 /* ------------------------------------------------------ members & roles */
 /* payload/components/members-roles-panel.tsx — Settings → Members & roles. */
 
@@ -353,15 +363,10 @@
   strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 .ccm-members__username { color: var(--theme-elevation-500); font-size: 0.85rem; }
-.ccm-members__change select {
-  min-height: 2.75rem;
-  padding: 0 0.6rem;
-  border: 1px solid var(--theme-elevation-250);
-  border-radius: var(--ccm-radius);
-  background: var(--theme-elevation-0);
-  color: var(--theme-text);
-  font: 600 0.9rem/1 var(--ccm-font-body);
+.ccm-members__change {
+  min-width: 12rem;
 }
+.ccm-members__email { overflow-wrap: anywhere; }
 .ccm-members__confirm {
   grid-column: 1 / -1;
   display: flex;

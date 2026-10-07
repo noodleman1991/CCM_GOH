@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { communityRead, communityUpdate, hideFromLeads, isLead, mayUseAdmin, nextRole } from "@/payload/access/leads";
 import config from "@payload-config";
 
@@ -9,7 +9,9 @@ const req = (user: unknown) => ({ req: { user } }) as never;
 
 describe("community leads", () => {
   it("lets leads and staff into the admin, nobody else", () => {
+    vi.stubEnv("VERCEL_ENV", "production");
     expect([mayUseAdmin(lead), mayUseAdmin(staff), mayUseAdmin({ role: "admin" }), mayUseAdmin(member), mayUseAdmin(null)]).toEqual([true, true, true, false, false]);
+    vi.unstubAllEnvs();
     expect(isLead(lead)).toBe(true);
     expect(isLead(staff)).toBe(false);
   });
@@ -53,5 +55,17 @@ describe("community leads", () => {
     const read = media.access.read as (a: unknown) => unknown;
     expect(Boolean(await read({ req: { user: lead }, isReadingStaticFile: false }))).toBe(true);
     expect(await read({ req: { user: member }, isReadingStaticFile: false })).toBe(false);
+  });
+});
+
+describe("which admin editors use", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  // Editors must always edit the live site (user, 2026-10-08): on any copy that
+  // isn't production — a preview, a laptop — only admins can open the admin.
+  it("lets editors and leads in only on the live site", () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    expect([mayUseAdmin(lead), mayUseAdmin(staff), mayUseAdmin({ role: "admin" })]).toEqual([false, false, true]);
+    vi.stubEnv("VERCEL_ENV", "production");
+    expect([mayUseAdmin(lead), mayUseAdmin(staff), mayUseAdmin({ role: "admin" })]).toEqual([true, true, true]);
   });
 });
