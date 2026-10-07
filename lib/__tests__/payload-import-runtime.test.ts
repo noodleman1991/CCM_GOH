@@ -45,6 +45,13 @@ describe("describeDatabase", () => {
     expect(describeDatabase(url(`${DEV_HOST}-pooler`), devDigest).isDevEndpoint).toBe(true);
   });
 
+  it("counts a database on this machine as dev — production is never local", () => {
+    for (const host of ["localhost", "127.0.0.1", "[::1]"]) {
+      expect(describeDatabase(`postgres://dev:dev@${host}:5432/payload_cms`).isDevEndpoint).toBe(true);
+    }
+    expect(() => assertPayloadDatabase("postgres://dev:dev@localhost:5432/payload_cms")).not.toThrow();
+  });
+
   it("records a real digest, so the shipped default is not an empty string", () => {
     expect(DEV_ENDPOINT_DIGEST).toMatch(/^[0-9a-f]{64}$/);
   });

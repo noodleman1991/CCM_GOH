@@ -1,0 +1,32 @@
+# Local Postgres for development (2026-10-07). Two databases in one server:
+#   ccm_members  — the members database (Prisma, DATABASE_URL)
+#   payload_cms  — the CMS database (Payload, PAYLOAD_DATABASE_URL; the import
+#                  scripts only write to a database with this name)
+# Production stays on Neon; nothing here is ever production.
+#
+#   pnpm db:local:up      start (data survives restarts in the ccm-pg volume)
+#   pnpm db:local:setup   create the tables (Prisma + Payload migrations)
+#   pnpm db:local:down    stop
+services:
+  postgres:
+    image: postgis/postgis:17-3.5-alpine  # Payload uses PostGIS for map points
+    # No arm64 build of the official image; OrbStack runs it under Rosetta.
+    platform: linux/amd64
+    container_name: ccm-dev-postgres
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"  # 5432 is taken by another local project
+    environment:
+      POSTGRES_USER: ccm
+      POSTGRES_PASSWORD: ccm_dev_only
+      POSTGRES_DB: ccm_members
+    volumes:
+      - ccm-pg:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ccm -d ccm_members"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  ccm-pg:

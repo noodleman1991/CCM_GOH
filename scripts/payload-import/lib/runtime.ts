@@ -198,7 +198,10 @@ export function describeDatabase(
   const database = url.pathname.replace(/^\//, "").split("?")[0]!;
   const endpoint = endpointLabel(url.hostname);
   const digest = createHash("sha256").update(endpoint).digest("hex");
-  return { database, endpoint, isDevEndpoint: digest === devEndpointDigest };
+  // A database on this machine is the local dev setup (docker-compose.dev.yml);
+  // production is never local, so it needs no recorded digest.
+  const local = ["localhost", "127.0.0.1", "[::1]", "::1"].includes(url.hostname);
+  return { database, endpoint, isDevEndpoint: local || digest === devEndpointDigest };
 }
 
 /**
