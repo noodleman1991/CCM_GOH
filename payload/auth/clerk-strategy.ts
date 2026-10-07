@@ -135,6 +135,12 @@ export const clerkStrategy: AuthStrategy = {
     // above were to fail. `doc` already carries `collection: "users"`
     // (Payload's generated type for the config.admin.user collection
     // includes it).
+    // Off the live site (a preview, a laptop) only admins act as themselves:
+    // editors and leads always edit production (user, 2026-10-08). Checked
+    // here too, not only in `mayUseAdmin`, because someone who already has a
+    // mirror row would otherwise reach /payload-api with their editor rights.
+    if (process.env.VERCEL_ENV !== "production" && actor.role !== "admin") return { user: null };
+
     return { user: { ...doc, role: actor.role } };
   },
 };

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // Mirrors the mocking pattern used elsewhere for @clerk/nextjs/server + @/lib/prisma
 // (see lib/__tests__/follows.test.ts, lib/__tests__/comments-route-gate.test.ts).
@@ -43,7 +43,11 @@ const payload = { find: findMock, create: createMock, update: updateMock } as ne
 const authenticate = () =>
   clerkStrategy.authenticate({ payload, headers: new Headers() } as never);
 
+afterEach(() => vi.unstubAllEnvs());
+
 beforeEach(() => {
+  // These describe the live site; the preview case sets its own.
+  vi.stubEnv("VERCEL_ENV", "production");
   vi.clearAllMocks();
 });
 
@@ -206,6 +210,28 @@ describe("clerkStrategy.authenticate", () => {
       expect.objectContaining({ collection: "users", data: expect.objectContaining({ clerkId: "clerk_lead", role: "community_editor" }) }),
     );
     expect(result.user).toMatchObject({ role: "community_editor" });
+  });
+
+  it("lets a lead or editor in as nobody on any copy that isn't the live site", async () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    // A new editor: no mirror row is created.
+    authMock.mockResolvedValueOnce({ userId: "clerk_new" });
+    findUniqueMock.mockResolvedValueOnce({ id: "clerk_new", role: "team_editor", email: "ed@example.org" });
+    findMock.mockResolvedValueOnce({ docs: [] });
+    expect((await authenticate()).user).toBeNull();
+    expect(createMock).not.toHaveBeenCalled();
+
+    // An editor who already has one: still nobody here.
+    authMock.mockResolvedValueOnce({ userId: "clerk_ed" });
+    findUniqueMock.mockResolvedValueOnce({ id: "clerk_ed", role: "team_editor", email: "ed@example.org" });
+    findMock.mockResolvedValueOnce({ docs: [{ id: "docE", collection: "users", clerkId: "clerk_ed", role: "team_editor", email: "ed@example.org" }] });
+    expect((await authenticate()).user).toBeNull();
+
+    // An admin works on any copy.
+    authMock.mockResolvedValueOnce({ userId: "clerk_admin" });
+    findUniqueMock.mockResolvedValueOnce({ id: "clerk_admin", role: "admin", email: "ad@example.org" });
+    findMock.mockResolvedValueOnce({ docs: [{ id: "docA", collection: "users", clerkId: "clerk_admin", role: "admin", email: "ad@example.org" }] });
+    expect((await authenticate()).user).toMatchObject({ role: "admin" });
   });
 
   it("still refreshes an existing row for a demoted user, so the roster shows the demotion", async () => {
