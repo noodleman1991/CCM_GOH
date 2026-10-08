@@ -1,4 +1,5 @@
 import { prisma, safeQuery, createLocalizedQuery, Prisma } from '@/lib/prisma'
+import { displayNameOf } from "@/lib/people/display-name"
 import { getLocalizedValue, isRTL } from '@/i18n/i18n-helpers'
 import { redactUser } from './user-redaction'
 import type {
@@ -773,7 +774,7 @@ export class UserService {
     localizedQuery: ReturnType<typeof createLocalizedQuery>
   ): LocalizedUser {
     // Generate display name with RTL support
-    const displayName = this.generateDisplayName(user, localizedQuery.isRTL)
+    const displayName = displayNameOf(user)
     
     // Generate full name
     const fullName = [user.firstName, user.lastName]
@@ -794,23 +795,6 @@ export class UserService {
       localizedOrganization: user.organization ? { [localizedQuery.locale]: user.organization } : undefined,
       localizedPosition: user.position ? { [localizedQuery.locale]: user.position } : undefined
     }
-  }
-
-  /**
-   * Generate display name with RTL support
-   */
-  private static generateDisplayName(user: User, isRTL: boolean): string {
-    if (user.firstName && user.lastName) {
-      return isRTL 
-        ? `${user.lastName} ${user.firstName}` // Arabic: family name first
-        : `${user.firstName} ${user.lastName}`
-    }
-    
-    if (user.firstName) return user.firstName
-    if (user.lastName) return user.lastName
-    if (user.username) return user.username
-    
-    return 'Anonymous User'
   }
 
   /**

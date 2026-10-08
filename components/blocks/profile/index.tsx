@@ -5,5 +5,3 @@ export { default as RecentWorkBlock } from './recent-work-block'
 export { default as CommunityHubBlock } from './community-hub-block'
 export { default as SocialLinksBlock } from './social-links-block'
 
-// New components
-export { ProfileStatistics } from './profile-statistics'

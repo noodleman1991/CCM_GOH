@@ -57,9 +57,12 @@ export function ModernContentArea({
     })
   }
 
-  const handleNext = () => {
-    // This only runs on navigation steps (not on review/last step)
-    // Review step has no onClick handler - uses native form submission via type="submit"
+  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Only on navigation steps; the review step submits natively (type="submit").
+    // preventDefault matters: on the step before review this very button is
+    // re-rendered as the submit button before the browser acts on the click,
+    // which submitted the whole onboarding, skipping review (fixed 2026-10-08).
+    e.preventDefault()
     onNextAction()
   }
 
@@ -134,6 +137,9 @@ export function ModernContentArea({
             </Button>
 
             <Button
+              // A different element for Next and for Complete, so a Next click
+              // can never land on the submit button.
+              key={isLastStep ? "complete" : "next"}
               type={isLastStep ? "submit" : "button"}
               onClick={isLastStep ? undefined : handleNext}
               disabled={!canGoNext || isSubmitting || (isLastStep && !isConfirmed)}

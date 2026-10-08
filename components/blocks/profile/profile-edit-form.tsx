@@ -27,6 +27,7 @@ import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-up
 import { CommunitySelector, type Community as SelectorCommunity } from "@/components/profile/community-selector"
 import { LIMITS } from "@/lib/validation/limits";
 import { CharCounter } from "@/components/ui/char-counter"
+import { useCollaboration } from "@/hooks/use-collaboration"
 import { ChoiceChips } from "@/components/profile/choice-chips"
 import { profileUpdateFromForm } from "@/lib/profile/edit-payload"
 import type { AboutYouOption } from "@/lib/onboarding/about-you-options"
@@ -208,6 +209,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const tCommunities = useTranslations('profile.communities')
     const tRecentWork = useTranslations('profile.recentWork')
     const tPrompts = useTranslations('profile.prompts')
+    const collaboration = useCollaboration()
     // The same words as onboarding's About you step, so the two read alike.
     const tAbout = useTranslations('onboarding.steps.basicInfo')
     const tSteps = useTranslations('onboarding.steps')
@@ -950,6 +952,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             </>
                         )}
 
+                        {/* Only while the team has "Open to collaborate" on (Settings → Collaboration);
+                            hidden, the member's saved answer is kept as it is. */}
+                        {collaboration.people && (
+                        <>
                         <FormField
                             control={form.control}
                             name="openToCollaboration"
@@ -980,6 +986,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     </FormItem>
                                 )}
                             />
+                        )}
+                        </>
                         )}
 
                         {/* Lived experience — sensitive, opt-in to show publicly */}
