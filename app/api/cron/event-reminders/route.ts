@@ -7,7 +7,9 @@ import { bearerMatches } from "@/lib/auth/bearer";
 /**
  * GET /api/cron/event-reminders (X6): T-24h reminders to RSVP'd attendees.
  * Idempotent per event: an EVENT_REMINDER notification for the event marks it
- * sent — re-runs skip it, so the cron can fire hourly without duplicates.
+ * sent — re-runs skip it, so the cron can fire repeatedly without duplicates.
+ * Runs every 6 hours (vercel.json), not hourly: each run wakes the Neon compute,
+ * and hourly kept it awake ~24×/day. Reminders land 18–24h before the event.
  * Protected by CRON_SECRET (Vercel cron sends it as a bearer token).
  */
 export async function GET(req: NextRequest) {
