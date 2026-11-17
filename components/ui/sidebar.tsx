@@ -309,7 +309,7 @@ function SidebarTrigger({
                             onClick,
                             ...props
                         }: React.ComponentProps<typeof Button>) {
-    const { toggleSidebar, isRtl, isMobile } = useSidebar()
+    const { toggleSidebar, isRtl } = useSidebar()
     const t = useTranslations("common")
 
     return (
@@ -326,8 +326,17 @@ function SidebarTrigger({
             {...props}
         >
             {/* Mobile opens a bottom sheet, so the affordance is the universal
-                menu glyph; desktop keeps the panel icon (it collapses a panel). */}
-            {isMobile ? <MenuIcon /> : isRtl ? <PanelRightIcon /> : <PanelLeftIcon />}
+                menu glyph; desktop keeps the panel icon (it collapses a panel).
+                Chosen by CSS at the same 768px breakpoint as useIsMobile, NOT by
+                isMobile: that is false until after hydration, so phones painted
+                the panel icon first and swapped it for the menu glyph — a
+                visible flicker in the header on every mobile page load. */}
+            <MenuIcon className="md:hidden" />
+            {isRtl ? (
+                <PanelRightIcon className="hidden md:block" />
+            ) : (
+                <PanelLeftIcon className="hidden md:block" />
+            )}
             <span className="sr-only">{t("toggleSidebar")}</span>
         </Button>
     )

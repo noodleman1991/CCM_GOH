@@ -4,55 +4,50 @@ import * as React from "react";
 
 /**
  * Unified scroll-triggered entrance for page-builder blocks: a gentle fade + rise
- * as each block enters (or, for above-the-fold blocks, on mount). Wraps every
- * block from the dispatcher so the effect is consistent across ALL block types.
+ * as each block scrolls into view. Wraps every block from the dispatcher so the
+ * effect is consistent across ALL block types.
  *
- * Render-stable (the "re-fires on re-render" fix): reveal is tracked in a ref and
- * the observer is one-shot — once revealed we never flip back to hidden, so a
- * parent re-render / filter change / locale switch never replays or flashes it.
+ * Only blocks that are still entirely BELOW the viewport at hydration take part.
+ * Server HTML is painted long before hydration — seconds on a phone — so the
+ * old "hide everything, then fade the visible ones back in" made every block
+ * already on screen vanish and reappear: the mobile page-load flicker. A block
+ * the visitor can already see is left alone; one below the fold is hidden while
+ * offscreen (invisible to the visitor) and revealed as it scrolls in.
  *
- * Reduced-motion / SSR / no-JS: content renders fully visible immediately; the
- * hidden→reveal only happens when JS runs and motion is allowed.
+ * Render-stable: the observer is one-shot — once revealed we never flip back to
+ * hidden, so a parent re-render / filter change / locale switch never replays it.
+ *
+ * Reduced-motion / SSR / no-JS: content renders fully visible; nothing is ever
+ * gated behind the animation.
  */
 export function BlockReveal({ children }: { children: React.ReactNode }) {
   const ref = React.useRef<HTMLDivElement | null>(null);
   // SSR/no-JS default: visible (never gate content behind the animation).
   const [revealed, setRevealed] = React.useState(true);
 
-  // On the client with motion allowed, flip to hidden BEFORE paint (layout
-  // effect) so there's no flash of the final state, then reveal.
+  // Layout effect: decide before the hydrated frame paints, so a block we hide
+  // is never shown-then-hidden.
   React.useLayoutEffect(() => {
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return; // stay visible, no animation
-    setRevealed(false);
-  }, []);
-
-  React.useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    if (typeof IntersectionObserver === "undefined") return;
 
-    // Above the fold on mount → reveal on the next frame (animates in on load).
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.92) {
-      const id = requestAnimationFrame(() => setRevealed(true));
-      return () => cancelAnimationFrame(id);
-    }
+    // Any part already on screen (or above it) → it has been seen; keep it.
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
 
-    // Below the fold → reveal when scrolled into view (one-shot).
+    setRevealed(false);
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setRevealed(true);
-            observer.disconnect();
-          }
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setRevealed(true);
+          observer.disconnect();
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.05 }
+      // Fire the moment any pixel enters. A positive threshold / negative
+      // margin left tall blocks (most of them on a phone) as a blank band at
+      // the bottom of the screen before the fade started — a pop-in flicker.
+      { threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -62,7 +57,7 @@ export function BlockReveal({ children }: { children: React.ReactNode }) {
     <div
       ref={ref}
       data-revealed={revealed}
-      className="motion-safe:transition-all motion-safe:duration-[350ms] motion-safe:ease-out data-[revealed=false]:translate-y-3 data-[revealed=false]:opacity-0"
+      className="motion-safe:transition-[opacity,translate] motion-safe:duration-[350ms] motion-safe:ease-out data-[revealed=false]:translate-y-3 data-[revealed=false]:opacity-0"
     >
       {children}
     </div>
