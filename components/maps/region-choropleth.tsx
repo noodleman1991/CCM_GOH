@@ -10,6 +10,7 @@ import type { RegionCode } from '@/lib/maps/region-codes'
 import { regionCrop } from '@/lib/maps/region-crop'
 import type { PinCluster } from '@/lib/maps/cluster-pins'
 import { CCM } from '@/lib/ccm-colors'
+import { mixHex } from '@/lib/mix-hex'
 
 /**
  * Presentational choropleth: renders the 7 region paths from the build-time
@@ -107,7 +108,9 @@ export function RegionChoropleth({
   // Hover lifts the whole region to full sky.
   const fillFor = (intensity: number) => {
     const pct = Math.round((0.12 + intensity * 0.36) * 100)
-    return `color-mix(in srgb, var(--color-ccm-water) ${pct}%, var(--color-ccm-sky))`
+    // Mixed in JS, not color-mix(): an SVG fill has no fallback on pre-16.2
+    // iOS Safari, where the region would paint black/blank (lib/mix-hex.ts).
+    return mixHex(CCM.water, CCM.sky, pct / 100)
   }
 
 
@@ -146,7 +149,7 @@ export function RegionChoropleth({
                 // reserved for the committed selection; the earlier gold-tint
                 // mix read as khaki (user 2026-08-05). Literal white, never
                 // an undefined var (the black-hover bug).
-                ? 'color-mix(in srgb, white 40%, var(--color-ccm-sky))'
+                ? mixHex('#ffffff', CCM.sky, 0.4)
                 : fillFor(intensity)
             }
             className={cn(

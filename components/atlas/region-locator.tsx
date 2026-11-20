@@ -1,6 +1,8 @@
 import geometry from '@/components/maps/region-geometry-soft.json'
 import { REGION_COLOR, type RegionCode } from '@/lib/maps/region-codes'
 import { cn } from '@/lib/utils'
+import { CCM } from '@/lib/ccm-colors'
+import { mixHex } from '@/lib/mix-hex'
 
 /**
  * Circle-clipped mini world map with one region in its brand colour — the
@@ -31,7 +33,9 @@ export function RegionLocator({
         'rounded-full border-[3px] border-white shadow-md',
         className
       )}
-      style={{ backgroundColor: 'color-mix(in srgb, var(--color-ccm-water) 20%, white)' }}
+      // Precomputed, not color-mix(): no fallback for inline/SVG colour on
+      // pre-16.2 iOS Safari (lib/mix-hex.ts).
+      style={{ backgroundColor: mixHex(CCM.water, '#ffffff', 0.2) }}
     >
       {Object.entries(regions).map(([code, { d }]) => (
         <path
@@ -40,7 +44,7 @@ export function RegionLocator({
           fill={
             code === region
               ? REGION_COLOR[region]
-              : 'color-mix(in srgb, var(--color-ccm-water) 45%, white)'
+              : mixHex(CCM.water, '#ffffff', 0.45)
           }
         />
       ))}

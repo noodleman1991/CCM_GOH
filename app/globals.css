@@ -155,6 +155,32 @@
    end-state instead: visible, no transform, no movement. This also damps the
    "who is involved" marquee and other long animations globally, so every block
    shares one reduced-motion behavior without per-component guards. */
+/* Page-builder block entrance (components/blocks/block-reveal.tsx). Scroll-
+   linked, never JS-gated: the block's opacity is a pure function of its
+   position, so it cannot be left invisible. Fades over the first 160px of the
+   block entering the viewport (a length, so tall and short blocks feel the
+   same). Desktop-class pointers only — phones get no entrance at all, which
+   is what stops the mobile "sections vanish while scrolling" flicker. */
+@keyframes block-reveal {
+    from {
+        opacity: 0;
+        translate: 0 12px;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (hover: hover) and (min-width: 768px) {
+        .block-reveal {
+            animation: block-reveal linear both;
+            animation-timeline: view();
+            animation-range: entry 0px entry 160px;
+        }
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .animate-fade-up {
         animation: none !important;

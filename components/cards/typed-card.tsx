@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowUpRight, MapPin, Play } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { mixHex } from "@/lib/mix-hex";
 import { TYPE_STYLE, type TypedCardItem } from "@/lib/cards/type-style";
 
 /**
@@ -255,13 +256,18 @@ function DateTile({ iso, color, locale }: { iso: string; color: string; locale: 
   );
 }
 
-/** Type-tinted blob placeholder (the hub's illustration language, CSS-only). */
+/** Type-tinted blob placeholder (the hub's illustration language, CSS-only).
+ *
+ * Colours are mixed HERE, not with CSS color-mix(): an inline style has no
+ * fallback, and on iPhones whose Safari predates color-mix (iOS < 16.2) the
+ * whole `background` declaration was dropped — every cover painted as an empty
+ * white box (the "cards are blank on my phone" report, 2026-11-18). */
 function blobStyle(color: string): React.CSSProperties {
   return {
     background: [
-      `radial-gradient(90px 70px at 78% 18%, color-mix(in srgb, #90E0F4 45%, transparent), transparent 70%)`,
-      `radial-gradient(140px 110px at 12% 88%, color-mix(in srgb, #9BC6DA 55%, transparent), transparent 72%)`,
-      `linear-gradient(125deg, color-mix(in srgb, ${color} 88%, #06213f), #0B3160)`,
+      `radial-gradient(90px 70px at 78% 18%, rgba(144, 224, 244, 0.45), transparent 70%)`,
+      `radial-gradient(140px 110px at 12% 88%, rgba(155, 198, 218, 0.55), transparent 72%)`,
+      `linear-gradient(125deg, ${mixHex(color, "#06213f", 0.88)}, #0B3160)`,
     ].join(", "),
   };
 }
